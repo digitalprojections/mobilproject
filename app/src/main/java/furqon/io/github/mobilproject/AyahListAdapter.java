@@ -53,7 +53,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     @Override
     public AyahListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.sura_title, parent, false);
+        View view = inflater.inflate(R.layout.ayat, parent, false);
 
         mArrayList = new ArrayList<>();
         return new AyahListViewHolder(view);
@@ -65,13 +65,14 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             return;
         }
 
-        String ttext = mCursor.getString(2);
-        String artext = mCursor.getString(1);
-        String numb = mCursor.getString(0);
-        //holder.ayatext.setText(ttext);
-        //holder.arabictext.setText(artext);
-        //holder.ayahnumber.setText(String.valueOf(numb));
-        //mArrayList.add(numb);
+        String ttext = mCursor.getString(1);
+        String artext = mCursor.getString(0);
+        String numb = mCursor.getString(2);
+        holder.ayatext.setText(ttext);
+        holder.arabictext.setText(artext);
+        holder.ayahnumber.setText(String.valueOf(numb));
+        holder.arabic_ayahnumber.setText(String.valueOf(numb));
+        mArrayList.add(numb);
 
     }
 

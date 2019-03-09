@@ -45,9 +45,13 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
         public void onClick(View view) {
 
             int position=this.getAdapterPosition();
-            Log.d("CLICK", suraName.getText().toString());
+            String suranomer = suraNumber.getText().toString();
+            String suranomi = suraName.getText().toString();
+
+            Log.d("CLICK", suranomer);
             Intent intent;
             intent = new Intent(mContext, AyahList.class);
+            intent.putExtra("SURANAME",suranomi+":"+suranomer);
             mContext.startActivity(intent);
         }
     }

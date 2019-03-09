@@ -38,4 +38,16 @@ public class DatabaseAccess {
     return c;
 
     }
+    Cursor getSuraText(String sn){
+        c= db.rawQuery("SELECT q1.AyahText, q2.AyahText as 'uztext', q1.VerseID, q1.SuraID FROM quran q1\n" +
+                "INNER JOIN quran q2\n" +
+                "ON q1.SuraID=q2.SuraID\n" +
+                "WHERE q1.DatabaseID = 1\n" +
+                "and q1.VerseID=q2.VerseID\n" +
+                "and q2.DatabaseID=120\n" +
+                "and q1.SuraID = " + sn, new String[]{});
+
+        return c;
+
+    }
 }

@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 public class AyahList extends AppCompatActivity {
     private AyahListAdapter mAdapter;
@@ -16,8 +17,15 @@ public class AyahList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chapter_view);
 
-        Intent intent = getIntent();
-        getSupportActionBar().setTitle("AYAT");
+        Bundle intent = getIntent().getExtras();
+        String extratext = intent.getString("SURANAME");
+
+        String suranomi = extratext.substring(0, extratext.indexOf(":"));
+        String suranomer = extratext.substring(extratext.indexOf(":")+1);
+
+        Log.i("LOADING SURA", suranomer + " " + suranomi);
+
+        getSupportActionBar().setTitle(suranomi);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mDatabase = DatabaseAccess.getInstance(getApplicationContext());
@@ -28,7 +36,7 @@ public class AyahList extends AppCompatActivity {
 
         mDatabase.open();
 
-        ayahcursor = mDatabase.getSuraTitles();
+        ayahcursor = mDatabase.getSuraText(suranomer);
 
         mAdapter = new AyahListAdapter(this, ayahcursor);
         recyclerView.setAdapter(mAdapter);
