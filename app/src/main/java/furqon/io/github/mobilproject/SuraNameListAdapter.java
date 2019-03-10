@@ -12,13 +12,16 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+
 import java.util.ArrayList;
 
 public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapter.SuraListViewHolder> {
     private Context mContext;
     private Cursor mCursor;
     private ArrayList<String> mArrayList;
-
+    private InterstitialAd mInterstitialAd;
     SuraNameListAdapter(Context context, Cursor cursor){
         mContext = context;
         mCursor = cursor;
@@ -53,6 +56,11 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
             intent = new Intent(mContext, AyahList.class);
             intent.putExtra("SURANAME",suranomi+":"+suranomer);
             mContext.startActivity(intent);
+            mInterstitialAd = new InterstitialAd(mContext);
+            mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+            mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+            mInterstitialAd.show();
         }
     }
     @NonNull

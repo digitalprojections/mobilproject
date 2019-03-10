@@ -10,6 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.util.ArrayList;
 
 public class SuraNameList extends AppCompatActivity {
@@ -17,7 +20,7 @@ public class SuraNameList extends AppCompatActivity {
     private SuraNameListAdapter mAdapter;
     private DatabaseAccess mDatabase;
     private Cursor suralist;
-
+    private AdView mAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +40,10 @@ public class SuraNameList extends AppCompatActivity {
         mAdapter = new SuraNameListAdapter(this, suralist);
         recyclerView.setAdapter(mAdapter);
 
-
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+    }
 
     }
 
@@ -46,4 +52,4 @@ public class SuraNameList extends AppCompatActivity {
 
 
 
-}
+

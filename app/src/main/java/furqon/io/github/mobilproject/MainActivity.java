@@ -11,7 +11,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.vending.licensing.*;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class MainActivity extends AppCompatActivity {
     public EditText name;
@@ -29,12 +33,22 @@ public class MainActivity extends AppCompatActivity {
             -45, 77, -117, -36, -113, -11, 32, -64, 89
     };
     // Try to use more data here. ANDROID_ID is a single point of attack.
-
+    private InterstitialAd mInterstitialAd;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        MobileAds.initialize(this, "ca-app-pub-3838820812386239~2342916878");
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+
         handler = new Handler();
         licenseCheckerCallback = new MyLicenseCheckerCallback();
         suralar_but = findViewById(R.id.suralar);
@@ -72,8 +86,14 @@ public class MainActivity extends AppCompatActivity {
     private void doCheck() {
 
         setProgressBarIndeterminateVisibility(true);
-        statusText.setText("checking...");
+        //statusText.setText("checking...");
         checker.checkAccess(licenseCheckerCallback);
+
+        /*Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, id);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, name);
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);*/
     }
     public void openSuraNames(View view){
         Intent intent = new Intent(this, SuraNameList.class);
@@ -87,8 +107,9 @@ public class MainActivity extends AppCompatActivity {
     private void displayResult(final String result) {
         handler.post(new Runnable() {
             public void run() {
-                statusText.setText(result);
+                //statusText.setText(result);
                 setProgressBarIndeterminateVisibility(false);
+                mInterstitialAd.show();
 
             }
         });
