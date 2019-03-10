@@ -1,0 +1,31 @@
+apply plugin: 'com.android.application'
+
+android {
+    signingConfigs {
+        config {
+            keyAlias 'baa'
+            keyPassword '1285422'
+            storeFile file('C:/Users/aj/Downloads/keystore.private')
+            storePassword '1285422'
+        }
+    }
+    compileSdkVersion 23
+    defaultConfig {
+        applicationId "com.example.google.play.licensing"
+        minSdkVersion 8
+        targetSdkVersion 23
+
+        testApplicationId "com.example.google.play.licensing.test"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+}
+
+dependencies {
+    implementation project(':lvl_library')
+}

@@ -1,0 +1,70 @@
+-- Merging decision tree log ---
+manifest
+ADDED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:16:1-32:12
+INJECTED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:16:1-32:12
+INJECTED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:16:1-32:12
+INJECTED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:16:1-32:12
+MERGED from [:lvl_library] C:\Users\aj\Documents\mobilproject\lvl_library\build\intermediates\library_manifest\debug\AndroidManifest.xml:17:1-29:12
+INJECTED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:16:1-32:12
+INJECTED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:16:1-32:12
+INJECTED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:16:1-32:12
+	package
+		ADDED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:17:5-48
+		INJECTED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml
+	android:versionName
+		ADDED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:19:5-30
+		INJECTED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:16:11-69
+	android:versionCode
+		ADDED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:18:5-28
+		INJECTED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml
+application
+ADDED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:20:5-29:19
+	android:label
+		ADDED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:20:48-80
+	android:icon
+		ADDED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:20:18-47
+activity#com.example.google.play.licensing.MainActivity
+ADDED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:21:9-28:20
+	android:label
+		ADDED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:22:13-45
+	android:configChanges
+		ADDED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:23:13-63
+	android:name
+		ADDED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:21:19-47
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:24:13-27:29
+action#android.intent.action.MAIN
+ADDED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:25:17-69
+	android:name
+		ADDED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:25:25-66
+category#android.intent.category.LAUNCHER
+ADDED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:26:17-77
+	android:name
+		ADDED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:26:27-74
+uses-permission#com.android.vending.CHECK_LICENSE
+ADDED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:31:5-73
+MERGED from [:lvl_library] C:\Users\aj\Documents\mobilproject\lvl_library\build\intermediates\library_manifest\debug\AndroidManifest.xml:27:5-73
+MERGED from [:lvl_library] C:\Users\aj\Documents\mobilproject\lvl_library\build\intermediates\library_manifest\debug\AndroidManifest.xml:27:5-73
+	android:name
+		ADDED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml:31:22-70
+uses-sdk
+INJECTED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml
+INJECTED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml
+MERGED from [:lvl_library] C:\Users\aj\Documents\mobilproject\lvl_library\build\intermediates\library_manifest\debug\AndroidManifest.xml:22:5-24:41
+MERGED from [:lvl_library] C:\Users\aj\Documents\mobilproject\lvl_library\build\intermediates\library_manifest\debug\AndroidManifest.xml:22:5-24:41
+INJECTED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml
+INJECTED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml
+		ADDED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml
+		ADDED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\aj\Documents\mobilproject\lvl_sample\src\main\AndroidManifest.xml

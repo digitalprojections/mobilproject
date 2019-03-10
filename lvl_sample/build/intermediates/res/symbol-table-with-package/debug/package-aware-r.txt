@@ -1,0 +1,17 @@
+com.example.google.play.licensing
+drawable icon
+id check_license_button
+id status_text
+layout main
+string allow
+string app_name
+string application_error
+string check_license
+string checking_license
+string dont_allow
+string quit_button
+string restore_access_button
+string retry_button
+string unlicensed_dialog_body
+string unlicensed_dialog_retry_body
+string unlicensed_dialog_title

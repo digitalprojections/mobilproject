@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "C:\\Users\\aj\\Documents\\mobilproject\\lvl_sample\\build\\intermediates\\res\\merged\\debug\\drawable_icon.png.flat",
+        "source": "C:\\Users\\aj\\Documents\\mobilproject\\lvl_sample\\src\\main\\res\\drawable\\icon.png"
+    },
+    {
+        "merged": "C:\\Users\\aj\\Documents\\mobilproject\\lvl_sample\\build\\intermediates\\res\\merged\\debug\\layout_main.xml.flat",
+        "source": "C:\\Users\\aj\\Documents\\mobilproject\\lvl_sample\\src\\main\\res\\layout\\main.xml"
+    }
+]
