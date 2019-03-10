@@ -3,4 +3,6 @@
     <string name="suralar">Suralar</string>
     <string name="cont">Continue</string>
     <string name="favorites">Favourites</string>
+    <string name="allow">Ruxsat</string>
+    <string name="dont_allow">Ta`qiq</string>
 </resources>
