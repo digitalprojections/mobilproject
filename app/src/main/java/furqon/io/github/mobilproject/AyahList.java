@@ -23,7 +23,7 @@ public class AyahList extends AppCompatActivity {
         String suranomi = extratext.substring(0, extratext.indexOf(":"));
         String suranomer = extratext.substring(extratext.indexOf(":")+1);
 
-        Log.i("LOADING SURA", suranomer + " " + suranomi);
+        Log.i("LOADED SURA", suranomer + " " + suranomi);
 
         getSupportActionBar().setTitle(suranomi);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

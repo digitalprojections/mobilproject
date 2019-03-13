@@ -18,8 +18,7 @@
         <activity android:name=".Favourites"
             android:parentActivityName=".MainActivity"/>
         <activity
-            android:name=".SuraNameList"
-            android:parentActivityName=".MainActivity" />
+            android:name=".SuraNameList"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

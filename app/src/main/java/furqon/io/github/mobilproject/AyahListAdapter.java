@@ -68,12 +68,26 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         String ttext = mCursor.getString(1);
         String artext = mCursor.getString(0);
         String numb = mCursor.getString(2);
-        holder.ayatext.setText(ttext);
+
+        holder.ayatext.setText(collapseBraces(ttext));
+
         holder.arabictext.setText(artext);
         holder.ayahnumber.setText(String.valueOf(numb));
         holder.arabic_ayahnumber.setText(String.valueOf(numb));
         mArrayList.add(numb);
 
+    }
+    private String collapseBraces(String t){
+        String retval;
+        if(t.indexOf("(")>0)
+        {
+            retval = t.substring(0, t.indexOf("(")-1);
+        }
+        else {
+            retval = t;
+        }
+
+        return retval;
     }
 
     @Override
