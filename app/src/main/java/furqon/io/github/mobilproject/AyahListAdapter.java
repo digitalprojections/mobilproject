@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahListViewHolder> {
     private Context mContext;
@@ -29,6 +32,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         TextView arabictext;
         TextView ayahnumber;
         TextView arabic_ayahnumber;
+        TextView comment;
 
 
         AyahListViewHolder(@NonNull View itemView) {
@@ -69,7 +73,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         String artext = mCursor.getString(0);
         String numb = mCursor.getString(2);
 
-        holder.ayatext.setText(collapseBraces(ttext));
+        holder.ayatext.setText(Html.fromHtml(collapseBraces(ttext), Html.FROM_HTML_MODE_COMPACT));
 
         holder.arabictext.setText(artext);
         holder.ayahnumber.setText(String.valueOf(numb));
@@ -79,9 +83,13 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     }
     private String collapseBraces(String t){
         String retval;
+
         if(t.indexOf("(")>0)
         {
-            retval = t.substring(0, t.indexOf("(")-1);
+            //all logic here
+            retval = t.replace("(","<br><font color='#517D43'>");
+            Log.i("ARRAY", String.valueOf(retval));
+            retval = retval.replace(")", "</font>");
         }
         else {
             retval = t;
