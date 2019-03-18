@@ -65,5 +65,5 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="0dp"
         android:background="@color/colorPrimaryDark"
-        android:text="@android:string/ok" />
+        android:text="@string/save" />
 </LinearLayout>

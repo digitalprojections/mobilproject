@@ -68,13 +68,13 @@
             android:textSize="24sp" />
 
         <Button
-            android:id="@+id/search"
+            android:id="@+id/setbut"
             android:layout_width="match_parent"
             android:layout_height="@android:dimen/notification_large_icon_height"
             android:layout_margin="10dp"
             android:background="@color/colorPrimaryDark"
             android:gravity="center"
-            android:text="@android:string/search_go"
+            android:text="@string/settings"
             android:textSize="24sp" />
 
     </LinearLayout>

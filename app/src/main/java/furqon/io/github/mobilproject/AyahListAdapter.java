@@ -33,16 +33,18 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
     private boolean sw_ar;
     private boolean sw_uz;
+    private ViewGroup.LayoutParams lp; // Height of TextView
+    private ViewGroup.LayoutParams lpmar; // Height of TextView
+    private ViewGroup.LayoutParams lpartxt; // Height of TextView
 
 
-
-    AyahListAdapter(Context context, Cursor cursor){
+    AyahListAdapter(Context context, Cursor cursor) {
         mContext = context;
         mCursor = cursor;
     }
 
 
-    public static class AyahListViewHolder extends RecyclerView.ViewHolder implements OnClickListener{
+    public class AyahListViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
         TextView ayatext;
         TextView arabictext;
         TextView ayahnumber;
@@ -68,43 +70,44 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             arabictext = new TextView(itemView.getContext());
             arabic_ayahnumber = new TextView(itemView.getContext());
 
-            ViewGroup.LayoutParams lp = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT, // Width of TextView
-                    ViewGroup.LayoutParams.WRAP_CONTENT); // Height of TextView
-            ViewGroup.LayoutParams lpmar = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT, // Width of TextView
-                    ViewGroup.LayoutParams.WRAP_CONTENT); // Height of TextView
 
-            ((LinearLayout.LayoutParams) lpmar).setMargins(5,-15,5,5);
-
+            ((LinearLayout.LayoutParams) lpmar).setMargins(5, -15, 5, 5);
+            ((LinearLayout.LayoutParams) lp).setMargins(15, 0, 5, 5);
+            ((LinearLayout.LayoutParams) lpartxt).setMargins(128, 0, 5, 5);
+            //lpmar.width = 32;
+            ayahnumber.setTextSize(15);
             ayahnumber.setLayoutParams(lp);
             ayahnumber.setGravity(Gravity.CENTER);
-            ayahnumber.setBackgroundResource(ayah_symbol_mdpi);
+            ayahnumber.setBackgroundResource(ayah_symbol32);
+            ayahnumber.setVisibility(View.GONE);
             ayatext.setLayoutParams(lp);
             ayatext.setTextSize(18);
-            ayatext.setPadding(0,15,0,15);
-            arabictext.setLayoutParams(lp);
-            arabictext.setTextSize(30);
+            ayatext.setPadding(0, 15, 0, 15);
+            ayatext.setVisibility(View.GONE);
+            arabictext.setLayoutParams(lpartxt);
+            arabictext.setTextSize(28);
+            arabictext.setGravity(Gravity.END);
             arabictext.setTextColor(Color.BLACK);
-            arabictext.setShadowLayer(1.5f, -1, 1, Color.LTGRAY);
+            arabictext.setShadowLayer(1.5f, 0, 0, Color.BLACK);
+            arabictext.setVisibility(View.GONE);
             arabic_ayahnumber.setLayoutParams(lpmar);
-            arabic_ayahnumber.setBackgroundResource(ayah_symbol_mdpi);
-            arabic_ayahnumber.setGravity(Gravity.CENTER);
+            arabic_ayahnumber.setBackgroundResource(ayah_symbol32);
 
-            ayahnumber.setTextSize(15);
+            arabic_ayahnumber.setGravity(Gravity.CENTER);
+            arabic_ayahnumber.setVisibility(View.GONE);
+
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 arabictext.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
             }
 
-            if(arabictext.getParent()!=null)
-            {
-                ((ViewGroup)arabictext.getParent()).removeView(arabictext);
-                ((ViewGroup)arabic_ayahnumber.getParent()).removeView(arabic_ayahnumber);
+            if (arabictext.getParent() != null) {
+                ((ViewGroup) arabictext.getParent()).removeView(arabictext);
+                ((ViewGroup) arabic_ayahnumber.getParent()).removeView(arabic_ayahnumber);
             }
-            if(ayatext.getParent()!=null)
-            {
-                ((ViewGroup)ayahnumber.getParent()).removeView(ayahnumber);
-                ((ViewGroup)ayatext.getParent()).removeView(ayatext);
+            if (ayatext.getParent() != null) {
+                ((ViewGroup) ayahnumber.getParent()).removeView(ayahnumber);
+                ((ViewGroup) ayatext.getParent()).removeView(ayatext);
             }
             linearLayout1.addView(ayahnumber);
             linearLayout1.addView(ayatext);
@@ -115,7 +118,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
         @Override
         public void onClick(View view) {
-            int position=getAdapterPosition();
+            int position = getAdapterPosition();
             Log.d("CLICK", ayatext.getText().toString());
 
         }
@@ -129,6 +132,16 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
         sharedPreferences = mContext.getSharedPreferences(Settings.SHARED_PREFS, MODE_PRIVATE);
 
+        lp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, // Width of TextView
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        lpmar = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, // Width of TextView
+                ViewGroup.LayoutParams.WRAP_CONTENT, 0.1f);
+        lpartxt = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, // Width of TextView
+                ViewGroup.LayoutParams.WRAP_CONTENT, 10.0f);
         loadData();
 
         mArrayList = new ArrayList<>();
@@ -137,48 +150,45 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
     @Override
     public void onBindViewHolder(@NonNull AyahListViewHolder holder, int i) {
-        if(!mCursor.moveToPosition(i)){
+        if (!mCursor.moveToPosition(i)) {
             return;
         }
-
 
 
         String ttext = mCursor.getString(1);
         String artext = mCursor.getString(0);
         String numb = mCursor.getString(2);
 
-        if(sw_ar){
-            holder.arabic_ayahnumber.setVisibility(View.VISIBLE);
-            holder.arabictext.setVisibility(View.VISIBLE);
 
-            //holder.arabictext.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
-            holder.arabictext.setGravity(Gravity.END | Gravity.RIGHT);
+        holder.arabic_ayahnumber.setVisibility(View.VISIBLE);
+        holder.arabictext.setVisibility(View.VISIBLE);
 
-            holder.arabictext.setText(artext);
-            holder.arabic_ayahnumber.setText(String.valueOf(numb));
-        }
-        if (sw_uz)
-        {
+        //holder.arabictext.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
+        holder.arabictext.setGravity(Gravity.END | Gravity.RIGHT);
+
+        holder.arabictext.setText(artext);
+        holder.arabic_ayahnumber.setText(String.valueOf(numb));
+
+        if (sw_uz) {
             holder.ayahnumber.setVisibility(View.VISIBLE);
             holder.ayatext.setVisibility(View.VISIBLE);
             holder.ayatext.setText(Html.fromHtml(collapseBraces(ttext)));
             holder.ayahnumber.setText(String.valueOf(numb));
         }
-
+        Log.i("AYAT NUMBER", String.valueOf(numb));
         mArrayList.add(numb);
 
     }
-    private String collapseBraces(String t){
+
+    private String collapseBraces(String t) {
         String retval;
 
-        if(t.indexOf("(")>0)
-        {
+        if (t.indexOf("(") > 0) {
             //all logic here
-            retval = t.replace("(","<br><font color='#517D43'>");
+            retval = t.replace("(", "<br><font color='#517D43'>");
             Log.i("ARRAY", String.valueOf(retval));
             retval = retval.replace(")", "</font>");
-        }
-        else {
+        } else {
             retval = t;
         }
 
@@ -190,19 +200,20 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         return mCursor.getCount();
     }
 
-    public void swapCursor(Cursor newCursor){
-        if(mCursor!=null){
+    public void swapCursor(Cursor newCursor) {
+        if (mCursor != null) {
             mCursor.close();
         }
 
         mCursor = newCursor;
-        if(newCursor!=null){
+        if (newCursor != null) {
             notifyDataSetChanged();
         }
     }
-    private void loadData(){
-        sw_ar = sharedPreferences.getBoolean(Settings.SWITCH1,false);
-        sw_uz = sharedPreferences.getBoolean(Settings.SWITCH2,false);
+
+    private void loadData() {
+        sw_ar = sharedPreferences.getBoolean(Settings.SWITCH1, false);
+        sw_uz = sharedPreferences.getBoolean(Settings.SWITCH2, false);
 
         Log.i("SHARED DATA", String.valueOf(sw_ar));
         Log.i("SHARED DATA", String.valueOf(sw_uz));

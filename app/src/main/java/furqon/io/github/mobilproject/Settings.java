@@ -8,12 +8,20 @@ import android.widget.Button;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
+
 public class Settings extends AppCompatActivity {
 
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String SWITCH1 = "switch1";
     public static final String SWITCH2 = "switch2";
-SharedPreferences sharedPreferences;
+    SharedPreferences sharedPreferences;
+
+
+    InterstitialAd mInterstitialAd;
+
 
     private boolean sw_ar_on;
     private boolean sw_uz_on;
@@ -39,13 +47,14 @@ SharedPreferences sharedPreferences;
         });
 
 
-
-        loadData();
-        updateView();
+        MobileAds.initialize(this, "ca-app-pub-3838820812386239~2342916878");
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.show();
     }
 
-    private void save_settings()
-    {
+    public void save_settings() {
         sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(SWITCH1, sw_ar.isChecked());
@@ -53,23 +62,22 @@ SharedPreferences sharedPreferences;
 
         editor.apply();
 
-        Toast.makeText(this,"Setting are saved", Toast.LENGTH_SHORT);
+        Toast.makeText(this, "Setting are saved", Toast.LENGTH_SHORT);
     }
 
-    public void loadData()
-    {
+    public void loadData() {
 
-        sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
-        if(sharedPreferences.contains(SWITCH1)) {
+        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        if (sharedPreferences.contains(SWITCH1)) {
             sw_ar_on = sharedPreferences.getBoolean(SWITCH1, false);
 
-        if(sharedPreferences.contains(SWITCH2)){
-            sw_uz_on = sharedPreferences.getBoolean(SWITCH2, false);
-        }
+            if (sharedPreferences.contains(SWITCH2)) {
+                sw_uz_on = sharedPreferences.getBoolean(SWITCH2, false);
+            }
         }
     }
 
-    public void updateView(){
+    public void updateView() {
         sw_ar.setChecked(sw_ar_on);
         sw_uz.setChecked(sw_uz_on);
     }

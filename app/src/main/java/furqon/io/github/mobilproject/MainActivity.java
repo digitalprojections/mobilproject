@@ -2,6 +2,7 @@ package furqon.io.github.mobilproject;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     public Button suralar_but;
     public Button davomi_but;
     public Button fav_but;
+    public Button set_but;
     private Handler handler;
     private TextView statusText;
     private static final String BASE64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAggasiiEUvzcuJMFQ27n/9NVVFYbKIlOpcWtVAH0TyuxqigxMdgEcy1XE0rZ0w8gnmRNr33T2pBZRk2ApwppDsrH7iC9xhW/J2QW/mPZy/OMHCVvrEHdTRfmdkc4ONuCTj7sjwJCsW9YtP2Mu/oK4I98bHaDzO7g6yZsN4c+Ia9RRlCcR4bg1410iHoKNONoGYMzOgStrFwM/uNkXUk60B74A9+EptXAFcOJyLX3wlEdDxkPTTuhEtv5Y1fVoPsK2FweyiSDk5XghXqCsysV0zKYVbAQv2uiTXQg2aIMWT4dL1w4i9fGWttnvaVfqMPE9pRo4C4TZk3eBt3QulKDJBwIDAQAB";
@@ -34,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     // Try to use more data here. ANDROID_ID is a single point of attack.
     private InterstitialAd mInterstitialAd;
     private FirebaseAnalytics mFirebaseAnalytics;
+
+    SharedPreferences sharedPreferences;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -69,9 +73,21 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
+        sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+        if(sharedPreferences.contains("switch1")){
 
+        }else{
+            SharedPreferences.Editor editor = sharedPreferences.edit();;
+            editor.putBoolean("switch1", true);
+            editor.apply();
+        }
+       if(sharedPreferences.contains("switch2")){
 
-
+        }else{
+            SharedPreferences.Editor editor = sharedPreferences.edit();;
+            editor.putBoolean("switch2", true);
+            editor.apply();
+        }
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
@@ -86,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         suralar_but = findViewById(R.id.suralar);
         davomi_but = findViewById(R.id.davomi);
         fav_but = findViewById(R.id.favorites);
+        set_but = findViewById(R.id.setbut);
         statusText = findViewById(R.id.result);
         String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -111,6 +128,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 openFavourites();
+            }
+        });
+        set_but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                open_settings();
             }
         });
 

@@ -13,6 +13,9 @@ import android.view.MenuItem;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
+
 
 import java.util.ArrayList;
 
@@ -23,10 +26,13 @@ public class SuraNameList extends AppCompatActivity {
     private Cursor suralist;
     private AdView mAdView;
     RecyclerView recyclerView;
+    InterstitialAd mInterstitialAd;
+
 
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options_menu, menu);
+
         return true;
     }
     @Override
@@ -76,6 +82,12 @@ public class SuraNameList extends AppCompatActivity {
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+
+        MobileAds.initialize(this, "ca-app-pub-3838820812386239~2342916878");
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.show();
     }
 
     }

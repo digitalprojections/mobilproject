@@ -16,8 +16,8 @@ android {
         applicationId "furqon.io.github.mobilproject"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 30807
-        versionName "3.8.7"
+        versionCode 30808
+        versionName "3.8.8"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
 
