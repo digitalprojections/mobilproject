@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.google.gms.google-services'
 android {
     signingConfigs {
         config {
@@ -8,10 +9,10 @@ android {
             storePassword '1285422'
         }
     }
-    compileSdkVersion 23
+    compileSdkVersion 28
     defaultConfig {
         minSdkVersion 4
-        targetSdkVersion 23
+        targetSdkVersion 28
     }
     buildTypes {
         release {
@@ -27,4 +28,5 @@ android {
 }
 
 dependencies {
+    implementation 'com.google.firebase:firebase-messaging:17.4.0'
 }

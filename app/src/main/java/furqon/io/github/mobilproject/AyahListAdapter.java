@@ -1,25 +1,40 @@
 package furqon.io.github.mobilproject;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static furqon.io.github.mobilproject.R.color.colorArabic;
+import static furqon.io.github.mobilproject.R.drawable.*;
+import static furqon.io.github.mobilproject.Settings.*;
+
 public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahListViewHolder> {
     private Context mContext;
     private Cursor mCursor;
     private ArrayList<String> mArrayList;
+    SharedPreferences sharedPreferences;
+
+    private boolean sw_ar;
+    private boolean sw_uz;
+
+
 
     AyahListAdapter(Context context, Cursor cursor){
         mContext = context;
@@ -34,14 +49,67 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         TextView arabic_ayahnumber;
         TextView comment;
 
+        LinearLayout linearLayout1;
+        LinearLayout linearLayout2;
+
 
         AyahListViewHolder(@NonNull View itemView) {
             super(itemView);
+
+            linearLayout1 = itemView.findViewById(R.id.uzbektranslation);
+            linearLayout2 = itemView.findViewById(R.id.arabictranslation);
+
+            linearLayout2.setGravity(Gravity.END);
+
             itemView.setOnClickListener(this);
-            ayahnumber = itemView.findViewById(R.id.ayah_no);
-            ayatext = itemView.findViewById(R.id.ayah_text);
-            arabictext = itemView.findViewById(R.id.arab_ayah_text);
-            arabic_ayahnumber = itemView.findViewById(R.id.arab_ayah_no);
+            ayahnumber = new TextView(itemView.getContext());
+            ayatext = new TextView(itemView.getContext());
+
+            arabictext = new TextView(itemView.getContext());
+            arabic_ayahnumber = new TextView(itemView.getContext());
+
+            ViewGroup.LayoutParams lp = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, // Width of TextView
+                    ViewGroup.LayoutParams.WRAP_CONTENT); // Height of TextView
+            ViewGroup.LayoutParams lpmar = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, // Width of TextView
+                    ViewGroup.LayoutParams.WRAP_CONTENT); // Height of TextView
+
+            ((LinearLayout.LayoutParams) lpmar).setMargins(5,-15,5,5);
+
+            ayahnumber.setLayoutParams(lp);
+            ayahnumber.setGravity(Gravity.CENTER);
+            ayahnumber.setBackgroundResource(ayah_symbol_mdpi);
+            ayatext.setLayoutParams(lp);
+            ayatext.setTextSize(18);
+            ayatext.setPadding(0,15,0,15);
+            arabictext.setLayoutParams(lp);
+            arabictext.setTextSize(30);
+            arabictext.setTextColor(Color.BLACK);
+            arabictext.setShadowLayer(1.5f, -1, 1, Color.LTGRAY);
+            arabic_ayahnumber.setLayoutParams(lpmar);
+            arabic_ayahnumber.setBackgroundResource(ayah_symbol_mdpi);
+            arabic_ayahnumber.setGravity(Gravity.CENTER);
+
+            ayahnumber.setTextSize(15);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                arabictext.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
+            }
+
+            if(arabictext.getParent()!=null)
+            {
+                ((ViewGroup)arabictext.getParent()).removeView(arabictext);
+                ((ViewGroup)arabic_ayahnumber.getParent()).removeView(arabic_ayahnumber);
+            }
+            if(ayatext.getParent()!=null)
+            {
+                ((ViewGroup)ayahnumber.getParent()).removeView(ayahnumber);
+                ((ViewGroup)ayatext.getParent()).removeView(ayatext);
+            }
+            linearLayout1.addView(ayahnumber);
+            linearLayout1.addView(ayatext);
+            linearLayout2.addView(arabictext);
+            linearLayout2.addView(arabic_ayahnumber);
         }
 
 
@@ -59,6 +127,10 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.ayat, parent, false);
 
+        sharedPreferences = mContext.getSharedPreferences(Settings.SHARED_PREFS, MODE_PRIVATE);
+
+        loadData();
+
         mArrayList = new ArrayList<>();
         return new AyahListViewHolder(view);
     }
@@ -69,15 +141,30 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             return;
         }
 
+
+
         String ttext = mCursor.getString(1);
         String artext = mCursor.getString(0);
         String numb = mCursor.getString(2);
 
-        holder.ayatext.setText(Html.fromHtml(collapseBraces(ttext), Html.FROM_HTML_MODE_COMPACT));
+        if(sw_ar){
+            holder.arabic_ayahnumber.setVisibility(View.VISIBLE);
+            holder.arabictext.setVisibility(View.VISIBLE);
 
-        holder.arabictext.setText(artext);
-        holder.ayahnumber.setText(String.valueOf(numb));
-        holder.arabic_ayahnumber.setText(String.valueOf(numb));
+            //holder.arabictext.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
+            holder.arabictext.setGravity(Gravity.END | Gravity.RIGHT);
+
+            holder.arabictext.setText(artext);
+            holder.arabic_ayahnumber.setText(String.valueOf(numb));
+        }
+        if (sw_uz)
+        {
+            holder.ayahnumber.setVisibility(View.VISIBLE);
+            holder.ayatext.setVisibility(View.VISIBLE);
+            holder.ayatext.setText(Html.fromHtml(collapseBraces(ttext)));
+            holder.ayahnumber.setText(String.valueOf(numb));
+        }
+
         mArrayList.add(numb);
 
     }
@@ -113,6 +200,12 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             notifyDataSetChanged();
         }
     }
+    private void loadData(){
+        sw_ar = sharedPreferences.getBoolean(Settings.SWITCH1,false);
+        sw_uz = sharedPreferences.getBoolean(Settings.SWITCH2,false);
 
+        Log.i("SHARED DATA", String.valueOf(sw_ar));
+        Log.i("SHARED DATA", String.valueOf(sw_uz));
+    }
 
 }

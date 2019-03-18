@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Furqon</string>
+    <string name="suralar">Главы</string>
+    <string name="cont">Продолжить</string>
+    <string name="favorites">Избранные</string>
+    <string name="allow">Разрешается</string>
+    <string name="dont_allow">запрещено</string>
+    <string name="settings">настройки</string>
+    <string name="arabic">арабский</string>
+    <string name="uzbek">узбекский</string>
+    <string name="more_coming">Скоро будет больше переводов</string>
+    <string name="t_bookmark_stored">закладка сохранена</string>
+    <string name="t_verse_liked">Стих был сохранен в избранные</string>
+    <string name="audiopos_stored">положение сохранено</string>
+    <string name="audiopos_restored">продолжить с последней позиции</string>
+    <string name="audio_load_fail">Ошибка загрузки! Проверьте свою сеть</string>
+    <string name="save">Сохранить</string>
+</resources>

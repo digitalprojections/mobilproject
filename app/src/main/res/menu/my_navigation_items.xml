@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:tools="http://schemas.android.com/tools">
+    <item
+        android:id="@+id/stop"
+        android:checkable="false"
+        android:enabled="true"
+        android:icon="@drawable/ic_stop_black_24dp"
+        android:title=""
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/play"
+        android:checkable="false"
+        android:enabled="true"
+        android:icon="@drawable/ic_play_arrow_black_24dp"
+        android:title=""
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/audio_time"
+        app:showAsAction="always" />
+</menu>

@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="furqon.io.github.mobilproject">
+
     <uses-permission android:name="com.android.vending.CHECK_LICENSE" />
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,15 +13,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Settings"></activity>
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3838820812386239~2342916878"/>
-        <activity android:name=".AyahList"
-            android:parentActivityName=".SuraNameList"></activity>
-        <activity android:name=".Favourites"
-            android:parentActivityName=".MainActivity"/>
+            android:value="ca-app-pub-3838820812386239~2342916878" />
+
         <activity
-            android:name=".SuraNameList"/>
+            android:name=".AyahList"
+            android:parentActivityName=".SuraNameList" />
+        <activity
+            android:name=".Favourites"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".SuraNameList" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,7 +33,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

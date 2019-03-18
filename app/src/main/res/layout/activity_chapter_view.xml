@@ -8,18 +8,31 @@
     android:background="@color/colorPrimary"
     tools:context=".AyahList">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/chapter_scroll"
+
+    <include
+        android:id="@+id/audiobar"
+        layout="@layout/audio_player"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/adView"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/chapter_scroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+
+        android:layout_below="@+id/audio_timer"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="2dp" />
+
+    <TextView
+        android:id="@+id/audio_timer"
+        android:layout_width="121dp"
+        android:layout_height="25dp"
+        android:layout_below="@+id/audiobar"
         android:layout_centerHorizontal="true"
-        ads:adSize="BANNER"
-        ads:adUnitId="ca-app-pub-3838820812386239/6533462802"/>
+        android:layout_marginTop="1dp"
+        android:gravity="center_horizontal"
+        android:text="00:00" />
+
 
 </RelativeLayout>

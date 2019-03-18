@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     signingConfigs {
@@ -9,11 +10,11 @@ android {
             storePassword '1285422'
         }
     }
-    compileSdkVersion 23
+    compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.google.play.licensing"
         minSdkVersion 8
-        targetSdkVersion 23
+        targetSdkVersion 28
 
         testApplicationId "com.example.google.play.licensing.test"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -28,4 +29,5 @@ android {
 
 dependencies {
     implementation project(':lvl_library')
+    implementation 'com.google.firebase:firebase-messaging:17.3.2'
 }

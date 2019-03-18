@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Sun Mar 10 22:35:25 JST 2019
+#Sun Mar 17 19:36:41 JST 2019
 0.baseType=DIRECTORY
 0.base=C\:\\Users\\aj\\Documents\\mobilproject\\lvl_sample\\build\\intermediates\\dex\\debug\\mergeDexDebug\\out
 0.path=classes.dex
