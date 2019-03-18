@@ -8,6 +8,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,8 +33,8 @@ public class AyahList extends AppCompatActivity {
     private DatabaseAccess mDatabase;
     private Cursor ayahcursor;
     private MediaPlayer mediaPlayer;
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
     Integer pos;
     String suranomi;
     String suranomer;
@@ -41,6 +43,9 @@ public class AyahList extends AppCompatActivity {
     String audiostore;
     String loadfailed;
     ProgressBar progressBar;
+    SeekBar seekBar;
+    Handler handler;
+    Runnable runnable;
     Thread t;
 
 
@@ -48,6 +53,8 @@ public class AyahList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chapter_view);
+
+
 
 
         audiorestore = getString(R.string.audiopos_restored);
@@ -88,26 +95,66 @@ public class AyahList extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(suranomi, MODE_PRIVATE);
         pos = sharedPreferences.getInt(suranomi, 0);
 
-        t = new Thread() {
+        handler = new Handler();
+
+        seekBar = findViewById(R.id.seekBar);
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean input) {
+                if(input){
+                    if(mediaPlayer !=null) {
+                        mediaPlayer.seekTo(progress);
+                    }
+
+                }
+
+            }
 
             @Override
-            public void run() {
-                try {
-                    while (!isInterrupted()) {
-                        Thread.sleep(1000);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                startTimer();
-                            }
-                        });
-                    }
-                } catch (InterruptedException e) {
-                }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
             }
-        };
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
 
 
+    }
+
+    public void playCycle(){
+        seekBar.setProgress(mediaPlayer.getCurrentPosition());
+        pos = mediaPlayer.getCurrentPosition();
+        timer = findViewById(R.id.audio_timer);
+        timer.setText(AudioTimer.getTimeStringFromMs(pos));
+
+        if(mediaPlayer.isPlaying()){
+            runnable = new Runnable() {
+                @Override
+                public void run() {
+                    startTimer();
+                    playCycle();
+                    Log.i("TIMER", "tick");
+                }
+            };
+            handler.postDelayed(runnable, 1000);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //mediaPlayer.start();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mediaPlayer.stop();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -126,8 +173,12 @@ public class AyahList extends AppCompatActivity {
             mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mediaPlayer) {
-                    resume();
+
+                    seekBar.setMax(mediaPlayer.getDuration());
                     progressBar.setVisibility(View.INVISIBLE);
+
+
+                    resume();
                 }
             });
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -169,7 +220,7 @@ public class AyahList extends AppCompatActivity {
     public void pause() {
         if (mediaPlayer != null) {
             storeAudioPosition();
-            mediaPlayer.pause();
+
 
         }
     }
@@ -181,6 +232,7 @@ public class AyahList extends AppCompatActivity {
             editor.putInt(suranomi, mediaPlayer.getCurrentPosition());
             editor.apply();
             Toast.makeText(getBaseContext(), audiostore, Toast.LENGTH_SHORT).show();
+            mediaPlayer.pause();
         }
     }
 
@@ -188,20 +240,18 @@ public class AyahList extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(suranomi, MODE_PRIVATE);
         pos = sharedPreferences.getInt(suranomi, 0);
 
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            mediaPlayer.stop();
-        } else if (mediaPlayer != null) {
-            mediaPlayer.start();
-            mediaPlayer.seekTo(pos);
+      if(mediaPlayer != null) {
+
+            //seekBar.setProgress(pos);
+           mediaPlayer.seekTo(pos);
+          mediaPlayer.start();
             Toast.makeText(getBaseContext(), audiorestore, Toast.LENGTH_SHORT).show();
-            t.start();
+            playCycle();
         }
     }
 
     private void startTimer() {
-        pos = mediaPlayer.getCurrentPosition();
-        timer = findViewById(R.id.audio_timer);
-        timer.setText(AudioTimer.getTimeStringFromMs(pos));
+
     }
 
     @Override
@@ -232,6 +282,9 @@ public class AyahList extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         pause();
+        mediaPlayer.release();
+        handler.removeCallbacks(runnable);
     }
+
 
 }
