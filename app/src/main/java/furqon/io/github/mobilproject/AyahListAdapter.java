@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
@@ -30,6 +32,8 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     private Cursor mCursor;
     private ArrayList<String> mArrayList;
     SharedPreferences sharedPreferences;
+
+    Typeface madina;
 
     private boolean sw_ar;
     private boolean sw_uz;
@@ -70,10 +74,12 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             arabictext = new TextView(itemView.getContext());
             arabic_ayahnumber = new TextView(itemView.getContext());
 
+            madina = ResourcesCompat.getFont(mContext, R.font.maddina);
 
-            ((LinearLayout.LayoutParams) lpmar).setMargins(5, -15, 5, 5);
-            ((LinearLayout.LayoutParams) lp).setMargins(15, 0, 5, 5);
-            ((LinearLayout.LayoutParams) lpartxt).setMargins(128, 0, 5, 5);
+
+            ((LinearLayout.LayoutParams) lpmar).setMargins(1, -5, 1, 1);
+            ((LinearLayout.LayoutParams) lp).setMargins(0, 0, 1, 1);
+            ((LinearLayout.LayoutParams) lpartxt).setMargins(10, 0, 1, 1);
             //lpmar.width = 32;
             ayahnumber.setTextSize(15);
             ayahnumber.setLayoutParams(lp);
@@ -82,14 +88,15 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             ayahnumber.setVisibility(View.GONE);
             ayatext.setLayoutParams(lp);
             ayatext.setTextSize(18);
-            ayatext.setPadding(0, 15, 0, 15);
+            ayatext.setPadding(0, 5, 0, 5);
             ayatext.setVisibility(View.GONE);
             arabictext.setLayoutParams(lpartxt);
-            arabictext.setTextSize(28);
-            arabictext.setGravity(Gravity.END);
+            arabictext.setTextSize(30);
+            arabictext.setGravity(Gravity.END | Gravity.RIGHT);
             arabictext.setTextColor(Color.BLACK);
             arabictext.setShadowLayer(1.5f, 0, 0, Color.BLACK);
             arabictext.setVisibility(View.GONE);
+            arabictext.setTypeface(madina);
             arabic_ayahnumber.setLayoutParams(lpmar);
             arabic_ayahnumber.setBackgroundResource(ayah_symbol32);
 

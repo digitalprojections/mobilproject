@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +40,7 @@ public class AyahList extends AppCompatActivity {
     String audiorestore;
     String audiostore;
     String loadfailed;
+    ProgressBar progressBar;
     Thread t;
 
 
@@ -48,11 +50,11 @@ public class AyahList extends AppCompatActivity {
         setContentView(R.layout.activity_chapter_view);
 
 
-
         audiorestore = getString(R.string.audiopos_restored);
         audiostore = getString(R.string.audiopos_stored);
         loadfailed = getString(R.string.audio_load_fail);
 
+        progressBar = findViewById(R.id.progressBar);
 
         Toolbar toolbar = findViewById(R.id.audiobar);
         setSupportActionBar(toolbar);
@@ -125,15 +127,16 @@ public class AyahList extends AppCompatActivity {
                 @Override
                 public void onPrepared(MediaPlayer mediaPlayer) {
                     resume();
+                    progressBar.setVisibility(View.INVISIBLE);
                 }
             });
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.setDataSource(url);
 
-            if(isNetworkAvailable()) {
+            if (isNetworkAvailable()) {
+                progressBar.setVisibility(View.VISIBLE);
                 mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
-            }
-            else {
+            } else {
                 Toast.makeText(getBaseContext(), loadfailed, Toast.LENGTH_SHORT).show();
             }
 
@@ -159,6 +162,7 @@ public class AyahList extends AppCompatActivity {
         if (mediaPlayer != null) {
             mediaPlayer.release();
             mediaPlayer = null;
+            progressBar.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -170,8 +174,8 @@ public class AyahList extends AppCompatActivity {
         }
     }
 
-    private void storeAudioPosition(){
-        if(pos>0) {
+    private void storeAudioPosition() {
+        if (pos > 0) {
             sharedPreferences = getSharedPreferences(suranomi, MODE_PRIVATE);
             editor = sharedPreferences.edit();
             editor.putInt(suranomi, mediaPlayer.getCurrentPosition());
