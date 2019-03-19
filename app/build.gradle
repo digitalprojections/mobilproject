@@ -10,14 +10,20 @@ android {
             storeFile file('C:/Users/aj/Downloads/keystore.private')
             storePassword '1285422'
         }
+        configdebug {
+            keyAlias 'baa'
+            keyPassword '1285422'
+            storeFile file('C:/Users/aj/Downloads/keystore.private')
+            storePassword '1285422'
+        }
     }
     compileSdkVersion 28
     defaultConfig {
         applicationId "furqon.io.github.mobilproject"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 30808
-        versionName "3.8.8"
+        versionCode 30900
+        versionName "3.9.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
 
@@ -27,6 +33,10 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.config
+            debuggable false
         }
     }
 
@@ -48,5 +58,4 @@ dependencies {
     implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
     implementation 'com.google.firebase:firebase-ads:17.2.0'
     implementation 'com.android.support:design:28.0.0'
-
 }

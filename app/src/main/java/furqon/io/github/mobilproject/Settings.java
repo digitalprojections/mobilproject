@@ -51,7 +51,7 @@ public class Settings extends AppCompatActivity {
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
-        mInterstitialAd.show();
+
     }
 
     public void save_settings() {
@@ -82,4 +82,9 @@ public class Settings extends AppCompatActivity {
         sw_uz.setChecked(sw_uz_on);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mInterstitialAd.show();
+    }
 }

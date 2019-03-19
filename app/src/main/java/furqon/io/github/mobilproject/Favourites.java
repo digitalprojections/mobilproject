@@ -31,7 +31,7 @@ public class Favourites extends AppCompatActivity {
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
-        mInterstitialAd.show();
+
     }
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -55,5 +55,11 @@ public class Favourites extends AppCompatActivity {
         Intent intent;
         intent = new Intent(this, furqon.io.github.mobilproject.Settings.class);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mInterstitialAd.show();
     }
 }

@@ -55,8 +55,6 @@ public class AyahList extends AppCompatActivity {
         setContentView(R.layout.activity_chapter_view);
 
 
-
-
         audiorestore = getString(R.string.audiopos_restored);
         audiostore = getString(R.string.audiopos_stored);
         loadfailed = getString(R.string.audio_load_fail);
@@ -102,8 +100,8 @@ public class AyahList extends AppCompatActivity {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean input) {
-                if(input){
-                    if(mediaPlayer !=null) {
+                if (input) {
+                    if (mediaPlayer != null) {
                         mediaPlayer.seekTo(progress);
                     }
 
@@ -125,13 +123,13 @@ public class AyahList extends AppCompatActivity {
 
     }
 
-    public void playCycle(){
+    public void playCycle() {
         seekBar.setProgress(mediaPlayer.getCurrentPosition());
         pos = mediaPlayer.getCurrentPosition();
         timer = findViewById(R.id.audio_timer);
         timer.setText(AudioTimer.getTimeStringFromMs(pos));
 
-        if(mediaPlayer.isPlaying()){
+        if (mediaPlayer.isPlaying()) {
             runnable = new Runnable() {
                 @Override
                 public void run() {
@@ -152,10 +150,6 @@ public class AyahList extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        mediaPlayer.stop();
-    }
 
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -240,11 +234,11 @@ public class AyahList extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(suranomi, MODE_PRIVATE);
         pos = sharedPreferences.getInt(suranomi, 0);
 
-      if(mediaPlayer != null) {
+        if (mediaPlayer != null) {
 
             //seekBar.setProgress(pos);
-           mediaPlayer.seekTo(pos);
-          mediaPlayer.start();
+            mediaPlayer.seekTo(pos);
+            mediaPlayer.start();
             Toast.makeText(getBaseContext(), audiorestore, Toast.LENGTH_SHORT).show();
             playCycle();
         }
@@ -282,8 +276,11 @@ public class AyahList extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         pause();
-        mediaPlayer.release();
-        handler.removeCallbacks(runnable);
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+
+            handler.removeCallbacks(runnable);
+        }
     }
 
 

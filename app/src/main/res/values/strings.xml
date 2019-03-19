@@ -15,4 +15,7 @@
     <string name="audiopos_restored">continue playing</string>
     <string name="audio_load_fail">Failed to load! Check your network</string>
     <string name="save">Save</string>
+    <string name="shareayah">Share this ayah to</string>
+    <string name="bookmark_it">Bookmark the ayah</string>
+    <string name="favourite_it">Add to Favourites</string>
 </resources>

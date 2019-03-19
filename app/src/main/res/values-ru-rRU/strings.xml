@@ -16,4 +16,5 @@
     <string name="audiopos_restored">продолжить с последней позиции</string>
     <string name="audio_load_fail">Ошибка загрузки! Проверьте свою сеть</string>
     <string name="save">Сохранить</string>
+    <string name="shareayah">Поделись этим</string>
 </resources>

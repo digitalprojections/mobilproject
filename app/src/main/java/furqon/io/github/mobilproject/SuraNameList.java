@@ -87,7 +87,12 @@ public class SuraNameList extends AppCompatActivity {
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
-        mInterstitialAd.show();
-    }
 
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mInterstitialAd.show();
+    }
+}

@@ -16,4 +16,5 @@
     <string name="audiopos_restored">davom etish</string>
     <string name="audio_load_fail">Yuklashda xatolik! Internet tarmoqqa ulanganmisiz?</string>
     <string name="save">Yodda tut</string>
+    <string name="shareayah">Oyatni ulashing</string>
 </resources>

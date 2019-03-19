@@ -34,48 +34,18 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_marginBottom="10dp"
-            app:srcCompat="@drawable/ic_asset_1furqon_logo"
-            android:contentDescription="Furqon" />
+            android:contentDescription="Furqon"
+            app:srcCompat="@drawable/ic_asset_32furqon_logo" />
 
-        <Button
-            android:id="@+id/suralar"
-            android:layout_width="match_parent"
-            android:layout_height="@android:dimen/notification_large_icon_height"
-            android:layout_margin="10dp"
-            android:background="@color/colorPrimaryDark"
-            android:gravity="center"
-            android:text="@string/suralar"
-            android:textSize="24sp" />
+        <include layout="@layout/suralar_button"></include>
+        <include layout="@layout/continue_button"></include>
+        <include layout="@layout/favourites_button"></include>
+        <include layout="@layout/search_button"></include>
 
-        <Button
-            android:id="@+id/davomi"
-            android:layout_width="match_parent"
-            android:layout_height="@android:dimen/notification_large_icon_height"
-            android:layout_margin="10dp"
-            android:background="@color/colorPrimaryDark"
-            android:gravity="center"
-            android:text="@string/cont"
-            android:textSize="24sp" />
 
-        <Button
-            android:id="@+id/favorites"
-            android:layout_width="match_parent"
-            android:layout_height="@android:dimen/notification_large_icon_height"
-            android:layout_margin="10dp"
-            android:background="@color/colorPrimaryDark"
-            android:gravity="center"
-            android:text="@string/favorites"
-            android:textSize="24sp" />
 
-        <Button
-            android:id="@+id/setbut"
-            android:layout_width="match_parent"
-            android:layout_height="@android:dimen/notification_large_icon_height"
-            android:layout_margin="10dp"
-            android:background="@color/colorPrimaryDark"
-            android:gravity="center"
-            android:text="@string/settings"
-            android:textSize="24sp" />
+
+
 
     </LinearLayout>
 

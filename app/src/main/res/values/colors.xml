@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#D6EE82</color>
-    <color name="colorPrimaryDark">#5C7212</color>
+    <color name="colorPrimary">#E0ECB7</color>
+    <color name="colorPrimaryDark">#4B6312</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorArabic">#000000</color>
     <color name="trbg">#6A9EBD38</color>
+    <color name="gold">#FFD500</color>
 </resources>

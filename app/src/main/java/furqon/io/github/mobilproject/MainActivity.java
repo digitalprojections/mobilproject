@@ -3,6 +3,7 @@ package furqon.io.github.mobilproject;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -31,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
     public Button set_but;
     private Handler handler;
     private TextView statusText;
-    private static final String BASE64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAggasiiEUvzcuJMFQ27n/9NVVFYbKIlOpcWtVAH0TyuxqigxMdgEcy1XE0rZ0w8gnmRNr33T2pBZRk2ApwppDsrH7iC9xhW/J2QW/mPZy/OMHCVvrEHdTRfmdkc4ONuCTj7sjwJCsW9YtP2Mu/oK4I98bHaDzO7g6yZsN4c+Ia9RRlCcR4bg1410iHoKNONoGYMzOgStrFwM/uNkXUk60B74A9+EptXAFcOJyLX3wlEdDxkPTTuhEtv5Y1fVoPsK2FweyiSDk5XghXqCsysV0zKYVbAQv2uiTXQg2aIMWT4dL1w4i9fGWttnvaVfqMPE9pRo4C4TZk3eBt3QulKDJBwIDAQAB";
 
     // Try to use more data here. ANDROID_ID is a single point of attack.
     private InterstitialAd mInterstitialAd;
@@ -74,17 +74,19 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
-        if(sharedPreferences.contains("switch1")){
+        if (sharedPreferences.contains("switch1")) {
 
-        }else{
-            SharedPreferences.Editor editor = sharedPreferences.edit();;
+        } else {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            ;
             editor.putBoolean("switch1", true);
             editor.apply();
         }
-       if(sharedPreferences.contains("switch2")){
+        if (sharedPreferences.contains("switch2")) {
 
-        }else{
-            SharedPreferences.Editor editor = sharedPreferences.edit();;
+        } else {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            ;
             editor.putBoolean("switch2", true);
             editor.apply();
         }
@@ -140,6 +142,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mInterstitialAd.show();
+    }
+
     private void continueReading(){
         Toast.makeText(getBaseContext(), "Coming soon", Toast.LENGTH_LONG);
     }
@@ -167,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 //statusText.setText(result);
                 setProgressBarIndeterminateVisibility(false);
-                mInterstitialAd.show();
+
 
             }
         });

@@ -9,31 +9,6 @@
     android:orientation="vertical">
 
 
-    <TextView
-        android:id="@+id/o_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="fill|fill_horizontal|end"
-        android:paddingLeft="2dp"
-        android:paddingRight="2dp"
-        android:text="sample"
-        android:textSize="18sp"
-        android:visibility="gone"
-        tools:layout_editor_absoluteX="13dp"
-        tools:layout_editor_absoluteY="7dp" />
-
-    <TextView
-        android:id="@+id/o_ayahno"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/ayah_symbol_mdpi"
-        android:gravity="center_horizontal|center_vertical"
-        android:text="1"
-        android:textSize="12sp"
-        android:visibility="gone"
-        tools:layout_editor_absoluteX="4dp"
-        tools:layout_editor_absoluteY="7dp" />
-
     <LinearLayout
         android:id="@+id/arabictranslation"
         style="@style/ayahlistitem"
@@ -41,11 +16,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:background="@color/trbg"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
     </LinearLayout>
 
@@ -56,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:paddingBottom="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,4 +42,51 @@
     </LinearLayout>
 
 
+    <ImageButton
+        android:id="@+id/sharebut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/uzbektranslation"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/ic_share_black_24dp" />
+
+    <ImageButton
+        android:id="@+id/bookmarkbut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/sharebut"
+        app:layout_constraintTop_toBottomOf="@+id/uzbektranslation"
+        app:srcCompat="@drawable/ic_bookmark_border_black_24dp" />
+
+    <ImageButton
+        android:id="@+id/favouritebut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/bookmarkbut"
+        app:layout_constraintTop_toBottomOf="@+id/uzbektranslation"
+        app:srcCompat="@drawable/ic_favorite_border_black_24dp" />
 </android.support.constraint.ConstraintLayout>
