@@ -39,6 +39,8 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     private ImageButton favbut;
     private ImageButton bookbut;
 
+    private String chaptername;
+    private String versenumber;
     private String ayahtext;
 
     SharedPreferences sharedPreferences;
@@ -52,7 +54,8 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     private ViewGroup.LayoutParams lpartxt; // Height of TextView
 
 
-    AyahListAdapter(Context context, Cursor cursor) {
+    AyahListAdapter(Context context, Cursor cursor, String suraname) {
+        chaptername = suraname;
         mContext = context;
         mCursor = cursor;
     }
@@ -64,6 +67,8 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         TextView ayahnumber;
         TextView arabic_ayahnumber;
         TextView comment;
+
+
 
         LinearLayout linearLayout1;
         LinearLayout linearLayout2;
@@ -101,7 +106,6 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             });
 
             linearLayout2.setGravity(Gravity.END);
-
 
             ayahnumber = itemView.findViewById(R.id.oyat_raqam);
             ayatext = itemView.findViewById(R.id.oyat_matn);
@@ -171,7 +175,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         public void onClick(View view) {
             int position = getAdapterPosition();
             //Log.d("CLICK", ayatext.getText().toString());
-            //Log.d("CLICK", );
+            Log.d("CLICK", chaptername);
             if (linearLayout3.getVisibility() == View.GONE) {
                 linearLayout3.setVisibility(View.VISIBLE);
                 ayahtext = ayatext.getText().toString();
@@ -191,7 +195,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
                 Log.d("CLICK SHARE", ayahtext);
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+                sendIntent.putExtra(Intent.EXTRA_TEXT, ayahtext + "\n("+ chaptername + ", " + versenumber +")\nhttps://goo.gl/sXBkNt\nFurqon dasturi, Android");
                 sendIntent.setType("text/plain");
                 mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.shareayah)));
                 break;
@@ -236,6 +240,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         String ttext = mCursor.getString(1);
         String artext = mCursor.getString(0);
         String numb = mCursor.getString(2);
+        versenumber = numb;
 
 
         holder.arabic_ayahnumber.setVisibility(View.VISIBLE);
@@ -252,7 +257,6 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             holder.ayatext.setVisibility(View.VISIBLE);
             holder.ayatext.setText(Html.fromHtml(collapseBraces(ttext)));
             holder.ayahnumber.setText(String.valueOf(numb));
-
         }
         Log.i("AYAT NUMBER", String.valueOf(numb));
         mArrayList.add(numb);

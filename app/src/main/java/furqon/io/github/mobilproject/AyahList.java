@@ -36,7 +36,7 @@ public class AyahList extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     Integer pos;
-    String suranomi;
+    public String suranomi;
     String suranomer;
     TextView timer;
     String audiorestore;
@@ -86,7 +86,7 @@ public class AyahList extends AppCompatActivity {
 
         ayahcursor = mDatabase.getSuraText(suranomer);
 
-        mAdapter = new AyahListAdapter(this, ayahcursor);
+        mAdapter = new AyahListAdapter(this, ayahcursor, suranomi);
         recyclerView.setAdapter(mAdapter);
 
 
