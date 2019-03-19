@@ -42,6 +42,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     private String chaptername;
     private String versenumber;
     private String ayahtext;
+    private Integer ayah_position;
 
     SharedPreferences sharedPreferences;
 
@@ -112,8 +113,8 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
             ayatext.setOnClickListener(this);
 
-            arabictext = new TextView(itemView.getContext());
-            arabic_ayahnumber = new TextView(itemView.getContext());
+            arabictext = itemView.findViewById(R.id.arab_txt);
+            arabic_ayahnumber = itemView.findViewById(R.id.arab_num);
 
             madina = ResourcesCompat.getFont(mContext, R.font.maddina);
 
@@ -145,7 +146,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             arabictext.setVisibility(View.GONE);
             arabictext.setTypeface(madina);
             arabic_ayahnumber.setLayoutParams(lpmar);
-            arabic_ayahnumber.setBackgroundResource(ic_ayahsymbolayahsymbol);
+            //arabic_ayahnumber.setBackgroundResource(ic_ayahsymbolayahsymbol);
 
             arabic_ayahnumber.setGravity(Gravity.CENTER);
             arabic_ayahnumber.setVisibility(View.GONE);
@@ -174,11 +175,17 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
-            //Log.d("CLICK", ayatext.getText().toString());
-            Log.d("CLICK", chaptername);
+            Log.d("CLICK", ayahnumber.getText().toString());
+            versenumber = ayahnumber.getText().toString();
+
             if (linearLayout3.getVisibility() == View.GONE) {
                 linearLayout3.setVisibility(View.VISIBLE);
                 ayahtext = ayatext.getText().toString();
+                ayah_position = sharedPreferences.getInt("xatchup"+chaptername, 0);
+                if(ayah_position == Integer.parseInt(versenumber)){
+                    bookbut.setImageResource(R.drawable.ic_turned_in_black_24dp);
+                }
+                Log.d("verse number", versenumber  + " " + ayah_position);
             }else {
                 linearLayout3.setVisibility(View.GONE);
             }
@@ -202,6 +209,13 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             case R.id.favouritebut:
                 break;
             case R.id.bookmarkbut:
+                sharedPreferences = mContext.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                SharedPreferences.Editor editor;
+                editor = sharedPreferences.edit();
+                editor.putInt("xatchup"+chaptername, Integer.parseInt(versenumber));
+                editor.apply();
+
+                //recolor the bookmark
                 break;
         }
     }

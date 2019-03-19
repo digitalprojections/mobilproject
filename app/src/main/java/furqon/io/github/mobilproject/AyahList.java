@@ -35,8 +35,11 @@ public class AyahList extends AppCompatActivity {
     private MediaPlayer mediaPlayer;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
+    private RecyclerView recyclerView;
     Integer pos;
+    Integer ayah_position;
     public String suranomi;
+    public String xatchup = "xatchup";
     String suranomer;
     TextView timer;
     String audiorestore;
@@ -79,7 +82,7 @@ public class AyahList extends AppCompatActivity {
         mDatabase = DatabaseAccess.getInstance(getApplicationContext());
 
 
-        final RecyclerView recyclerView = findViewById(R.id.chapter_scroll);
+        recyclerView = findViewById(R.id.chapter_scroll);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mDatabase.open();
@@ -90,9 +93,17 @@ public class AyahList extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
 
 
-        sharedPreferences = getSharedPreferences(suranomi, MODE_PRIVATE);
-        pos = sharedPreferences.getInt(suranomi, 0);
 
+
+
+        sharedPreferences = getSharedPreferences(Settings.SHARED_PREFS, MODE_PRIVATE);
+        pos = sharedPreferences.getInt(suranomi, 0);
+        sharedPreferences = getSharedPreferences(Settings.SHARED_PREFS, MODE_PRIVATE);
+        ayah_position = sharedPreferences.getInt(xatchup+suranomi, 0);
+        if(ayah_position>4) {
+
+            recyclerView.scrollToPosition(ayah_position-4);
+        }
         handler = new Handler();
 
         seekBar = findViewById(R.id.seekBar);
@@ -140,6 +151,12 @@ public class AyahList extends AppCompatActivity {
             };
             handler.postDelayed(runnable, 1000);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
     }
 
     @Override
@@ -221,7 +238,7 @@ public class AyahList extends AppCompatActivity {
 
     private void storeAudioPosition() {
         if (pos > 0) {
-            sharedPreferences = getSharedPreferences(suranomi, MODE_PRIVATE);
+            sharedPreferences = getSharedPreferences(Settings.SHARED_PREFS, MODE_PRIVATE);
             editor = sharedPreferences.edit();
             editor.putInt(suranomi, mediaPlayer.getCurrentPosition());
             editor.apply();
@@ -231,7 +248,7 @@ public class AyahList extends AppCompatActivity {
     }
 
     public void resume() {
-        sharedPreferences = getSharedPreferences(suranomi, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Settings.SHARED_PREFS, MODE_PRIVATE);
         pos = sharedPreferences.getInt(suranomi, 0);
 
         if (mediaPlayer != null) {
