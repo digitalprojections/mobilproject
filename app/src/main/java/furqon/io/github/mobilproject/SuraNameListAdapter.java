@@ -91,7 +91,14 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
 
     @Override
     public int getItemCount() {
-        return mCursor.getCount();
+        int c;
+        try{
+            c  = mCursor.getCount();
+        }
+        catch (NullPointerException e){
+            c = 0;
+        }
+        return c;
     }
 
     public void swapCursor(Cursor newCursor){
