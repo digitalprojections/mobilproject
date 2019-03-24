@@ -24,6 +24,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static furqon.io.github.mobilproject.R.color.cardview_dark_background;
 import static furqon.io.github.mobilproject.R.color.colorArabic;
@@ -239,12 +240,15 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
                     bookbut.setImageResource(R.drawable.ic_turned_in_black_24dp);
                     bookbut.setTag("selected");
                     editor.putInt("xatchup" + chaptername, Integer.parseInt(versenumber));
+
+                    editor.putString("xatchup", chaptername + ":"+chapternumber);
                     Log.i("BOOKMARK", bookbut.getTag().toString());
                 }
                 else {
                     bookbut.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
                     bookbut.setTag("unselected");
                     editor.putInt("xatchup" + chaptername, 0);
+                    editor.putInt("xatchup", 0);
                 }
                 editor.apply();
                 break;

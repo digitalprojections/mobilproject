@@ -101,7 +101,7 @@ public class AyahList extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences(Settings.SHARED_PREFS, MODE_PRIVATE);
         pos = sharedPreferences.getInt(suranomi, 0);
-        sharedPreferences = getSharedPreferences(Settings.SHARED_PREFS, MODE_PRIVATE);
+
         ayah_position = sharedPreferences.getInt(xatchup+suranomi, 0);
         if(ayah_position>4) {
 
@@ -240,7 +240,7 @@ public class AyahList extends AppCompatActivity {
     }
 
     private void storeAudioPosition() {
-        if (pos > 0) {
+        if (mediaPlayer.isPlaying()) {
             sharedPreferences = getSharedPreferences(Settings.SHARED_PREFS, MODE_PRIVATE);
             editor = sharedPreferences.edit();
             editor.putInt(suranomi, mediaPlayer.getCurrentPosition());

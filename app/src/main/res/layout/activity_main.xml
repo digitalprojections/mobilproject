@@ -38,13 +38,10 @@
             app:srcCompat="@drawable/ic_asset_32furqon_logo" />
 
         <include layout="@layout/suralar_button"></include>
-        <include layout="@layout/continue_button"></include>
-        <include layout="@layout/favourites_button"></include>
-        <include layout="@layout/search_button"></include>
 
-
-
-
+        <include
+            android:id="@+id/continue_reading"
+            layout="@layout/continue_button"></include>
 
 
     </LinearLayout>

@@ -1,6 +1,7 @@
 package furqon.io.github.mobilproject;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -10,6 +11,7 @@ import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,8 +31,7 @@ public class MainActivity extends AppCompatActivity {
     public EditText name;
     public Button suralar_but;
     public Button davomi_but;
-    public Button fav_but;
-    public Button set_but;
+
     private Handler handler;
     private TextView statusText;
 
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
+
         inflater.inflate(R.menu.options_menu, menu);
         return true;
     }
@@ -52,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.settings_i:
                 open_settings();
+                return true;
+            case R.id.favourites_i:
+                open_favourites();
                 return true;
 
             default:
@@ -63,6 +68,12 @@ public class MainActivity extends AppCompatActivity {
     private void open_settings() {
         Intent intent;
         intent = new Intent(this, furqon.io.github.mobilproject.Settings.class);
+        startActivity(intent);
+    }
+
+    private void open_favourites() {
+        Intent intent;
+        intent = new Intent(this, furqon.io.github.mobilproject.Favourites.class);
         startActivity(intent);
     }
 
@@ -103,8 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
         suralar_but = findViewById(R.id.suralar);
         davomi_but = findViewById(R.id.davomi);
-        fav_but = findViewById(R.id.favorites);
-        set_but = findViewById(R.id.setbut);
+
         statusText = findViewById(R.id.result);
         String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -121,18 +131,7 @@ public class MainActivity extends AppCompatActivity {
                 openSuraNames(view);
             }
         });
-        fav_but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openFavourites();
-            }
-        });
-        set_but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                open_settings();
-            }
-        });
+
 
 
     }
@@ -144,7 +143,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void continueReading() {
-        Toast.makeText(getBaseContext(), "Coming soon", Toast.LENGTH_LONG);
+        if (sharedPreferences.contains("xatchup")) {
+            String cp = sharedPreferences.getString("xatchup", "");
+            Log.i("XATCHUP", cp);
+            Intent intent;
+            Context context = getApplicationContext();
+            intent = new Intent(context, AyahList.class);
+            intent.putExtra("SURANAME",cp);
+            context.startActivity(intent);
+        } else {
+            Toast.makeText(getBaseContext(), "No bookmarks found", Toast.LENGTH_LONG).show();
+        }
+
+
     }
 
     public void openSuraNames(View view) {
@@ -164,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
     public void openFavourites() {
         Intent intent = new Intent(this, Favourites.class);
         startActivity(intent);
-        Toast.makeText(getBaseContext(), "Coming soon", Toast.LENGTH_LONG);
+
     }
 
     private void displayResult(final String result) {

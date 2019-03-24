@@ -56,11 +56,9 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
             intent = new Intent(mContext, AyahList.class);
             intent.putExtra("SURANAME",suranomi+":"+suranomer);
             mContext.startActivity(intent);
-            mInterstitialAd = new InterstitialAd(mContext);
-            mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
-            mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
-            mInterstitialAd.show();
+
+
         }
     }
     @NonNull
@@ -111,6 +109,5 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
             notifyDataSetChanged();
         }
     }
-
 
 }

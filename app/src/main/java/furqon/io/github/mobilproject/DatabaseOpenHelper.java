@@ -6,8 +6,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
-public class DatabaseOpenHelper extends SQLiteOpenHelper{
+
+public class DatabaseOpenHelper extends SQLiteAssetHelper {
     private static final String DB_NAME = "qurandb";
     private static final int DB_VERSION = 3;
 
@@ -18,10 +20,6 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper{
     }
 
 
-    @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
-
-    }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
@@ -30,10 +28,6 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper{
     }
 
 
-    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        onUpgrade(db, oldVersion, newVersion);
-    }
-    //constructor
 
 
 }

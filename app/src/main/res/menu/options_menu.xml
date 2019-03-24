@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <item
+        android:id="@+id/favourites_i"
+        android:icon="@drawable/ic_favorite_black_24dp"
+        android:title="@string/favorites"
+        app:showAsAction="ifRoom"
+        tools:Context=".ToolbarMenu"></item>
+    <item
         android:id="@+id/settings_i"
         android:icon="@drawable/ic_settings_black_24dp"
         android:title="@string/settings"

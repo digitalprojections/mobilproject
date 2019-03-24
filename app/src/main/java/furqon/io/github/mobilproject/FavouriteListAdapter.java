@@ -284,6 +284,10 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
             mDatabase.saveToFavs(chapternumber, versenumber, "0");
             favbut.setImageResource(R.drawable.ic_favorite_border_black_24dp);
             favbut.setTag("0");
+            mCursor = mDatabase.loadFavourites();
+            notifyItemRemoved(ayah_position);
+            notifyItemRangeChanged(ayah_position, mCursor.getCount());
+
         }else {
             mDatabase.saveToFavs(chapternumber, versenumber, "1");
             favbut.setImageResource(R.drawable.ic_favorite_black_24dp);
@@ -417,5 +421,6 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         Log.i("SHARED DATA", String.valueOf(sw_ar));
         Log.i("SHARED DATA", String.valueOf(sw_uz));
     }
+
 
 }

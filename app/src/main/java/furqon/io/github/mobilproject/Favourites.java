@@ -91,7 +91,7 @@ public class Favourites extends AppCompatActivity {
         mDatabase.close();
     }
 
-    private void loadFavourites(){
+    public void loadFavourites(){
         cursor = mDatabase.loadFavourites();
         mAdapter = new FavouriteListAdapter(this, cursor, suranomi, suranomer);
         recyclerView.setAdapter(mAdapter);

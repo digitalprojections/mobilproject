@@ -43,6 +43,9 @@ public class SuraNameList extends AppCompatActivity {
             case R.id.settings_i:
                 open_settings();
                 return true;
+            case R.id.favourites_i:
+                open_favourites();
+                return true;
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -53,6 +56,11 @@ public class SuraNameList extends AppCompatActivity {
     private void open_settings(){
         Intent intent;
         intent = new Intent(this, furqon.io.github.mobilproject.Settings.class);
+        startActivity(intent);
+    }
+    private void open_favourites() {
+        Intent intent;
+        intent = new Intent(this, furqon.io.github.mobilproject.Favourites.class);
         startActivity(intent);
     }
     @Override

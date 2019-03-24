@@ -35,6 +35,7 @@ public class DatabaseAccess {
                     DatabaseAccess(context);
 
         }
+        Log.i("DATABASE INSTANCE", String.valueOf(instance));
         return instance;
     }
 
@@ -54,30 +55,28 @@ public class DatabaseAccess {
     }
 
     Cursor getSuraTitles() {
-try {
-    c = db.rawQuery("SELECT at.ChapterID, at.SuraName as 'arabic', sn.SuraName as 'uzbek'  FROM arabic_titles at inner join suranames sn on sn.chapterid = at.chapterid", new String[]{});
-}
-catch (SQLiteException e){
+        try {
+            c = db.rawQuery("SELECT at.ChapterID, at.SuraName as 'arabic', sn.SuraName as 'uzbek'  FROM arabic_titles at inner join suranames sn on sn.chapterid = at.chapterid", new String[]{});
+        } catch (SQLiteException e) {
 
-}
+        }
         return c;
 
     }
 
     Cursor loadFavourites() {
         try {
-        c = db.rawQuery("SELECT q1.AyahText, q2.AyahText as 'uztext', q1.VerseID, q1.SuraID, q1.favourite, sn.SuraName FROM quran q1\n" +
-                "INNER JOIN quran q2\n" +
-                "ON q1.SuraID=q2.SuraID\n" +
-                "INNER JOIN SuraNames sn \n" +
-                "ON sn.ChapterID=q1.SuraID\n" +
-                "WHERE q1.DatabaseID = 1\n" +
-                "and q2.favourite = 1\n" +
-                "and q1.VerseID=q2.VerseID\n" +
-                "and q2.DatabaseID=120", new String[]{});
+            c = db.rawQuery("SELECT q1.AyahText, q2.AyahText as 'uztext', q1.VerseID, q1.SuraID, q1.favourite, sn.SuraName FROM quran q1\n" +
+                    "INNER JOIN quran q2\n" +
+                    "ON q1.SuraID=q2.SuraID\n" +
+                    "INNER JOIN SuraNames sn \n" +
+                    "ON sn.ChapterID=q1.SuraID\n" +
+                    "WHERE q1.DatabaseID = 1\n" +
+                    "and q2.favourite = 1\n" +
+                    "and q1.VerseID=q2.VerseID\n" +
+                    "and q2.DatabaseID=120", new String[]{});
             Log.i("TABLE COLUMN", c.toString());
-        }
-        catch (SQLiteException e){
+        } catch (SQLiteException e) {
 
         }
 
