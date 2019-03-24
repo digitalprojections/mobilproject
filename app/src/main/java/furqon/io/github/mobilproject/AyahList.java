@@ -30,7 +30,7 @@ import java.util.TimerTask;
 
 public class AyahList extends AppCompatActivity {
     private AyahListAdapter mAdapter;
-    private DatabaseAccess mDatabase;
+    public DatabaseAccess mDatabase;
     private Cursor ayahcursor;
     private MediaPlayer mediaPlayer;
     private SharedPreferences sharedPreferences;
@@ -87,9 +87,12 @@ public class AyahList extends AppCompatActivity {
 
         mDatabase.open();
 
+
         ayahcursor = mDatabase.getSuraText(suranomer);
 
-        mAdapter = new AyahListAdapter(this, ayahcursor, suranomi);
+
+
+        mAdapter = new AyahListAdapter(this, ayahcursor, suranomi, suranomer);
         recyclerView.setAdapter(mAdapter);
 
 
@@ -295,6 +298,7 @@ public class AyahList extends AppCompatActivity {
         pause();
         if (mediaPlayer != null) {
             mediaPlayer.release();
+            mDatabase.close();
 
             handler.removeCallbacks(runnable);
         }

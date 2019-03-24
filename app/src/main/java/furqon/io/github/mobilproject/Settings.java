@@ -52,6 +52,8 @@ public class Settings extends AppCompatActivity {
         mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
+        loadData();
+        updateView();
     }
 
     public void save_settings() {
@@ -68,6 +70,7 @@ public class Settings extends AppCompatActivity {
     public void loadData() {
 
         sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+
         if (sharedPreferences.contains(SWITCH1)) {
             sw_ar_on = sharedPreferences.getBoolean(SWITCH1, false);
 

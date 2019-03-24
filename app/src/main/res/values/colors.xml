@@ -2,8 +2,8 @@
 <resources>
     <color name="colorPrimary">#E0ECB7</color>
     <color name="colorPrimaryDark">#4B6312</color>
-    <color name="colorAccent">#D81B60</color>
-    <color name="colorArabic">#000000</color>
+    <color name="colorAccent">#12FF005C</color>
+    <color name="colorArabic">#FF0000</color>
     <color name="trbg">#6A9EBD38</color>
-    <color name="gold">#FFD500</color>
+    <color name="gold">#FFB700</color>
 </resources>

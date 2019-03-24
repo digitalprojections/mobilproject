@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -48,19 +49,18 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.settings_i:
                 open_settings();
                 return true;
 
-                default:
-                    return super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
         }
 
     }
 
-    private void open_settings(){
+    private void open_settings() {
         Intent intent;
         intent = new Intent(this, furqon.io.github.mobilproject.Settings.class);
         startActivity(intent);
@@ -118,12 +118,7 @@ public class MainActivity extends AppCompatActivity {
         suralar_but.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 openSuraNames(view);
-
-
-                //create query
-
             }
         });
         fav_but.setOnClickListener(new View.OnClickListener() {
@@ -140,20 +135,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mInterstitialAd.show();
+        //mInterstitialAd.show();
     }
 
-    private void continueReading(){
+    private void continueReading() {
         Toast.makeText(getBaseContext(), "Coming soon", Toast.LENGTH_LONG);
     }
 
-    public void openSuraNames(View view){
+    public void openSuraNames(View view) {
 
         Intent intent = new Intent(this, SuraNameList.class);
         startActivity(intent);
@@ -166,11 +160,13 @@ public class MainActivity extends AppCompatActivity {
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "activity");
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
-    public void openFavourites(){
+
+    public void openFavourites() {
         Intent intent = new Intent(this, Favourites.class);
         startActivity(intent);
         Toast.makeText(getBaseContext(), "Coming soon", Toast.LENGTH_LONG);
     }
+
     private void displayResult(final String result) {
         handler.post(new Runnable() {
             public void run() {
@@ -182,4 +178,21 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent != null) {
+
+            String data = intent.getStringExtra("data");
+
+            if (data != null) {
+
+                // Fragment fragment = new NotificationActivity();
+                //getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).addToBackStack(null).commit();
+
+            }
+
+
+        }
+    }
 }

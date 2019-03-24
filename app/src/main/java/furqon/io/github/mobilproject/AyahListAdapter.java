@@ -34,15 +34,19 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     private Context mContext;
     private Cursor mCursor;
     private ArrayList<String> mArrayList;
+    private DatabaseAccess mDatabase;
 
+    //DONE create share/boomark/favourite and add programmatically
     private ImageButton sharebut;
     private ImageButton favbut;
     private ImageButton bookbut;
 
-    private String chaptername;
-    private String versenumber;
-    private String ayahtext;
-    private Integer ayah_position;
+    private String chaptername;//Sura nomi
+    private String chapternumber;
+    private String versenumber;//oyat nomeri
+    private String ayahtext;//oyat matni
+    private int ayah_position;
+
 
     SharedPreferences sharedPreferences;
 
@@ -55,10 +59,12 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     private ViewGroup.LayoutParams lpartxt; // Height of TextView
 
 
-    AyahListAdapter(Context context, Cursor cursor, String suraname) {
+    AyahListAdapter(Context context, Cursor cursor, String suraname, String chapter) {
+        chapternumber = chapter;
         chaptername = suraname;
         mContext = context;
         mCursor = cursor;
+        mDatabase = DatabaseAccess.getInstance(mContext);;
     }
 
 
@@ -68,7 +74,6 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         TextView ayahnumber;
         TextView arabic_ayahnumber;
         TextView comment;
-
 
 
         LinearLayout linearLayout1;
@@ -145,6 +150,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             arabictext.setShadowLayer(1.5f, 0, 0, Color.BLACK);
             arabictext.setVisibility(View.GONE);
             arabictext.setTypeface(madina);
+            bookbut.setTag("unselected");
             arabic_ayahnumber.setLayoutParams(lpmar);
             //arabic_ayahnumber.setBackgroundResource(ic_ayahsymbolayahsymbol);
 
@@ -164,11 +170,21 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
                 ((ViewGroup) ayahnumber.getParent()).removeView(ayahnumber);
                 ((ViewGroup) ayatext.getParent()).removeView(ayatext);
             }
+            if (sharebut.getParent() != null) {
+                ((ViewGroup) sharebut.getParent()).removeView(sharebut);
+                ((ViewGroup) bookbut.getParent()).removeView(bookbut);
+                ((ViewGroup) favbut.getParent()).removeView(favbut);
+            }
             linearLayout1.addView(ayahnumber);
             linearLayout1.addView(ayatext);
 
             linearLayout2.addView(arabic_ayahnumber);
             linearLayout2.addView(arabictext);
+
+            linearLayout3.addView(sharebut);
+            linearLayout3.addView(bookbut);
+            linearLayout3.addView(favbut);
+            linearLayout3.setVisibility(View.GONE);
         }
 
 
@@ -177,16 +193,20 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             int position = getAdapterPosition();
             Log.d("CLICK", ayahnumber.getText().toString());
             versenumber = ayahnumber.getText().toString();
+            bookbut = ((ViewGroup) view.getParent()).findViewById(R.id.actions).findViewById(R.id.bookmarkbut);
+            bookbut.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
 
             if (linearLayout3.getVisibility() == View.GONE) {
                 linearLayout3.setVisibility(View.VISIBLE);
                 ayahtext = ayatext.getText().toString();
-                ayah_position = sharedPreferences.getInt("xatchup"+chaptername, 0);
-                if(ayah_position == Integer.parseInt(versenumber)){
+                ayah_position = sharedPreferences.getInt("xatchup" + chaptername, 0);
+                if (ayah_position == Integer.parseInt(versenumber)) {
+                    bookbut = ((ViewGroup) view.getParent()).findViewById(R.id.actions).findViewById(R.id.bookmarkbut);
                     bookbut.setImageResource(R.drawable.ic_turned_in_black_24dp);
                 }
-                Log.d("verse number", versenumber  + " " + ayah_position);
-            }else {
+
+                Log.d("verse number", versenumber + " " + ayah_position);
+            } else {
                 linearLayout3.setVisibility(View.GONE);
             }
 
@@ -202,22 +222,58 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
                 Log.d("CLICK SHARE", ayahtext);
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, ayahtext + "\n("+ chaptername + ", " + versenumber +")\nhttps://goo.gl/sXBkNt\nFurqon dasturi, Android");
+                sendIntent.putExtra(Intent.EXTRA_TEXT, ayahtext + "\n(" + chaptername + ", " + versenumber + ")\nhttps://goo.gl/sXBkNt\nFurqon dasturi, Android");
                 sendIntent.setType("text/plain");
                 mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.shareayah)));
                 break;
             case R.id.favouritebut:
+                //TODO favourite add to sqlite
+                //call the function
+                favbut = ((ViewGroup) view.getParent()).findViewById(R.id.favouritebut);
+                addToFavourites(view);
                 break;
             case R.id.bookmarkbut:
                 sharedPreferences = mContext.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
                 SharedPreferences.Editor editor;
                 editor = sharedPreferences.edit();
-                editor.putInt("xatchup"+chaptername, Integer.parseInt(versenumber));
-                editor.apply();
+
+
 
                 //recolor the bookmark
+                bookbut = ((ViewGroup) view.getParent()).findViewById(R.id.bookmarkbut);
+                if(bookbut.getTag().toString() == "unselected") {
+                    bookbut.setImageResource(R.drawable.ic_turned_in_black_24dp);
+                    bookbut.setTag("selected");
+                    editor.putInt("xatchup" + chaptername, Integer.parseInt(versenumber));
+                    Log.i("BOOKMARK", bookbut.getTag().toString());
+                }
+                else {
+                    bookbut.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
+                    bookbut.setTag("unselected");
+                    editor.putInt("xatchup" + chaptername, 0);
+                }
+                editor.apply();
                 break;
         }
+    }
+
+    private void addToFavourites(View view){
+        //TODO manage sqlite creation and data addition
+        Log.i("AYAT FAVOURITED", view.toString());
+        if(mDatabase==null) {
+            mDatabase.openWrite();
+        }
+        if(favbut.getTag() == "1"){
+            mDatabase.saveToFavs(chapternumber, versenumber, "0");
+            favbut.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+            favbut.setTag("0");
+        }else {
+            mDatabase.saveToFavs(chapternumber, versenumber, "1");
+            favbut.setImageResource(R.drawable.ic_favorite_black_24dp);
+            favbut.setTag("1");
+        }
+
+
     }
 
     @NonNull
@@ -254,11 +310,21 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         String ttext = mCursor.getString(1);
         String artext = mCursor.getString(0);
         String numb = mCursor.getString(2);
+        String is_fav = mCursor.getString(4);
         versenumber = numb;
 
 
         holder.arabic_ayahnumber.setVisibility(View.VISIBLE);
         holder.arabictext.setVisibility(View.VISIBLE);
+        if(is_fav !=null)
+        {
+            favbut = holder.linearLayout3.findViewById(R.id.favouritebut);
+            favbut.setImageResource(R.drawable.ic_favorite_black_24dp);
+            favbut.setTag("1");
+
+        }else {
+            favbut.setTag("0");
+        }
 
         //holder.arabictext.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
         holder.arabictext.setGravity(Gravity.END | Gravity.RIGHT);
