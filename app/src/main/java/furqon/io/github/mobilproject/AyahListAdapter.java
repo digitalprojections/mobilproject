@@ -123,17 +123,12 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
             madina = ResourcesCompat.getFont(mContext, R.font.maddina);
 
-
             ((LinearLayout.LayoutParams) lpmar).setMargins(1, -5, 1, 1);
             ((LinearLayout.LayoutParams) lp).setMargins(0, 0, 1, 1);
             ((LinearLayout.LayoutParams) lpartxt).setMargins(10, 0, 1, 1);
             //lpmar.width = 32;
             /*
-
-
             ayahnumber.setBackgroundResource(ic_ayahsymbolayahsymbol);
-
-
             ayatext.setLayoutParams(lp);
             ayatext.setTextSize(18);
             ayatext.setPadding(0, 5, 0, 5);
@@ -156,7 +151,6 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
             arabic_ayahnumber.setGravity(Gravity.CENTER);
             arabic_ayahnumber.setVisibility(View.GONE);
-
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 arabictext.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);

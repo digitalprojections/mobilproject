@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.util.Log;
@@ -11,7 +12,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 public class DatabaseAccess {
-    private SQLiteOpenHelper openHelper;
+    private DatabaseOpenHelper openHelper;
     private SQLiteDatabase db;
     private static DatabaseAccess instance;
     private Cursor c = null;
@@ -53,8 +54,12 @@ public class DatabaseAccess {
     }
 
     Cursor getSuraTitles() {
-        c = db.rawQuery("SELECT at.ChapterID, at.SuraName as 'arabic', sn.SuraName as 'uzbek'  FROM arabic_titles at inner join suranames sn on sn.chapterid = at.chapterid", new String[]{});
+try {
+    c = db.rawQuery("SELECT at.ChapterID, at.SuraName as 'arabic', sn.SuraName as 'uzbek'  FROM arabic_titles at inner join suranames sn on sn.chapterid = at.chapterid", new String[]{});
+}
+catch (SQLiteException e){
 
+}
         return c;
 
     }
