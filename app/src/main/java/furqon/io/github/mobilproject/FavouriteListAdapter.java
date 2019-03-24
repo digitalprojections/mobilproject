@@ -261,9 +261,11 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
                     bookbut.setImageResource(R.drawable.ic_turned_in_black_24dp);
                     bookbut.setTag("selected");
                     editor.putInt("xatchup" + chaptername, Integer.parseInt(versenumber));
+                    mDatabase.saveToFavs(chapternumber, versenumber, "0");
                     Log.i("BOOKMARK", bookbut.getTag().toString());
                 }
                 else {
+                    mDatabase.saveToFavs(chapternumber, versenumber, "1");
                     bookbut.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
                     bookbut.setTag("unselected");
                     editor.putInt("xatchup" + chaptername, 0);
@@ -278,7 +280,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         Log.i("AYAT FAVOURITED", view.toString());
 
         if(mDatabase==null) {
-            mDatabase.openWrite();
+            mDatabase.open();
         }
         if(favbut.getTag() == "1"){
             mDatabase.saveToFavs(chapternumber, versenumber, "0");
@@ -345,7 +347,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
 
         holder.arabic_ayahnumber.setVisibility(View.VISIBLE);
         holder.arabictext.setVisibility(View.VISIBLE);
-        if(is_fav !=null)
+        if(is_fav =="1")
         {
             favbut = holder.linearLayout3.findViewById(R.id.favouritebut);
             favbut.setImageResource(R.drawable.ic_favorite_black_24dp);

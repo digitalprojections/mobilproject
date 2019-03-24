@@ -41,17 +41,24 @@ public class DatabaseAccess {
 
     //open
     void open() {
-        this.db = openHelper.getReadableDatabase();
-    }
-
-    void openWrite() {
         this.db = openHelper.getWritableDatabase();
     }
+
 
     public void close() {
         if (db != null) {
             this.db.close();
         }
+    }
+    public boolean isOpen()
+    {
+        if(db!=null){
+            return db.isOpen();
+        }
+        else {
+         return false;
+        }
+
     }
 
     Cursor getSuraTitles() {

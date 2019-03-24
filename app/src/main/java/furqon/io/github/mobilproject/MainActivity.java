@@ -27,6 +27,8 @@ import com.google.android.gms.ads.MobileAds;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import java.io.File;
+
 public class MainActivity extends AppCompatActivity {
     public EditText name;
     public Button suralar_but;
@@ -133,9 +135,30 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        try {
+            File dir = this.getCacheDir();
+            deleteDir(dir);
+        } catch (Exception e) { e.printStackTrace();}
+
+
 
     }
-
+    public static boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+            return dir.delete();
+        } else if(dir!= null && dir.isFile()) {
+            return dir.delete();
+        } else {
+            return false;
+        }
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -147,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
             String cp = sharedPreferences.getString("xatchup", "");
             Log.i("XATCHUP", cp);
             Intent intent;
-            Context context = getApplicationContext();
+            Context context = this;
             intent = new Intent(context, AyahList.class);
             intent.putExtra("SURANAME",cp);
             context.startActivity(intent);

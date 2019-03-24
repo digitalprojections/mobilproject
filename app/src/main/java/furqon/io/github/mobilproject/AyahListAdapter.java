@@ -259,7 +259,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         //TODO manage sqlite creation and data addition
         Log.i("AYAT FAVOURITED", view.toString());
         if(mDatabase==null) {
-            mDatabase.openWrite();
+            mDatabase.open();
         }
         if(favbut.getTag() == "1"){
             mDatabase.saveToFavs(chapternumber, versenumber, "0");
@@ -314,7 +314,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
         holder.arabic_ayahnumber.setVisibility(View.VISIBLE);
         holder.arabictext.setVisibility(View.VISIBLE);
-        if(is_fav !=null)
+        if(is_fav =="1")
         {
             favbut = holder.linearLayout3.findViewById(R.id.favouritebut);
             favbut.setImageResource(R.drawable.ic_favorite_black_24dp);

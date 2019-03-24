@@ -11,7 +11,7 @@ import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 public class DatabaseOpenHelper extends SQLiteAssetHelper {
     private static final String DB_NAME = "qurandb";
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 4;
 
     DatabaseOpenHelper(Context context) {
 

@@ -46,7 +46,9 @@ public class Favourites extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mDatabase = DatabaseAccess.getInstance(getApplicationContext());
-        mDatabase.openWrite();
+        if(!mDatabase.isOpen()) {
+            mDatabase.open();
+        }
 
 
         MobileAds.initialize(this, "ca-app-pub-3838820812386239~2342916878");

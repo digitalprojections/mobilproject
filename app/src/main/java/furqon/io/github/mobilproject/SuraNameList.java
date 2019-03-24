@@ -81,7 +81,9 @@ public class SuraNameList extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mDatabase.open();
+        if(!mDatabase.isOpen()) {
+            mDatabase.open();
+        }
 
         suralist = mDatabase.getSuraTitles();
 

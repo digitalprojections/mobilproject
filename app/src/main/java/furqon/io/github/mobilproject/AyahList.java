@@ -24,6 +24,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.TimerTask;
 
@@ -58,6 +59,8 @@ public class AyahList extends AppCompatActivity {
         setContentView(R.layout.activity_chapter_view);
 
 
+
+
         audiorestore = getString(R.string.audiopos_restored);
         audiostore = getString(R.string.audiopos_stored);
         loadfailed = getString(R.string.audio_load_fail);
@@ -85,7 +88,10 @@ public class AyahList extends AppCompatActivity {
         recyclerView = findViewById(R.id.chapter_scroll);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mDatabase.open();
+        if(!mDatabase.isOpen()) {
+            mDatabase.open();
+        }
+
 
 
         ayahcursor = mDatabase.getSuraText(suranomer);
@@ -133,6 +139,7 @@ public class AyahList extends AppCompatActivity {
 
             }
         });
+
 
 
     }
