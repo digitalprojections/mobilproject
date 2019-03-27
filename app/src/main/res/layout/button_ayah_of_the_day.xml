@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <Button
-        android:id="@+id/favorites"
+        android:id="@+id/ayahoftheday"
         android:layout_width="match_parent"
         android:layout_height="@android:dimen/notification_large_icon_height"
         android:layout_margin="8dp"
@@ -13,7 +13,7 @@
         android:layout_marginEnd="8dp"
         android:background="@color/colorPrimaryDark"
         android:gravity="center"
-        android:text="@string/favorites"
+        android:text="@string/ayah_of_the_day"
         android:textSize="24sp"
         android:textColor="@color/gold"
         app:layout_constraintBottom_toBottomOf="parent"

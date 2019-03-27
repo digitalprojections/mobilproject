@@ -9,6 +9,7 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 
@@ -18,7 +19,7 @@ public class Settings extends AppCompatActivity {
     public static final String SWITCH1 = "switch1";
     public static final String SWITCH2 = "switch2";
     SharedPreferences sharedPreferences;
-
+    private AdView mAdView;
 
     InterstitialAd mInterstitialAd;
 
@@ -54,6 +55,11 @@ public class Settings extends AppCompatActivity {
 
         loadData();
         updateView();
+
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
     }
 
     public void save_settings() {

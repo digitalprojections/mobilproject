@@ -134,7 +134,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             ayatext.setTextSize(18);
             ayatext.setPadding(0, 5, 0, 5);
             */
-            ayahnumber.setTextSize(15);
+            ayahnumber.setTextSize(20);
             ayahnumber.setLayoutParams(lp);
             ayahnumber.setGravity(Gravity.CENTER);
             ayatext.setVisibility(View.GONE);
@@ -175,6 +175,12 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
             linearLayout2.addView(arabic_ayahnumber);
             linearLayout2.addView(arabictext);
+            if(sw_ar){
+
+            }else {
+                linearLayout2.setVisibility(View.GONE);
+            }
+
 
             linearLayout3.addView(sharebut);
             linearLayout3.addView(bookbut);
@@ -222,7 +228,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
                 mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.shareayah)));
                 break;
             case R.id.favouritebut:
-                //TODO favourite add to sqlite
+                // favourite add to sqlite
                 //call the function
                 favbut = ((ViewGroup) view.getParent()).findViewById(R.id.favouritebut);
                 addToFavourites(view);
@@ -256,7 +262,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     }
 
     private void addToFavourites(View view){
-        //TODO manage sqlite creation and data addition
+        // manage sqlite creation and data addition
         Log.i("AYAT FAVOURITED", view.toString());
         if(mDatabase==null) {
             mDatabase.open();
@@ -308,13 +314,17 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         String ttext = mCursor.getString(1);
         String artext = mCursor.getString(0);
         String numb = mCursor.getString(2);
-        String is_fav = mCursor.getString(4);
+        int is_fav = mCursor.getInt(4);
         versenumber = numb;
+        Log.i("TAG FAVOURITE AYAH", String.valueOf(is_fav));
 
+        if(sw_ar){
+            holder.arabic_ayahnumber.setVisibility(View.VISIBLE);
+            holder.arabictext.setVisibility(View.VISIBLE);
 
-        holder.arabic_ayahnumber.setVisibility(View.VISIBLE);
-        holder.arabictext.setVisibility(View.VISIBLE);
-        if(is_fav =="1")
+        }
+
+        if(is_fav ==1)
         {
             favbut = holder.linearLayout3.findViewById(R.id.favouritebut);
             favbut.setImageResource(R.drawable.ic_favorite_black_24dp);

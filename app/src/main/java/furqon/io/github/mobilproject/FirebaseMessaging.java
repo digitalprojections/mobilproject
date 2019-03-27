@@ -1,5 +1,6 @@
 package furqon.io.github.mobilproject;
 
+import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -33,7 +34,7 @@ public class FirebaseMessaging extends FirebaseMessagingService {
     @Override
     public void onNewToken(String token) {
         Log.d(TAG, "Refreshed token: " + token);
-        //TODO database furqon_users created
+        // database furqon_users created
         /*
         *
         * CREATE TABLE `furqon_users` (
@@ -96,7 +97,8 @@ public class FirebaseMessaging extends FirebaseMessagingService {
     }
 
     private void handleNow() {
-
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getApplicationContext());
+        alertDialog.setMessage("Assalom alaykum");
     }
 
 }

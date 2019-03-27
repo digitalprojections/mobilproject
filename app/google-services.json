@@ -1,35 +1,27 @@
 {
   "project_info": {
-    "project_number": "926254455801",
-    "firebase_url": "https://big-genre-172004.firebaseio.com",
-    "project_id": "big-genre-172004",
-    "storage_bucket": "big-genre-172004.appspot.com"
+    "project_number": "754912172919",
+    "firebase_url": "https://furqon-da3e0.firebaseio.com",
+    "project_id": "furqon-da3e0",
+    "storage_bucket": "furqon-da3e0.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:926254455801:android:8f8ce563a13c38e9",
+        "mobilesdk_app_id": "1:754912172919:android:8f8ce563a13c38e9",
         "android_client_info": {
           "package_name": "furqon.io.github.mobilproject"
         }
       },
       "oauth_client": [
         {
-          "client_id": "926254455801-18mo5uvbl1lem0b3vao2gtbomqpo50h6.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "furqon.io.github.mobilproject",
-            "certificate_hash": "9dee7499e8acc5e957049c9ebb7cf318c2c11631"
-          }
-        },
-        {
-          "client_id": "926254455801-dced8c2eoej77cbeef2p42i5vrq0bjge.apps.googleusercontent.com",
+          "client_id": "754912172919-6qt54jafd4ec62kl2ke3v9obsadfjm4h.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDtUwsE9v0oLNwym6-eaH5FRiDHjJgZzNM"
+          "current_key": "AIzaSyBr5S7gt_4aCliiXQ80S4iNR1hUavC4Das"
         }
       ],
       "services": {
@@ -37,13 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "926254455801-dced8c2eoej77cbeef2p42i5vrq0bjge.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2

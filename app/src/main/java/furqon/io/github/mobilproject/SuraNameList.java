@@ -25,7 +25,7 @@ public class SuraNameList extends AppCompatActivity {
     private SuraNameListAdapter mAdapter;
     private DatabaseAccess mDatabase;
     private Cursor suralist;
-    private AdView mAdView;
+
     RecyclerView recyclerView;
     InterstitialAd mInterstitialAd;
 
@@ -93,9 +93,7 @@ public class SuraNameList extends AppCompatActivity {
         mAdapter = new SuraNameListAdapter(this, suralist);
         recyclerView.setAdapter(mAdapter);
 
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+
 
         MobileAds.initialize(this, "ca-app-pub-3838820812386239~2342916878");
         mInterstitialAd = new InterstitialAd(this);

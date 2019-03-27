@@ -18,4 +18,8 @@
     <string name="shareayah">Share this ayah to</string>
     <string name="bookmark_it">Bookmark the ayah</string>
     <string name="favourite_it">Add to Favourites</string>
+    <string name="banner_ad">ca-app-pub-3838820812386239/6533462802</string>
+    <string name="AdUnitId_fullpage">ca-app-pub-3838820812386239/2551267023</string>
+    <string name="app_id_mobileinitialize">ca-app-pub-3838820812386239~2342916878</string>
+    <string name="ayah_of_the_day">Verse of the day</string>
 </resources>

@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 
@@ -27,7 +28,7 @@ public class Favourites extends AppCompatActivity {
     String suranomer;
     public String suranomi;
     private Cursor cursor;
-
+    private AdView mAdView;
 
     private InterstitialAd mInterstitialAd;
 
@@ -50,10 +51,13 @@ public class Favourites extends AppCompatActivity {
             mDatabase.open();
         }
 
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
-        MobileAds.initialize(this, "ca-app-pub-3838820812386239~2342916878");
+        MobileAds.initialize(this, getString(R.string.app_id_mobileinitialize));
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+        mInterstitialAd.setAdUnitId(getString(R.string.AdUnitId_fullpage));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
         Log.i("FAVOURITES","loaded");

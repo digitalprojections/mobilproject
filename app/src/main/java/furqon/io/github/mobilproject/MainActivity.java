@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     public EditText name;
     public Button suralar_but;
     public Button davomi_but;
+    public Button day_but;
 
     private Handler handler;
     private TextView statusText;
@@ -116,16 +117,10 @@ public class MainActivity extends AppCompatActivity {
 
         suralar_but = findViewById(R.id.suralar);
         davomi_but = findViewById(R.id.davomi);
+        day_but = findViewById(R.id.ayahoftheday);
 
         statusText = findViewById(R.id.result);
         String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
-        davomi_but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                continueReading();
-            }
-        });
 
         suralar_but.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,16 +128,35 @@ public class MainActivity extends AppCompatActivity {
                 openSuraNames(view);
             }
         });
+        davomi_but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                continueReading();
+            }
+        });
+        day_but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ayahOfTheDay();
+            }
+        });
 
 
         try {
             File dir = this.getCacheDir();
             deleteDir(dir);
-        } catch (Exception e) { e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-
+        //TODO login?
+        //TODO point system
+        //TODO share for points
+        //TODO usage points
+        //TODO unlock downloads
 
     }
+
     public static boolean deleteDir(File dir) {
         if (dir != null && dir.isDirectory()) {
             String[] children = dir.list();
@@ -153,12 +167,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             return dir.delete();
-        } else if(dir!= null && dir.isFile()) {
+        } else if (dir != null && dir.isFile()) {
             return dir.delete();
         } else {
             return false;
         }
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -172,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent;
             Context context = this;
             intent = new Intent(context, AyahList.class);
-            intent.putExtra("SURANAME",cp);
+            intent.putExtra("SURANAME", cp);
             context.startActivity(intent);
         } else {
             Toast.makeText(getBaseContext(), "No bookmarks found", Toast.LENGTH_LONG).show();
@@ -195,8 +210,8 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 
-    public void openFavourites() {
-        Intent intent = new Intent(this, Favourites.class);
+    public void ayahOfTheDay() {
+        Intent intent = new Intent(this, AyahOfTheDay.class);
         startActivity(intent);
 
     }

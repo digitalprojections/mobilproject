@@ -43,6 +43,7 @@
             android:id="@+id/continue_reading"
             layout="@layout/continue_button"></include>
 
+        <include layout="@layout/button_ayah_of_the_day"></include>
 
     </LinearLayout>
 

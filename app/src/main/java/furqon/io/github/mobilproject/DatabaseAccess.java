@@ -27,6 +27,9 @@ public class DatabaseAccess {
         public static final String COLUMN_VERSEID = "VerseID";
         public static final String COLUMN_SURAID = "SuraID";
         public static final String COLUMN_FAV = "favourite";
+
+
+
     }
 
     static DatabaseAccess getInstance(Context context) {
@@ -35,7 +38,6 @@ public class DatabaseAccess {
                     DatabaseAccess(context);
 
         }
-        Log.i("DATABASE INSTANCE", String.valueOf(instance));
         return instance;
     }
 
@@ -106,6 +108,7 @@ public class DatabaseAccess {
 
     Cursor getVersion() {
         Cursor v = db.rawQuery("PRAGMA user_version", null);
+        Log.i("DATABASE VERSION", String.valueOf(v));
         return v;
     }
 

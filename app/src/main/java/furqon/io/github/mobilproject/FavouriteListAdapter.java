@@ -38,6 +38,8 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
     private ImageButton favbut;
     private ImageButton bookbut;
 
+    private int position;
+
 
     private String chaptername;//Sura nomi
     private String chapternumber;
@@ -205,8 +207,9 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
 
         @Override
         public void onClick(View view) {
-            int position = getAdapterPosition();
+            position = getAdapterPosition();
             Log.d("CLICK", ayahnumber.getText().toString());
+            Log.d("FAV TAG", favbut.getTag().toString());
             chapternumber = ayatext.getTag().toString();
             versenumber = ayahnumber.getText().toString();
             bookbut = ((ViewGroup) view.getParent()).findViewById(R.id.actions).findViewById(R.id.bookmarkbut);
@@ -230,7 +233,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
     }
 
     public void takeAction(View view) {
-        //Log.d("CLICK", view.toString());
+
         LinearLayout ll = ((ViewGroup) view.getParent()).findViewById(R.id.uzbektranslation);
 
         switch (view.getId()) {
@@ -287,8 +290,8 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
             favbut.setImageResource(R.drawable.ic_favorite_border_black_24dp);
             favbut.setTag("0");
             mCursor = mDatabase.loadFavourites();
-            notifyItemRemoved(ayah_position);
-            notifyItemRangeChanged(ayah_position, mCursor.getCount());
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, mCursor.getCount());
 
         }else {
             mDatabase.saveToFavs(chapternumber, versenumber, "1");
@@ -338,16 +341,16 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         String artext = mCursor.getString(0);
         String numb = mCursor.getString(2);
         chapternumber = mCursor.getString(3);
-        String is_fav = mCursor.getString(4);
+        int is_fav = mCursor.getInt(4);
         chaptername = mCursor.getString(5);
         versenumber = numb;
 
 
-
+        Log.i("TAG FAVOURITE", String.valueOf(is_fav==1));
 
         holder.arabic_ayahnumber.setVisibility(View.VISIBLE);
         holder.arabictext.setVisibility(View.VISIBLE);
-        if(is_fav =="1")
+        if(is_fav ==1)
         {
             favbut = holder.linearLayout3.findViewById(R.id.favouritebut);
             favbut.setImageResource(R.drawable.ic_favorite_black_24dp);
