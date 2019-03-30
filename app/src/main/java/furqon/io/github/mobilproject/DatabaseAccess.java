@@ -2,6 +2,7 @@ package furqon.io.github.mobilproject;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -27,6 +28,7 @@ public class DatabaseAccess {
         public static final String COLUMN_VERSEID = "VerseID";
         public static final String COLUMN_SURAID = "SuraID";
         public static final String COLUMN_FAV = "favourite";
+
 
 
 
@@ -74,6 +76,7 @@ public class DatabaseAccess {
     }
 
     Cursor loadFavourites() {
+
         try {
             c = db.rawQuery("SELECT q1.AyahText, q2.AyahText as 'uztext', q1.VerseID, q1.SuraID, q1.favourite, sn.SuraName FROM quran q1\n" +
                     "INNER JOIN quran q2\n" +
@@ -82,6 +85,25 @@ public class DatabaseAccess {
                     "ON sn.ChapterID=q1.SuraID\n" +
                     "WHERE q1.DatabaseID = 1\n" +
                     "and q2.favourite = 1\n" +
+                    "and q1.VerseID=q2.VerseID\n" +
+                    "and q2.DatabaseID =120 " , new String[]{});
+            Log.i("TABLE COLUMN", c.toString());
+        } catch (SQLiteException e) {
+
+        }
+
+        return c;
+
+    }
+    Cursor loadRandom() {
+        try {
+            c = db.rawQuery("SELECT q1.AyahText, q2.AyahText as 'uztext', q1.VerseID, q1.SuraID, q1.favourite, sn.SuraName FROM quran q1\n" +
+                    "INNER JOIN quran q2\n" +
+                    "ON q1.SuraID=q2.SuraID\n" +
+                    "INNER JOIN SuraNames sn \n" +
+                    "ON sn.ChapterID=q1.SuraID\n" +
+                    "WHERE q1.DatabaseID = 1\n" +
+                    "and q2.daily = 1\n" +
                     "and q1.VerseID=q2.VerseID\n" +
                     "and q2.DatabaseID=120", new String[]{});
             Log.i("TABLE COLUMN", c.toString());
@@ -94,13 +116,22 @@ public class DatabaseAccess {
     }
 
     Cursor getSuraText(String sn) {
-        c = db.rawQuery("SELECT q1.AyahText, q2.AyahText as 'uztext', q1.VerseID, q1.SuraID, q1.favourite FROM quran q1\n" +
-                "INNER JOIN quran q2\n" +
-                "ON q1.SuraID=q2.SuraID\n" +
-                "WHERE q1.DatabaseID = 1\n" +
-                "and q1.VerseID=q2.VerseID\n" +
-                "and q2.DatabaseID=120\n" +
-                "and q1.SuraID = " + sn, new String[]{});
+        c = db.rawQuery("SELECT quz.DatabaseID, quz.SuraID, quz.VerseID, qar.AyahText as 'arab', quz.AyahText as 'uzb', qru.AyahText as 'ru', qen.AyahText as 'en' from quran quz\n" +
+                "JOIN quran qar\n" +
+                "ON qar.SuraID = quz.SuraID\n" +
+                "JOIN quran qru\n" +
+                "ON qru.SuraID=qar.SuraID\n" +
+                "JOIN quran qen\n" +
+                "ON qen.SuraID=qru.SuraID\n" +
+                "where \n" +
+                "quz.VerseID=qar.VerseID\n" +
+                "and qru.VerseID=qar.VerseID\n" +
+                "and qen.VerseID=qru.VerseID\n" +
+                "and quz.DatabaseID=120\n" +
+                "and qar.DatabaseID=1\n" +
+                "and qru.DatabaseID=79\n" +
+                "and qen.DatabaseID=59\n" +
+                "and quz.SuraID = " + sn, new String[]{});
         //Log.i("TABLE COLUMN", db.rawQuery("PRAGMA table_info()"));
         return c;
 

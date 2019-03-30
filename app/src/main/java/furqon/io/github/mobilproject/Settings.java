@@ -15,20 +15,15 @@ import com.google.android.gms.ads.MobileAds;
 
 public class Settings extends AppCompatActivity {
 
-    public static final String SHARED_PREFS = "sharedPrefs";
-    public static final String SWITCH1 = "switch1";
-    public static final String SWITCH2 = "switch2";
-    SharedPreferences sharedPreferences;
     private AdView mAdView;
 
     InterstitialAd mInterstitialAd;
 
 
-    private boolean sw_ar_on;
-    private boolean sw_uz_on;
-
     private Switch sw_ar;
     private Switch sw_uz;
+    private Switch sw_ru;
+    private Switch sw_en;
     private Button ok_but;
 
     @Override
@@ -38,6 +33,8 @@ public class Settings extends AppCompatActivity {
 
         sw_ar = findViewById(R.id.arabic_sw);
         sw_uz = findViewById(R.id.uzbek_sw);
+        sw_ru = findViewById(R.id.ru_sw);
+        sw_en = findViewById(R.id.en_sw);
         ok_but = findViewById(R.id.done_setting);
 
         ok_but.setOnClickListener(new View.OnClickListener() {
@@ -53,7 +50,6 @@ public class Settings extends AppCompatActivity {
         mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
-        loadData();
         updateView();
 
         mAdView = findViewById(R.id.adView);
@@ -63,32 +59,20 @@ public class Settings extends AppCompatActivity {
     }
 
     public void save_settings() {
-        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(SWITCH1, sw_ar.isChecked());
-        editor.putBoolean(SWITCH2, sw_uz.isChecked());
 
-        editor.apply();
-
-        Toast.makeText(this, "Setting are saved", Toast.LENGTH_SHORT);
+        SharedPref.write(SharedPref.ARABSW, sw_ar.isChecked());
+        SharedPref.write(SharedPref.UZSW, sw_uz.isChecked());
+        SharedPref.write(SharedPref.RUSW, sw_ru.isChecked());
+        SharedPref.write(SharedPref.ENSW, sw_en.isChecked());
+        Toast.makeText(this, "Setting are saved", Toast.LENGTH_SHORT).show();
     }
 
-    public void loadData() {
-
-        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-
-        if (sharedPreferences.contains(SWITCH1)) {
-            sw_ar_on = sharedPreferences.getBoolean(SWITCH1, false);
-
-            if (sharedPreferences.contains(SWITCH2)) {
-                sw_uz_on = sharedPreferences.getBoolean(SWITCH2, false);
-            }
-        }
-    }
 
     public void updateView() {
-        sw_ar.setChecked(sw_ar_on);
-        sw_uz.setChecked(sw_uz_on);
+        sw_ar.setChecked(SharedPref.read(SharedPref.ARABSW, false));
+        sw_uz.setChecked(SharedPref.read(SharedPref.UZSW, false));
+        sw_ru.setChecked(SharedPref.read(SharedPref.RUSW, false));
+        sw_en.setChecked(SharedPref.read(SharedPref.ENSW, false));
     }
 
     @Override

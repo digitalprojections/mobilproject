@@ -2,7 +2,6 @@ package furqon.io.github.mobilproject;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -22,14 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-
-import static furqon.io.github.mobilproject.R.color.cardview_dark_background;
-import static furqon.io.github.mobilproject.R.color.colorArabic;
-import static furqon.io.github.mobilproject.R.drawable.*;
-import static furqon.io.github.mobilproject.Settings.*;
 
 public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahListViewHolder> {
     private Context mContext;
@@ -49,15 +40,13 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     private int ayah_position;
 
 
-    SharedPreferences sharedPreferences;
-
     Typeface madina;
 
-    private boolean sw_ar;
-    private boolean sw_uz;
     private ViewGroup.LayoutParams lp; // Height of TextView
     private ViewGroup.LayoutParams lpmar; // Height of TextView
     private ViewGroup.LayoutParams lpartxt; // Height of TextView
+
+
 
 
     AyahListAdapter(Context context, Cursor cursor, String suraname, String chapter) {
@@ -77,17 +66,17 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         TextView comment;
 
 
-        LinearLayout linearLayout1;
-        LinearLayout linearLayout2;
-        LinearLayout linearLayout3;
+        LinearLayout uzbektextll;
+        LinearLayout arabictextll;
+        LinearLayout actionsll;
 
 
         AyahListViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            linearLayout1 = itemView.findViewById(R.id.uzbektranslation);
-            linearLayout2 = itemView.findViewById(R.id.arabictranslation);
-            linearLayout3 = itemView.findViewById(R.id.actions);
+            arabictextll = itemView.findViewById(R.id.arabictranslation);
+            uzbektextll = itemView.findViewById(R.id.uzbektranslation);
+            actionsll = itemView.findViewById(R.id.actions);
 
             sharebut = itemView.findViewById(R.id.sharebut);
             favbut = itemView.findViewById(R.id.favouritebut);
@@ -112,7 +101,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
                 }
             });
 
-            linearLayout2.setGravity(Gravity.END);
+            arabictextll.setGravity(Gravity.END);
 
             ayahnumber = itemView.findViewById(R.id.oyat_raqam);
             ayatext = itemView.findViewById(R.id.oyat_matn);
@@ -170,22 +159,22 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
                 ((ViewGroup) bookbut.getParent()).removeView(bookbut);
                 ((ViewGroup) favbut.getParent()).removeView(favbut);
             }
-            linearLayout1.addView(ayahnumber);
-            linearLayout1.addView(ayatext);
+            uzbektextll.addView(ayahnumber);
+            uzbektextll.addView(ayatext);
 
-            linearLayout2.addView(arabic_ayahnumber);
-            linearLayout2.addView(arabictext);
-            if(sw_ar){
+            arabictextll.addView(arabic_ayahnumber);
+            arabictextll.addView(arabictext);
+            if(SharedPref.getDefaults("uz")){
 
             }else {
-                linearLayout2.setVisibility(View.GONE);
+                arabictextll.setVisibility(View.GONE);
             }
 
 
-            linearLayout3.addView(sharebut);
-            linearLayout3.addView(bookbut);
-            linearLayout3.addView(favbut);
-            linearLayout3.setVisibility(View.GONE);
+            actionsll.addView(sharebut);
+            actionsll.addView(bookbut);
+            actionsll.addView(favbut);
+            actionsll.setVisibility(View.GONE);
         }
 
 
@@ -197,10 +186,10 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             bookbut = ((ViewGroup) view.getParent()).findViewById(R.id.actions).findViewById(R.id.bookmarkbut);
             bookbut.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
 
-            if (linearLayout3.getVisibility() == View.GONE) {
-                linearLayout3.setVisibility(View.VISIBLE);
+            if (actionsll.getVisibility() == View.GONE) {
+                actionsll.setVisibility(View.VISIBLE);
                 ayahtext = ayatext.getText().toString();
-                ayah_position = sharedPreferences.getInt("xatchup" + chaptername, 0);
+                ayah_position = SharedPref.read("xatchup" + chaptername, 0);
                 if (ayah_position == Integer.parseInt(versenumber)) {
                     bookbut = ((ViewGroup) view.getParent()).findViewById(R.id.actions).findViewById(R.id.bookmarkbut);
                     bookbut.setImageResource(R.drawable.ic_turned_in_black_24dp);
@@ -208,7 +197,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
                 Log.d("verse number", versenumber + " " + ayah_position);
             } else {
-                linearLayout3.setVisibility(View.GONE);
+                actionsll.setVisibility(View.GONE);
             }
 
         }
@@ -234,9 +223,6 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
                 addToFavourites(view);
                 break;
             case R.id.bookmarkbut:
-                sharedPreferences = mContext.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-                SharedPreferences.Editor editor;
-                editor = sharedPreferences.edit();
 
 
 
@@ -245,18 +231,17 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
                 if(bookbut.getTag().toString() == "unselected") {
                     bookbut.setImageResource(R.drawable.ic_turned_in_black_24dp);
                     bookbut.setTag("selected");
-                    editor.putInt("xatchup" + chaptername, Integer.parseInt(versenumber));
+                    SharedPref.write("xatchup" + chaptername, Integer.parseInt(versenumber));
 
-                    editor.putString("xatchup", chaptername + ":"+chapternumber);
+                    SharedPref.write("xatchup", chaptername + ":"+chapternumber);
                     Log.i("BOOKMARK", bookbut.getTag().toString());
                 }
                 else {
                     bookbut.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
                     bookbut.setTag("unselected");
-                    editor.putInt("xatchup" + chaptername, 0);
-                    editor.putInt("xatchup", 0);
+                    SharedPref.write("xatchup" + chaptername, 0);
+                    SharedPref.write("xatchup", 0);
                 }
-                editor.apply();
                 break;
         }
     }
@@ -285,9 +270,6 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     public AyahListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.ayat, parent, false);
-
-        sharedPreferences = mContext.getSharedPreferences(Settings.SHARED_PREFS, MODE_PRIVATE);
-
         lp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, // Width of TextView
                 ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -298,7 +280,6 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         lpartxt = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, // Width of TextView
                 ViewGroup.LayoutParams.WRAP_CONTENT, 10.0f);
-        loadData();
 
         mArrayList = new ArrayList<>();
         return new AyahListViewHolder(view);
@@ -318,7 +299,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         versenumber = numb;
         Log.i("TAG FAVOURITE AYAH", String.valueOf(is_fav));
 
-        if(sw_ar){
+        if(SharedPref.getDefaults("ar")){
             holder.arabic_ayahnumber.setVisibility(View.VISIBLE);
             holder.arabictext.setVisibility(View.VISIBLE);
 
@@ -326,7 +307,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
         if(is_fav ==1)
         {
-            favbut = holder.linearLayout3.findViewById(R.id.favouritebut);
+            favbut = holder.actionsll.findViewById(R.id.favouritebut);
             favbut.setImageResource(R.drawable.ic_favorite_black_24dp);
             favbut.setTag("1");
 
@@ -340,7 +321,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         holder.arabictext.setText(artext);
         holder.arabic_ayahnumber.setText(String.valueOf(numb));
 
-        if (sw_uz) {
+        if (SharedPref.getDefaults("uz")) {
             holder.ayahnumber.setVisibility(View.VISIBLE);
             holder.ayatext.setVisibility(View.VISIBLE);
             holder.ayatext.setText(Html.fromHtml(collapseBraces(ttext)));
@@ -382,12 +363,6 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         }
     }
 
-    private void loadData() {
-        sw_ar = sharedPreferences.getBoolean(Settings.SWITCH1, false);
-        sw_uz = sharedPreferences.getBoolean(Settings.SWITCH2, false);
 
-        Log.i("SHARED DATA", String.valueOf(sw_ar));
-        Log.i("SHARED DATA", String.valueOf(sw_uz));
-    }
 
 }

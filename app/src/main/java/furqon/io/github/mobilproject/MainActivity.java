@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
     private InterstitialAd mInterstitialAd;
     private FirebaseAnalytics mFirebaseAnalytics;
 
-    SharedPreferences sharedPreferences;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -87,23 +86,11 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
-        sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
-        if (sharedPreferences.contains("switch1")) {
 
-        } else {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            ;
-            editor.putBoolean("switch1", true);
-            editor.apply();
-        }
-        if (sharedPreferences.contains("switch2")) {
+        SharedPref.init(getApplicationContext());
 
-        } else {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            ;
-            editor.putBoolean("switch2", true);
-            editor.apply();
-        }
+
+
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
@@ -181,13 +168,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void continueReading() {
-        if (sharedPreferences.contains("xatchup")) {
-            String cp = sharedPreferences.getString("xatchup", "");
-            Log.i("XATCHUP", cp);
+        String xatchup = SharedPref.read(SharedPref.XATCHUP, "");
+        if (xatchup.length()>0) {
+            Log.i("XATCHUP", xatchup);
             Intent intent;
             Context context = this;
             intent = new Intent(context, AyahList.class);
-            intent.putExtra("SURANAME", cp);
+            intent.putExtra("SURANAME", xatchup);
             context.startActivity(intent);
         } else {
             Toast.makeText(getBaseContext(), "No bookmarks found", Toast.LENGTH_LONG).show();

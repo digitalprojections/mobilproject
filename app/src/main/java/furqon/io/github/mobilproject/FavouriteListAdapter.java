@@ -24,8 +24,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import static furqon.io.github.mobilproject.Settings.MODE_PRIVATE;
-import static furqon.io.github.mobilproject.Settings.SHARED_PREFS;
 
 public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdapter.AyahListViewHolder> {
     private Context mContext;
@@ -48,12 +46,9 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
     private int ayah_position;
 
 
-    SharedPreferences sharedPreferences;
-
     Typeface madina;
 
-    private boolean sw_ar;
-    private boolean sw_uz;
+
     private ViewGroup.LayoutParams lp; // Height of TextView
     private ViewGroup.LayoutParams lpmar; // Height of TextView
     private ViewGroup.LayoutParams lpartxt; // Height of TextView
@@ -218,7 +213,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
             if (linearLayout3.getVisibility() == View.GONE) {
                 linearLayout3.setVisibility(View.VISIBLE);
                 ayahtext = ayatext.getText().toString();
-                ayah_position = sharedPreferences.getInt("xatchup" + chaptername, 0);
+                ayah_position = SharedPref.read("XATCHUP" + chaptername, 0);
                 if (ayah_position == Integer.parseInt(versenumber)) {
                     bookbut = ((ViewGroup) view.getParent()).findViewById(R.id.actions).findViewById(R.id.bookmarkbut);
                     bookbut.setImageResource(R.drawable.ic_turned_in_black_24dp);
@@ -252,9 +247,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
                 addToFavourites(view);
                 break;
             case R.id.bookmarkbut:
-                sharedPreferences = mContext.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-                SharedPreferences.Editor editor;
-                editor = sharedPreferences.edit();
+
 
 
 
@@ -263,7 +256,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
                 if(bookbut.getTag().toString() == "unselected") {
                     bookbut.setImageResource(R.drawable.ic_turned_in_black_24dp);
                     bookbut.setTag("selected");
-                    editor.putInt("xatchup" + chaptername, Integer.parseInt(versenumber));
+                    SharedPref.write("xatchup" + chaptername, Integer.parseInt(versenumber));
                     mDatabase.saveToFavs(chapternumber, versenumber, "0");
                     Log.i("BOOKMARK", bookbut.getTag().toString());
                 }
@@ -271,9 +264,8 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
                     mDatabase.saveToFavs(chapternumber, versenumber, "1");
                     bookbut.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
                     bookbut.setTag("unselected");
-                    editor.putInt("xatchup" + chaptername, 0);
+                    SharedPref.write("xatchup" + chaptername, 0);
                 }
-                editor.apply();
                 break;
         }
     }
@@ -308,7 +300,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.fav_verse, parent, false);
 
-        sharedPreferences = mContext.getSharedPreferences(Settings.SHARED_PREFS, MODE_PRIVATE);
+
 
         lp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, // Width of TextView
@@ -324,7 +316,6 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
-        loadData();
 
         mArrayList = new ArrayList<>();
         return new AyahListViewHolder(view);
@@ -367,7 +358,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         holder.arabictext.setText(artext);
         holder.arabic_ayahnumber.setText(String.valueOf(numb));
 
-        if (sw_uz) {
+        if (SharedPref.read(SharedPref.UZSW,false)) {
             holder.ayahnumber.setVisibility(View.VISIBLE);
             holder.ayatext.setVisibility(View.VISIBLE);
             holder.ayatext.setTag(chapternumber);
@@ -419,13 +410,6 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         }
     }
 
-    private void loadData() {
-        sw_ar = sharedPreferences.getBoolean(Settings.SWITCH1, false);
-        sw_uz = sharedPreferences.getBoolean(Settings.SWITCH2, false);
-
-        Log.i("SHARED DATA", String.valueOf(sw_ar));
-        Log.i("SHARED DATA", String.valueOf(sw_uz));
-    }
 
 
 }

@@ -45,6 +45,10 @@ android {
 }
 
 dependencies {
+    def lifecycle_version = "2.0.0"
+    def room_version = "2.1.0-alpha06"
+
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
@@ -58,5 +62,7 @@ dependencies {
     implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
     implementation 'com.google.firebase:firebase-ads:17.2.0'
     implementation 'com.android.support:design:28.0.0'
+    implementation 'com.android.support:support-v4:28.0.0'
+
 }
 apply plugin: 'com.google.gms.google-services'

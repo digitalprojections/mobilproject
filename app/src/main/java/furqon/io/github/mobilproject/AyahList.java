@@ -105,10 +105,10 @@ public class AyahList extends AppCompatActivity {
 
 
 
-        sharedPreferences = getSharedPreferences(Settings.SHARED_PREFS, MODE_PRIVATE);
-        pos = sharedPreferences.getInt(suranomi, 0);
 
-        ayah_position = sharedPreferences.getInt(xatchup+suranomi, 0);
+        pos = SharedPref.read(suranomi, 0);
+
+        ayah_position = SharedPref.read(xatchup+suranomi, 0);
         if(ayah_position>4) {
 
             recyclerView.scrollToPosition(ayah_position-4);
@@ -248,9 +248,8 @@ public class AyahList extends AppCompatActivity {
 
     private void storeAudioPosition() {
         if (mediaPlayer.isPlaying()) {
-            sharedPreferences = getSharedPreferences(Settings.SHARED_PREFS, MODE_PRIVATE);
-            editor = sharedPreferences.edit();
-            editor.putInt(suranomi, mediaPlayer.getCurrentPosition());
+
+            SharedPref.write(suranomi, mediaPlayer.getCurrentPosition());
             editor.apply();
             Toast.makeText(getBaseContext(), audiostore, Toast.LENGTH_SHORT).show();
             mediaPlayer.pause();
@@ -258,8 +257,7 @@ public class AyahList extends AppCompatActivity {
     }
 
     public void resume() {
-        sharedPreferences = getSharedPreferences(Settings.SHARED_PREFS, MODE_PRIVATE);
-        pos = sharedPreferences.getInt(suranomi, 0);
+        pos = SharedPref.read(suranomi, 0);
 
         if (mediaPlayer != null) {
 
