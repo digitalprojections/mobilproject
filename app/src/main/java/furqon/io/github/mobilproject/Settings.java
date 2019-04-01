@@ -65,6 +65,7 @@ public class Settings extends AppCompatActivity {
         SharedPref.write(SharedPref.RUSW, sw_ru.isChecked());
         SharedPref.write(SharedPref.ENSW, sw_en.isChecked());
         Toast.makeText(this, "Setting are saved", Toast.LENGTH_SHORT).show();
+        SharedPref.init(getApplicationContext());
     }
 
 

@@ -135,12 +135,12 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
             /*
 
 
-            ayahnumber.setBackgroundResource(ic_ayahsymbolayahsymbol);
+            ayah_number.setBackgroundResource(ic_ayahsymbolayahsymbol);
 
 
-            ayatext.setLayoutParams(lp);
-            ayatext.setTextSize(18);
-            ayatext.setPadding(0, 5, 0, 5);
+            ayah_text_uz.setLayoutParams(lp);
+            ayah_text_uz.setTextSize(18);
+            ayah_text_uz.setPadding(0, 5, 0, 5);
             */
 
             chapterTitle.setLayoutParams(toplayout);
@@ -158,7 +158,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
             arabictext.setTypeface(madina);
             bookbut.setTag("unselected");
             arabic_ayahnumber.setLayoutParams(lpmar);
-            //arabic_ayahnumber.setBackgroundResource(ic_ayahsymbolayahsymbol);
+            //arabic_ayah_number.setBackgroundResource(ic_ayahsymbolayahsymbol);
 
             arabic_ayahnumber.setGravity(Gravity.CENTER);
             arabic_ayahnumber.setVisibility(View.GONE);
@@ -352,7 +352,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         }
 
         holder.chapterTitle.setText(chaptername);
-        //holder.arabictext.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
+        //holder.arabic_text.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
         holder.arabictext.setGravity(Gravity.END | Gravity.RIGHT);
 
         holder.arabictext.setText(artext);

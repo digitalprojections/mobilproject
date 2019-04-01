@@ -29,13 +29,13 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     private DatabaseAccess mDatabase;
 
     //DONE create share/boomark/favourite and add programmatically
-    private ImageButton sharebut;
-    private ImageButton favbut;
-    private ImageButton bookbut;
+    private ImageButton share_button;
+    private ImageButton fav_button;
+    private ImageButton book_button;
 
     private String chaptername;//Sura nomi
-    private String chapternumber;
-    private String versenumber;//oyat nomeri
+    private String chapter_number;
+    private String verse_number;//oyat nomeri
     private String ayahtext;//oyat matni uzbek
     private String ru_text;//oyat matni uzbek
     private String en_text;//oyat matni uzbek
@@ -53,7 +53,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
 
     AyahListAdapter(Context context, Cursor cursor, String suraname, String chapter) {
-        chapternumber = chapter;
+        chapter_number = chapter;
         chaptername = suraname;
         mContext = context;
         mCursor = cursor;
@@ -62,63 +62,63 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
 
     public class AyahListViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
-        TextView ayatext;
-        TextView ayatextru;
-        TextView ayatexten;
-        TextView arabictext;
-        TextView ayahnumber;
-        TextView arabic_ayahnumber;
+        TextView ayah_text_uz;
+        TextView ayah_text_ru;
+        TextView ayah_text_en;
+        TextView arabic_text;
+        TextView ayah_number;
+        TextView arabic_ayah_number;
         TextView comment;
 
 
-        LinearLayout uzbektextll;
-        LinearLayout arabictextll;
-        LinearLayout actionsll;
+        LinearLayout uzbek_text_lin_layout;
+        LinearLayout arabic_text_lin_layout;
+        LinearLayout actions_lin_layout;
 
 
         AyahListViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            arabictextll = itemView.findViewById(R.id.arabictranslation);
-            uzbektextll = itemView.findViewById(R.id.uzbektranslation);
-            actionsll = itemView.findViewById(R.id.actions);
+            arabic_text_lin_layout = itemView.findViewById(R.id.arabictranslation);
+            uzbek_text_lin_layout = itemView.findViewById(R.id.uzbektranslation);
+            actions_lin_layout = itemView.findViewById(R.id.actions);
 
-            sharebut = itemView.findViewById(R.id.sharebut);
-            favbut = itemView.findViewById(R.id.favouritebut);
-            bookbut = itemView.findViewById(R.id.bookmarkbut);
+            share_button = itemView.findViewById(R.id.sharebut);
+            fav_button = itemView.findViewById(R.id.favouritebut);
+            book_button = itemView.findViewById(R.id.bookmarkbut);
 
-            sharebut.setOnClickListener(new OnClickListener() {
+            share_button.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     takeAction(view);
                 }
             });
-            favbut.setOnClickListener(new OnClickListener() {
+            fav_button.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     takeAction(view);
                 }
             });
-            bookbut.setOnClickListener(new OnClickListener() {
+            book_button.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     takeAction(view);
                 }
             });
 
-            arabictextll.setGravity(Gravity.END);
+            arabic_text_lin_layout.setGravity(Gravity.END);
 
-            ayahnumber = itemView.findViewById(R.id.oyat_raqam);
-            ayatext = itemView.findViewById(R.id.oyat_matn);
-            ayatextru = itemView.findViewById(R.id.oyat_ru);
-            ayatexten = itemView.findViewById(R.id.oyat_en);
+            ayah_number = itemView.findViewById(R.id.oyat_raqam);
+            ayah_text_uz = itemView.findViewById(R.id.oyat_matn);
+            ayah_text_ru = itemView.findViewById(R.id.oyat_ru);
+            ayah_text_en = itemView.findViewById(R.id.oyat_en);
 
-            ayatext.setOnClickListener(this);
-            ayatextru.setOnClickListener(this);
-            ayatexten.setOnClickListener(this);
+            ayah_text_uz.setOnClickListener(this);
+            ayah_text_ru.setOnClickListener(this);
+            ayah_text_en.setOnClickListener(this);
 
-            arabictext = itemView.findViewById(R.id.arab_txt);
-            arabic_ayahnumber = itemView.findViewById(R.id.arab_num);
+            arabic_text = itemView.findViewById(R.id.arab_txt);
+            arabic_ayah_number = itemView.findViewById(R.id.arab_num);
 
             madina = ResourcesCompat.getFont(mContext, R.font.maddina);
 
@@ -127,96 +127,96 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             ((LinearLayout.LayoutParams) lpartxt).setMargins(10, 0, 1, 1);
             //lpmar.width = 32;
             /*
-            ayahnumber.setBackgroundResource(ic_ayahsymbolayahsymbol);
-            ayatext.setLayoutParams(lp);
-            ayatext.setTextSize(18);
-            ayatext.setPadding(0, 5, 0, 5);
+            ayah_number.setBackgroundResource(ic_ayahsymbolayahsymbol);
+            ayah_text_uz.setLayoutParams(lp);
+            ayah_text_uz.setTextSize(18);
+            ayah_text_uz.setPadding(0, 5, 0, 5);
             */
-            ayahnumber.setTextSize(20);
-            ayahnumber.setLayoutParams(lp);
-            ayahnumber.setGravity(Gravity.CENTER);
-            ayatext.setVisibility(View.GONE);
-            ayatextru.setVisibility(View.GONE);
-            ayatexten.setVisibility(View.GONE);
-            ayahnumber.setVisibility(View.GONE);
-            arabictext.setLayoutParams(lpartxt);
-            arabictext.setTextSize(30);
-            arabictext.setGravity(Gravity.END | Gravity.RIGHT);
-            arabictext.setTextColor(Color.BLACK);
-            arabictext.setShadowLayer(1.5f, 0, 0, Color.BLACK);
-            arabictext.setVisibility(View.GONE);
-            arabictext.setTypeface(madina);
-            bookbut.setTag("unselected");
-            arabic_ayahnumber.setLayoutParams(lpmar);
-            //arabic_ayahnumber.setBackgroundResource(ic_ayahsymbolayahsymbol);
+            ayah_number.setTextSize(20);
+            ayah_number.setLayoutParams(lp);
+            ayah_number.setGravity(Gravity.CENTER);
+            ayah_text_uz.setVisibility(View.GONE);
+            ayah_text_ru.setVisibility(View.GONE);
+            ayah_text_en.setVisibility(View.GONE);
+            ayah_number.setVisibility(View.GONE);
+            arabic_text.setLayoutParams(lpartxt);
+            arabic_text.setTextSize(30);
+            arabic_text.setGravity(Gravity.END | Gravity.RIGHT);
+            arabic_text.setTextColor(Color.BLACK);
+            arabic_text.setShadowLayer(1.5f, 0, 0, Color.BLACK);
+            arabic_text.setVisibility(View.GONE);
+            arabic_text.setTypeface(madina);
+            book_button.setTag("unselected");
+            arabic_ayah_number.setLayoutParams(lpmar);
+            //arabic_ayah_number.setBackgroundResource(ic_ayahsymbolayahsymbol);
 
-            arabic_ayahnumber.setGravity(Gravity.CENTER);
-            arabic_ayahnumber.setVisibility(View.GONE);
+            arabic_ayah_number.setGravity(Gravity.CENTER);
+            arabic_ayah_number.setVisibility(View.GONE);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                arabictext.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
+                arabic_text.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
             }
 
-            if (arabictext.getParent() != null) {
-                ((ViewGroup) arabictext.getParent()).removeView(arabictext);
-                ((ViewGroup) arabic_ayahnumber.getParent()).removeView(arabic_ayahnumber);
+            if (arabic_text.getParent() != null) {
+                ((ViewGroup) arabic_text.getParent()).removeView(arabic_text);
+                ((ViewGroup) arabic_ayah_number.getParent()).removeView(arabic_ayah_number);
             }
-            if (ayatext.getParent() != null) {
-                ((ViewGroup) ayahnumber.getParent()).removeView(ayahnumber);
-                ((ViewGroup) ayatext.getParent()).removeView(ayatext);
+            if (ayah_text_uz.getParent() != null) {
+                ((ViewGroup) ayah_number.getParent()).removeView(ayah_number);
+                ((ViewGroup) ayah_text_uz.getParent()).removeView(ayah_text_uz);
 
             }
-            if (ayatextru.getParent() != null) {
+            if (ayah_text_ru.getParent() != null) {
 
-                ((ViewGroup) ayatextru.getParent()).removeView(ayatextru);
-                ((ViewGroup) ayatexten.getParent()).removeView(ayatexten);
+                ((ViewGroup) ayah_text_ru.getParent()).removeView(ayah_text_ru);
+                ((ViewGroup) ayah_text_en.getParent()).removeView(ayah_text_en);
             }
-            if (sharebut.getParent() != null) {
-                ((ViewGroup) sharebut.getParent()).removeView(sharebut);
-                ((ViewGroup) bookbut.getParent()).removeView(bookbut);
-                ((ViewGroup) favbut.getParent()).removeView(favbut);
+            if (share_button.getParent() != null) {
+                ((ViewGroup) share_button.getParent()).removeView(share_button);
+                ((ViewGroup) book_button.getParent()).removeView(book_button);
+                ((ViewGroup) fav_button.getParent()).removeView(fav_button);
             }
-            uzbektextll.addView(ayahnumber);
-            uzbektextll.addView(ayatext);
-            uzbektextll.addView(ayatextru);
-            uzbektextll.addView(ayatexten);
+            uzbek_text_lin_layout.addView(ayah_number);
+            uzbek_text_lin_layout.addView(ayah_text_uz);
+            uzbek_text_lin_layout.addView(ayah_text_ru);
+            uzbek_text_lin_layout.addView(ayah_text_en);
 
-            arabictextll.addView(arabic_ayahnumber);
-            arabictextll.addView(arabictext);
+            arabic_text_lin_layout.addView(arabic_ayah_number);
+            arabic_text_lin_layout.addView(arabic_text);
             if(SharedPref.getDefaults("uz") || SharedPref.getDefaults("ru") || SharedPref.getDefaults("en")){
 
             }else {
-                arabictextll.setVisibility(View.GONE);
+                arabic_text_lin_layout.setVisibility(View.GONE);
             }
 
 
-            actionsll.addView(sharebut);
-            actionsll.addView(bookbut);
-            actionsll.addView(favbut);
-            actionsll.setVisibility(View.GONE);
+            actions_lin_layout.addView(share_button);
+            actions_lin_layout.addView(book_button);
+            actions_lin_layout.addView(fav_button);
+            actions_lin_layout.setVisibility(View.GONE);
         }
 
 
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
-            Log.d("CLICK", ayahnumber.getText().toString());
-            versenumber = ayahnumber.getText().toString();
-            bookbut = ((ViewGroup) view.getParent()).findViewById(R.id.actions).findViewById(R.id.bookmarkbut);
-            bookbut.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
+            Log.d("CLICK", ayah_number.getText().toString());
+            verse_number = ayah_number.getText().toString();
+            book_button = ((ViewGroup) view.getParent()).findViewById(R.id.actions).findViewById(R.id.bookmarkbut);
+            book_button.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
 
-            if (actionsll.getVisibility() == View.GONE) {
-                actionsll.setVisibility(View.VISIBLE);
-                ayahtext = ayatext.getText().toString();
+            if (actions_lin_layout.getVisibility() == View.GONE) {
+                actions_lin_layout.setVisibility(View.VISIBLE);
+                ayahtext = ayah_text_uz.getText().toString();
                 ayah_position = SharedPref.read("xatchup" + chaptername, 0);
-                if (ayah_position == Integer.parseInt(versenumber)) {
-                    bookbut = ((ViewGroup) view.getParent()).findViewById(R.id.actions).findViewById(R.id.bookmarkbut);
-                    bookbut.setImageResource(R.drawable.ic_turned_in_black_24dp);
+                if (ayah_position == Integer.parseInt(verse_number)) {
+                    book_button = ((ViewGroup) view.getParent()).findViewById(R.id.actions).findViewById(R.id.bookmarkbut);
+                    book_button.setImageResource(R.drawable.ic_turned_in_black_24dp);
                 }
 
-                Log.d("verse number", versenumber + " " + ayah_position);
+                Log.d("verse number", verse_number + " " + ayah_position);
             } else {
-                actionsll.setVisibility(View.GONE);
+                actions_lin_layout.setVisibility(View.GONE);
             }
 
         }
@@ -231,14 +231,14 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
                 Log.d("CLICK SHARE", ayahtext);
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, ayahtext + "\n(" + chaptername + ", " + versenumber + ")\nhttps://goo.gl/sXBkNt\nFurqon dasturi, Android");
+                sendIntent.putExtra(Intent.EXTRA_TEXT, ayahtext + "\n(" + chaptername + ", " + verse_number + ")\nhttps://goo.gl/sXBkNt\nFurqon dasturi, Android");
                 sendIntent.setType("text/plain");
                 mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.shareayah)));
                 break;
             case R.id.favouritebut:
                 // favourite add to sqlite
                 //call the function
-                favbut = ((ViewGroup) view.getParent()).findViewById(R.id.favouritebut);
+                fav_button = ((ViewGroup) view.getParent()).findViewById(R.id.favouritebut);
                 addToFavourites(view);
                 break;
             case R.id.bookmarkbut:
@@ -246,18 +246,18 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
 
                 //recolor the bookmark
-                bookbut = ((ViewGroup) view.getParent()).findViewById(R.id.bookmarkbut);
-                if(bookbut.getTag().toString() == "unselected") {
-                    bookbut.setImageResource(R.drawable.ic_turned_in_black_24dp);
-                    bookbut.setTag("selected");
-                    SharedPref.write("xatchup" + chaptername, Integer.parseInt(versenumber));
+                book_button = ((ViewGroup) view.getParent()).findViewById(R.id.bookmarkbut);
+                if(book_button.getTag().toString() == "unselected") {
+                    book_button.setImageResource(R.drawable.ic_turned_in_black_24dp);
+                    book_button.setTag("selected");
+                    SharedPref.write("xatchup" + chaptername, Integer.parseInt(verse_number));
 
-                    SharedPref.write("xatchup", chaptername + ":"+chapternumber);
-                    Log.i("BOOKMARK", bookbut.getTag().toString());
+                    SharedPref.write("xatchup", chaptername + ":"+ chapter_number);
+                    Log.i("BOOKMARK", book_button.getTag().toString());
                 }
                 else {
-                    bookbut.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
-                    bookbut.setTag("unselected");
+                    book_button.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
+                    book_button.setTag("unselected");
                     SharedPref.write("xatchup" + chaptername, 0);
                     SharedPref.write("xatchup", 0);
                 }
@@ -271,14 +271,14 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         if(mDatabase==null) {
             mDatabase.open();
         }
-        if(favbut.getTag() == "1"){
-            mDatabase.saveToFavs(chapternumber, versenumber, "0");
-            favbut.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-            favbut.setTag("0");
+        if(fav_button.getTag() == "1"){
+            mDatabase.saveToFavs(chapter_number, verse_number, "0");
+            fav_button.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+            fav_button.setTag("0");
         }else {
-            mDatabase.saveToFavs(chapternumber, versenumber, "1");
-            favbut.setImageResource(R.drawable.ic_favorite_black_24dp);
-            favbut.setTag("1");
+            mDatabase.saveToFavs(chapter_number, verse_number, "1");
+            fav_button.setImageResource(R.drawable.ic_favorite_black_24dp);
+            fav_button.setTag("1");
         }
 
 
@@ -315,44 +315,44 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         String artext = mCursor.getString(3);
         String numb = mCursor.getString(2);
         int is_fav = mCursor.getInt(4);
-        versenumber = numb;
+        verse_number = numb;
         Log.i("TAG FAVOURITE AYAH", String.valueOf(is_fav));
 
         if(SharedPref.getDefaults("ar")){
-            holder.arabic_ayahnumber.setVisibility(View.VISIBLE);
-            holder.arabictext.setVisibility(View.VISIBLE);
+            holder.arabic_ayah_number.setVisibility(View.VISIBLE);
+            holder.arabic_text.setVisibility(View.VISIBLE);
 
         }
 
         if(is_fav ==1)
         {
-            favbut = holder.actionsll.findViewById(R.id.favouritebut);
-            favbut.setImageResource(R.drawable.ic_favorite_black_24dp);
-            favbut.setTag("1");
+            fav_button = holder.actions_lin_layout.findViewById(R.id.favouritebut);
+            fav_button.setImageResource(R.drawable.ic_favorite_black_24dp);
+            fav_button.setTag("1");
 
         }else {
-            favbut.setTag("0");
+            fav_button.setTag("0");
         }
 
-        //holder.arabictext.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
-        holder.arabictext.setGravity(Gravity.END | Gravity.RIGHT);
+        //holder.arabic_text.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
+        holder.arabic_text.setGravity(Gravity.END | Gravity.RIGHT);
 
-        holder.arabictext.setText(artext);
-        holder.arabic_ayahnumber.setText(String.valueOf(numb));
+        holder.arabic_text.setText(artext);
+        holder.arabic_ayah_number.setText(String.valueOf(numb));
 
         if (SharedPref.getDefaults("uz")) {
-            //holder.ayahnumber.setVisibility(View.VISIBLE);
-            holder.ayatext.setVisibility(View.VISIBLE);
-            holder.ayatext.setText(Html.fromHtml(collapseBraces(ttext)));
-            holder.ayahnumber.setText(String.valueOf(numb));
+            //holder.ayah_number.setVisibility(View.VISIBLE);
+            holder.ayah_text_uz.setVisibility(View.VISIBLE);
+            holder.ayah_text_uz.setText(Html.fromHtml(collapseBraces(ttext)));
+            holder.ayah_number.setText(String.valueOf(numb));
         }
         if(SharedPref.getDefaults("ru")){
-            holder.ayatextru.setVisibility(View.VISIBLE);
-            holder.ayatextru.setText(Html.fromHtml(collapseBraces(rtext)));
+            holder.ayah_text_ru.setVisibility(View.VISIBLE);
+            holder.ayah_text_ru.setText(Html.fromHtml(collapseBraces(rtext)));
         }
 if(SharedPref.getDefaults("en")){
-            holder.ayatexten.setVisibility(View.VISIBLE);
-            holder.ayatexten.setText(Html.fromHtml(collapseBraces(etext)));
+            holder.ayah_text_en.setVisibility(View.VISIBLE);
+            holder.ayah_text_en.setText(Html.fromHtml(collapseBraces(etext)));
         }
         Log.i("AYAT NUMBER", String.valueOf(numb));
         mArrayList.add(numb);

@@ -68,12 +68,37 @@
 
         <TextView
             android:id="@+id/oyat_matn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="9dp"
-            android:layout_marginLeft="9dp"
+            android:layout_marginLeft="0dp"
             android:layout_marginTop="0dp"
-            android:text="TextView" />
+            android:background="@color/common_google_signin_btn_text_light_disabled"
+            android:padding="2dp"
+            android:text="TextView"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused" />
+
+        <TextView
+            android:id="@+id/oyat_ru"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/bluebg"
+            android:padding="2dp"
+            android:paddingTop="5dp"
+            android:text="TextView"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused" />
+
+        <TextView
+            android:id="@+id/oyat_en"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@color/entxt"
+            android:padding="2dp"
+            android:text="TextView"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused" />
 
         <LinearLayout
             android:id="@+id/actions"
