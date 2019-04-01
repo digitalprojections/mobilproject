@@ -36,7 +36,10 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     private String chaptername;//Sura nomi
     private String chapternumber;
     private String versenumber;//oyat nomeri
-    private String ayahtext;//oyat matni
+    private String ayahtext;//oyat matni uzbek
+    private String ru_text;//oyat matni uzbek
+    private String en_text;//oyat matni uzbek
+
     private int ayah_position;
 
 
@@ -60,6 +63,8 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
     public class AyahListViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
         TextView ayatext;
+        TextView ayatextru;
+        TextView ayatexten;
         TextView arabictext;
         TextView ayahnumber;
         TextView arabic_ayahnumber;
@@ -105,8 +110,12 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
             ayahnumber = itemView.findViewById(R.id.oyat_raqam);
             ayatext = itemView.findViewById(R.id.oyat_matn);
+            ayatextru = itemView.findViewById(R.id.oyat_ru);
+            ayatexten = itemView.findViewById(R.id.oyat_en);
 
             ayatext.setOnClickListener(this);
+            ayatextru.setOnClickListener(this);
+            ayatexten.setOnClickListener(this);
 
             arabictext = itemView.findViewById(R.id.arab_txt);
             arabic_ayahnumber = itemView.findViewById(R.id.arab_num);
@@ -127,6 +136,8 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             ayahnumber.setLayoutParams(lp);
             ayahnumber.setGravity(Gravity.CENTER);
             ayatext.setVisibility(View.GONE);
+            ayatextru.setVisibility(View.GONE);
+            ayatexten.setVisibility(View.GONE);
             ayahnumber.setVisibility(View.GONE);
             arabictext.setLayoutParams(lpartxt);
             arabictext.setTextSize(30);
@@ -153,6 +164,12 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             if (ayatext.getParent() != null) {
                 ((ViewGroup) ayahnumber.getParent()).removeView(ayahnumber);
                 ((ViewGroup) ayatext.getParent()).removeView(ayatext);
+
+            }
+            if (ayatextru.getParent() != null) {
+
+                ((ViewGroup) ayatextru.getParent()).removeView(ayatextru);
+                ((ViewGroup) ayatexten.getParent()).removeView(ayatexten);
             }
             if (sharebut.getParent() != null) {
                 ((ViewGroup) sharebut.getParent()).removeView(sharebut);
@@ -161,10 +178,12 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             }
             uzbektextll.addView(ayahnumber);
             uzbektextll.addView(ayatext);
+            uzbektextll.addView(ayatextru);
+            uzbektextll.addView(ayatexten);
 
             arabictextll.addView(arabic_ayahnumber);
             arabictextll.addView(arabictext);
-            if(SharedPref.getDefaults("uz")){
+            if(SharedPref.getDefaults("uz") || SharedPref.getDefaults("ru") || SharedPref.getDefaults("en")){
 
             }else {
                 arabictextll.setVisibility(View.GONE);
@@ -290,10 +309,10 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         if (!mCursor.moveToPosition(i)) {
             return;
         }
-
-
-        String ttext = mCursor.getString(1);
-        String artext = mCursor.getString(0);
+        String etext = mCursor.getString(6);
+        String rtext = mCursor.getString(5);
+        String ttext = mCursor.getString(4);
+        String artext = mCursor.getString(3);
         String numb = mCursor.getString(2);
         int is_fav = mCursor.getInt(4);
         versenumber = numb;
@@ -322,10 +341,18 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         holder.arabic_ayahnumber.setText(String.valueOf(numb));
 
         if (SharedPref.getDefaults("uz")) {
-            holder.ayahnumber.setVisibility(View.VISIBLE);
+            //holder.ayahnumber.setVisibility(View.VISIBLE);
             holder.ayatext.setVisibility(View.VISIBLE);
             holder.ayatext.setText(Html.fromHtml(collapseBraces(ttext)));
             holder.ayahnumber.setText(String.valueOf(numb));
+        }
+        if(SharedPref.getDefaults("ru")){
+            holder.ayatextru.setVisibility(View.VISIBLE);
+            holder.ayatextru.setText(Html.fromHtml(collapseBraces(rtext)));
+        }
+if(SharedPref.getDefaults("en")){
+            holder.ayatexten.setVisibility(View.VISIBLE);
+            holder.ayatexten.setText(Html.fromHtml(collapseBraces(etext)));
         }
         Log.i("AYAT NUMBER", String.valueOf(numb));
         mArrayList.add(numb);
