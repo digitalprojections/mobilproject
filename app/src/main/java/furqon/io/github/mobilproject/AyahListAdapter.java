@@ -36,7 +36,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     private String chaptername;//Sura nomi
     private String chapter_number;
     private String verse_number;//oyat nomeri
-    private String ayahtext;//oyat matni uzbek
+    private String ayah_txt_uz;//oyat matni uzbek
     private String ru_text;//oyat matni uzbek
     private String en_text;//oyat matni uzbek
 
@@ -207,7 +207,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
             if (actions_lin_layout.getVisibility() == View.GONE) {
                 actions_lin_layout.setVisibility(View.VISIBLE);
-                ayahtext = ayah_text_uz.getText().toString();
+                ayah_txt_uz = ayah_text_uz.getText().toString();
                 ayah_position = SharedPref.read("xatchup" + chaptername, 0);
                 if (ayah_position == Integer.parseInt(verse_number)) {
                     book_button = ((ViewGroup) view.getParent()).findViewById(R.id.actions).findViewById(R.id.bookmarkbut);
@@ -228,10 +228,10 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
         switch (view.getId()) {
             case R.id.sharebut:
-                Log.d("CLICK SHARE", ayahtext);
+                Log.d("CLICK SHARE", ayah_txt_uz);
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, ayahtext + "\n(" + chaptername + ", " + verse_number + ")\nhttps://goo.gl/sXBkNt\nFurqon dasturi, Android");
+                sendIntent.putExtra(Intent.EXTRA_TEXT, ayah_txt_uz + "\n(" + chaptername + ", " + verse_number + ")\nhttps://goo.gl/sXBkNt\nFurqon dasturi, Android");
                 sendIntent.setType("text/plain");
                 mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.shareayah)));
                 break;
