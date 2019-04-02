@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="@android:dimen/notification_large_icon_height"
     android:layout_marginBottom="2dp"
-    android:background="@color/common_google_signin_btn_text_light_focused"
+    android:background="@color/common_google_signin_btn_text_dark_focused"
     android:clickable="true"
     android:focusable="true"
     android:orientation="horizontal"

@@ -122,7 +122,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
             madina = ResourcesCompat.getFont(mContext, R.font.maddina);
 
-            ((LinearLayout.LayoutParams) lpmar).setMargins(1, -5, 1, 1);
+            ((LinearLayout.LayoutParams) lpmar).setMargins(5, 5, 5, 5);
             ((LinearLayout.LayoutParams) lp).setMargins(0, 0, 1, 1);
             ((LinearLayout.LayoutParams) lpartxt).setMargins(10, 0, 1, 1);
             //lpmar.width = 32;

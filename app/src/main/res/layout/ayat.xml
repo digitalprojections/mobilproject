@@ -31,6 +31,7 @@
             android:id="@+id/arab_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:background="@drawable/ayah_symbol32"
             android:text="1" />
 
@@ -60,9 +61,7 @@
             android:id="@+id/oyat_raqam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="0dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginTop="0dp"
+
             android:background="@drawable/ayah_symbol32"
             android:text="1" />
 
@@ -70,11 +69,9 @@
             android:id="@+id/oyat_matn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="9dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginTop="0dp"
-            android:background="@color/common_google_signin_btn_text_light_disabled"
-            android:padding="2dp"
+
+            android:background="@drawable/rounded_corner"
+            android:padding="5dp"
             android:text="TextView"
             android:textColor="@color/common_google_signin_btn_text_dark_focused" />
 
@@ -82,11 +79,10 @@
             android:id="@+id/oyat_ru"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="9dp"
+
             android:layout_marginTop="5dp"
-            android:background="@color/bluebg"
-            android:padding="2dp"
-            android:paddingTop="5dp"
+            android:background="@drawable/rounded_corner_blue"
+            android:padding="5dp"
             android:text="TextView"
             android:textColor="@color/common_google_signin_btn_text_dark_focused" />
 
@@ -95,8 +91,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:background="@color/entxt"
-            android:padding="2dp"
+            android:background="@drawable/rounded_corner"
+            android:padding="5dp"
             android:text="TextView"
             android:textColor="@color/common_google_signin_btn_text_dark_focused" />
 
