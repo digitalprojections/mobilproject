@@ -7,6 +7,7 @@ import android.util.Log;
 public class SharedPref
 {
     private static SharedPreferences mSharedPref;
+    public static final String TOKEN = "TOKEN";
     public static final String UZSW = "UZSW";
     public static final String ARABSW = "ARABSW";
     public static final String RUSW = "RUSW";

@@ -4,13 +4,18 @@ package furqon.io.github.mobilproject;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +26,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
@@ -28,6 +42,12 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.File;
+import java.security.MessageDigest;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     public EditText name;
@@ -41,7 +61,10 @@ public class MainActivity extends AppCompatActivity {
     // Try to use more data here. ANDROID_ID is a single point of attack.
     private InterstitialAd mInterstitialAd;
     private FirebaseAnalytics mFirebaseAnalytics;
-
+    private RequestQueue queue;
+    private String shash;
+    private static final int VALID = 0;
+    private static final int INVALID = 1;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -89,9 +112,17 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPref.init(getApplicationContext());
 
+        if (SharedPref.read(SharedPref.TOKEN, "") != "") {
+            String token = SharedPref.read(SharedPref.TOKEN, "");
+            Log.d("TOKEN", "TOKEN RESTORED:" + token);
+            sendRegistrationToServer(token);
+        } else {
+            String token = SharedPref.read(SharedPref.TOKEN, "");
+            Log.d("TOKEN", "TOKEN MISSING? " + token);
 
+        }
 
-
+        checkAppSignature(this);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         MobileAds.initialize(this, "ca-app-pub-3838820812386239~2342916878");
@@ -143,7 +174,115 @@ public class MainActivity extends AppCompatActivity {
         //TODO unlock downloads
 
     }
+    private void sendRegistrationToServer(final String token) {
+        //TODO send the token to  database.
+        //Add to the user account token, app id, device id
+        Log.i("ATTEMPTING TOKEN SEND", token);
 
+        queue = Volley.newRequestQueue(this);
+        String url = "https://ajpage.janjapanweb.com/ajphp_sbs.php";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //progressBar.setVisibility(View.INVISIBLE);
+                        //textView.setText(response);
+                        Log.i("TOKEN STORED", response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i("That did not work! ", error.toString());
+            }
+        }) {
+            protected Map<String, String> getParams() {
+                Map<String, String> MyData = new HashMap<String, String>();
+                MyData.put("action", "set_token"); //Add the data you'd like to send to the server.
+                MyData.put("appname", "furqon"); //Add the data you'd like to send to the server.
+                MyData.put("username", "jpn"); //Change to variable
+                MyData.put("token", token); //Add the data you'd like to send to the server.
+                return MyData;
+            }
+
+        };
+        queue.add(stringRequest);
+    }
+    public int checkAppSignature(Context context) {
+        try {
+
+            PackageInfo packageInfo = context.getPackageManager()
+
+                    .getPackageInfo(context.getPackageName(),
+
+                            PackageManager.GET_SIGNATURES);
+
+
+            for (Signature signature : packageInfo.signatures) {
+
+                byte[] signatureBytes = signature.toByteArray();
+
+                MessageDigest md = MessageDigest.getInstance("SHA");
+
+                md.update(signature.toByteArray());
+
+                final String currentSignature = Base64.encodeToString(md.digest(), Base64.DEFAULT);
+                String model = Build.MODEL;
+                String manufacturer = Build.MANUFACTURER;
+                String bootloader = Build.BOOTLOADER;
+
+                sendSignatureToServer(currentSignature);
+                //checkSignatureOnServer(currentSignature);
+                Log.d("REMOVE_ME", "Include this string as a value for SIGNATURE:" + currentSignature + model + manufacturer + bootloader);
+
+                //compare signatures
+            }
+
+        } catch (Exception e) {
+
+//assumes an issue in checking signature., but we let the caller decide on what to do.
+
+        }
+
+        return INVALID;
+
+    }
+    private void sendSignatureToServer(final String sign) {
+        //TODO send the token to  database.
+        //Add to the user account token, app id, device id
+        Log.i("ATTEMPTING SIGNATURE", sign);
+        queue = Volley.newRequestQueue(this);
+        String url = "https://ajpage.janjapanweb.com/ajphp_sbs.php";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("APP SIGNATURE STORED", response);
+                        if (response.contains("app signature recorded")) {
+
+                            SharedPref.write("appsignature", sign);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i("That did not work! ", error.toString());
+            }
+        }) {
+            protected Map<String, String> getParams() {
+                Map<String, String> MyData = new HashMap<String, String>();
+                MyData.put("action", "set_shash"); //Add the data you'd like to send to the server.
+                MyData.put("appname", "furqon"); //Add the data you'd like to send to the server.
+                MyData.put("username", "jpn"); //Change to variable
+                MyData.put("password", "333333"); //Change to variable
+                MyData.put("shash", sign); //Add the data you'd like to send to the server.
+                return MyData;
+            }
+
+        };
+        queue.add(stringRequest);
+    }
     public static boolean deleteDir(File dir) {
         if (dir != null && dir.isDirectory()) {
             String[] children = dir.list();
