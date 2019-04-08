@@ -18,6 +18,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -53,7 +55,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
     private ViewGroup.LayoutParams lpmar; // Height of TextView
     private ViewGroup.LayoutParams lpartxt; // Height of TextView
     private ViewGroup.LayoutParams toplayout; // Height of TextView
-
+    private Animation scaler;
 
     FavouriteListAdapter(Context context, Cursor cursor, String suraname, String chapter) {
 
@@ -61,12 +63,15 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
 
         mContext = context;
         mCursor = cursor;
-        mDatabase = DatabaseAccess.getInstance(mContext);;
+        mDatabase = DatabaseAccess.getInstance(mContext);
+        scaler = AnimationUtils.loadAnimation(mContext, R.anim.rotate);
     }
 
 
     public class AyahListViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
         TextView ayatext;
+        TextView ayah_text_ru;
+        TextView ayah_text_en;
         TextView chapterTitle;
         TextView arabictext;
         TextView ayahnumber;
@@ -119,8 +124,12 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
 
             ayahnumber = itemView.findViewById(R.id.oyat_raqam);
             ayatext = itemView.findViewById(R.id.oyat_matn);
+            ayah_text_ru = itemView.findViewById(R.id.oyat_ru);
+            ayah_text_en = itemView.findViewById(R.id.oyat_en);
 
             ayatext.setOnClickListener(this);
+            ayah_text_ru.setOnClickListener(this);
+            ayah_text_en.setOnClickListener(this);
 
             arabictext = itemView.findViewById(R.id.arab_txt);
             arabic_ayahnumber = itemView.findViewById(R.id.arab_num);
@@ -149,6 +158,8 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
             ayahnumber.setGravity(Gravity.CENTER);
             ayatext.setVisibility(View.GONE);
             ayahnumber.setVisibility(View.GONE);
+            ayah_text_ru.setVisibility(View.GONE);
+            ayah_text_en.setVisibility(View.GONE);
             arabictext.setLayoutParams(lpartxt);
             arabictext.setTextSize(30);
             arabictext.setGravity(Gravity.END | Gravity.RIGHT);
@@ -162,7 +173,6 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
 
             arabic_ayahnumber.setGravity(Gravity.CENTER);
             arabic_ayahnumber.setVisibility(View.GONE);
-
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 arabictext.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
@@ -179,6 +189,11 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
                 ((ViewGroup) ayahnumber.getParent()).removeView(ayahnumber);
                 ((ViewGroup) ayatext.getParent()).removeView(ayatext);
             }
+            if (ayah_text_ru.getParent() != null) {
+
+                ((ViewGroup) ayah_text_ru.getParent()).removeView(ayah_text_ru);
+                ((ViewGroup) ayah_text_en.getParent()).removeView(ayah_text_en);
+            }
             if (sharebut.getParent() != null) {
                 ((ViewGroup) sharebut.getParent()).removeView(sharebut);
                 ((ViewGroup) bookbut.getParent()).removeView(bookbut);
@@ -189,6 +204,8 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
 
             linearLayout1.addView(ayahnumber);
             linearLayout1.addView(ayatext);
+            linearLayout1.addView(ayah_text_ru);
+            linearLayout1.addView(ayah_text_en);
 
             linearLayout2.addView(arabic_ayahnumber);
             linearLayout2.addView(arabictext);
@@ -245,6 +262,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
                 //call the function
                 favbut = ((ViewGroup) view.getParent()).findViewById(R.id.favouritebut);
                 addToFavourites(view);
+                favbut.startAnimation(scaler);
                 break;
             case R.id.bookmarkbut:
 
@@ -266,6 +284,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
                     bookbut.setTag("unselected");
                     SharedPref.write("xatchup" + chaptername, 0);
                 }
+                bookbut.startAnimation(scaler);
                 break;
         }
     }
@@ -327,13 +346,15 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
             return;
         }
 
-
-        String ttext = mCursor.getString(1);
-        String artext = mCursor.getString(0);
+        chapternumber = mCursor.getString(1);
         String numb = mCursor.getString(2);
-        chapternumber = mCursor.getString(3);
-        int is_fav = mCursor.getInt(4);
-        chaptername = mCursor.getString(5);
+        String artext = mCursor.getString(3);
+        String ttext = mCursor.getString(4);
+        String rtext = mCursor.getString(5);
+        String etext = mCursor.getString(6);
+
+        int is_fav = mCursor.getInt(7);
+        chaptername = mCursor.getString(8);
         versenumber = numb;
 
 
@@ -358,11 +379,20 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         holder.arabictext.setText(artext);
         holder.arabic_ayahnumber.setText(String.valueOf(numb));
 
-        if (SharedPref.read(SharedPref.UZSW,false)) {
-            holder.ayahnumber.setVisibility(View.VISIBLE);
+        if (SharedPref.getDefaults("uz")) {
+            //holder.ayah_number.setVisibility(View.VISIBLE);
             holder.ayatext.setVisibility(View.VISIBLE);
-            holder.ayatext.setTag(chapternumber);
             holder.ayatext.setText(Html.fromHtml(collapseBraces(ttext)));
+            holder.ayahnumber.setText(String.valueOf(numb));
+        }
+        if (SharedPref.getDefaults("ru")) {
+            holder.ayah_text_ru.setVisibility(View.VISIBLE);
+            holder.ayah_text_ru.setText(Html.fromHtml(collapseBraces(rtext)));
+            holder.ayahnumber.setText(String.valueOf(numb));
+        }
+        if (SharedPref.getDefaults("en")) {
+            holder.ayah_text_en.setVisibility(View.VISIBLE);
+            holder.ayah_text_en.setText(Html.fromHtml(collapseBraces(etext)));
             holder.ayahnumber.setText(String.valueOf(numb));
         }
         Log.i("SURANAME", String.valueOf(chaptername));
