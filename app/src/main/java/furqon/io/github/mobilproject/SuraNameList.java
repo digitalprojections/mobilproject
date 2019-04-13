@@ -2,11 +2,7 @@ package furqon.io.github.mobilproject;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +13,12 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
@@ -67,7 +69,7 @@ public class SuraNameList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sura_name_list);
-
+        SharedPref.init(getApplicationContext());
         //getSupportActionBar().setTitle("Suralar");
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -76,14 +78,14 @@ public class SuraNameList extends AppCompatActivity {
 
 
         mDatabase = DatabaseAccess.getInstance(getApplicationContext());
-
+        if(!mDatabase.isOpen()) {
+            mDatabase.open();
+        }
 
         recyclerView = findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        if(!mDatabase.isOpen()) {
-            mDatabase.open();
-        }
+
 
         suralist = mDatabase.getSuraTitles();
 
@@ -106,6 +108,8 @@ public class SuraNameList extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mInterstitialAd.show();
-        mDatabase.close();
+        if(mDatabase!=null) {
+            mDatabase.close();
+        }
     }
 }

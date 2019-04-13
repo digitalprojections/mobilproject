@@ -9,11 +9,7 @@ import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,15 +24,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.TimerTask;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 
 public class AyahList extends AppCompatActivity {
     private AyahListAdapter mAdapter;
     public DatabaseAccess mDatabase;
-    private Cursor ayahcursor;
-    private MediaPlayer mediaPlayer;
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
-    private RecyclerView recyclerView;
+    Cursor ayahcursor;
+    MediaPlayer mediaPlayer;
+
     Integer pos;
     Integer ayah_position;
     public String suranomi;
@@ -50,7 +49,7 @@ public class AyahList extends AppCompatActivity {
     SeekBar seekBar;
     Handler handler;
     Runnable runnable;
-    Thread t;
+
 
 
     @Override
@@ -63,7 +62,7 @@ public class AyahList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chapter_view);
-
+        SharedPref.init(getApplicationContext());
 
 
 
@@ -89,14 +88,14 @@ public class AyahList extends AppCompatActivity {
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mDatabase = DatabaseAccess.getInstance(getApplicationContext());
-
-
-        recyclerView = findViewById(R.id.chapter_scroll);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         if(!mDatabase.isOpen()) {
             mDatabase.open();
         }
+
+        RecyclerView recyclerView = findViewById(R.id.chapter_scroll);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
 
 
 
@@ -117,7 +116,7 @@ public class AyahList extends AppCompatActivity {
         ayah_position = SharedPref.read(xatchup+suranomi, 0);
         if(ayah_position>4) {
 
-            recyclerView.scrollToPosition(ayah_position-4);
+            recyclerView.scrollToPosition(ayah_position);
         }
         handler = new Handler();
 
@@ -151,21 +150,23 @@ public class AyahList extends AppCompatActivity {
     }
 
     public void playCycle() {
-        seekBar.setProgress(mediaPlayer.getCurrentPosition());
-        pos = mediaPlayer.getCurrentPosition();
-        timer = findViewById(R.id.audio_timer);
-        timer.setText(AudioTimer.getTimeStringFromMs(pos));
+        if(mediaPlayer!=null) {
+            seekBar.setProgress(mediaPlayer.getCurrentPosition());
+            pos = mediaPlayer.getCurrentPosition();
+            timer = findViewById(R.id.audio_timer);
+            timer.setText(AudioTimer.getTimeStringFromMs(pos));
 
-        if (mediaPlayer.isPlaying()) {
-            runnable = new Runnable() {
-                @Override
-                public void run() {
-                    startTimer();
-                    playCycle();
-                    Log.i("TIMER", "tick");
-                }
-            };
-            handler.postDelayed(runnable, 1000);
+            if (mediaPlayer.isPlaying()) {
+                runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        startTimer();
+                        playCycle();
+                        Log.i("TIMER", "tick");
+                    }
+                };
+                handler.postDelayed(runnable, 1000);
+            }
         }
     }
 
@@ -183,13 +184,36 @@ public class AyahList extends AppCompatActivity {
     }
 
     @Override
-
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.my_navigation_items, menu);
         return true;
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.play:
+                try {
 
+                    play();
+
+                } catch (IOException e) {
+                    Toast.makeText(getBaseContext(), loadfailed, Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+                return true;
+            case R.id.stop:
+                if (mediaPlayer == null) {
+
+                } else {
+                    pause();
+                }
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
     public void play() throws IOException {
 
         String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suranomer + ".mp3"; // your URL here
@@ -203,8 +227,6 @@ public class AyahList extends AppCompatActivity {
 
                     seekBar.setMax(mediaPlayer.getDuration());
                     progressBar.setVisibility(View.INVISIBLE);
-
-
                     resume();
                 }
             });
@@ -253,12 +275,13 @@ public class AyahList extends AppCompatActivity {
     }
 
     private void storeAudioPosition() {
-        if (mediaPlayer.isPlaying()) {
+        if(mediaPlayer!=null) {
+            if (mediaPlayer.isPlaying()) {
 
-            SharedPref.write(suranomi, mediaPlayer.getCurrentPosition());
-            editor.apply();
-            Toast.makeText(getBaseContext(), audiostore, Toast.LENGTH_SHORT).show();
-            mediaPlayer.pause();
+                SharedPref.write(suranomi, mediaPlayer.getCurrentPosition());
+                Toast.makeText(getBaseContext(), audiostore, Toast.LENGTH_SHORT).show();
+                mediaPlayer.pause();
+            }
         }
     }
 
@@ -279,29 +302,7 @@ public class AyahList extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.play:
-                try {
-                    play();
-                } catch (IOException e) {
-                    Toast.makeText(getBaseContext(), loadfailed, Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
-                return true;
-            case R.id.stop:
-                if (mediaPlayer == null) {
 
-                } else {
-                    pause();
-                }
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
     @Override
     protected void onDestroy() {
@@ -309,9 +310,12 @@ public class AyahList extends AppCompatActivity {
         pause();
         if (mediaPlayer != null) {
             mediaPlayer.release();
-            mDatabase.close();
+
 
             handler.removeCallbacks(runnable);
+        }
+        if(mDatabase!=null) {
+            mDatabase.close();
         }
     }
 

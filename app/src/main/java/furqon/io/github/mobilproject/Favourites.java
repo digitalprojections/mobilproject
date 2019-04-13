@@ -2,11 +2,8 @@ package furqon.io.github.mobilproject;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.support.v7.app.AppCompatActivity;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +16,14 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+
 public class Favourites extends AppCompatActivity {
 
     private ProgressBar progressBar;
@@ -29,14 +34,15 @@ public class Favourites extends AppCompatActivity {
     public String suranomi;
     private Cursor cursor;
     private AdView mAdView;
-
+    private static final String TAG = "FAVOURITES ACTIVITY";
+    private static final int REQUEST_INVITE = 0;
     private InterstitialAd mInterstitialAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourites);
-
+        SharedPref.init(getApplicationContext());
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
 
@@ -74,6 +80,9 @@ public class Favourites extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId())
         {
+            case R.id.invite_i:
+
+                return true;
             case R.id.settings_i:
                 open_settings();
                 return true;

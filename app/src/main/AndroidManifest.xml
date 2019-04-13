@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AyahOfTheDay"></activity>
+
 
         <service
             android:name=".MyFirebaseMessagingService"
@@ -25,15 +25,13 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".Settings" />
 
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="false" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_asset_32furqon_logo" />
-        <!--
- Set color used with incoming notification messages. This is used when no color is set for the incoming
-             notification message. See README(https://goo.gl/6BKBk7) for more.
-        -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
@@ -48,24 +46,24 @@
             android:name=".Favourites"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".SuraNameList" />
-        <activity android:name=".MainActivity">
-            <tools:validation testUrl="https://digitalprojections.github.io/" />
-
+        <activity android:name=".AyahOfTheDay">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
                 <data
-                    android:host="digitalprojections.github.io"
-                    android:scheme="https" />
+                    android:host="furqon.page.link"
+                    android:scheme="https"/>
             </intent-filter>
+        </activity>
+        <activity android:name=".MainActivity">
+            <!-- [START link_intent_filter] -->
+
         </activity>
     </application>
 

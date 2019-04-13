@@ -9,15 +9,17 @@ public class SharedPref
     private static SharedPreferences mSharedPref;
     public static final String TOKEN = "TOKEN";
     public static final String UZSW = "UZSW";
-    public static final String ARABSW = "ARABSW";
+    public static final String ARSW = "ARSW";
     public static final String RUSW = "RUSW";
     public static final String ENSW = "ENSW";
-    public static final String XATCHUP = "XATCHUP";
+    public static final String XATCHUP = "xatchup";
 
     public static boolean arsw;
     public static boolean uzsw;
     public static boolean rusw;
     public static boolean ensw;
+
+
 
     private SharedPref()
     {
@@ -50,25 +52,38 @@ public class SharedPref
             case "en":
                 rv = ensw;
                 break;
+
         }
 
         return rv;
     }
 
     private static void setDefaults(){
-        if(!mSharedPref.contains(UZSW)){
-            write(ARABSW,true);
+        if(!mSharedPref.contains(UZSW) || !mSharedPref.contains(RUSW) || !mSharedPref.contains(ENSW)){
+            write(ARSW,true);
             write(UZSW,false);
             write(RUSW,false);
             write(ENSW,false);
-            Log.i("SHAREDPREFS", "ok");
+            Log.i("SHAREDPREFS", "No translations selected");
         }
         else {
-            arsw = read(ARABSW, false);
+            arsw = read(ARSW, false);
             uzsw = read(UZSW, false);
             rusw = read(RUSW, false);
             ensw = read(ENSW, false);
+
         }
+
+    }
+
+    public static Boolean contains(String s){
+        Boolean rv = false;
+
+        if(mSharedPref.contains(s)){
+            rv = true;
+        }
+
+        return rv;
     }
 
     public static String read(String key, String defValue) {

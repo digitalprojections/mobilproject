@@ -14,9 +14,4 @@
 
     </style>
 
-    <style name="dailyverse">
-        <item name="android:textColor"></item>
-        <item name="android:textSize"></item>
-    </style>
-
 </resources>

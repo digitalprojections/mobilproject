@@ -1,7 +1,11 @@
 package furqon.io.github.mobilproject;
 
-import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -30,7 +34,7 @@ public class Settings extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-
+        SharedPref.init(getApplicationContext());
         sw_ar = findViewById(R.id.arabic_sw);
         sw_uz = findViewById(R.id.uzbek_sw);
         sw_ru = findViewById(R.id.ru_sw);
@@ -60,7 +64,7 @@ public class Settings extends AppCompatActivity {
 
     public void save_settings() {
 
-        SharedPref.write(SharedPref.ARABSW, sw_ar.isChecked());
+        SharedPref.write(SharedPref.ARSW, sw_ar.isChecked());
         SharedPref.write(SharedPref.UZSW, sw_uz.isChecked());
         SharedPref.write(SharedPref.RUSW, sw_ru.isChecked());
         SharedPref.write(SharedPref.ENSW, sw_en.isChecked());
@@ -70,7 +74,7 @@ public class Settings extends AppCompatActivity {
 
 
     public void updateView() {
-        sw_ar.setChecked(SharedPref.read(SharedPref.ARABSW, false));
+        sw_ar.setChecked(SharedPref.read(SharedPref.ARSW, false));
         sw_uz.setChecked(SharedPref.read(SharedPref.UZSW, false));
         sw_ru.setChecked(SharedPref.read(SharedPref.RUSW, false));
         sw_en.setChecked(SharedPref.read(SharedPref.ENSW, false));

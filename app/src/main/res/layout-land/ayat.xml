@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout"
@@ -9,18 +9,16 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/arabictranslation"
-        style="@style/ayahlistitem"
+        android:id="@+id/v_arabictranslation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/trbg"
+        android:background="@color/colorPrimary"
         android:gravity="end"
         android:orientation="vertical"
-        android:paddingTop="5dp"
-        android:paddingBottom="10dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -29,20 +27,24 @@
             android:id="@+id/arab_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ayah_symbol32"
-            android:text="1" />
+            android:layout_margin="5dp"
+            android:background="@drawable/ic_asset_8ayahsymbol"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="#000000" />
 
         <TextView
             android:id="@+id/arab_txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:text="TextView" />
+            android:text="TextView"
+            android:textColor="#000000" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/uzbektranslation"
+        android:id="@+id/alltranslations"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -52,35 +54,19 @@
         android:paddingBottom="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/arabictranslation">
-
-        <TextView
-            android:id="@+id/oyat_raqam"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="0dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginTop="0dp"
-            android:background="@drawable/ayah_symbol32"
-            android:text="1" />
-
-        <TextView
-            android:id="@+id/oyat_matn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="9dp"
-            android:layout_marginLeft="9dp"
-            android:layout_marginTop="0dp"
-            android:text="TextView" />
+        app:layout_constraintTop_toBottomOf="@+id/v_arabictranslation">
 
         <LinearLayout
             android:id="@+id/actions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:animationCache="true"
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/sharebut"
+                android:id="@+id/f_sharebut"
+                style="@android:style/Widget.Holo.ImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -99,7 +85,8 @@
                 app:srcCompat="@drawable/ic_share_black_24dp" />
 
             <ImageButton
-                android:id="@+id/bookmarkbut"
+                android:id="@+id/f_bookmarkbut"
+                style="@android:style/Widget.Holo.ImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -111,12 +98,13 @@
                 android:tag="unselected"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/sharebut"
+                app:layout_constraintStart_toEndOf="@+id/f_sharebut"
                 app:layout_constraintTop_toBottomOf="@+id/uzbektranslation"
                 app:srcCompat="@drawable/ic_bookmark_border_black_24dp" />
 
             <ImageButton
                 android:id="@+id/favouritebut"
+                style="@android:style/Widget.Holo.ImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -127,10 +115,70 @@
                 android:contentDescription="@string/favourite_it"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/bookmarkbut"
+                app:layout_constraintStart_toEndOf="@+id/f_bookmarkbut"
                 app:layout_constraintTop_toBottomOf="@+id/uzbektranslation"
                 app:srcCompat="@drawable/ic_favorite_border_black_24dp" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/uzbektranslation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/oyat_raqam"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:background="@drawable/ic_asset_8ayahsymbol"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/oyat_matn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:background="@drawable/rounded_corner"
+                android:padding="5dp"
+                android:text="TextView"
+                android:textColor="#000000" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/landscaper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="156dp">
+
+            <TextView
+                android:id="@+id/oyat_ru"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_corner_blue"
+                android:padding="5dp"
+                android:text="TextView"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/oyat_en"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_en_text"
+                android:padding="5dp"
+                android:text="TextView"
+                android:textColor="#000000" />
+        </LinearLayout>
+
     </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

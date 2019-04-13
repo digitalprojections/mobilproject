@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
     xmlns:tools="http://schemas.android.com/tools"
-    style="?attr/buttonStyle"
     android:layout_width="match_parent"
     android:layout_height="@android:dimen/notification_large_icon_height"
     android:layout_marginBottom="2dp"
@@ -24,7 +23,7 @@
         android:shadowDx="0"
         android:shadowDy="0"
         android:shadowRadius="1"
-        android:text=""
+        android:text="uzbek title "
         android:textColor="@color/gold"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -56,18 +55,18 @@
 
     <TextView
         android:id="@+id/sura_number_item"
-        android:layout_width="51dp"
-        android:layout_height="54dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/ic_ayahsymbolayahsymbol"
+        android:background="@drawable/ic_asset_8ayahsymbol"
         android:gravity="center|center_horizontal|center_vertical"
         android:text="1"
-        android:textColor="@color/gold"
+        android:textColor="#000000"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

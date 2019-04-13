@@ -4,16 +4,26 @@ import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "FIREBASE Messages";
 
     public MyFirebaseMessagingService() {
+
+
     }
 
     @Override
@@ -34,16 +44,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             } else {
                 // Handle message within 10 seconds
 
-                handleNow();
-            }
 
+            }
+            handleNow(remoteMessage.getData().get("body"));
         }
 
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
 
-            //AlertDialog alertDialog = new AlertDialog(this);
+
 
         }
 
@@ -75,6 +85,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String token) {
         Log.d(TAG, "Refreshed token: " + token);
+        SharedPref.init(getApplicationContext());
         SharedPref.write(SharedPref.TOKEN, token);
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
@@ -85,7 +96,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void scheduleJob(){
 
     }
-    private void handleNow(){
+    private void handleNow(String s){
+        Log.d(TAG, "text received: " + s);
 
     }
 

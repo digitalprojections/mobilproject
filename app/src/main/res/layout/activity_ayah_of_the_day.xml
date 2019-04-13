@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,6 +8,18 @@
     android:isScrollContainer="true"
     android:verticalScrollbarPosition="right"
     tools:context=".AyahOfTheDay">
+
+
+    <ProgressBar
+        android:id="@+id/progBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -29,6 +41,22 @@
             android:gravity="center"
             android:orientation="vertical">
 
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:srcCompat="@drawable/ic_language_black_24dp" />
+            </LinearLayout>
+
             <ImageView
                 android:id="@+id/imageView3"
                 android:layout_width="100dp"
@@ -45,7 +73,7 @@
                 app:srcCompat="@drawable/ic_asset_1furqon_logo" />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/random_verse_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -62,36 +90,30 @@
                 app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
             <TextView
-                android:id="@+id/mtext"
-                android:layout_width="wrap_content"
+                android:id="@+id/random_verse_text"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="20dp"
-                android:background="@color/common_google_signin_btn_text_light_disabled"
+                android:background="@drawable/random_ayah_bg"
                 android:gravity="center"
                 android:padding="20dp"
-                android:shadowColor="@android:color/black"
-                android:shadowDx="0"
-                android:shadowDy="0"
-                android:shadowRadius="1"
-                android:text="And of his signs is the creation of the heavens and earth and what He has dispersed throughout them of creatures"
+                android:shadowColor="@color/colorAccent"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="10"
                 android:textAllCaps="true"
                 android:textColor="@color/common_google_signin_btn_text_dark_default"
-                android:textSize="30sp"
-                android:textStyle="bold"
+                android:textSize="24sp"
+                android:textStyle="bold|italic"
                 android:typeface="serif"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.12"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView4" />
-
-            <android.support.v4.view.ViewPager
-                android:id="@+id/viewpager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                app:layout_constraintTop_toBottomOf="@+id/random_verse_title" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -99,7 +121,7 @@
                 android:orientation="horizontal">
 
                 <ImageButton
-                    android:id="@+id/imageButton2"
+                    android:id="@+id/previous_verse"
                     style="@android:style/Widget.Holo.ImageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -108,7 +130,7 @@
                     app:srcCompat="@drawable/ic_keyboard_arrow_left_black_24dp" />
 
                 <ImageButton
-                    android:id="@+id/sharebut"
+                    android:id="@+id/random_share"
                     style="@android:style/Widget.Holo.ImageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -128,7 +150,7 @@
                     app:srcCompat="@drawable/ic_share_black_24dp" />
 
                 <ImageButton
-                    android:id="@+id/bookmarkbut"
+                    android:id="@+id/random_bookmark"
                     style="@android:style/Widget.Holo.ImageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -141,12 +163,12 @@
                     android:tag="unselected"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toEndOf="@+id/sharebut"
+                    app:layout_constraintStart_toEndOf="@+id/f_sharebut"
                     app:layout_constraintTop_toBottomOf="@+id/uzbektranslation"
                     app:srcCompat="@drawable/ic_bookmark_border_black_24dp" />
 
                 <ImageButton
-                    android:id="@+id/favouritebut"
+                    android:id="@+id/random_favourite"
                     style="@android:style/Widget.Holo.ImageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -158,12 +180,12 @@
                     android:contentDescription="@string/favourite_it"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toEndOf="@+id/bookmarkbut"
+                    app:layout_constraintStart_toEndOf="@+id/f_bookmarkbut"
                     app:layout_constraintTop_toBottomOf="@+id/uzbektranslation"
                     app:srcCompat="@drawable/ic_favorite_border_black_24dp" />
 
                 <ImageButton
-                    android:id="@+id/imageButton"
+                    android:id="@+id/next_verse"
                     style="@android:style/Widget.Holo.ImageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -176,4 +198,4 @@
         </LinearLayout>
     </ScrollView>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

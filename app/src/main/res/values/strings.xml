@@ -3,14 +3,10 @@
     <string name="suralar">Chapters</string>
     <string name="cont">Continue</string>
     <string name="favorites">Favourites</string>
-    <string name="allow">Allowed</string>
-    <string name="dont_allow">Forbidden</string>
     <string name="settings">Settings</string>
     <string name="arabic">Arabic</string>
     <string name="uzbek">Uzbek</string>
     <string name="more_coming">More translations coming soon</string>
-    <string name="t_bookmark_stored">Verse bookmark stored</string>
-    <string name="t_verse_liked">stored in Favourites</string>
     <string name="audiopos_stored">Audio position stored</string>
     <string name="audiopos_restored">continue playing</string>
     <string name="audio_load_fail">Failed to load! Check your network</string>
@@ -18,10 +14,10 @@
     <string name="shareayah">Share this ayah to</string>
     <string name="bookmark_it">Bookmark the ayah</string>
     <string name="favourite_it">Add to Favourites</string>
-    <string name="banner_ad">ca-app-pub-3838820812386239/6533462802</string>
-    <string name="AdUnitId_fullpage">ca-app-pub-3838820812386239/2551267023</string>
-    <string name="app_id_mobileinitialize">ca-app-pub-3838820812386239~2342916878</string>
-    <string name="ayah_of_the_day">Verse of the day</string>
+    <string name="banner_ad" translatable="false">ca-app-pub-3838820812386239/6533462802</string>
+    <string name="AdUnitId_fullpage" translatable="false">ca-app-pub-3838820812386239/2551267023</string>
+    <string name="app_id_mobileinitialize" translatable="false">ca-app-pub-3838820812386239~2342916878</string>
     <string name="russian">Russian</string>
     <string name="english">English</string>
+    <string name="app_shuts_down_now">If the app does not shut down in 3 seconds, please, make sure to clear all its data to refresh and start using the new database</string>
 </resources>

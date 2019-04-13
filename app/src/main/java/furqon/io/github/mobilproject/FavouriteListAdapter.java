@@ -7,10 +7,6 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
@@ -26,8 +22,13 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
-public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdapter.AyahListViewHolder> {
+
+public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdapter.FavouriteListViewHolder> {
     private Context mContext;
     private Cursor mCursor;
     private ArrayList<String> mArrayList;
@@ -68,7 +69,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
     }
 
 
-    public class AyahListViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
+    public class FavouriteListViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
         TextView ayatext;
         TextView ayah_text_ru;
         TextView ayah_text_en;
@@ -85,7 +86,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         ConstraintLayout top;
 
 
-        AyahListViewHolder(@NonNull View itemView) {
+        FavouriteListViewHolder(@NonNull View itemView) {
             super(itemView);
 
             linearLayout1 = itemView.findViewById(R.id.uzbektranslation);
@@ -220,17 +221,18 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         @Override
         public void onClick(View view) {
             position = getAdapterPosition();
-            Log.d("CLICK", ayahnumber.getText().toString());
-            Log.d("FAV TAG", favbut.getTag().toString());
-            chapternumber = ayatext.getTag().toString();
-            versenumber = ayahnumber.getText().toString();
+            versenumber = String.valueOf(ayahnumber.getText());
+            Log.d("CLICK", versenumber);
+            //Log.d("FAV TAG", favbut.getTag());
+            chapternumber = String.valueOf(ayahnumber.getTag());
+
             bookbut = ((ViewGroup) view.getParent()).findViewById(R.id.actions).findViewById(R.id.bookmarkbut);
             bookbut.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
 
             if (linearLayout3.getVisibility() == View.GONE) {
                 linearLayout3.setVisibility(View.VISIBLE);
-                ayahtext = ayatext.getText().toString();
-                ayah_position = SharedPref.read("XATCHUP" + chaptername, 0);
+                ayahtext = String.valueOf(ayatext.getText());
+                ayah_position = SharedPref.read("xatchup" + chaptername, 0);
                 if (ayah_position == Integer.parseInt(versenumber)) {
                     bookbut = ((ViewGroup) view.getParent()).findViewById(R.id.actions).findViewById(R.id.bookmarkbut);
                     bookbut.setImageResource(R.drawable.ic_turned_in_black_24dp);
@@ -271,15 +273,15 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
 
                 //recolor the bookmark
                 bookbut = ((ViewGroup) view.getParent()).findViewById(R.id.bookmarkbut);
-                if(bookbut.getTag().toString() == "unselected") {
+                if(bookbut.getTag() == "unselected") {
                     bookbut.setImageResource(R.drawable.ic_turned_in_black_24dp);
                     bookbut.setTag("selected");
                     SharedPref.write("xatchup" + chaptername, Integer.parseInt(versenumber));
-                    mDatabase.saveToFavs(chapternumber, versenumber, "0");
-                    Log.i("BOOKMARK", bookbut.getTag().toString());
+                    mDatabase.removeFromFavs(chapternumber, versenumber, "0");
+                    Log.i("BOOKMARK", String.valueOf(bookbut.getTag()));
                 }
                 else {
-                    mDatabase.saveToFavs(chapternumber, versenumber, "1");
+                    mDatabase.removeFromFavs(chapternumber, versenumber, "1");
                     bookbut.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
                     bookbut.setTag("unselected");
                     SharedPref.write("xatchup" + chaptername, 0);
@@ -291,13 +293,13 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
 
     private void addToFavourites(View view){
         //TODO manage sqlite creation and data addition
-        Log.i("AYAT FAVOURITED", view.toString());
+        Log.i("AYAT FAVOURITED", String.valueOf(view));
 
         if(mDatabase==null) {
             mDatabase.open();
         }
         if(favbut.getTag() == "1"){
-            mDatabase.saveToFavs(chapternumber, versenumber, "0");
+            mDatabase.removeFromFavs(chapternumber, versenumber, "0");
             favbut.setImageResource(R.drawable.ic_favorite_border_black_24dp);
             favbut.setTag("0");
             mCursor = mDatabase.loadFavourites();
@@ -305,7 +307,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
             notifyItemRangeChanged(position, mCursor.getCount());
 
         }else {
-            mDatabase.saveToFavs(chapternumber, versenumber, "1");
+            mDatabase.removeFromFavs(chapternumber, versenumber, "1");
             favbut.setImageResource(R.drawable.ic_favorite_black_24dp);
             favbut.setTag("1");
         }
@@ -315,7 +317,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
 
     @NonNull
     @Override
-    public AyahListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
+    public FavouriteListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.fav_verse, parent, false);
 
@@ -337,11 +339,11 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         );
 
         mArrayList = new ArrayList<>();
-        return new AyahListViewHolder(view);
+        return new FavouriteListViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AyahListViewHolder holder, int i) {
+    public void onBindViewHolder(@NonNull FavouriteListViewHolder holder, int i) {
         if (!mCursor.moveToPosition(i)) {
             return;
         }
@@ -359,9 +361,10 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
 
 
         Log.i("TAG FAVOURITE", String.valueOf(is_fav==1));
-
-        holder.arabic_ayahnumber.setVisibility(View.VISIBLE);
-        holder.arabictext.setVisibility(View.VISIBLE);
+        if (SharedPref.getDefaults("ar")) {
+            holder.arabic_ayahnumber.setVisibility(View.VISIBLE);
+            holder.arabictext.setVisibility(View.VISIBLE);
+        }
         if(is_fav ==1)
         {
             favbut = holder.linearLayout3.findViewById(R.id.favouritebut);
@@ -384,16 +387,20 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
             holder.ayatext.setVisibility(View.VISIBLE);
             holder.ayatext.setText(Html.fromHtml(collapseBraces(ttext)));
             holder.ayahnumber.setText(String.valueOf(numb));
+
+            holder.ayahnumber.setTag(chapternumber);
         }
         if (SharedPref.getDefaults("ru")) {
             holder.ayah_text_ru.setVisibility(View.VISIBLE);
             holder.ayah_text_ru.setText(Html.fromHtml(collapseBraces(rtext)));
             holder.ayahnumber.setText(String.valueOf(numb));
+            holder.ayahnumber.setTag(chapternumber);
         }
         if (SharedPref.getDefaults("en")) {
             holder.ayah_text_en.setVisibility(View.VISIBLE);
             holder.ayah_text_en.setText(Html.fromHtml(collapseBraces(etext)));
             holder.ayahnumber.setText(String.valueOf(numb));
+            holder.ayahnumber.setTag(chapternumber);
         }
         Log.i("SURANAME", String.valueOf(chaptername));
         mArrayList.add(numb);

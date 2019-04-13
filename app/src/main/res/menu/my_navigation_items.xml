@@ -17,7 +17,5 @@
         android:icon="@drawable/ic_play_arrow_black_24dp"
         android:title=""
         app:showAsAction="always" />
-    <item
-        android:id="@+id/audio_time"
-        app:showAsAction="always" />
+
 </menu>

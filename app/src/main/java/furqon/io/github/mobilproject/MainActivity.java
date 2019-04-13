@@ -3,7 +3,7 @@ package furqon.io.github.mobilproject;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -12,9 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -22,8 +19,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -32,31 +27,43 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+
+
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.analytics.FirebaseAnalytics;
+
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 
 import java.io.File;
 import java.security.MessageDigest;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.fabric.sdk.android.Fabric;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 public class MainActivity extends AppCompatActivity {
-    public EditText name;
-    public Button suralar_but;
-    public Button davomi_but;
-    public Button day_but;
+
+    Button suralar_but;
+    Button davomi_but;
 
     private Handler handler;
-    private TextView statusText;
 
     // Try to use more data here. ANDROID_ID is a single point of attack.
     private InterstitialAd mInterstitialAd;
@@ -65,7 +72,10 @@ public class MainActivity extends AppCompatActivity {
     private String shash;
     private static final int VALID = 0;
     private static final int INVALID = 1;
-
+    private static final String TAG = "MAIN ACTIVITY";
+    private static final int REQUEST_INVITE = 0;
+    private static final String DEEP_LINK_URL = "https://furqon.page.link/deeplink";
+    Uri deepLink;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -77,6 +87,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.invite_i:
+                shareDeepLink(deepLink.toString());
+                return true;
             case R.id.settings_i:
                 open_settings();
                 return true;
@@ -89,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+
 
     private void open_settings() {
         Intent intent;
@@ -112,6 +127,8 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPref.init(getApplicationContext());
 
+        Fabric.with(this, new Crashlytics());
+        Crashlytics.log("Activity created");
         if (SharedPref.read(SharedPref.TOKEN, "") != "") {
             String token = SharedPref.read(SharedPref.TOKEN, "");
             Log.d("TOKEN", "TOKEN RESTORED:" + token);
@@ -135,11 +152,7 @@ public class MainActivity extends AppCompatActivity {
 
         suralar_but = findViewById(R.id.suralar);
         davomi_but = findViewById(R.id.davomi);
-        day_but = findViewById(R.id.ayahoftheday);
-
-        statusText = findViewById(R.id.result);
-        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
+        //day_but = findViewById(R.id.ayahoftheday);
         suralar_but.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -152,12 +165,9 @@ public class MainActivity extends AppCompatActivity {
                 continueReading();
             }
         });
-        day_but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ayahOfTheDay();
-            }
-        });
+
+
+        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
 
         try {
@@ -165,6 +175,8 @@ public class MainActivity extends AppCompatActivity {
             deleteDir(dir);
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.log(Log.ERROR, TAG, "NPE caught");
+            Crashlytics.logException(e);
         }
 
         //TODO login?
@@ -173,7 +185,87 @@ public class MainActivity extends AppCompatActivity {
         //TODO usage points
         //TODO unlock downloads
 
+        // Create a deep link and display it in the UI
+       deepLink = buildDeepLink(Uri.parse(DEEP_LINK_URL), 0);
+
+
+
+        FirebaseDynamicLinks.getInstance()
+                .getDynamicLink(getIntent())
+                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
+                    @Override
+                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
+                        // Get deep link from result (may be null if no link is found)
+                        Uri deepLink = null;
+                        if (pendingDynamicLinkData != null) {
+                            deepLink = pendingDynamicLinkData.getLink();
+                            Log.i(TAG, "LINK FOUND " + deepLink);
+                            Snackbar.make(findViewById(android.R.id.content),
+                                    "Found deep link!", Snackbar.LENGTH_LONG).show();
+                        }
+
+
+                        // Handle the deep link. For example, open the linked
+                        // content, or apply promotional credit to the user's
+                        // account.
+                        // ...
+
+                        // ...
+                        Log.d(TAG, "getDynamicLink:SUCCESS " + deepLink);
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "getDynamicLink:onFailure", e);
+                    }
+                });
+
     }
+    public Uri buildDeepLink(@NonNull Uri deepLink, int minVersion) {
+        String uriPrefix = "furqon.page.link";
+
+        // Set dynamic link parameters:
+        //  * URI prefix (required)
+        //  * Android Parameters (required)
+        //  * Deep link
+        // [START build_dynamic_link]
+        DynamicLink.Builder builder = FirebaseDynamicLinks.getInstance()
+                .createDynamicLink()
+                .setDomainUriPrefix(uriPrefix)
+                .setAndroidParameters(new DynamicLink.AndroidParameters.Builder()
+                        .setMinimumVersion(minVersion)
+                        .build())
+                .setLink(deepLink);
+
+        // Build the dynamic link
+        DynamicLink link = builder.buildDynamicLink();
+        // [END build_dynamic_link]
+
+        // Return the dynamic link as a URI
+        return link.getUri();
+    }
+
+    private void shareDeepLink(String deepLink) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Firebase Deep Link");
+        intent.putExtra(Intent.EXTRA_TEXT, "QURAN KAREEM Android " + deepLink);
+
+        startActivity(intent);
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
     private void sendRegistrationToServer(final String token) {
         //TODO send the token to  database.
         //Add to the user account token, app id, device id
@@ -199,8 +291,8 @@ public class MainActivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 Map<String, String> MyData = new HashMap<String, String>();
                 MyData.put("action", "set_token"); //Add the data you'd like to send to the server.
-                MyData.put("appname", "furqon"); //Add the data you'd like to send to the server.
-                MyData.put("username", "jpn"); //Change to variable
+                MyData.put("appname", ""); //Add the data you'd like to send to the server.
+                MyData.put("username", ""); //Change to variable
                 MyData.put("token", token); //Add the data you'd like to send to the server.
                 return MyData;
             }
@@ -208,6 +300,7 @@ public class MainActivity extends AppCompatActivity {
         };
         queue.add(stringRequest);
     }
+
     public int checkAppSignature(Context context) {
         try {
 
@@ -233,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
 
                 sendSignatureToServer(currentSignature);
                 //checkSignatureOnServer(currentSignature);
-                Log.d("REMOVE_ME", "Include this string as a value for SIGNATURE:" + currentSignature + model + manufacturer + bootloader);
+                //Log.d("REMOVE_ME", "Include this string as a value for SIGNATURE:" + currentSignature + model + manufacturer + bootloader);
 
                 //compare signatures
             }
@@ -247,6 +340,7 @@ public class MainActivity extends AppCompatActivity {
         return INVALID;
 
     }
+
     private void sendSignatureToServer(final String sign) {
         //TODO send the token to  database.
         //Add to the user account token, app id, device id
@@ -273,9 +367,9 @@ public class MainActivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 Map<String, String> MyData = new HashMap<String, String>();
                 MyData.put("action", "set_shash"); //Add the data you'd like to send to the server.
-                MyData.put("appname", "furqon"); //Add the data you'd like to send to the server.
-                MyData.put("username", "jpn"); //Change to variable
-                MyData.put("password", "333333"); //Change to variable
+                MyData.put("appname", ""); //Add the data you'd like to send to the server.
+                MyData.put("username", ""); //Change to variable
+                MyData.put("password", ""); //Change to variable
                 MyData.put("shash", sign); //Add the data you'd like to send to the server.
                 return MyData;
             }
@@ -283,6 +377,7 @@ public class MainActivity extends AppCompatActivity {
         };
         queue.add(stringRequest);
     }
+
     public static boolean deleteDir(File dir) {
         if (dir != null && dir.isDirectory()) {
             String[] children = dir.list();
@@ -306,19 +401,21 @@ public class MainActivity extends AppCompatActivity {
         //mInterstitialAd.show();
     }
 
+    //TODO ClassCastException fixed???
     private void continueReading() {
-        String xatchup = SharedPref.read(SharedPref.XATCHUP, "");
-        if (xatchup.length()>0) {
-            Log.i("XATCHUP", xatchup);
-            Intent intent;
-            Context context = this;
-            intent = new Intent(context, AyahList.class);
-            intent.putExtra("SURANAME", xatchup);
-            context.startActivity(intent);
+        if(SharedPref.contains(SharedPref.XATCHUP)) {
+            String xatchup = SharedPref.read(SharedPref.XATCHUP, "");
+            if (xatchup.length() > 0) {
+                Log.i("XATCHUP", xatchup);
+                Intent intent;
+                Context context = this;
+                intent = new Intent(context, AyahList.class);
+                intent.putExtra("SURANAME", xatchup);
+                context.startActivity(intent);
+            }
         } else {
             Toast.makeText(getBaseContext(), "No bookmarks found", Toast.LENGTH_LONG).show();
         }
-
 
     }
 

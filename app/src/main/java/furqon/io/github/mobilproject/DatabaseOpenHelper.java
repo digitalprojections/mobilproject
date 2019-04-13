@@ -11,7 +11,7 @@ import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 public class DatabaseOpenHelper extends SQLiteAssetHelper {
     private static final String DB_NAME = "qurandb";
-    private static final int DB_VERSION = 4;
+    private static final int DB_VERSION = 5;
 
     DatabaseOpenHelper(Context context) {
 
@@ -24,8 +24,8 @@ public class DatabaseOpenHelper extends SQLiteAssetHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldversion, int currentversion) {
         if(oldversion<3){
-            Cursor c = sqLiteDatabase.rawQuery("ALTER TABLE quran ADD favourite INTEGER;", null);
-            Log.i("COLUMN CREATED", String.valueOf(c));
+            //Cursor c = sqLiteDatabase.rawQuery("ALTER TABLE quran ADD favourite INTEGER;", null);
+            //Log.i("COLUMN CREATED", String.valueOf(c));
         }
 
     }

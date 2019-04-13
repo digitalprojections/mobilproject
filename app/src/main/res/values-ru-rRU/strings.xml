@@ -4,17 +4,18 @@
     <string name="suralar">Главы</string>
     <string name="cont">Продолжить</string>
     <string name="favorites">Избранные</string>
-    <string name="allow">Разрешается</string>
-    <string name="dont_allow">запрещено</string>
     <string name="settings">настройки</string>
     <string name="arabic">арабский</string>
     <string name="uzbek">узбекский</string>
     <string name="more_coming">Скоро будет больше переводов</string>
-    <string name="t_bookmark_stored">закладка сохранена</string>
-    <string name="t_verse_liked">Стих был сохранен в избранные</string>
     <string name="audiopos_stored">положение сохранено</string>
     <string name="audiopos_restored">продолжить с последней позиции</string>
     <string name="audio_load_fail">Ошибка загрузки! Проверьте свою сеть</string>
     <string name="save">Сохранить</string>
     <string name="shareayah">Поделись этим</string>
+    <string name="bookmark_it">добавить стих в закладки</string>
+    <string name="favourite_it">Добавить в избранное</string>
+    <string name="russian">русский</string>
+    <string name="english">английский</string>
+    <string name="app_shuts_down_now">Если приложение не закрывается в течение 3 секунд, пожалуйста, обязательно очистите все его данные, начните использовать</string>
 </resources>
