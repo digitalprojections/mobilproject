@@ -290,7 +290,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             mDatabase.open();
         }
         if (fav_button.getTag() == "1") {
-            mDatabase.saveToFavs(chapter_number, verse_number, "0");
+            mDatabase.removeFromFavs(chapter_number, verse_number, "0");
             fav_button.setImageResource(R.drawable.ic_favorite_border_black_24dp);
             fav_button.setTag("0");
         } else {

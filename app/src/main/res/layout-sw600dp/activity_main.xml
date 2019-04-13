@@ -28,7 +28,7 @@
                 android:layout_width="149dp"
                 android:layout_height="150dp"
                 android:layout_margin="10dp"
-                app:srcCompat="@drawable/ic_asset_32furqon_logo" />
+                app:srcCompat="@drawable/furqon_logo" />
 
             <include layout="@layout/suralar_button"></include>
 

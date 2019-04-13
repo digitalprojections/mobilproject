@@ -11,7 +11,7 @@
     <string name="audiopos_restored">continue playing</string>
     <string name="audio_load_fail">Failed to load! Check your network</string>
     <string name="save">Save</string>
-    <string name="shareayah">Share this ayah to</string>
+    <string name="shareayah">Share this ayah, fii sabi li-Allah to</string>
     <string name="bookmark_it">Bookmark the ayah</string>
     <string name="favourite_it">Add to Favourites</string>
     <string name="banner_ad" translatable="false">ca-app-pub-3838820812386239/6533462802</string>
@@ -20,4 +20,8 @@
     <string name="russian">Russian</string>
     <string name="english">English</string>
     <string name="app_shuts_down_now">If the app does not shut down in 3 seconds, please, make sure to clear all its data to refresh and start using the new database</string>
+    <string name="surah">"Surah: "</string>
+    <string name="ayah">", verse: "</string>
+    <string name="language_selected">Language Selected</string>
+    <string name="no_bookmarks">No bookmarks found</string>
 </resources>

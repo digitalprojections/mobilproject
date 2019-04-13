@@ -12,10 +12,13 @@
     <string name="audiopos_restored">продолжить с последней позиции</string>
     <string name="audio_load_fail">Ошибка загрузки! Проверьте свою сеть</string>
     <string name="save">Сохранить</string>
-    <string name="shareayah">Поделись этим</string>
+    <string name="shareayah">Поделись этим на пути Аллаха, субханаху ва таала</string>
     <string name="bookmark_it">добавить стих в закладки</string>
     <string name="favourite_it">Добавить в избранное</string>
     <string name="russian">русский</string>
     <string name="english">английский</string>
     <string name="app_shuts_down_now">Если приложение не закрывается в течение 3 секунд, пожалуйста, обязательно очистите все его данные, начните использовать</string>
+    <string name="surah">"Глава: "</string>
+    <string name="ayah">", стих: "</string>
+    <string name="language_selected">Язык выбран</string>
 </resources>

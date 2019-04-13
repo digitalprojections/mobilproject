@@ -61,9 +61,9 @@ public class SharedPref
     private static void setDefaults(){
         if(!mSharedPref.contains(UZSW) || !mSharedPref.contains(RUSW) || !mSharedPref.contains(ENSW)){
             write(ARSW,true);
-            write(UZSW,false);
-            write(RUSW,false);
-            write(ENSW,false);
+            write(UZSW,true);
+            write(RUSW,true);
+            write(ENSW,true);
             Log.i("SHAREDPREFS", "No translations selected");
         }
         else {

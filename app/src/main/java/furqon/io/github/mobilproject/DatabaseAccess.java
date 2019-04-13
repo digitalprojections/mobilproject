@@ -80,7 +80,7 @@ public class DatabaseAccess {
         try {
             c = db.rawQuery("SELECT at.ChapterID, at.SuraName as 'arabic', sn.SuraName as 'uzbek'  FROM arabic_titles at inner join suranames sn on sn.chapterid = at.chapterid", new String[]{});
         } catch (SQLiteException e) {
-
+            Crashlytics.logException(e);
         }
         return c;
 
@@ -119,47 +119,18 @@ public class DatabaseAccess {
                     "and fv.fav = '1'", new String[]{});
             Log.i("TABLE COLUMN", String.valueOf(c));
         } catch (SQLiteException e) {
-
-        }
-
-        return c;
-
-    }
-
-    Cursor loadRandom() {
-        try {
-            c = db.rawQuery("SELECT q1.AyahText, q2.AyahText as 'uztext', q1.VerseID, q1.SuraID, q1.favourite, sn.SuraName FROM quran q1\n" +
-                    "INNER JOIN quran q2\n" +
-                    "ON q1.SuraID=q2.SuraID\n" +
-                    "INNER JOIN SuraNames sn \n" +
-                    "ON sn.ChapterID=q1.SuraID\n" +
-                    "WHERE q1.DatabaseID = 1\n" +
-                    "and q2.daily = 1\n" +
-                    "and q1.VerseID=q2.VerseID\n" +
-                    "and q2.DatabaseID=120", new String[]{});
-            Log.i("TABLE COLUMN", String.valueOf(c));
-        } catch (SQLiteException e) {
-
-        }
-
-        return c;
-
-    }
-    Cursor getRandomSurah(String suraid){
-        try{
-            c = db.rawQuery("SELECT COUNT(*) FROM quran\n" +
-                    "WHERE SuraID = " + suraid +
-                    "and DatabaseID = 1", new String[]{});
-        }
-        catch (SQLiteException e){
             Crashlytics.logException(e);
         }
+
         return c;
+
     }
 
-    Cursor getRandomAyah(String suraid, String ayahno) {
+
+    Cursor getRandomAyah(int suraid, int ayahno) {
+        Log.d("DATABASE", suraid + " " + ayahno);
         try {
-            c = db.rawQuery("SELECT uzbek.SuraID,uzbek.VerseID, arabic.AyahText as 'arab', uzbek.AyahText as 'uzb', russian.AyahText as 'ru', english.AyahText as 'en'\n" +
+            c = db.rawQuery("SELECT uzbek.SuraID,uzbek.VerseID, sn.SuraName, arabic.AyahText as 'arab', uzbek.AyahText as 'uzb', russian.AyahText as 'ru', english.AyahText as 'en', (SELECT fv.fav FROM favourites fv WHERE fv.sura_id=arabic.SuraID and fv.ayah_id=arabic.VerseID) as 'fav'\n" +
                     "\tFROM quran uzbek\n" +
                     "\tJOIN quran arabic\n" +
                     "\tON arabic.SuraID = uzbek.SuraID\n" +
@@ -167,6 +138,8 @@ public class DatabaseAccess {
                     "\tON russian.SuraID = arabic.SuraID\n" +
                     "\tJOIN quran english\n" +
                     "\tON english.SuraID = uzbek.SuraID\n" +
+                    "JOIN SuraNames sn\n" +
+                    "\tON sn.ChapterID = arabic.SuraID" +
                     "\twhere \n" +
                     "\tuzbek.databaseid = 120\n" +
                     "\tand uzbek.VerseID = arabic.VerseID\n" +
@@ -273,21 +246,55 @@ public class DatabaseAccess {
 
     }
 
-    public void saveToFavs(String suraid, String ayahno, String fav) {
+    public void removeFromFavs(int suraid, int ayahno, String fav) {
 // New value for one column
 
         ContentValues values = new ContentValues();
         values.put(FavouriteManager.COLUMN_FAV, fav);
-        values.put(FavouriteManager.COLUMN_SURAID, suraid);
-        values.put(FavouriteManager.COLUMN_VERSEID, ayahno);
+        String[] vals = {String.valueOf(suraid), String.valueOf(ayahno)};
 
-        long count = db.insertOrThrow(FavouriteManager.TABLE_FAV, null, values);
+        long count = db.updateWithOnConflict(FavouriteManager.TABLE_FAV, values, "sura_id=? and ayah_id=?", vals, SQLiteDatabase.CONFLICT_REPLACE);
         if (count < 0) {
 
 
         }
 
         Log.i("UPDATE ", "database updated? " + suraid + " " + ayahno + " " + fav);
+
+    }
+
+    public void saveToFavs(String suraid, String ayahno, String fav) {
+// New value for one column
+
+        db.execSQL("SELECT * FROM favourites where sura_id="+suraid + " and ayah_id="+ayahno);
+
+        if(c.getCount()>0){
+            Log.i("UPDATE ", "database updated? " + suraid + " " + ayahno + " " + fav);
+            db.execSQL("UPDATE favourites SET fav="+fav+" where sura_id="+suraid + " and ayah_id="+ayahno);
+        }
+        else {
+            Log.i("INSERT ", "database updated? " + suraid + " " + ayahno + " " + fav);
+            db.execSQL("INSERT INTO favourites (fav, sura_id, ayah_id) VALUES("+fav + ", "+suraid + ", " + ayahno+")");
+        }
+
+
+
+
+    }
+
+    public void saveToFavs(int suraid, int ayahno, String fav) {
+// New value for one column
+
+        db.execSQL("SELECT * FROM favourites where sura_id="+suraid + " and ayah_id="+ayahno);
+
+        if(c.getCount()>0){
+            Log.i("UPDATE ", "database updated? " + suraid + " " + ayahno + " " + fav);
+            db.execSQL("UPDATE favourites SET fav="+fav+" where sura_id="+suraid + " and ayah_id="+ayahno);
+        }
+        else {
+            Log.i("INSERT ", "database updated? " + suraid + " " + ayahno + " " + fav);
+            db.execSQL("INSERT INTO favourites (fav, sura_id, ayah_id) VALUES("+fav + ", "+suraid + ", " + ayahno+")");
+        }
 
     }
 

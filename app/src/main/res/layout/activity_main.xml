@@ -38,7 +38,7 @@
             android:layout_marginBottom="10dp"
             android:adjustViewBounds="true"
             android:contentDescription="Furqon"
-            app:srcCompat="@drawable/ic_asset_32furqon_logo" />
+            app:srcCompat="@drawable/furqon_logo" />
 
         <include layout="@layout/suralar_button"></include>
 

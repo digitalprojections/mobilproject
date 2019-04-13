@@ -76,13 +76,13 @@
                 android:background="@drawable/random_ayah_bg"
                 android:gravity="center"
                 android:padding="20dp"
-                android:shadowColor="@color/colorAccent"
+                android:shadowColor="@color/gold"
                 android:shadowDx="1"
                 android:shadowDy="1"
                 android:shadowRadius="10"
                 android:textAllCaps="true"
                 android:textColor="@color/common_google_signin_btn_text_dark_default"
-                android:textSize="24sp"
+                android:textSize="18sp"
                 android:textStyle="bold|italic"
                 android:typeface="serif"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -116,16 +116,10 @@
                     android:layout_marginRight="8dp"
                     android:layout_marginBottom="8dp"
                     android:contentDescription="@string/shareayah"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/uzbektranslation"
-                    app:layout_constraintVertical_bias="0.0"
                     app:srcCompat="@drawable/ic_share_black_24dp" />
 
                 <ImageButton
-                    android:id="@+id/random_bookmark"
+                    android:id="@+id/random_home"
                     style="@android:style/Widget.Holo.ImageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -136,11 +130,21 @@
                     android:layout_marginRight="8dp"
                     android:contentDescription="@string/bookmark_it"
                     android:tag="unselected"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toEndOf="@+id/f_sharebut"
-                    app:layout_constraintTop_toBottomOf="@+id/uzbektranslation"
-                    app:srcCompat="@drawable/ic_bookmark_border_black_24dp" />
+                    app:srcCompat="@drawable/ic_home_black_24dp" />
+
+                <ImageButton
+                    android:id="@+id/random_find"
+                    style="@android:style/Widget.Holo.ImageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:contentDescription="@string/bookmark_it"
+                    android:tag="unselected"
+                    app:srcCompat="@drawable/ic_find_in_page_black_24dp" />
 
                 <ImageButton
                     android:id="@+id/random_favourite"
@@ -153,10 +157,6 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
                     android:contentDescription="@string/favourite_it"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toEndOf="@+id/f_bookmarkbut"
-                    app:layout_constraintTop_toBottomOf="@+id/uzbektranslation"
                     app:srcCompat="@drawable/ic_favorite_border_black_24dp" />
 
                 <ImageButton
@@ -214,32 +214,41 @@
 
             <TextView
                 android:id="@+id/uztxt"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_margin="1dp"
                 android:layout_weight="1"
+                android:background="@drawable/rounded_corner"
+                android:gravity="center"
+                android:padding="5dp"
                 android:text="@string/uzbek"
-                android:textColor="@color/design_default_color_surface"
+                android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 android:visibility="invisible" />
 
             <TextView
                 android:id="@+id/rutxt"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_margin="1dp"
                 android:layout_weight="1"
+                android:background="@drawable/rounded_corner_blue"
+                android:gravity="center"
+                android:padding="5dp"
                 android:text="@string/russian"
-                android:textColor="@color/common_google_signin_btn_text_dark_default"
+                android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 android:visibility="invisible" />
 
             <TextView
                 android:id="@+id/entxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_margin="1dp"
                 android:layout_weight="1"
+                android:background="@drawable/rounded_en_text"
+                android:gravity="center"
+                android:padding="5dp"
                 android:text="@string/english"
-                android:textColor="@color/common_google_signin_btn_text_dark_default"
+                android:textColor="@color/design_default_color_on_secondary"
                 android:visibility="invisible" />
         </LinearLayout>
 

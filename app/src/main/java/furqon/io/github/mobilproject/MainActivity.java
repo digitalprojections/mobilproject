@@ -414,7 +414,7 @@ public class MainActivity extends AppCompatActivity {
                 context.startActivity(intent);
             }
         } else {
-            Toast.makeText(getBaseContext(), "No bookmarks found", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), getString(R.string.no_bookmarks), Toast.LENGTH_LONG).show();
         }
 
     }
