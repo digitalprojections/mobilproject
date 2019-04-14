@@ -5,13 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-<include android:id="@+id/tool_bar"
-    layout="@layout/toolbar"/>
+
+    <include layout="@layout/toolbar"
+        android:id="@+id/tool_bar"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
+
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="10dp">
@@ -30,8 +32,12 @@
             android:orientation="vertical">
 
             <include layout="@layout/suralar_button"></include>
+
             <include layout="@layout/continue_button"></include>
 
+            <include layout="@layout/favourite_button"></include>
+
+            <include layout="@layout/search_button"></include>
         </LinearLayout>
 
     </LinearLayout>

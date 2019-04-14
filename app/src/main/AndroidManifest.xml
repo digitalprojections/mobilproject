@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity android:name=".Search"></activity>
 
         <service
             android:name=".MyFirebaseMessagingService"
@@ -24,7 +24,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
 
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
@@ -38,9 +37,8 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3838820812386239~2342916878" />
-<activity android:name=".Settings">
 
-</activity>
+        <activity android:name=".Settings"></activity>
         <activity
             android:name=".AyahList"
             android:parentActivityName=".SuraNameList" />
@@ -55,15 +53,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="furqon.page.link"
-                    android:scheme="https"/>
+                    android:scheme="https" />
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity">
+
             <!-- [START link_intent_filter] -->
 
         </activity>

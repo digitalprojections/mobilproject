@@ -8,10 +8,4 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="ayahlistitem" parent="Base.Widget.AppCompat.Button">
-
-
-
-    </style>
-
 </resources>

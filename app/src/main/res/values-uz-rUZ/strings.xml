@@ -21,4 +21,6 @@
     <string name="ayah">", oyat: "</string>
     <string name="surah">"Sura: "</string>
     <string name="language_selected">Til tanlandi</string>
+    <string name="no_bookmarks">Xatcho\'plar topilmadi</string>
+    <string name="invite_i">Taklif qiling</string>
 </resources>

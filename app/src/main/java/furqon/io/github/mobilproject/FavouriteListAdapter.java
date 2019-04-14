@@ -2,7 +2,6 @@ package furqon.io.github.mobilproject;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -66,6 +65,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         mCursor = cursor;
         mDatabase = DatabaseAccess.getInstance(mContext);
         scaler = AnimationUtils.loadAnimation(mContext, R.anim.rotate);
+
     }
 
 
@@ -210,6 +210,8 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
 
             linearLayout2.addView(arabic_ayahnumber);
             linearLayout2.addView(arabictext);
+            linearLayout2.setTag("0");
+
 
             linearLayout3.addView(sharebut);
             linearLayout3.addView(bookbut);
@@ -295,23 +297,23 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         //TODO manage sqlite creation and data addition
         Log.i("AYAT FAVOURITED", String.valueOf(view));
 
-        if(mDatabase==null) {
+        if (mDatabase == null || !mDatabase.isOpen()) {
             mDatabase.open();
-        }
-        if(favbut.getTag() == "1"){
-            mDatabase.removeFromFavs(chapternumber, versenumber, "0");
-            favbut.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-            favbut.setTag("0");
-            mCursor = mDatabase.loadFavourites();
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, mCursor.getCount());
+        } else if (mDatabase.isOpen()) {
+            if (favbut.getTag() == "1") {
+                mDatabase.removeFromFavs(chapternumber, versenumber, "0");
+                favbut.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                favbut.setTag("0");
+                mCursor = mDatabase.loadFavourites();
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, mCursor.getCount());
 
-        }else {
-            mDatabase.removeFromFavs(chapternumber, versenumber, "1");
-            favbut.setImageResource(R.drawable.ic_favorite_black_24dp);
-            favbut.setTag("1");
+            } else {
+                mDatabase.removeFromFavs(chapternumber, versenumber, "1");
+                favbut.setImageResource(R.drawable.ic_favorite_black_24dp);
+                favbut.setTag("1");
+            }
         }
-
 
     }
 

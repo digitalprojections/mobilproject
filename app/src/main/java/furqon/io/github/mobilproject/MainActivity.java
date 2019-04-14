@@ -19,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -62,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
 
     Button suralar_but;
     Button davomi_but;
+    Button favourite_but;
+    Button search_but;
+    ImageView imageView;
 
     private Handler handler;
 
@@ -111,11 +115,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void open_favourites() {
-        Intent intent;
-        intent = new Intent(this, furqon.io.github.mobilproject.Favourites.class);
-        startActivity(intent);
-    }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -124,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
+
 
         SharedPref.init(getApplicationContext());
 
@@ -152,6 +152,28 @@ public class MainActivity extends AppCompatActivity {
 
         suralar_but = findViewById(R.id.suralar);
         davomi_but = findViewById(R.id.davomi);
+        favourite_but = findViewById(R.id.favouritebut);
+        search_but = findViewById(R.id.searchbtn);
+        imageView = findViewById(R.id.imageView);
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ayahOfTheDay();
+            }
+        });
+        favourite_but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                open_favourites();
+            }
+        });
+        search_but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                open_search();
+            }
+        });
         //day_but = findViewById(R.id.ayahoftheday);
         suralar_but.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -437,6 +459,16 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, AyahOfTheDay.class);
         startActivity(intent);
 
+    }
+    private void open_favourites() {
+        Intent intent;
+        intent = new Intent(this, furqon.io.github.mobilproject.Favourites.class);
+        startActivity(intent);
+    }
+    private void open_search() {
+        Intent intent;
+        intent = new Intent(this, furqon.io.github.mobilproject.Search.class);
+        startActivity(intent);
     }
 
     private void displayResult(final String result) {

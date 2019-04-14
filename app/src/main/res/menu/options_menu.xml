@@ -18,6 +18,6 @@
     <item
         android:id="@+id/invite_i"
         android:icon="@drawable/ic_group_add_black_24dp"
-        android:title="Invite"
-        app:showAsAction="always" />
+        android:title="@string/invite_i"
+        app:showAsAction="ifRoom" />
 </menu>

@@ -213,17 +213,18 @@ public class AyahOfTheDay extends AppCompatActivity {
     private void addToFavourites(View view) {
         // manage sqlite creation and data addition
         Log.i("AYAT FAVOURITED", String.valueOf(view));
-        if (mDatabase == null) {
+        if (mDatabase == null || !mDatabase.isOpen()) {
             mDatabase.open();
-        }
-        if (fav_btn.getTag() == "1") {
-            mDatabase.removeFromFavs(random_surah, random_ayah, "0");
-            fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-            fav_btn.setTag("0");
-        } else {
-            mDatabase.saveToFavs(random_surah, random_ayah, "1");
-            fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
-            fav_btn.setTag("1");
+        } else if (mDatabase.isOpen()) {
+            if (fav_btn.getTag() == "1") {
+                mDatabase.removeFromFavs(random_surah+1, random_ayah, "0");
+                fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                fav_btn.setTag("0");
+            } else {
+                mDatabase.saveToFavs(random_surah+1, random_ayah, "1");
+                fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
+                fav_btn.setTag("1");
+            }
         }
 
 

@@ -286,19 +286,19 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     private void addToFavourites(View view) {
         // manage sqlite creation and data addition
         Log.i("AYAT FAVOURITED", String.valueOf(view));
-        if (mDatabase == null) {
+        if (mDatabase == null || !mDatabase.isOpen()) {
             mDatabase.open();
+        } else if (mDatabase.isOpen()) {
+            if (fav_button.getTag() == "1") {
+                mDatabase.removeFromFavs(chapter_number, verse_number, "0");
+                fav_button.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                fav_button.setTag("0");
+            } else {
+                mDatabase.saveToFavs(chapter_number, verse_number, "1");
+                fav_button.setImageResource(R.drawable.ic_favorite_black_24dp);
+                fav_button.setTag("1");
+            }
         }
-        if (fav_button.getTag() == "1") {
-            mDatabase.removeFromFavs(chapter_number, verse_number, "0");
-            fav_button.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-            fav_button.setTag("0");
-        } else {
-            mDatabase.saveToFavs(chapter_number, verse_number, "1");
-            fav_button.setImageResource(R.drawable.ic_favorite_black_24dp);
-            fav_button.setTag("1");
-        }
-
 
     }
 
@@ -393,7 +393,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     @Override
     public int getItemCount() {
         Integer rv = 0;
-        if(mCursor!=null){
+        if (mCursor != null) {
             rv = mCursor.getCount();
         }
 

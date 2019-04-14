@@ -6,9 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <include
-        android:id="@+id/tool_bar"
-        layout="@layout/toolbar" />
+    <include layout="@layout/toolbar"
+    android:id="@+id/tool_bar"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -42,9 +42,11 @@
 
         <include layout="@layout/suralar_button"></include>
 
-        <include
-            android:id="@+id/continue_reading"
-            layout="@layout/continue_button"></include>
+        <include layout="@layout/continue_button"></include>
+
+        <include layout="@layout/favourite_button"></include>
+
+        <include layout="@layout/search_button"></include>
 
     </LinearLayout>
 

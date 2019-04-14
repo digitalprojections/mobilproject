@@ -21,4 +21,6 @@
     <string name="surah">"Глава: "</string>
     <string name="ayah">", стих: "</string>
     <string name="language_selected">Язык выбран</string>
+    <string name="no_bookmarks">Закладки не найдены</string>
+    <string name="invite_i">Пригласить</string>
 </resources>
