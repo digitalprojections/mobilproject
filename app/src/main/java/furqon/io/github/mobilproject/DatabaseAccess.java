@@ -266,17 +266,18 @@ public class DatabaseAccess {
     public void saveToFavs(String suraid, String ayahno, String fav) {
 // New value for one column
 
-        db.execSQL("SELECT * FROM favourites where sura_id="+suraid + " and ayah_id="+ayahno);
+        ContentValues values = new ContentValues();
+        values.put(FavouriteManager.COLUMN_FAV, fav);
+        values.put(FavouriteManager.COLUMN_SURAID, suraid);
+        values.put(FavouriteManager.COLUMN_VERSEID, ayahno);
 
-        if(c.getCount()>0){
-            Log.i("UPDATE ", "database updated? " + suraid + " " + ayahno + " " + fav);
-            db.execSQL("UPDATE favourites SET fav="+fav+" where sura_id="+suraid + " and ayah_id="+ayahno);
-        }
-        else {
-            Log.i("INSERT ", "database updated? " + suraid + " " + ayahno + " " + fav);
-            db.execSQL("INSERT INTO favourites (fav, sura_id, ayah_id) VALUES("+fav + ", "+suraid + ", " + ayahno+")");
+        long count = db.insertOrThrow(FavouriteManager.TABLE_FAV, null, values);
+        if (count < 0) {
+
+
         }
 
+        Log.i("UPDATE ", "database updated? " + suraid + " " + ayahno + " " + fav);
 
 
 
@@ -285,16 +286,18 @@ public class DatabaseAccess {
     public void saveToFavs(int suraid, int ayahno, String fav) {
 // New value for one column
 
-        db.execSQL("SELECT * FROM favourites where sura_id="+suraid + " and ayah_id="+ayahno);
+        ContentValues values = new ContentValues();
+        values.put(FavouriteManager.COLUMN_FAV, fav);
+        values.put(FavouriteManager.COLUMN_SURAID, suraid);
+        values.put(FavouriteManager.COLUMN_VERSEID, ayahno);
 
-        if(c.getCount()>0){
-            Log.i("UPDATE ", "database updated? " + suraid + " " + ayahno + " " + fav);
-            db.execSQL("UPDATE favourites SET fav="+fav+" where sura_id="+suraid + " and ayah_id="+ayahno);
+        long count = db.insertOrThrow(FavouriteManager.TABLE_FAV, null, values);
+        if (count < 0) {
+
+
         }
-        else {
-            Log.i("INSERT ", "database updated? " + suraid + " " + ayahno + " " + fav);
-            db.execSQL("INSERT INTO favourites (fav, sura_id, ayah_id) VALUES("+fav + ", "+suraid + ", " + ayahno+")");
-        }
+
+        Log.i("UPDATE ", "database updated? " + suraid + " " + ayahno + " " + fav);
 
     }
 
