@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.text.Html;
+import android.text.SpannableStringBuilder;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -44,6 +46,8 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     private String ru_text;//oyat matni uzbek
     private String en_text;//oyat matni uzbek
 
+    SpannableStringBuilder ssb;
+
     private int ayah_position;
 
 
@@ -68,7 +72,10 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         mContext = context;
         mCursor = cursor;
         mDatabase = DatabaseAccess.getInstance(mContext);
-        scaler = AnimationUtils.loadAnimation(mContext, R.anim.rotate);
+        scaler = AnimationUtils.loadAnimation(mContext, R.anim.bounce);
+
+        ssb = new SpannableStringBuilder();
+        ssb.clear();
 
     }
 
@@ -228,6 +235,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
                 if (ayah_position == Integer.parseInt(verse_number)) {
                     book_button = ((ViewGroup) view.getParent().getParent()).findViewById(R.id.actions).findViewById(R.id.f_bookmarkbut);
                     book_button.setImageResource(R.drawable.ic_turned_in_black_24dp);
+                    book_button.setTag("selected");
                 }
 
                 Log.d("verse number", verse_number + " " + ayah_position);
@@ -275,7 +283,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
                     book_button.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
                     book_button.setTag("unselected");
                     SharedPref.write("xatchup" + chaptername, 0);
-                    SharedPref.write("xatchup", 0);
+                    SharedPref.write("xatchup", "");
 
                 }
                 book_button.startAnimation(scaler);
@@ -383,12 +391,15 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             retval = t.replace("(", "<br><font color='#517D43'>");
             Log.i("ARRAY", String.valueOf(retval));
             retval = retval.replace(")", "</font>");
+
         } else {
             retval = t;
         }
 
         return retval;
     }
+
+
 
     @Override
     public int getItemCount() {

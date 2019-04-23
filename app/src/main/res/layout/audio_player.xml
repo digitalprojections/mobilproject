@@ -8,9 +8,13 @@
     android:layout_height="wrap_content"
     android:background="@color/common_google_signin_btn_text_light_focused"
     android:elevation="4dp"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+    android:padding="0dp"
+    android:paddingLeft="0dp"
 
-    >
+    android:paddingTop="0dp"
+    android:paddingRight="0dp"
+    android:paddingBottom="0dp"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
 </androidx.appcompat.widget.Toolbar>

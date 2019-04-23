@@ -144,7 +144,8 @@
                 android:background="@drawable/rounded_corner"
                 android:padding="5dp"
                 android:text="TextView"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:typeface="serif" />
         </LinearLayout>
 
         <LinearLayout
@@ -165,7 +166,8 @@
                 android:background="@drawable/rounded_corner_blue"
                 android:padding="5dp"
                 android:text="TextView"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:typeface="serif" />
 
             <TextView
                 android:id="@+id/oyat_en"
@@ -176,7 +178,8 @@
                 android:background="@drawable/rounded_en_text"
                 android:padding="5dp"
                 android:text="TextView"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:typeface="serif" />
         </LinearLayout>
 
     </LinearLayout>

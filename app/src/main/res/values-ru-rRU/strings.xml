@@ -23,4 +23,6 @@
     <string name="language_selected">Язык выбран</string>
     <string name="no_bookmarks">Закладки не найдены</string>
     <string name="invite_i">Пригласить</string>
+    <string name="search_hint">молитва</string>
+    <string name="search">Поиск</string>
 </resources>

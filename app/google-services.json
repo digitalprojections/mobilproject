@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:754912172919:android:8f8ce563a13c38e9",
+        "mobilesdk_app_id": "1:754912172919:android:e45c03a85ec7aab2",
         "android_client_info": {
-          "package_name": "furqon.io.github.mobilproject"
+          "package_name": "com.google.firebase.quickstart.deeplinks"
         }
       },
       "oauth_client": [
@@ -25,17 +25,61 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
+          "other_platform_oauth_client": [
+            {
+              "client_id": "754912172919-6qt54jafd4ec62kl2ke3v9obsadfjm4h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:754912172919:android:8f8ce563a13c38e9",
+        "android_client_info": {
+          "package_name": "furqon.io.github.mobilproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "754912172919-obdp6p72kgk47mqgkoo9uqjvr8g3gm6e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "furqon.io.github.mobilproject",
+            "certificate_hash": "9dee7499e8acc5e957049c9ebb7cf318c2c11631"
+          }
+        },
+        {
+          "client_id": "754912172919-038qujfavvp7r3clqn11lieinft4fhjo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "furqon.io.github.mobilproject",
+            "certificate_hash": "0cd71d3c53722f07ae331da0240621b627020c41"
+          }
+        },
+        {
+          "client_id": "754912172919-6qt54jafd4ec62kl2ke3v9obsadfjm4h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBr5S7gt_4aCliiXQ80S4iNR1hUavC4Das"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "754912172919-6qt54jafd4ec62kl2ke3v9obsadfjm4h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-3838820812386239~2342916878"
     }
   ],
   "configuration_version": "1"

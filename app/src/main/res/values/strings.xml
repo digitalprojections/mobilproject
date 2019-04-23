@@ -25,4 +25,8 @@
     <string name="language_selected">Language Selected</string>
     <string name="no_bookmarks">No bookmarks found</string>
     <string name="invite_i">Invite</string>
+    <string name="search_hint">prayer</string>
+    <string name="search">Search</string>
+    <string name="found">Found:</string>
+    <string name="tryagain">Try again</string>
 </resources>

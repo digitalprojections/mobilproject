@@ -57,13 +57,14 @@ public class DatabaseAccess {
 
     //open
     void open() {
-        this.db = openHelper.getWritableDatabase();
-    }
+
+            db = openHelper.getWritableDatabase();
+        }
 
 
     public void close() {
         if (db != null) {
-            this.db.close();
+            db.close();
         }
     }
 
@@ -209,6 +210,73 @@ public class DatabaseAccess {
 
             } catch (Exception e1) {
                 e1.printStackTrace();
+            }
+
+        }
+
+
+        //
+        return c;
+
+    }
+Cursor searchText(String st) {
+        try {
+            if(db.isOpen()) {
+                c = db.rawQuery("SELECT sn.SuraName, quz.SuraID, quz.VerseID, \n" +
+                        "qar.AyahText as 'arab', \n" +
+                        "quz.AyahText as 'uzb', \n" +
+                        "qru.AyahText as 'ru', \n" +
+                        "qen.AyahText as 'en',\n" +
+                        "(SELECT fav FROM favourites WHERE sura_id = qall.SuraID and ayah_id=qall.VerseID) as 'fav'\n" +
+                        "from quran quz\n" +
+                        "JOIN quran qar\n" +
+                        "ON qar.SuraID = quz.SuraID\n" +
+                        "JOIN quran qru\n" +
+                        "ON qru.SuraID=qar.SuraID\n" +
+                        "JOIN quran qen\n" +
+                        "ON qen.SuraID=qru.SuraID\n" +
+                        "JOIN quran qall\n" +
+                        "ON qall.SuraID = qen.SuraID\n" +
+                        "JOIN SuraNames sn \n" +
+                        "ON sn.ChapterID = quz.SuraID\n" +
+                        "where \t\n" +
+                        "\tquz.VerseID=qar.VerseID\n" +
+                        "\tand qru.VerseID=qar.VerseID\n" +
+                        "\tand qen.VerseID=qru.VerseID\n" +
+                        "\tand qall.VerseID=qen.VerseID\n" +
+                        "\tand quz.DatabaseID=120\n" +
+                        "\tand qar.DatabaseID=1\n" +
+                        "\tand qru.DatabaseID=79\n" +
+                        "\tand qen.DatabaseID=59\n" +
+                        "\tand qall.AyahText LIKE '%" + st + "%'", new String[]{});
+            }
+        } catch (SQLiteException e) {
+            Crashlytics.log("TABLE ERROR" + String.valueOf(c));
+            c = null;
+            try {
+                // clearing app data
+                showToast();
+                new CountDownTimer(3000, 1000) {
+                    public void onFinish() {
+                        // When timer is finished
+                        // Execute your code here
+                        Runtime runtime = Runtime.getRuntime();
+                        try {
+                            runtime.exec("pm clear furqon.io.github.mobilproject");
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+
+                    public void onTick(long millisUntilFinished) {
+                        // millisUntilFinished    The amount of time until finished.
+                    }
+                }.start();
+
+
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                Crashlytics.log("ERROR" + String.valueOf(e1));
             }
 
         }

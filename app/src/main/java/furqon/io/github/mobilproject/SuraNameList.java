@@ -74,7 +74,7 @@ public class SuraNameList extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mDatabase = DatabaseAccess.getInstance(getApplicationContext());
         if(!mDatabase.isOpen()) {

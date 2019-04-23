@@ -3,18 +3,16 @@ package furqon.io.github.mobilproject;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -30,6 +28,8 @@ public class AyahOfTheDay extends AppCompatActivity {
     Cursor ayahcursor;
     TextView ayah_reference;
     TextView ayah_text;
+
+    boolean birmarta;
 
     ImageButton prev_btn;
     ImageButton next_btn;
@@ -50,6 +50,13 @@ public class AyahOfTheDay extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ayah_of_the_day);
+
+        birmarta = true;
+
+        mDatabase = DatabaseAccess.getInstance(getApplicationContext());
+        if (!mDatabase.isOpen()) {
+            mDatabase.open();
+        }
         pbar = findViewById(R.id.progBar);
         uztxt = findViewById(R.id.uztxt);
         rutxt = findViewById(R.id.rutxt);
@@ -64,7 +71,7 @@ public class AyahOfTheDay extends AppCompatActivity {
 
         fabopen = AnimationUtils.loadAnimation(this, R.anim.fab_open);
         fabclose = AnimationUtils.loadAnimation(this, R.anim.fab_close);
-        scaler = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        scaler = AnimationUtils.loadAnimation(this, R.anim.bounce);
 
         ayah_reference = findViewById(R.id.random_verse_title);
         ayah_text = findViewById(R.id.random_verse_text);
@@ -72,14 +79,15 @@ public class AyahOfTheDay extends AppCompatActivity {
 
         pbar.setVisibility(View.INVISIBLE);
         //TODO upo create choose a random sura and ayah
-        random_surah = (int) Math.round(Math.random() * 113);
-        random_ayah = (int) Math.round(Math.random() * QuranMap.AYAHCOUNT[random_surah]);
+        random_surah = (int) Math.round(Math.random() * 113)+1;
+        random_ayah = (int) Math.round(Math.random() * QuranMap.AYAHCOUNT[random_surah-1]);
         //TODO get a random verse within the range available in that sura
 
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                fab.startAnimation(scaler);
 
                 animateFabs();
                 Log.i(TAG, " random number");
@@ -126,12 +134,9 @@ public class AyahOfTheDay extends AppCompatActivity {
             SharedPref.write("r_language_id", language_id);
         }
 
-        mDatabase = DatabaseAccess.getInstance(getApplicationContext());
-        if (!mDatabase.isOpen()) {
-            mDatabase.open();
-        }
 
-        makeCall();
+
+
 
         prev_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,7 +151,7 @@ public class AyahOfTheDay extends AppCompatActivity {
         next_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (random_ayah < QuranMap.AYAHCOUNT[random_surah]) {
+                if (random_ayah < QuranMap.AYAHCOUNT[random_surah-1]) {
                     random_ayah++;
                     next_btn.startAnimation(scaler);
                     makeCall();
@@ -192,6 +197,27 @@ public class AyahOfTheDay extends AppCompatActivity {
                 addToFavourites(view);
             }
         });
+        makeCall();
+        // ATTENTION: This was auto-generated to handle app links.
+        Intent appLinkIntent = getIntent();
+        String appLinkAction = appLinkIntent.getAction();
+        Uri appLinkData = appLinkIntent.getData();
+        if(appLinkData!=null) {
+            Log.d(TAG, appLinkAction + " - " + appLinkData.getQueryParameter("sn") + appLinkData.getQueryParameter("an"));
+            random_surah = Integer.parseInt(appLinkData.getQueryParameter("sn"));
+            random_ayah = Integer.parseInt(appLinkData.getQueryParameter("an"));
+            makeCall();
+        }
+        else {
+
+        }
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mDatabase.close();
     }
 
     private void continueReading() {
@@ -213,18 +239,23 @@ public class AyahOfTheDay extends AppCompatActivity {
     private void addToFavourites(View view) {
         // manage sqlite creation and data addition
         Log.i("AYAT FAVOURITED", String.valueOf(view));
-        if (mDatabase == null || !mDatabase.isOpen()) {
-            mDatabase.open();
-        } else if (mDatabase.isOpen()) {
-            if (fav_btn.getTag() == "1") {
-                mDatabase.removeFromFavs(random_surah+1, random_ayah, "0");
-                fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-                fav_btn.setTag("0");
-            } else {
-                mDatabase.saveToFavs(random_surah+1, random_ayah, "1");
-                fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
-                fav_btn.setTag("1");
-            }
+
+            if (mDatabase == null || !mDatabase.isOpen()) {
+                mDatabase.open();
+                if(mDatabase.isOpen()) {
+                    addToFavourites(view);
+                }
+            } else if (mDatabase.isOpen()) {
+                if (fav_btn.getTag() == "1") {
+                    mDatabase.removeFromFavs(random_surah, random_ayah, "0");
+                    fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                    fav_btn.setTag("0");
+                } else {
+                    mDatabase.saveToFavs(random_surah, random_ayah, "1");
+                    fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
+                    fav_btn.setTag("1");
+                }
+
         }
 
 
@@ -244,14 +275,13 @@ public class AyahOfTheDay extends AppCompatActivity {
     }
 
     private void makeCall() {
-        if (mDatabase.isOpen()) {
-            ayahcursor = mDatabase.getRandomAyah(random_surah + 1, random_ayah);
-            ayahcursor.moveToPosition(0);
-            displayAyah();
-        } else {
-            mDatabase.open();
-            makeCall();
-        }
+
+            ayahcursor = mDatabase.getRandomAyah(random_surah, random_ayah);
+            if(ayahcursor!=null) {
+                ayahcursor.moveToPosition(0);
+                displayAyah();
+            }
+
     }
 
     private void displayAyah() {

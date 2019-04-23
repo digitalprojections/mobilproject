@@ -51,11 +51,10 @@ public class AyahList extends AppCompatActivity {
     Runnable runnable;
 
 
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-       
+
     }
 
     @Override
@@ -63,7 +62,6 @@ public class AyahList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chapter_view);
         SharedPref.init(getApplicationContext());
-
 
 
         audiorestore = getString(R.string.audiopos_restored);
@@ -79,78 +77,70 @@ public class AyahList extends AppCompatActivity {
         String extratext = intent.getString("SURANAME");
 
 
-        suranomi = extratext.substring(0, extratext.indexOf(":"));
-        suranomer = extratext.substring(extratext.indexOf(":") + 1);
+            suranomi = extratext.substring(0, extratext.indexOf(":"));
+            suranomer = extratext.substring(extratext.indexOf(":") + 1);
 
-        Log.i("LOADED SURA", suranomer + " " + suranomi);
+            Log.i("LOADED SURA", suranomer + " " + suranomi);
 
-        getSupportActionBar().setTitle(suranomi);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(suranomi);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mDatabase = DatabaseAccess.getInstance(getApplicationContext());
-        if(!mDatabase.isOpen()) {
-            mDatabase.open();
-        }
+            mDatabase = DatabaseAccess.getInstance(getApplicationContext());
+            if (!mDatabase.isOpen()) {
+                mDatabase.open();
+            }
 
-        RecyclerView recyclerView = findViewById(R.id.chapter_scroll);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-
+            RecyclerView recyclerView = findViewById(R.id.chapter_scroll);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
-
-        ayahcursor = mDatabase.getSuraText(suranomer);
-
+            ayahcursor = mDatabase.getSuraText(suranomer);
 
 
-        mAdapter = new AyahListAdapter(this, ayahcursor, suranomi, suranomer);
-        recyclerView.setAdapter(mAdapter);
+            mAdapter = new AyahListAdapter(this, ayahcursor, suranomi, suranomer);
+            recyclerView.setAdapter(mAdapter);
 
 
+            pos = SharedPref.read(suranomi, 0);
 
+            ayah_position = SharedPref.read(xatchup + suranomi, 0);
+            if (ayah_position > 4) {
 
+                recyclerView.scrollToPosition(ayah_position);
+            }
+            handler = new Handler();
 
+            seekBar = findViewById(R.id.seekBar);
 
-        pos = SharedPref.read(suranomi, 0);
+            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean input) {
+                    if (input) {
+                        if (mediaPlayer != null) {
+                            mediaPlayer.seekTo(progress);
+                        }
 
-        ayah_position = SharedPref.read(xatchup+suranomi, 0);
-        if(ayah_position>4) {
-
-            recyclerView.scrollToPosition(ayah_position);
-        }
-        handler = new Handler();
-
-        seekBar = findViewById(R.id.seekBar);
-
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean input) {
-                if (input) {
-                    if (mediaPlayer != null) {
-                        mediaPlayer.seekTo(progress);
                     }
 
                 }
 
-            }
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
+                }
 
-            }
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
 
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
+                }
+            });
 
 
 
     }
 
     public void playCycle() {
-        if(mediaPlayer!=null) {
+        if (mediaPlayer != null) {
             seekBar.setProgress(mediaPlayer.getCurrentPosition());
             pos = mediaPlayer.getCurrentPosition();
             timer = findViewById(R.id.audio_timer);
@@ -189,6 +179,7 @@ public class AyahList extends AppCompatActivity {
         inflater.inflate(R.menu.my_navigation_items, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -214,6 +205,7 @@ public class AyahList extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
     public void play() throws IOException {
 
         String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suranomer + ".mp3"; // your URL here
@@ -275,7 +267,7 @@ public class AyahList extends AppCompatActivity {
     }
 
     private void storeAudioPosition() {
-        if(mediaPlayer!=null) {
+        if (mediaPlayer != null) {
             if (mediaPlayer.isPlaying()) {
 
                 SharedPref.write(suranomi, mediaPlayer.getCurrentPosition());
@@ -303,7 +295,6 @@ public class AyahList extends AppCompatActivity {
     }
 
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -314,7 +305,7 @@ public class AyahList extends AppCompatActivity {
 
             handler.removeCallbacks(runnable);
         }
-        if(mDatabase!=null) {
+        if (mDatabase != null) {
             mDatabase.close();
         }
     }

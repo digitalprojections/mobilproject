@@ -7,11 +7,11 @@
         android:fromYScale="1"
         android:fromXScale="1"
         android:duration="300"
-        android:interpolator="@android:anim/bounce_interpolator"/>
+        android:interpolator="@android:anim/overshoot_interpolator"/>
 
     <alpha
         android:duration="300"
         android:fromAlpha="1.0"
         android:toAlpha="0.0"
-        android:interpolator="@android:anim/accelerate_interpolator"/>
+        android:interpolator="@android:anim/overshoot_interpolator"/>
 </set>

@@ -64,7 +64,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         mContext = context;
         mCursor = cursor;
         mDatabase = DatabaseAccess.getInstance(mContext);
-        scaler = AnimationUtils.loadAnimation(mContext, R.anim.rotate);
+        scaler = AnimationUtils.loadAnimation(mContext, R.anim.bounce);
 
     }
 
@@ -305,14 +305,13 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
                 favbut.setImageResource(R.drawable.ic_favorite_border_black_24dp);
                 favbut.setTag("0");
                 mCursor = mDatabase.loadFavourites();
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, mCursor.getCount());
+
 
             } else {
-                mDatabase.removeFromFavs(chapternumber, versenumber, "1");
-                favbut.setImageResource(R.drawable.ic_favorite_black_24dp);
-                favbut.setTag("1");
+
             }
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, mCursor.getCount());
         }
 
     }

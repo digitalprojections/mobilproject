@@ -223,6 +223,7 @@
                 android:padding="5dp"
                 android:text="@string/uzbek"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                android:typeface="serif"
                 android:visibility="invisible" />
 
             <TextView
@@ -236,6 +237,7 @@
                 android:padding="5dp"
                 android:text="@string/russian"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                android:typeface="serif"
                 android:visibility="invisible" />
 
             <TextView
@@ -249,6 +251,7 @@
                 android:padding="5dp"
                 android:text="@string/english"
                 android:textColor="@color/design_default_color_on_secondary"
+                android:typeface="serif"
                 android:visibility="invisible" />
         </LinearLayout>
 

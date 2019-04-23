@@ -173,6 +173,75 @@
         </LinearLayout>
     </ScrollView>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        android:focusable="true"
+        app:elevation="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:pressedTranslationZ="10dp"
+        app:srcCompat="@drawable/ic_language_black_24dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@+id/fab"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/uztxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="@string/uzbek"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:typeface="serif"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/rutxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner_blue"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="@string/russian"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:typeface="serif"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/entxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_en_text"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="@string/english"
+            android:textColor="@color/design_default_color_on_secondary"
+            android:typeface="serif"
+            android:visibility="invisible" />
+    </LinearLayout>
+
     <ProgressBar
         android:id="@+id/progBar"
         android:layout_width="wrap_content"
@@ -182,76 +251,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:clickable="true"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:focusable="true"
-            app:elevation="5dp"
-            app:pressedTranslationZ="10dp"
-            app:srcCompat="@drawable/ic_language_black_24dp" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/uztxt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="1dp"
-                android:layout_weight="1"
-                android:background="@drawable/rounded_corner"
-                android:gravity="center"
-                android:padding="5dp"
-                android:text="@string/uzbek"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                android:visibility="invisible" />
-
-            <TextView
-                android:id="@+id/rutxt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="1dp"
-                android:layout_weight="1"
-                android:background="@drawable/rounded_corner_blue"
-                android:gravity="center"
-                android:padding="5dp"
-                android:text="@string/russian"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                android:visibility="invisible" />
-
-            <TextView
-                android:id="@+id/entxt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="1dp"
-                android:layout_weight="1"
-                android:background="@drawable/rounded_en_text"
-                android:gravity="center"
-                android:padding="5dp"
-                android:text="@string/english"
-                android:textColor="@color/design_default_color_on_secondary"
-                android:visibility="invisible" />
-        </LinearLayout>
-
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

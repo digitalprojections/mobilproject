@@ -2,14 +2,32 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/v_top"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="5dp"
-    android:background="@drawable/random_ayah_bg">
+    android:background="@color/trbg">
 
     <TextView
-        android:id="@+id/v_title"
+        android:id="@+id/search_row_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:shadowColor="#000"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="5"
+        android:text="TextView"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/alltranslations"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -17,116 +35,24 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:gravity="center"
-        android:text="TextView"
-        android:textColor="@color/common_google_signin_btn_text_dark_focused"
-        android:textSize="24sp"
-        android:typeface="serif"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/arabictranslation"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@color/trbg"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="end"
-        android:orientation="vertical"
-        android:padding="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/v_title">
-
-        <TextView
-            android:id="@+id/arab_num"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="@drawable/ayahsymbol"
-            android:gravity="center"
-            android:text="1"
-            android:textColor="#000000" />
-
-        <TextView
-            android:id="@+id/arab_txt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:text="TextView"
-            android:textColor="#000000"
-            android:typeface="serif" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/uzbektranslation"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:orientation="vertical"
         android:paddingBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/arabictranslation">
-
-        <TextView
-            android:id="@+id/oyat_raqam"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ayahsymbol"
-            android:gravity="center"
-            android:text="1" />
-
-        <TextView
-            android:id="@+id/oyat_matn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/rounded_corner"
-            android:padding="5dp"
-            android:text="TextView"
-            android:textColor="#000000"
-            android:typeface="serif" />
-
-        <TextView
-            android:id="@+id/oyat_ru"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:layout_marginTop="5dp"
-            android:background="@drawable/rounded_corner_blue"
-            android:padding="5dp"
-            android:text="TextView"
-            android:textColor="#000000"
-            android:typeface="serif" />
-
-        <TextView
-            android:id="@+id/oyat_en"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/rounded_en_text"
-            android:padding="5dp"
-            android:text="TextView"
-            android:textColor="#000000"
-            android:typeface="serif" />
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:id="@+id/actions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <ImageButton
-                android:id="@+id/sharebut"
+                android:id="@+id/f_sharebut"
+                style="@android:style/Widget.Holo.ImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -145,7 +71,8 @@
                 app:srcCompat="@drawable/ic_share_black_24dp" />
 
             <ImageButton
-                android:id="@+id/bookmarkbut"
+                android:id="@+id/f_bookmarkbut"
+                style="@android:style/Widget.Holo.ImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -157,12 +84,13 @@
                 android:tag="unselected"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/sharebut"
+                app:layout_constraintStart_toEndOf="@+id/f_sharebut"
                 app:layout_constraintTop_toBottomOf="@+id/uzbektranslation"
                 app:srcCompat="@drawable/ic_bookmark_border_black_24dp" />
 
             <ImageButton
                 android:id="@+id/favouritebut"
+                style="@android:style/Widget.Holo.ImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -173,11 +101,69 @@
                 android:contentDescription="@string/favourite_it"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/bookmarkbut"
+                app:layout_constraintStart_toEndOf="@+id/f_bookmarkbut"
                 app:layout_constraintTop_toBottomOf="@+id/uzbektranslation"
                 app:srcCompat="@drawable/ic_favorite_border_black_24dp" />
         </LinearLayout>
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/uzbektranslation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/oyat_raqam"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:background="@drawable/ayahsymbol"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/oyat_matn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:background="@drawable/rounded_corner"
+                android:padding="5dp"
+                android:text=""
+                android:textColor="#000000"
+                android:typeface="serif" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/landscaper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/oyat_ru"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="5dp"
+                android:background="@drawable/rounded_corner_blue"
+                android:padding="5dp"
+                android:text=""
+                android:textColor="#000000"
+                android:typeface="serif" />
+
+            <TextView
+                android:id="@+id/oyat_en"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/rounded_en_text"
+                android:padding="5dp"
+                android:text=""
+                android:textColor="#000000"
+                android:typeface="serif" />
+        </LinearLayout>
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

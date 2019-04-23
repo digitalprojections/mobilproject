@@ -70,7 +70,6 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
     public SuraListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.sura_title, parent, false);
-
         mArrayList = new ArrayList<>();
         return new SuraListViewHolder(view);
     }

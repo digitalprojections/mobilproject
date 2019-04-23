@@ -3,7 +3,7 @@
     <color name="colorPrimary">#E0ECB7</color>
     <color name="colorPrimaryDark">#4B6312</color>
     <color name="colorAccent">#E91E63</color>
-    <color name="trbg">#00FFFFFF</color>
+    <color name="trbg">#1600E6FF</color>
     <color name="gold">#FFB700</color>
     <color name="favorites_bg">#16FD0056</color>
 </resources>

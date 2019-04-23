@@ -109,12 +109,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private void open_settings() {
-        Intent intent;
-        intent = new Intent(this, furqon.io.github.mobilproject.Settings.class);
-        startActivity(intent);
-    }
-
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -244,6 +238,13 @@ public class MainActivity extends AppCompatActivity {
                 });
 
     }
+
+    private void open_settings() {
+        Intent intent;
+        intent = new Intent(this, furqon.io.github.mobilproject.Settings.class);
+        startActivity(intent);
+    }
+
     public Uri buildDeepLink(@NonNull Uri deepLink, int minVersion) {
         String uriPrefix = "furqon.page.link";
 
@@ -434,6 +435,8 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(context, AyahList.class);
                 intent.putExtra("SURANAME", xatchup);
                 context.startActivity(intent);
+            }else{
+                Toast.makeText(getBaseContext(), getString(R.string.no_bookmarks), Toast.LENGTH_LONG).show();
             }
         } else {
             Toast.makeText(getBaseContext(), getString(R.string.no_bookmarks), Toast.LENGTH_LONG).show();
