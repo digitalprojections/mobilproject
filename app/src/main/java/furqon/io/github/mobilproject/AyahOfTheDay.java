@@ -29,7 +29,6 @@ public class AyahOfTheDay extends AppCompatActivity {
     TextView ayah_reference;
     TextView ayah_text;
 
-    boolean birmarta;
 
     ImageButton prev_btn;
     ImageButton next_btn;
@@ -51,7 +50,6 @@ public class AyahOfTheDay extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ayah_of_the_day);
 
-        birmarta = true;
 
         mDatabase = DatabaseAccess.getInstance(getApplicationContext());
         if (!mDatabase.isOpen()) {
@@ -78,10 +76,10 @@ public class AyahOfTheDay extends AppCompatActivity {
         fab = findViewById(R.id.fab);
 
         pbar.setVisibility(View.INVISIBLE);
-        //TODO upo create choose a random sura and ayah
+        //DONE upo create choose a random sura and ayah
         random_surah = (int) Math.round(Math.random() * 113)+1;
         random_ayah = (int) Math.round(Math.random() * QuranMap.AYAHCOUNT[random_surah-1]);
-        //TODO get a random verse within the range available in that sura
+        //get a random verse within the range available in that sura
 
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -179,7 +177,7 @@ public class AyahOfTheDay extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        //TODO Find
+        //TODO Bookmark
         find_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -264,8 +262,8 @@ public class AyahOfTheDay extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mDatabase != null) {
-            mDatabase.close();
+        if (ayahcursor != null) {
+            ayahcursor.close();
         }
     }
 
@@ -275,36 +273,42 @@ public class AyahOfTheDay extends AppCompatActivity {
     }
 
     private void makeCall() {
+        if(mDatabase.isOpen()) {
 
             ayahcursor = mDatabase.getRandomAyah(random_surah, random_ayah);
-            if(ayahcursor!=null) {
+            if (ayahcursor != null) {
                 ayahcursor.moveToPosition(0);
                 displayAyah();
             }
-
+        }
     }
 
     private void displayAyah() {
-        suraname = ayahcursor.getString(2);
-        ayah_reference.setText(getString(R.string.surah) + suraname + getString(R.string.ayah) + random_ayah);
-        ayah_text.setText(ayahcursor.getString(language_id));
+        if (SharedPref.firstRun()) {
+            Intent intent = new Intent(this, ScrollingActivity.class);
+            startActivity(intent);
 
-        String is_fav = ayahcursor.getString(7);
-        Log.d(TAG, is_fav + " is fav");
-        if (is_fav == "1") {
+        }else{
+            suraname = ayahcursor.getString(2);
+            ayah_reference.setText(getString(R.string.surah) + suraname + getString(R.string.ayah) + random_ayah);
+            ayah_text.setText(ayahcursor.getString(language_id));
 
-            fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
-            fav_btn.setTag("1");
+            String is_fav = ayahcursor.getString(7);
+            Log.d(TAG, is_fav + " is fav");
+            if (is_fav == "1") {
 
-        } else {
-            fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-            fav_btn.setTag("0");
+                fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
+                fav_btn.setTag("1");
+
+            } else {
+                fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                fav_btn.setTag("0");
+            }
+
+
+            Log.d(TAG, String.valueOf(suraname + "-" + random_surah + " " + random_ayah));
         }
-
-
-        Log.d(TAG, String.valueOf(random_surah + " " + random_ayah));
     }
-
     private void animateFabs() {
         if (isOpen) {
 

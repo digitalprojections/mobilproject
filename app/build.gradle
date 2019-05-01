@@ -22,8 +22,8 @@ android {
         applicationId "furqon.io.github.mobilproject"
         minSdkVersion 16
         targetSdkVersion rootProject.ext.compileSdkVersion
-        versionCode 40005
-        versionName "1.7"
+        versionCode 40009
+        versionName "1.9"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
 
@@ -70,6 +70,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0-alpha05'
     implementation 'androidx.core:core:1.0.1'
     implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'androidx.viewpager:viewpager:1.0.0'
 
 
 }

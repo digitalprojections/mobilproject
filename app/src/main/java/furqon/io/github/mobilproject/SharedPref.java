@@ -13,6 +13,7 @@ public class SharedPref
     public static final String RUSW = "RUSW";
     public static final String ENSW = "ENSW";
     public static final String XATCHUP = "xatchup";
+    public static final String FIRSTRUN = "firstrun";
 
     public static boolean arsw;
     public static boolean uzsw;
@@ -30,10 +31,22 @@ public class SharedPref
     public static void init(Context context)
     {
 
-        if(mSharedPref == null)
+        if(mSharedPref == null) {
             mSharedPref = context.getSharedPreferences(context.getPackageName(), Activity.MODE_PRIVATE);
 
+        }
         setDefaults();
+    }
+    public static boolean firstRun(){
+        boolean retval =true;
+        if (mSharedPref.getBoolean(FIRSTRUN, true)) {
+            // Do first run stuff here then set 'firstrun' as false
+            // using the following line to edit/commit prefs
+            mSharedPref.edit().putBoolean(FIRSTRUN, false).commit();
+        }else{
+            retval = true;
+        }
+        return retval;
     }
 
     public static boolean getDefaults(String sw){

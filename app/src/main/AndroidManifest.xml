@@ -9,7 +9,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,6 +16,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".ScrollingActivity"
+            android:label="@string/title_activity_scrolling"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
+            android:taskAffinity=""
+
+            ></activity>
 
         <service
             android:name=".MyFirebaseMessagingService"
@@ -40,14 +48,14 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3838820812386239~2342916878" />
 
-        <activity android:name=".Settings"></activity>
+        <activity android:name=".Settings" />
         <activity
             android:name=".AyahList"
             android:parentActivityName=".SuraNameList" />
+        <activity android:name=".Favourites" />
         <activity
-            android:name=".Favourites"/>
-        <activity android:name=".SuraNameList"
-            android:parentActivityName=".MainActivity"/>
+            android:name=".SuraNameList"
+            android:parentActivityName=".MainActivity" />
         <activity android:name=".AyahOfTheDay">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -62,15 +70,13 @@
 
                 <data
                     android:host="furqon.page.link"
-                    android:scheme="https"
-                    android:path="/deeplink" />
+                    android:path="/deeplink"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
         <activity
             android:name=".Search"
-            android:parentActivityName=".MainActivity">
-
-        </activity>
+            android:parentActivityName=".MainActivity"></activity>
         <activity android:name=".MainActivity">
 
             <!-- [START link_intent_filter] -->

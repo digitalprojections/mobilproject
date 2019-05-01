@@ -262,8 +262,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
                 mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.shareayah)));
                 break;
             case R.id.favouritebut:
-                //TODO favourite add to sqlite
-                //call the function
+                //favourite add to sqlite
                 favbut = ((ViewGroup) view.getParent()).findViewById(R.id.favouritebut);
                 addToFavourites(view);
                 favbut.startAnimation(scaler);
