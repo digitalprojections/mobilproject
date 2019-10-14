@@ -56,9 +56,10 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
     private ViewGroup.LayoutParams lpartxt; // Height of TextView
     private ViewGroup.LayoutParams toplayout; // Height of TextView
     private Animation scaler;
+    private SharedPref sharedPref;
 
     FavouriteListAdapter(Context context, Cursor cursor, String suraname, String chapter) {
-
+        sharedPref = SharedPref.getInstance();
         chapternumber = chapter;
 
         mContext = context;
@@ -234,7 +235,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
             if (linearLayout3.getVisibility() == View.GONE) {
                 linearLayout3.setVisibility(View.VISIBLE);
                 ayahtext = String.valueOf(ayatext.getText());
-                ayah_position = SharedPref.read("xatchup" + chaptername, 0);
+                ayah_position = sharedPref.read("xatchup" + chaptername, 0);
                 if (ayah_position == Integer.parseInt(versenumber)) {
                     bookbut = ((ViewGroup) view.getParent()).findViewById(R.id.actions).findViewById(R.id.bookmarkbut);
                     bookbut.setImageResource(R.drawable.ic_turned_in_black_24dp);
@@ -277,7 +278,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
                 if(bookbut.getTag() == "unselected") {
                     bookbut.setImageResource(R.drawable.ic_turned_in_black_24dp);
                     bookbut.setTag("selected");
-                    SharedPref.write("xatchup" + chaptername, Integer.parseInt(versenumber));
+                    sharedPref.write("xatchup" + chaptername, Integer.parseInt(versenumber));
                     mDatabase.removeFromFavs(chapternumber, versenumber, "0");
                     Log.i("BOOKMARK", String.valueOf(bookbut.getTag()));
                 }
@@ -285,7 +286,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
                     mDatabase.removeFromFavs(chapternumber, versenumber, "1");
                     bookbut.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
                     bookbut.setTag("unselected");
-                    SharedPref.write("xatchup" + chaptername, 0);
+                    sharedPref.write("xatchup" + chaptername, 0);
                 }
                 bookbut.startAnimation(scaler);
                 break;
@@ -361,7 +362,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
 
 
         Log.i("TAG FAVOURITE", String.valueOf(is_fav==1));
-        if (SharedPref.getDefaults("ar")) {
+        if (sharedPref.getDefaults("ar")) {
             holder.arabic_ayahnumber.setVisibility(View.VISIBLE);
             holder.arabictext.setVisibility(View.VISIBLE);
         }
@@ -382,7 +383,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         holder.arabictext.setText(artext);
         holder.arabic_ayahnumber.setText(String.valueOf(numb));
 
-        if (SharedPref.getDefaults("uz")) {
+        if (sharedPref.getDefaults("uz")) {
             //holder.ayah_number.setVisibility(View.VISIBLE);
             holder.ayatext.setVisibility(View.VISIBLE);
             holder.ayatext.setText(Html.fromHtml(collapseBraces(ttext)));
@@ -390,13 +391,13 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
 
             holder.ayahnumber.setTag(chapternumber);
         }
-        if (SharedPref.getDefaults("ru")) {
+        if (sharedPref.getDefaults("ru")) {
             holder.ayah_text_ru.setVisibility(View.VISIBLE);
             holder.ayah_text_ru.setText(Html.fromHtml(collapseBraces(rtext)));
             holder.ayahnumber.setText(String.valueOf(numb));
             holder.ayahnumber.setTag(chapternumber);
         }
-        if (SharedPref.getDefaults("en")) {
+        if (sharedPref.getDefaults("en")) {
             holder.ayah_text_en.setVisibility(View.VISIBLE);
             holder.ayah_text_en.setText(Html.fromHtml(collapseBraces(etext)));
             holder.ayahnumber.setText(String.valueOf(numb));

@@ -38,7 +38,7 @@
             android:layout_marginBottom="10dp"
             android:adjustViewBounds="true"
             android:contentDescription="Furqon"
-            app:srcCompat="@drawable/furqon_logo" />
+            app:srcCompat="@drawable/icon" />
 
         <include layout="@layout/suralar_button"></include>
 
@@ -47,6 +47,7 @@
         <include layout="@layout/favourite_button"></include>
 
         <include layout="@layout/search_button"></include>
+        <include layout="@layout/rate_button"></include>
 
     </LinearLayout>
 

@@ -43,6 +43,11 @@ public class AyahOfTheDay extends AppCompatActivity {
     TextView entxt;
     boolean isOpen = false;
     Animation fabopen, fabclose, scaler;
+    private SharedPref sharedPref;
+
+    public AyahOfTheDay() {
+        sharedPref = SharedPref.getInstance();
+    }
 
 
     @Override
@@ -99,7 +104,7 @@ public class AyahOfTheDay extends AppCompatActivity {
                 snackbarMessage(view, getString(R.string.language_selected));
                 animateFabs();
                 language_id = 4;
-                SharedPref.write("r_language_id", language_id);
+                sharedPref.write("r_language_id", language_id);
                 displayAyah();
             }
 
@@ -110,7 +115,7 @@ public class AyahOfTheDay extends AppCompatActivity {
                 snackbarMessage(view, getString(R.string.language_selected));
                 animateFabs();
                 language_id = 5;
-                SharedPref.write("r_language_id", 5);
+                sharedPref.write("r_language_id", 5);
                 displayAyah();
             }
         });
@@ -120,16 +125,16 @@ public class AyahOfTheDay extends AppCompatActivity {
                 snackbarMessage(view, getString(R.string.language_selected));
                 animateFabs();
                 language_id = 6;
-                SharedPref.write("r_language_id", 6);
+                sharedPref.write("r_language_id", 6);
                 displayAyah();
             }
         });
-        SharedPref.init(this);
+        sharedPref.init(this);
 
-        if (SharedPref.contains("r_language_id")) {
-            language_id = SharedPref.read("r_language_id", 1);
+        if (sharedPref.contains("r_language_id")) {
+            language_id = sharedPref.read("r_language_id", 1);
         } else {
-            SharedPref.write("r_language_id", language_id);
+            sharedPref.write("r_language_id", language_id);
         }
 
 
@@ -182,8 +187,8 @@ public class AyahOfTheDay extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 find_btn.startAnimation(scaler);
-                SharedPref.write("xatchup" + suraname, random_ayah);
-                SharedPref.write("xatchup", suraname + ":" + random_surah);
+                sharedPref.write("xatchup" + suraname, random_ayah);
+                sharedPref.write("xatchup", suraname + ":" + random_surah);
                 continueReading();
             }
         });
@@ -219,8 +224,8 @@ public class AyahOfTheDay extends AppCompatActivity {
     }
 
     private void continueReading() {
-        if (SharedPref.contains(SharedPref.XATCHUP)) {
-            String xatchup = SharedPref.read(SharedPref.XATCHUP, "");
+        if (sharedPref.contains(sharedPref.XATCHUP)) {
+            String xatchup = sharedPref.read(sharedPref.XATCHUP, "");
             if (xatchup.length() > 0) {
                 Intent intent;
                 Context context = this;
@@ -284,31 +289,35 @@ public class AyahOfTheDay extends AppCompatActivity {
     }
 
     private void displayAyah() {
-        if (SharedPref.firstRun()) {
+        if (sharedPref.isFirstRun()) {
             Intent intent = new Intent(this, ScrollingActivity.class);
             startActivity(intent);
 
         }else{
-            suraname = ayahcursor.getString(2);
-            ayah_reference.setText(getString(R.string.surah) + suraname + getString(R.string.ayah) + random_ayah);
-            ayah_text.setText(ayahcursor.getString(language_id));
 
-            String is_fav = ayahcursor.getString(7);
-            Log.d(TAG, is_fav + " is fav");
-            if (is_fav == "1") {
-
-                fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
-                fav_btn.setTag("1");
-
-            } else {
-                fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-                fav_btn.setTag("0");
-            }
+            ShowRandomAyah();
 
 
-            Log.d(TAG, String.valueOf(suraname + "-" + random_surah + " " + random_ayah));
         }
     }
+
+    private void ShowRandomAyah() {
+        suraname = ayahcursor.getString(2);
+        ayah_reference.setText(getString(R.string.surah) + suraname + getString(R.string.ayah) + random_ayah);
+        ayah_text.setText(ayahcursor.getString(language_id));
+
+        String is_fav = ayahcursor.getString(7);
+        Log.d(TAG, is_fav + " is fav");
+        if (is_fav == "1") {
+            fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
+            fav_btn.setTag("1");
+        } else {
+            fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+            fav_btn.setTag("0");
+        }
+        Log.d(TAG, String.valueOf(suraname + "-" + random_surah + " " + random_ayah));
+    }
+
     private void animateFabs() {
         if (isOpen) {
 

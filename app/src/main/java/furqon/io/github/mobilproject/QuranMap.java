@@ -118,4 +118,8 @@ public class QuranMap {
             6
 
     };
+
+    public static final int[] REVELATION_ORDER = {
+
+    };
 }

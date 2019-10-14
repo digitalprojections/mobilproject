@@ -49,6 +49,7 @@ public class AyahList extends AppCompatActivity {
     SeekBar seekBar;
     Handler handler;
     Runnable runnable;
+    private SharedPref sharedPref;
 
 
     @Override
@@ -61,7 +62,8 @@ public class AyahList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chapter_view);
-        SharedPref.init(getApplicationContext());
+        sharedPref = SharedPref.getInstance();
+        sharedPref.init(getApplicationContext());
 
 
         audiorestore = getString(R.string.audiopos_restored);
@@ -101,9 +103,9 @@ public class AyahList extends AppCompatActivity {
             recyclerView.setAdapter(mAdapter);
 
 
-            pos = SharedPref.read(suranomi, 0);
+            pos = sharedPref.read(suranomi, 0);
 
-            ayah_position = SharedPref.read(xatchup + suranomi, 0);
+            ayah_position = sharedPref.read(xatchup + suranomi, 0);
             if (ayah_position > 4) {
 
                 recyclerView.scrollToPosition(ayah_position);
@@ -270,7 +272,7 @@ public class AyahList extends AppCompatActivity {
         if (mediaPlayer != null) {
             if (mediaPlayer.isPlaying()) {
 
-                SharedPref.write(suranomi, mediaPlayer.getCurrentPosition());
+                sharedPref.write(suranomi, mediaPlayer.getCurrentPosition());
                 Toast.makeText(getBaseContext(), audiostore, Toast.LENGTH_SHORT).show();
                 mediaPlayer.pause();
             }
@@ -278,7 +280,7 @@ public class AyahList extends AppCompatActivity {
     }
 
     public void resume() {
-        pos = SharedPref.read(suranomi, 0);
+        pos = sharedPref.read(suranomi, 0);
 
         if (mediaPlayer != null) {
 

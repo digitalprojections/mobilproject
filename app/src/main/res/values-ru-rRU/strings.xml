@@ -25,4 +25,15 @@
     <string name="invite_i">Пригласить</string>
     <string name="search_hint">молитва</string>
     <string name="search">Поиск</string>
+    <string name="action_settings">Настройки</string>
+    <string name="desc_audio_seperate">Отдельное аудио для каждой суры</string>
+    <string name="desc_ayah_of_the_day">Каждый раз начните с нового стиха</string>
+    <string name="desc_comments">Комментарии различаются от основного текста и их легче пропускать</string>
+    <string name="found">Найдено:</string>
+    <string name="title_activity_scrolling">Знакомство</string>
+    <string name="tryagain">Попробовать снова</string>
+    <string name="title_separate_audio">Аудио</string>
+    <string name="title_daily_ayah">Случайный стих</string>
+    <string name="title_color_comments">Стих и комментарии</string>
+    <string name="rate">Рейтинг</string>
 </resources>

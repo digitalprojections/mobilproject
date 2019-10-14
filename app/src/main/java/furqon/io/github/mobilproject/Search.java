@@ -34,13 +34,15 @@ public class Search extends AppCompatActivity {
     EditText search_txt;
     static ImageButton ib_search;
     static TextView result_count;
+    private SharedPref sharedPref;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        SharedPref.init(getApplicationContext());
+        sharedPref = SharedPref.getInstance();
+        sharedPref.init(getApplicationContext());
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         String title = getString(R.string.search);

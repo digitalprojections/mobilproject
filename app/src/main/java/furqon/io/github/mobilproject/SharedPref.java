@@ -19,34 +19,29 @@ public class SharedPref
     public static boolean uzsw;
     public static boolean rusw;
     public static boolean ensw;
+    private static SharedPref singleton_sharedpref = null;
+    private static SharedPreferences.Editor prefsEditor;
 
-
-
-    private SharedPref()
-    {
+    public static SharedPref getInstance(){
+        if(singleton_sharedpref==null){
+            singleton_sharedpref = new SharedPref();
+        }
+        return singleton_sharedpref;
     }
 
+    private SharedPref(){
 
+    }
 
     public static void init(Context context)
     {
 
         if(mSharedPref == null) {
-            mSharedPref = context.getSharedPreferences(context.getPackageName(), Activity.MODE_PRIVATE);
 
+            mSharedPref = context.getSharedPreferences(context.getPackageName(), Activity.MODE_PRIVATE);
+            prefsEditor = mSharedPref.edit();
         }
         setDefaults();
-    }
-    public static boolean firstRun(){
-        boolean retval =true;
-        if (mSharedPref.getBoolean(FIRSTRUN, true)) {
-            // Do first run stuff here then set 'firstrun' as false
-            // using the following line to edit/commit prefs
-            mSharedPref.edit().putBoolean(FIRSTRUN, false).commit();
-        }else{
-            retval = true;
-        }
-        return retval;
     }
 
     public static boolean getDefaults(String sw){
@@ -102,7 +97,7 @@ public class SharedPref
 
 
     public static void write(String key, String value) {
-        SharedPreferences.Editor prefsEditor = mSharedPref.edit();
+
         prefsEditor.putString(key, value);
         prefsEditor.apply();
     }
@@ -117,7 +112,7 @@ public class SharedPref
         return mSharedPref.getInt(key, defValue);
     }
     public static void write(String key, boolean value) {
-        SharedPreferences.Editor prefsEditor = mSharedPref.edit();
+
         prefsEditor.putBoolean(key, value);
         prefsEditor.apply();
     }
@@ -125,7 +120,15 @@ public class SharedPref
 
 
     public static void write(String key, Integer value) {
-        SharedPreferences.Editor prefsEditor = mSharedPref.edit();
+
         prefsEditor.putInt(key, value).apply();
+    }
+
+    public boolean isFirstRun() {
+        return read(FIRSTRUN, true);
+    }
+
+    public void setFirstRun(boolean firstRun) {
+        write(FIRSTRUN, firstRun);
     }
 }

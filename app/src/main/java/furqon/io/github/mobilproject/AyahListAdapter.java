@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahListViewHolder> {
     private static final String TAG = "AYAHLISTADAPTER";
+    private final SharedPref sharedPref;
     private Context mContext;
     private Cursor mCursor;
     private ArrayList<String> mArrayList;
@@ -67,6 +68,8 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     }
 
     AyahListAdapter(Context context, Cursor cursor, String suraname, String chapter) {
+        sharedPref = SharedPref.getInstance();
+
         chapter_number = chapter;
         chaptername = suraname;
         mContext = context;
@@ -206,7 +209,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
             arabic_text_lin_layout.addView(arabic_ayah_number);
             arabic_text_lin_layout.addView(arabic_text);
-            if (SharedPref.getDefaults("uz") || SharedPref.getDefaults("ru") || SharedPref.getDefaults("en")) {
+            if (sharedPref.getDefaults("uz") || sharedPref.getDefaults("ru") || sharedPref.getDefaults("en")) {
 
             } else {
                 //arabic_text_lin_layout.setVisibility(View.GONE);
@@ -231,7 +234,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             if (actions_lin_layout.getVisibility() == View.GONE) {
                 actions_lin_layout.setVisibility(View.VISIBLE);
                 ayah_txt_uz = String.valueOf(ayah_text_uz.getText());
-                ayah_position = SharedPref.read("xatchup" + chaptername, 0);
+                ayah_position = sharedPref.read("xatchup" + chaptername, 0);
                 if (ayah_position == Integer.parseInt(verse_number)) {
                     book_button = ((ViewGroup) view.getParent().getParent()).findViewById(R.id.actions).findViewById(R.id.f_bookmarkbut);
                     book_button.setImageResource(R.drawable.ic_turned_in_black_24dp);
@@ -275,15 +278,15 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
                 if (book_button.getTag() == "unselected") {
                     book_button.setImageResource(R.drawable.ic_turned_in_black_24dp);
                     book_button.setTag("selected");
-                    SharedPref.write("xatchup" + chaptername, Integer.parseInt(verse_number));
+                    sharedPref.write("xatchup" + chaptername, Integer.parseInt(verse_number));
 
-                    SharedPref.write("xatchup", chaptername + ":" + chapter_number);
+                    sharedPref.write("xatchup", chaptername + ":" + chapter_number);
                     Log.i("BOOKMARK", String.valueOf(book_button.getTag()));
                 } else {
                     book_button.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
                     book_button.setTag("unselected");
-                    SharedPref.write("xatchup" + chaptername, 0);
-                    SharedPref.write("xatchup", "");
+                    sharedPref.write("xatchup" + chaptername, 0);
+                    sharedPref.write("xatchup", "");
 
                 }
                 book_button.startAnimation(scaler);
@@ -342,7 +345,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         verse_number = numb;
         Log.i("TAG FAVOURITE AYAH", String.valueOf(etext));
 
-        if (SharedPref.getDefaults("ar")) {
+        if (sharedPref.getDefaults("ar")) {
             holder.arabic_ayah_number.setVisibility(View.VISIBLE);
             holder.arabic_text.setVisibility(View.VISIBLE);
         }
@@ -362,18 +365,18 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         holder.arabic_text.setText(artext);
         holder.arabic_ayah_number.setText(String.valueOf(numb));
 
-        if (SharedPref.getDefaults("uz")) {
+        if (sharedPref.getDefaults("uz")) {
             //holder.ayah_number.setVisibility(View.VISIBLE);
             holder.ayah_text_uz.setVisibility(View.VISIBLE);
             holder.ayah_text_uz.setText(Html.fromHtml(collapseBraces(ttext)));
             holder.ayah_number.setText(String.valueOf(numb));
         }
-        if (SharedPref.getDefaults("ru")) {
+        if (sharedPref.getDefaults("ru")) {
             holder.ayah_text_ru.setVisibility(View.VISIBLE);
             holder.ayah_text_ru.setText(Html.fromHtml(collapseBraces(rtext)));
             holder.ayah_number.setText(String.valueOf(numb));
         }
-        if (SharedPref.getDefaults("en")) {
+        if (sharedPref.getDefaults("en")) {
             holder.ayah_text_en.setVisibility(View.VISIBLE);
             holder.ayah_text_en.setText(Html.fromHtml(collapseBraces(etext)));
             holder.ayah_number.setText(String.valueOf(numb));

@@ -29,6 +29,7 @@ public class SuraNameList extends AppCompatActivity {
 
     RecyclerView recyclerView;
     InterstitialAd mInterstitialAd;
+    private SharedPref sharedPref;
 
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -68,7 +69,8 @@ public class SuraNameList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sura_name_list);
-        SharedPref.init(getApplicationContext());
+        sharedPref = SharedPref.getInstance();
+        sharedPref.init(getApplicationContext());
         //getSupportActionBar().setTitle("Suralar");
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

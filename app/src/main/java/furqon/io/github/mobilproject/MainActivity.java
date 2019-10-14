@@ -49,6 +49,8 @@ import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
 
+import hotchemi.android.rate.AppRate;
+import hotchemi.android.rate.OnClickButtonListener;
 import io.fabric.sdk.android.Fabric;
 
 import androidx.annotation.NonNull;
@@ -58,6 +60,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.viewpager.widget.ViewPager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -65,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
     Button davomi_but;
     Button favourite_but;
     Button search_but;
+    Button rate_but;
+
     ImageView imageView;
 
     private Handler handler;
@@ -80,6 +85,10 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_INVITE = 0;
     private static final String DEEP_LINK_URL = "https://furqon.page.link/deeplink";
     Uri deepLink;
+    private SharedPref sharedPref;
+    private ViewPager viewPager;
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -117,18 +126,21 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
+        sharedPref = SharedPref.getInstance();
+        sharedPref.init(getApplicationContext());
 
 
-        SharedPref.init(getApplicationContext());
+
+
 
         Fabric.with(this, new Crashlytics());
         Crashlytics.log("Activity created");
-        if (SharedPref.read(SharedPref.TOKEN, "") != "") {
-            String token = SharedPref.read(SharedPref.TOKEN, "");
+        if (sharedPref.read(sharedPref.TOKEN, "") != "") {
+            String token = sharedPref.read(sharedPref.TOKEN, "");
             Log.d("TOKEN", "TOKEN RESTORED:" + token);
             sendRegistrationToServer(token);
         } else {
-            String token = SharedPref.read(SharedPref.TOKEN, "");
+            String token = sharedPref.read(sharedPref.TOKEN, "");
             Log.d("TOKEN", "TOKEN MISSING? " + token);
 
         }
@@ -148,6 +160,8 @@ public class MainActivity extends AppCompatActivity {
         davomi_but = findViewById(R.id.davomi);
         favourite_but = findViewById(R.id.favouritebut);
         search_but = findViewById(R.id.searchbtn);
+        rate_but = findViewById(R.id.ratebtn);
+
         imageView = findViewById(R.id.imageView);
 
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -166,6 +180,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 open_search();
+            }
+        });
+        rate_but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Rateus();
             }
         });
         //day_but = findViewById(R.id.ayahoftheday);
@@ -237,6 +257,29 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+        AppRate.with(this)
+                .setInstallDays(0) // default 10, 0 means install day.
+                .setLaunchTimes(3) // default 10
+                .setRemindInterval(2) // default 1
+                .setShowLaterButton(true) // default true
+                .setDebug(false) // default false
+                .setOnClickButtonListener(new OnClickButtonListener() { // callback listener.
+                    @Override
+                    public void onClickButton(int which) {
+                        Log.d(MainActivity.class.getName(), Integer.toString(which));
+                    }
+                })
+                .monitor();
+
+
+
+        // Show a dialog if meets conditions
+        AppRate.showRateDialogIfMeetsConditions(this);
+
+    }
+
+    private void Rateus() {
+        AppRate.with(this).showRateDialog(this);
     }
 
     private void open_settings() {
@@ -378,7 +421,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.i("APP SIGNATURE STORED", response);
                         if (response.contains("app signature recorded")) {
 
-                            SharedPref.write("appsignature", sign);
+                            sharedPref.write("appsignature", sign);
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -426,8 +469,8 @@ public class MainActivity extends AppCompatActivity {
 
     //TODO ClassCastException fixed???
     private void continueReading() {
-        if(SharedPref.contains(SharedPref.XATCHUP)) {
-            String xatchup = SharedPref.read(SharedPref.XATCHUP, "");
+        if(sharedPref.contains(sharedPref.XATCHUP)) {
+            String xatchup = sharedPref.read(sharedPref.XATCHUP, "");
             if (xatchup.length() > 0) {
                 Log.i("XATCHUP", xatchup);
                 Intent intent;

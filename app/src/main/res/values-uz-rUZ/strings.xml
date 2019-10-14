@@ -25,4 +25,15 @@
     <string name="invite_i">Taklif qiling</string>
     <string name="search_hint">намоз</string>
     <string name="search">Izlash</string>
+    <string name="desc_ayah_of_the_day">Қуръон дастури ҳар сафар очганингизда, уни ўқишга ундовчи, тасодифан танланган оят билан бошланади</string>
+    <string name="desc_comments">Матнни изоҳини ўқишни хохламасангиз, марҳамат, рангли матнни ўқимай ўтказиб юборишингиз мумкин</string>
+    <string name="desc_audio_seperate">Ҳар бир сура аудиоси алоҳида</string>
+    <string name="action_settings">Sozlamalar</string>
+    <string name="found">Topildi:</string>
+    <string name="title_activity_scrolling">Tanishuv</string>
+    <string name="tryagain">Yana urinish</string>
+    <string name="title_daily_ayah">Ҳар гал, Бир оят</string>
+    <string name="title_color_comments">Рангли изоҳ</string>
+    <string name="title_separate_audio">Аудио</string>
+    <string name="rate">Баҳолаш</string>
 </resources>
