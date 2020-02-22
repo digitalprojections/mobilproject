@@ -38,4 +38,5 @@
     <string name="title_daily_ayah">Random verse</string>
     <string name="title_separate_audio">Audio</string>
     <string name="rate">Rate It</string>
+    <string name="error_message">Error occurred. Please, restart the app</string>
 </resources>

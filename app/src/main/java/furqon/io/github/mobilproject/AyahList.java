@@ -1,15 +1,13 @@
 package furqon.io.github.mobilproject;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Handler;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,14 +18,14 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.TimerTask;
-
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.io.IOException;
+import java.util.Objects;
 
 
 public class AyahList extends AppCompatActivity {
@@ -53,7 +51,7 @@ public class AyahList extends AppCompatActivity {
 
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
     }
@@ -66,6 +64,7 @@ public class AyahList extends AppCompatActivity {
         sharedPref.init(getApplicationContext());
 
 
+
         audiorestore = getString(R.string.audiopos_restored);
         audiostore = getString(R.string.audiopos_stored);
         loadfailed = getString(R.string.audio_load_fail);
@@ -76,69 +75,73 @@ public class AyahList extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Bundle intent = getIntent().getExtras();
-        String extratext = intent.getString("SURANAME");
+        String extratext;
+        if(intent!=null){
+            try{
+                extratext = intent.getString("SURANAME");
+                assert extratext != null;
+                suranomi = extratext.substring(0, extratext.indexOf(":"));
+                suranomer = extratext.substring(extratext.indexOf(":") + 1);
+
+                Log.i("LOADED SURA", suranomer + " " + suranomi);
+
+                Objects.requireNonNull(getSupportActionBar()).setTitle(suranomi);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+                mDatabase = DatabaseAccess.getInstance(getApplicationContext());
+                if (!mDatabase.isOpen()) {
+                    mDatabase.open();
+                }
+
+                RecyclerView recyclerView = findViewById(R.id.chapter_scroll);
+                recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
-            suranomi = extratext.substring(0, extratext.indexOf(":"));
-            suranomer = extratext.substring(extratext.indexOf(":") + 1);
-
-            Log.i("LOADED SURA", suranomer + " " + suranomi);
-
-            getSupportActionBar().setTitle(suranomi);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-            mDatabase = DatabaseAccess.getInstance(getApplicationContext());
-            if (!mDatabase.isOpen()) {
-                mDatabase.open();
-            }
-
-            RecyclerView recyclerView = findViewById(R.id.chapter_scroll);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                ayahcursor = mDatabase.getSuraText(suranomer);
 
 
-            ayahcursor = mDatabase.getSuraText(suranomer);
+                mAdapter = new AyahListAdapter(this, ayahcursor, suranomi, suranomer);
+                recyclerView.setAdapter(mAdapter);
 
 
-            mAdapter = new AyahListAdapter(this, ayahcursor, suranomi, suranomer);
-            recyclerView.setAdapter(mAdapter);
+                pos = sharedPref.read(suranomi, 0);
 
+                ayah_position = sharedPref.read(xatchup + suranomi, 0);
+                if (ayah_position > 4) {
 
-            pos = sharedPref.read(suranomi, 0);
+                    recyclerView.scrollToPosition(ayah_position);
+                }
+                handler = new Handler();
 
-            ayah_position = sharedPref.read(xatchup + suranomi, 0);
-            if (ayah_position > 4) {
+                seekBar = findViewById(R.id.seekBar);
 
-                recyclerView.scrollToPosition(ayah_position);
-            }
-            handler = new Handler();
+                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean input) {
+                        if (input) {
+                            if (mediaPlayer != null) {
+                                mediaPlayer.seekTo(progress);
+                            }
 
-            seekBar = findViewById(R.id.seekBar);
-
-            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean input) {
-                    if (input) {
-                        if (mediaPlayer != null) {
-                            mediaPlayer.seekTo(progress);
                         }
 
                     }
 
-                }
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
 
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
+                    }
 
-                }
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
 
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-
-                }
-            });
-
-
-
+                    }
+                });
+            }
+            catch (NullPointerException npx){
+                Toast.makeText( getBaseContext(), R.string.error_message, Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     public void playCycle() {
@@ -196,9 +199,7 @@ public class AyahList extends AppCompatActivity {
                 }
                 return true;
             case R.id.stop:
-                if (mediaPlayer == null) {
-
-                } else {
+                if (mediaPlayer != null) {
                     pause();
                 }
                 return true;

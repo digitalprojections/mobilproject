@@ -7,18 +7,18 @@ import android.util.Log;
 public class SharedPref
 {
     private static SharedPreferences mSharedPref;
-    public static final String TOKEN = "TOKEN";
-    public static final String UZSW = "UZSW";
-    public static final String ARSW = "ARSW";
-    public static final String RUSW = "RUSW";
-    public static final String ENSW = "ENSW";
-    public static final String XATCHUP = "xatchup";
-    public static final String FIRSTRUN = "firstrun";
+    final String TOKEN = "TOKEN";
+    final String UZSW = "UZSW";
+    final String ARSW = "ARSW";
+    final String RUSW = "RUSW";
+    final String ENSW = "ENSW";
+    final String XATCHUP = "xatchup";
+    private static final String FIRSTRUN = "firstrun";
 
-    public static boolean arsw;
-    public static boolean uzsw;
-    public static boolean rusw;
-    public static boolean ensw;
+    private static boolean arsw;
+    private static boolean uzsw;
+    private static boolean rusw;
+    private static boolean ensw;
     private static SharedPref singleton_sharedpref = null;
     private static SharedPreferences.Editor prefsEditor;
 
@@ -33,18 +33,19 @@ public class SharedPref
 
     }
 
-    public static void init(Context context)
+    public void init(Context context)
     {
 
         if(mSharedPref == null) {
 
             mSharedPref = context.getSharedPreferences(context.getPackageName(), Activity.MODE_PRIVATE);
             prefsEditor = mSharedPref.edit();
+            prefsEditor.apply();
         }
         setDefaults();
     }
 
-    public static boolean getDefaults(String sw){
+    boolean getDefaults(String sw){
         boolean rv = false;
 
         switch (sw){
@@ -66,7 +67,7 @@ public class SharedPref
         return rv;
     }
 
-    private static void setDefaults(){
+    private void setDefaults(){
         if(!mSharedPref.contains(UZSW) || !mSharedPref.contains(RUSW) || !mSharedPref.contains(ENSW)){
             write(ARSW,true);
             write(UZSW,true);
@@ -84,8 +85,8 @@ public class SharedPref
 
     }
 
-    public static Boolean contains(String s){
-        Boolean rv = false;
+    Boolean contains(String s){
+        boolean rv = false;
 
         if(mSharedPref.contains(s)){
             rv = true;
@@ -96,22 +97,22 @@ public class SharedPref
 
 
 
-    public static void write(String key, String value) {
+    void write(String key, String value) {
 
         prefsEditor.putString(key, value);
         prefsEditor.apply();
     }
 
-    public static String read(String key, String defValue) {
+    String read(String key, String defValue) {
         return mSharedPref.getString(key, defValue);
     }
-    public static boolean read(String key, boolean defValue) {
+    boolean read(String key, boolean defValue) {
         return mSharedPref.getBoolean(key, defValue);
     }
-    public static Integer read(String key, int defValue) {
+    Integer read(String key, int defValue) {
         return mSharedPref.getInt(key, defValue);
     }
-    public static void write(String key, boolean value) {
+    void write(String key, boolean value) {
 
         prefsEditor.putBoolean(key, value);
         prefsEditor.apply();
@@ -119,16 +120,16 @@ public class SharedPref
 
 
 
-    public static void write(String key, Integer value) {
+    void write(String key, Integer value) {
 
         prefsEditor.putInt(key, value).apply();
     }
 
-    public boolean isFirstRun() {
+    boolean isFirstRun() {
         return read(FIRSTRUN, true);
     }
 
-    public void setFirstRun(boolean firstRun) {
+    void setFirstRun(boolean firstRun) {
         write(FIRSTRUN, firstRun);
     }
 }

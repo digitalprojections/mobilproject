@@ -7,7 +7,7 @@
     <string name="settings">Sozlamalar</string>
     <string name="arabic">Arabcha</string>
     <string name="uzbek">O`zbekcha</string>
-    <string name="more_coming">Tez kunda, boshqa tillar ham...</string>
+    <string name="more_coming">Tez kunda, boshqa tillar ham…</string>
     <string name="audiopos_stored">Xotiraga joylandi</string>
     <string name="audiopos_restored">davom etish</string>
     <string name="audio_load_fail">Yuklashda xatolik! Internet tarmoqqa ulanganmisiz?</string>
@@ -36,4 +36,5 @@
     <string name="title_color_comments">Рангли изоҳ</string>
     <string name="title_separate_audio">Аудио</string>
     <string name="rate">Баҳолаш</string>
+    <string name="error_message">Xatolik. Iltimos, dasturni qayta oching</string>
 </resources>

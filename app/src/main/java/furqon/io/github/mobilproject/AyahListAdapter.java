@@ -5,10 +5,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
-import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,12 +18,13 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import java.util.ArrayList;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 
 public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahListViewHolder> {
     private static final String TAG = "AYAHLISTADAPTER";
@@ -47,12 +46,12 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     private String ru_text;//oyat matni uzbek
     private String en_text;//oyat matni uzbek
 
-    SpannableStringBuilder ssb;
+    private SpannableStringBuilder ssb;
 
     private int ayah_position;
 
 
-    Typeface madina;
+    private Typeface madina;
 
     private ViewGroup.LayoutParams lp; // Height of TextView
     private ViewGroup.LayoutParams lpmar; // Height of TextView
@@ -166,7 +165,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             arabic_text.setVisibility(View.GONE);
             arabic_text.setLayoutParams(lpartxt);
             arabic_text.setTextSize(30);
-            arabic_text.setGravity(Gravity.END | Gravity.RIGHT);
+            arabic_text.setGravity(Gravity.END);
             arabic_text.setTextColor(Color.BLACK);
             arabic_text.setShadowLayer(1.5f, 0, 0, Color.BLACK);
 
@@ -178,9 +177,8 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             arabic_ayah_number.setGravity(Gravity.CENTER);
             //arabic_ayah_number.setVisibility(View.GONE);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                arabic_text.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
-            }
+
+            arabic_text.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
 
             if (arabic_text.getParent() != null) {
                 ((ViewGroup) arabic_text.getParent()).removeView(arabic_text);
@@ -209,10 +207,9 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
             arabic_text_lin_layout.addView(arabic_ayah_number);
             arabic_text_lin_layout.addView(arabic_text);
-            if (sharedPref.getDefaults("uz") || sharedPref.getDefaults("ru") || sharedPref.getDefaults("en")) {
-
-            } else {
-                //arabic_text_lin_layout.setVisibility(View.GONE);
+            if ((sharedPref.getDefaults("uz") || sharedPref.getDefaults("ru") || sharedPref.getDefaults("en")) && !sharedPref.getDefaults("ar")) {
+                ayah_number.setVisibility(View.VISIBLE);
+                arabic_text_lin_layout.setVisibility(View.GONE);
             }
 
 
@@ -249,7 +246,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         }
     }
 
-    public void takeAction(View view) {
+    private void takeAction(View view) {
         //Log.d("CLICK", view);
         LinearLayout ll = ((ViewGroup) view.getParent().getParent()).findViewById(R.id.uzbektranslation);
 
@@ -298,8 +295,14 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         // manage sqlite creation and data addition
         Log.i("AYAT FAVOURITED", String.valueOf(view));
         if (mDatabase == null || !mDatabase.isOpen()) {
-            mDatabase.open();
-        } else if (mDatabase.isOpen()) {
+            try{
+                assert mDatabase != null;
+                mDatabase.open();
+            }catch (NullPointerException npx){
+                Toast.makeText(view.getContext() , R.string.error_message, Toast.LENGTH_SHORT).show();
+            }
+
+        } else {
             if (fav_button.getTag() == "1") {
                 mDatabase.removeFromFavs(chapter_number, verse_number, "0");
                 fav_button.setImageResource(R.drawable.ic_favorite_border_black_24dp);
@@ -314,6 +317,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     }
 
 
+    @NonNull
     @Override
     public AyahListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
@@ -360,7 +364,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         }
 
         //holder.arabic_text.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
-        holder.arabic_text.setGravity(Gravity.END | Gravity.RIGHT);
+        holder.arabic_text.setGravity(Gravity.END);
 
         holder.arabic_text.setText(artext);
         holder.arabic_ayah_number.setText(String.valueOf(numb));
@@ -392,7 +396,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         if (t.indexOf("(") > 0) {
             //all logic here
             retval = t.replace("(", "<br><font color='#517D43'>");
-            Log.i("ARRAY", String.valueOf(retval));
+            Log.i("ARRAY", retval);
             retval = retval.replace(")", "</font>");
 
         } else {
@@ -406,7 +410,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
     @Override
     public int getItemCount() {
-        Integer rv = 0;
+        int rv = 0;
         if (mCursor != null) {
             rv = mCursor.getCount();
         }

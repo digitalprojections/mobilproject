@@ -3,6 +3,7 @@ package furqon.io.github.mobilproject;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,15 +14,18 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 public class AyahOfTheDay extends AppCompatActivity {
     private static final String TAG = "RANDOM VERSE";
     private int random_surah;
     private int random_ayah;
+    private int cursor_retry = 0;
+
     private String suraname;
     private int language_id = 4;
     public DatabaseAccess mDatabase;
@@ -207,14 +211,14 @@ public class AyahOfTheDay extends AppCompatActivity {
         Uri appLinkData = appLinkIntent.getData();
         if(appLinkData!=null) {
             Log.d(TAG, appLinkAction + " - " + appLinkData.getQueryParameter("sn") + appLinkData.getQueryParameter("an"));
-            random_surah = Integer.parseInt(appLinkData.getQueryParameter("sn"));
-            random_ayah = Integer.parseInt(appLinkData.getQueryParameter("an"));
+            String sntext = appLinkData.getQueryParameter("sn");
+            if(sntext!=null)
+                random_surah = Integer.parseInt(sntext);
+            String antext = appLinkData.getQueryParameter("an");
+            if(antext!=null)
+                random_ayah = Integer.parseInt(antext);
             makeCall();
         }
-        else {
-
-        }
-
     }
 
     @Override
@@ -243,12 +247,13 @@ public class AyahOfTheDay extends AppCompatActivity {
         // manage sqlite creation and data addition
         Log.i("AYAT FAVOURITED", String.valueOf(view));
 
-            if (mDatabase == null || !mDatabase.isOpen()) {
+            if (!mDatabase.isOpen()) {
+                assert mDatabase!=null;
                 mDatabase.open();
                 if(mDatabase.isOpen()) {
                     addToFavourites(view);
                 }
-            } else if (mDatabase.isOpen()) {
+            } else{
                 if (fav_btn.getTag() == "1") {
                     mDatabase.removeFromFavs(random_surah, random_ayah, "0");
                     fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
@@ -302,20 +307,40 @@ public class AyahOfTheDay extends AppCompatActivity {
     }
 
     private void ShowRandomAyah() {
-        suraname = ayahcursor.getString(2);
-        ayah_reference.setText(getString(R.string.surah) + suraname + getString(R.string.ayah) + random_ayah);
-        ayah_text.setText(ayahcursor.getString(language_id));
+        if (ayahcursor != null) {
+            try{
+                suraname = ayahcursor.getString(2);
+                String randomayahreference = getString(R.string.surah) + suraname + getString(R.string.ayah) + random_ayah;
+                ayah_reference.setText(randomayahreference);
+                ayah_text.setText(ayahcursor.getString(language_id));
 
-        String is_fav = ayahcursor.getString(7);
-        Log.d(TAG, is_fav + " is fav");
-        if (is_fav == "1") {
-            fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
-            fav_btn.setTag("1");
-        } else {
-            fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-            fav_btn.setTag("0");
+                String is_fav = ayahcursor.getString(7);
+                Log.d(TAG, is_fav + " is fav");
+                if (is_fav.equals("1")) {
+                    fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
+                    fav_btn.setTag("1");
+                } else {
+                    fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                    fav_btn.setTag("0");
+                }
+                Log.d(TAG, suraname + "-" + random_surah + " " + random_ayah);
+            }catch (CursorIndexOutOfBoundsException ciobx){
+                ++cursor_retry;
+                if(cursor_retry<3){
+                    //try recalling the cursor
+                    makeCall();
+                }
+            }
+
         }
-        Log.d(TAG, String.valueOf(suraname + "-" + random_surah + " " + random_ayah));
+        else{
+            ++cursor_retry;
+            if(cursor_retry<3){
+                //try recalling the cursor
+                makeCall();
+            }
+        }
+
     }
 
     private void animateFabs() {
