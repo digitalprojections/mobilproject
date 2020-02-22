@@ -15,6 +15,7 @@ public class ScrollingActivity extends AppCompatActivity {
     sharedpref sharedPref;
     ViewPager viewPager;
     TabLayout tabLayout;
+    private TabLayout.Tab tabItem;
     Button button_done;
 
 
@@ -31,11 +32,15 @@ public class ScrollingActivity extends AppCompatActivity {
 
         tabLayout = findViewById(R.id.tabLayout2);
 
+
+
+
         //sharedPref.setFirstRun(true);
         //findViewById(R.id.pager)
         viewPager = findViewById(R.id.pager);
 
         scrollingAdapter = new ScrollingAdapter(this);
+
         viewPager.setAdapter(scrollingAdapter);
 
         button_done = findViewById(R.id.button_Done);

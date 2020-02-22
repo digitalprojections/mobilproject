@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="furqon.io.github.mobilproject">
 
     <uses-permission android:name="com.android.vending.CHECK_LICENSE" />
@@ -56,7 +55,7 @@
         <activity
             android:name=".SuraNameList"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".AyahOfTheDay">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -77,11 +76,9 @@
         <activity
             android:name=".Search"
             android:parentActivityName=".MainActivity"></activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".AyahOfTheDay"></activity>
 
-            <!-- [START link_intent_filter] -->
 
-        </activity>
     </application>
 
 </manifest>

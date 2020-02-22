@@ -316,13 +316,16 @@ public class AyahOfTheDay extends AppCompatActivity {
 
                 String is_fav = ayahcursor.getString(7);
                 Log.d(TAG, is_fav + " is fav");
-                if (is_fav.equals("1")) {
-                    fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
-                    fav_btn.setTag("1");
-                } else {
-                    fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-                    fav_btn.setTag("0");
+                if(is_fav!=null){
+                    if (is_fav.equals("1")) {
+                        fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
+                        fav_btn.setTag("1");
+                    } else {
+                        fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                        fav_btn.setTag("0");
+                    }
                 }
+
                 Log.d(TAG, suraname + "-" + random_surah + " " + random_ayah);
             }catch (CursorIndexOutOfBoundsException ciobx){
                 ++cursor_retry;

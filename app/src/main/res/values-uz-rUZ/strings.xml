@@ -38,4 +38,5 @@
     <string name="title_separate_audio">Аудио</string>
     <string name="rate">Баҳолаш</string>
     <string name="error_message">Xatolik. Iltimos, dasturni qayta oching</string>
+    <string name="show_a_randomly_selected_ayah_on_launch">Boshlashda tasodifiy tanlangan oyatni ko\'rsatish</string>
 </resources>
