@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-public class SharedPref
+public class sharedpref
 {
     private static SharedPreferences mSharedPref;
     final String TOKEN = "TOKEN";
@@ -19,17 +19,17 @@ public class SharedPref
     private static boolean uzsw;
     private static boolean rusw;
     private static boolean ensw;
-    private static SharedPref singleton_sharedpref = null;
+    private static sharedpref singleton_sharedpref = null;
     private static SharedPreferences.Editor prefsEditor;
 
-    public static SharedPref getInstance(){
+    public static sharedpref getInstance(){
         if(singleton_sharedpref==null){
-            singleton_sharedpref = new SharedPref();
+            singleton_sharedpref = new sharedpref();
         }
         return singleton_sharedpref;
     }
 
-    private SharedPref(){
+    private sharedpref(){
 
     }
 

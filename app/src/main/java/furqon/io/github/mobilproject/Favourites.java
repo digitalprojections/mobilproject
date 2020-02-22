@@ -2,7 +2,6 @@ package furqon.io.github.mobilproject;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -11,17 +10,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import java.util.Objects;
 
 
 public class Favourites extends AppCompatActivity {
@@ -37,16 +36,23 @@ public class Favourites extends AppCompatActivity {
     private static final String TAG = "FAVOURITES ACTIVITY";
     private static final int REQUEST_INVITE = 0;
     private InterstitialAd mInterstitialAd;
+    private sharedpref sharedPref;
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_favourites);
-        SharedPref.init(getApplicationContext());
+        sharedPref = sharedpref.getInstance();
+        sharedPref.init(getApplicationContext());
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setTitle("Favorites");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Favorites");
 
         progressBar = findViewById(R.id.progressBar2);
         recyclerView = findViewById(R.id.recyclerfavs);

@@ -3,23 +3,20 @@ package furqon.io.github.mobilproject;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.ArrayList;
+import java.util.Objects;
 
 public class SuraNameList extends AppCompatActivity {
 
@@ -29,7 +26,7 @@ public class SuraNameList extends AppCompatActivity {
 
     RecyclerView recyclerView;
     InterstitialAd mInterstitialAd;
-    private SharedPref sharedPref;
+    private sharedpref sharedPref;
 
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -69,14 +66,14 @@ public class SuraNameList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sura_name_list);
-        sharedPref = SharedPref.getInstance();
+        sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
         //getSupportActionBar().setTitle("Suralar");
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         mDatabase = DatabaseAccess.getInstance(getApplicationContext());
         if(!mDatabase.isOpen()) {

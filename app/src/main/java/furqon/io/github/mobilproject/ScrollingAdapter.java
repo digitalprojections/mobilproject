@@ -1,21 +1,15 @@
 package furqon.io.github.mobilproject;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewpager.widget.PagerAdapter;
-
-import com.google.android.material.tabs.TabLayout;
-
-import java.util.Random;
 
 public class ScrollingAdapter extends PagerAdapter {
     private Context context;
@@ -26,13 +20,14 @@ public class ScrollingAdapter extends PagerAdapter {
 
     private String[] descriptionText;
 
-    public ScrollingAdapter(Context context){
+    ScrollingAdapter(Context context){
         this.context = context;
         descriptionText = new String[]{
+                this.context.getString(R.string.furqan_definition),
                 this.context.getString(R.string.desc_ayah_of_the_day), this.context.getString(R.string.desc_comments), this.context.getString(R.string.desc_audio_seperate)
         };
         titles = new String[]{
-          context.getString(R.string.title_daily_ayah), context.getString(R.string.title_color_comments), context.getString(R.string.title_separate_audio)
+          "", context.getString(R.string.title_daily_ayah), context.getString(R.string.title_color_comments), context.getString(R.string.title_separate_audio)
         };
 
 
@@ -45,13 +40,13 @@ public class ScrollingAdapter extends PagerAdapter {
 
     @Override
     public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
-        return view==(ConstraintLayout) object;
+        return view== object;
     }
 
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        layoutInflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+        layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.scroll_page, container,false);
 
         ImageView imageView = view.findViewById(R.id.screen_img);

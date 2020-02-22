@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
@@ -19,12 +18,12 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 
 
 public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdapter.FavouriteListViewHolder> {
@@ -48,7 +47,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
     private int ayah_position;
 
 
-    Typeface madina;
+    private Typeface madina;
 
 
     private ViewGroup.LayoutParams lp; // Height of TextView
@@ -56,10 +55,10 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
     private ViewGroup.LayoutParams lpartxt; // Height of TextView
     private ViewGroup.LayoutParams toplayout; // Height of TextView
     private Animation scaler;
-    private SharedPref sharedPref;
+    private sharedpref sharedPref;
 
     FavouriteListAdapter(Context context, Cursor cursor, String suraname, String chapter) {
-        sharedPref = SharedPref.getInstance();
+        sharedPref = sharedpref.getInstance();
         chapternumber = chapter;
 
         mContext = context;
@@ -164,7 +163,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
             ayah_text_en.setVisibility(View.GONE);
             arabictext.setLayoutParams(lpartxt);
             arabictext.setTextSize(30);
-            arabictext.setGravity(Gravity.END | Gravity.RIGHT);
+            arabictext.setGravity(Gravity.END);
             arabictext.setTextColor(Color.BLACK);
             arabictext.setShadowLayer(1.5f, 0, 0, Color.BLACK);
             arabictext.setVisibility(View.GONE);
@@ -176,9 +175,8 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
             arabic_ayahnumber.setGravity(Gravity.CENTER);
             arabic_ayahnumber.setVisibility(View.GONE);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                arabictext.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
-            }
+
+            arabictext.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
 
             if (arabictext.getParent() != null) {
                 ((ViewGroup) arabictext.getParent()).removeView(arabictext);
@@ -249,7 +247,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         }
     }
 
-    public void takeAction(View view) {
+    private void takeAction(View view) {
 
         LinearLayout ll = ((ViewGroup) view.getParent()).findViewById(R.id.uzbektranslation);
 
@@ -297,18 +295,14 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         //TODO manage sqlite creation and data addition
         Log.i("AYAT FAVOURITED", String.valueOf(view));
 
-        if (mDatabase == null || !mDatabase.isOpen()) {
+        if (!mDatabase.isOpen()) {
             mDatabase.open();
-        } else if (mDatabase.isOpen()) {
+        } else {
             if (favbut.getTag() == "1") {
                 mDatabase.removeFromFavs(chapternumber, versenumber, "0");
                 favbut.setImageResource(R.drawable.ic_favorite_border_black_24dp);
                 favbut.setTag("0");
                 mCursor = mDatabase.loadFavourites();
-
-
-            } else {
-
             }
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, mCursor.getCount());
@@ -378,7 +372,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
 
         holder.chapterTitle.setText(chaptername);
         //holder.arabic_text.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
-        holder.arabictext.setGravity(Gravity.END | Gravity.RIGHT);
+        holder.arabictext.setGravity(Gravity.END);
 
         holder.arabictext.setText(artext);
         holder.arabic_ayahnumber.setText(String.valueOf(numb));
@@ -416,7 +410,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         if (t.indexOf("(") > 0) {
             //all logic here
             retval = t.replace("(", "<br><font color='#517D43'>");
-            Log.i("ARRAY", String.valueOf(retval));
+            Log.i("ARRAY", retval);
             retval = retval.replace(")", "</font>");
         } else {
             retval = t;

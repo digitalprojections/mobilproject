@@ -1,16 +1,12 @@
 package furqon.io.github.mobilproject;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Switch;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -20,7 +16,7 @@ import com.google.android.gms.ads.MobileAds;
 public class Settings extends AppCompatActivity {
 
     private AdView mAdView;
-    private SharedPref sharedPref;
+    private sharedpref sharedPref;
     InterstitialAd mInterstitialAd;
 
 
@@ -34,7 +30,7 @@ public class Settings extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        sharedPref = SharedPref.getInstance();
+        sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
         sw_ar = findViewById(R.id.arabic_sw);
         sw_uz = findViewById(R.id.uzbek_sw);
@@ -66,19 +62,19 @@ public class Settings extends AppCompatActivity {
     public void save_settings() {
 
         sharedPref.write(sharedPref.ARSW, sw_ar.isChecked());
-        SharedPref.write(SharedPref.UZSW, sw_uz.isChecked());
-        SharedPref.write(SharedPref.RUSW, sw_ru.isChecked());
-        SharedPref.write(SharedPref.ENSW, sw_en.isChecked());
+        sharedPref.write(sharedPref.UZSW, sw_uz.isChecked());
+        sharedPref.write(sharedPref.RUSW, sw_ru.isChecked());
+        sharedPref.write(sharedPref.ENSW, sw_en.isChecked());
         Toast.makeText(this, "Setting are saved", Toast.LENGTH_SHORT).show();
-        SharedPref.init(getApplicationContext());
+        sharedPref.init(getApplicationContext());
     }
 
 
     public void updateView() {
-        sw_ar.setChecked(SharedPref.read(SharedPref.ARSW, false));
-        sw_uz.setChecked(SharedPref.read(SharedPref.UZSW, false));
-        sw_ru.setChecked(SharedPref.read(SharedPref.RUSW, false));
-        sw_en.setChecked(SharedPref.read(SharedPref.ENSW, false));
+        sw_ar.setChecked(sharedPref.read(sharedPref.ARSW, false));
+        sw_uz.setChecked(sharedPref.read(sharedPref.UZSW, false));
+        sw_ru.setChecked(sharedPref.read(sharedPref.RUSW, false));
+        sw_en.setChecked(sharedPref.read(sharedPref.ENSW, false));
     }
 
     @Override

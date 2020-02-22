@@ -28,7 +28,7 @@ import java.util.ArrayList;
 
 public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahListViewHolder> {
     private static final String TAG = "AYAHLISTADAPTER";
-    private final SharedPref sharedPref;
+    private final sharedpref sharedPref;
     private Context mContext;
     private Cursor mCursor;
     private ArrayList<String> mArrayList;
@@ -67,7 +67,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     }
 
     AyahListAdapter(Context context, Cursor cursor, String suraname, String chapter) {
-        sharedPref = SharedPref.getInstance();
+        sharedPref = sharedpref.getInstance();
 
         chapter_number = chapter;
         chaptername = suraname;

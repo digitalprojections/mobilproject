@@ -1,13 +1,7 @@
 package furqon.io.github.mobilproject;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,7 +15,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.Objects;
 
 public class Search extends AppCompatActivity {
     private static final String TAG = "SEARCH";
@@ -30,30 +29,30 @@ public class Search extends AppCompatActivity {
     Cursor ayahcursor;
     String searchtxt;
     RecyclerView recyclerView;
-    static ProgressBar progressBar;
+    ProgressBar progressBar;
     EditText search_txt;
-    static ImageButton ib_search;
-    static TextView result_count;
-    private SharedPref sharedPref;
+    ImageButton ib_search;
+    TextView result_count;
+    private sharedpref sharedPref;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        sharedPref = SharedPref.getInstance();
+        sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         String title = getString(R.string.search);
-        getSupportActionBar().setTitle(title);
+        Objects.requireNonNull(getSupportActionBar()).setTitle(title);
 
         progressBar = findViewById(R.id.progressBarSearch);
         progressBar.setVisibility(View.INVISIBLE);
         search_txt = findViewById(R.id.editTextSearch);
         ib_search = findViewById(R.id.imageButtonSearch);
         result_count = findViewById(R.id.result_count_txt);
-        result_count.setText("search result");
+        result_count.setText(R.string.found);
         recyclerView = findViewById(R.id.recyclerSearch);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -68,7 +67,7 @@ public class Search extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.i(TAG, String.valueOf(search_txt.getText()));
-                if (String.valueOf(search_txt.getText()) != "") {
+                if (!String.valueOf(search_txt.getText()).isEmpty()) {
                     search_word(getApplicationContext(), String.valueOf(search_txt.getText()));
                 }
             }
@@ -115,14 +114,15 @@ public class Search extends AppCompatActivity {
             recyclerView.setAdapter(mAdapter);
             setProgressBarState(ayahcursor.getCount());
         }else{
-            Toast.makeText(context, "Try a longer word", Toast.LENGTH_SHORT);
+            Toast.makeText(context, "Try a longer word", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public static void setProgressBarState(int c) {
+    public void setProgressBarState(int c) {
         ib_search.setEnabled(true);
         progressBar.setVisibility(View.INVISIBLE);
-        result_count.setText("search result: " + c);
+        String found_text = String.valueOf(R.string.found + c);
+        result_count.setText(found_text);
     }
 
     private void open_settings() {

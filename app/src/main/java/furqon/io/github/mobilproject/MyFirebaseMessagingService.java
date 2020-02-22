@@ -1,27 +1,19 @@
 package furqon.io.github.mobilproject;
 
-import android.app.AlertDialog;
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
-
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "FIREBASE Messages";
+    private sharedpref sharedPref;
 
     public MyFirebaseMessagingService() {
+        sharedPref = sharedpref.getInstance();
 
 
     }
@@ -38,14 +30,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
-            if (/* Check if data needs to be processed by long running job */ true) {
-                // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
-                scheduleJob();
-            } else {
-                // Handle message within 10 seconds
 
+            scheduleJob();
 
-            }
             handleNow(remoteMessage.getData().get("body"));
         }
 
@@ -67,12 +54,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     @Override
-    public void onMessageSent(String s) {
+    public void onMessageSent(@NonNull String s) {
         super.onMessageSent(s);
     }
 
     @Override
-    public void onSendError(String s, Exception e) {
+    public void onSendError(@NonNull String s, @NonNull Exception e) {
         super.onSendError(s, e);
     }
 
@@ -83,10 +70,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * is initially generated so this is where you would retrieve the token.
      */
     @Override
-    public void onNewToken(String token) {
+    public void onNewToken(@NonNull String token) {
         Log.d(TAG, "Refreshed token: " + token);
-        SharedPref.init(getApplicationContext());
-        SharedPref.write(SharedPref.TOKEN, token);
+        sharedPref.init(getApplicationContext());
+        sharedPref.write(sharedPref.TOKEN, token);
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.

@@ -3,7 +3,6 @@ package furqon.io.github.mobilproject;
 
 import android.content.Context;
 import android.content.Intent;
-
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -11,7 +10,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -22,24 +20,25 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-
-
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.analytics.FirebaseAnalytics;
-
 import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
@@ -52,15 +51,6 @@ import java.util.Map;
 import hotchemi.android.rate.AppRate;
 import hotchemi.android.rate.OnClickButtonListener;
 import io.fabric.sdk.android.Fabric;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.viewpager.widget.ViewPager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -85,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_INVITE = 0;
     private static final String DEEP_LINK_URL = "https://furqon.page.link/deeplink";
     Uri deepLink;
-    private SharedPref sharedPref;
+    private sharedpref sharedPref;
     private ViewPager viewPager;
 
 
@@ -126,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
-        sharedPref = SharedPref.getInstance();
+        sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
 
 
@@ -135,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
         Fabric.with(this, new Crashlytics());
         Crashlytics.log("Activity created");
-        if (sharedPref.read(sharedPref.TOKEN, "") != "") {
+        if (!sharedPref.read(sharedPref.TOKEN, "").isEmpty()) {
             String token = sharedPref.read(sharedPref.TOKEN, "");
             Log.d("TOKEN", "TOKEN RESTORED:" + token);
             sendRegistrationToServer(token);
@@ -203,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        //String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
 
         try {
@@ -338,7 +328,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("ATTEMPTING TOKEN SEND", token);
 
         queue = Volley.newRequestQueue(this);
-        String url = "https://ajpage.janjapanweb.com/ajphp_sbs.php";
+        String url = "https://inventivesolutionste.ipage.com/ajphp_sbs.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -355,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }) {
             protected Map<String, String> getParams() {
-                Map<String, String> MyData = new HashMap<String, String>();
+                Map<String, String> MyData = new HashMap<>();
                 MyData.put("action", "set_token"); //Add the data you'd like to send to the server.
                 MyData.put("appname", ""); //Add the data you'd like to send to the server.
                 MyData.put("username", ""); //Change to variable
@@ -367,10 +357,11 @@ public class MainActivity extends AppCompatActivity {
         queue.add(stringRequest);
     }
 
-    public int checkAppSignature(Context context) {
+    private int checkAppSignature(Context context) {
         try {
 
-            PackageInfo packageInfo = context.getPackageManager()
+            PackageInfo packageInfo;
+            packageInfo = context.getPackageManager()
 
                     .getPackageInfo(context.getPackageName(),
 
@@ -412,7 +403,7 @@ public class MainActivity extends AppCompatActivity {
         //Add to the user account token, app id, device id
         Log.i("ATTEMPTING SIGNATURE", sign);
         queue = Volley.newRequestQueue(this);
-        String url = "https://ajpage.janjapanweb.com/ajphp_sbs.php";
+        String url = "https://inventivesolutionste.ipage.com/ajphp_sbs.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -431,7 +422,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }) {
             protected Map<String, String> getParams() {
-                Map<String, String> MyData = new HashMap<String, String>();
+                Map<String, String> MyData = new HashMap<>();
                 MyData.put("action", "set_shash"); //Add the data you'd like to send to the server.
                 MyData.put("appname", ""); //Add the data you'd like to send to the server.
                 MyData.put("username", ""); //Change to variable
@@ -447,8 +438,8 @@ public class MainActivity extends AppCompatActivity {
     public static boolean deleteDir(File dir) {
         if (dir != null && dir.isDirectory()) {
             String[] children = dir.list();
-            for (int i = 0; i < children.length; i++) {
-                boolean success = deleteDir(new File(dir, children[i]));
+            for (String child : children) {
+                boolean success = deleteDir(new File(dir, child));
                 if (!success) {
                     return false;
                 }
@@ -535,12 +526,7 @@ public class MainActivity extends AppCompatActivity {
 
             String data = intent.getStringExtra("data");
 
-            if (data != null) {
 
-                // Fragment fragment = new NotificationActivity();
-                //getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).addToBackStack(null).commit();
-
-            }
 
 
         }

@@ -3,25 +3,27 @@ package furqon.io.github.mobilproject;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.SearchListViewHolder> {
-    Cursor mCursor;
-    Context mContext;
-    public SearchListAdapter(Context context, Cursor cursor) {
+    private Cursor mCursor;
+    private Context mContext;
+    private sharedpref sharedPref;
+    private Search search;
+
+    SearchListAdapter(Context context, Cursor cursor) {
         mContext = context;
         mCursor = cursor;
-        SharedPref.init(context);
+        sharedPref = sharedpref.getInstance();
+        sharedPref.init(context);
+        search = new Search();
     }
 
     @NonNull
@@ -29,7 +31,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Se
     public SearchListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.search_result_row, parent, false);
-        Search.setProgressBarState(getItemCount());
+        search.setProgressBarState(getItemCount());
         return new SearchListAdapter.SearchListViewHolder(view);
     }
 
@@ -77,7 +79,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Se
 
 
         //TODO
-        public SearchListViewHolder(@NonNull View itemView) {
+        SearchListViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
             suraName = itemView.findViewById(R.id.search_row_title);
@@ -94,14 +96,14 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Se
             String ayano = ayahNumber.getText().toString();
             String suranomi = suraName.getText().toString();
             String suranumber = String.valueOf(suraName.getTag());
-            SharedPref.write("xatchup" + suranomi, Integer.parseInt(ayano));
-            SharedPref.write("xatchup", suranomi + ":" + suranumber);
+            sharedPref.write("xatchup" + suranomi, Integer.parseInt(ayano));
+            sharedPref.write("xatchup", suranomi + ":" + suranumber);
             continueReading();
         }
     }
     private void continueReading() {
-        if (SharedPref.contains(SharedPref.XATCHUP)) {
-            String xatchup = SharedPref.read(SharedPref.XATCHUP, "");
+        if (sharedPref.contains(sharedPref.XATCHUP)) {
+            String xatchup = sharedPref.read(sharedPref.XATCHUP, "");
             if (xatchup.length() > 0) {
                 Intent intent;
                 intent = new Intent(mContext, AyahList.class);

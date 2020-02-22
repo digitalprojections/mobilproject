@@ -2,32 +2,24 @@ package furqon.io.github.mobilproject;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.tabs.TabLayout;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager.widget.ViewPager;
-
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import hotchemi.android.rate.AppRate;
-import hotchemi.android.rate.OnClickButtonListener;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
 
 public class ScrollingActivity extends AppCompatActivity {
     private ScrollingAdapter scrollingAdapter;
-    SharedPref sharedPref;
+    sharedpref sharedPref;
     ViewPager viewPager;
     TabLayout tabLayout;
     Button button_done;
 
 
     public ScrollingActivity() {
-        sharedPref = SharedPref.getInstance();
+        sharedPref = sharedpref.getInstance();
     }
 
     @Override
@@ -41,7 +33,7 @@ public class ScrollingActivity extends AppCompatActivity {
 
         //sharedPref.setFirstRun(true);
         //findViewById(R.id.pager)
-        viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager = findViewById(R.id.pager);
 
         scrollingAdapter = new ScrollingAdapter(this);
         viewPager.setAdapter(scrollingAdapter);
@@ -58,7 +50,7 @@ public class ScrollingActivity extends AppCompatActivity {
         };
         button_done.setOnClickListener(clickListener);
 
-        ViewPager.OnPageChangeListener onPageChangeListener = null;
+        ViewPager.OnPageChangeListener onPageChangeListener;
 
 
         onPageChangeListener = new ViewPager.OnPageChangeListener() {

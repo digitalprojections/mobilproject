@@ -47,7 +47,7 @@ public class AyahList extends AppCompatActivity {
     SeekBar seekBar;
     Handler handler;
     Runnable runnable;
-    private SharedPref sharedPref;
+    private sharedpref sharedPref;
 
 
     @Override
@@ -60,7 +60,7 @@ public class AyahList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chapter_view);
-        sharedPref = SharedPref.getInstance();
+        sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
 
 
