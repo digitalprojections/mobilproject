@@ -182,8 +182,7 @@ public class AyahOfTheDay extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 home_btn.startAnimation(scaler);
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
+                AyahOfTheDay.super.onBackPressed();
             }
         });
         //TODO Bookmark
@@ -294,16 +293,7 @@ public class AyahOfTheDay extends AppCompatActivity {
     }
 
     private void displayAyah() {
-        if (sharedPref.isFirstRun()) {
-            Intent intent = new Intent(this, ScrollingActivity.class);
-            startActivity(intent);
-
-        }else{
-
             ShowRandomAyah();
-
-
-        }
     }
 
     private void ShowRandomAyah() {
@@ -331,6 +321,11 @@ public class AyahOfTheDay extends AppCompatActivity {
                 ++cursor_retry;
                 if(cursor_retry<3){
                     //try recalling the cursor
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     makeCall();
                 }
             }
@@ -340,6 +335,11 @@ public class AyahOfTheDay extends AppCompatActivity {
             ++cursor_retry;
             if(cursor_retry<3){
                 //try recalling the cursor
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 makeCall();
             }
         }

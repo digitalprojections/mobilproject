@@ -97,7 +97,7 @@ public class AyahList extends AppCompatActivity {
                 recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
-                ayahcursor = mDatabase.getSuraText(suranomer);
+                LoadTheCursor();
 
 
                 mAdapter = new AyahListAdapter(this, ayahcursor, suranomi, suranomer);
@@ -142,6 +142,10 @@ public class AyahList extends AppCompatActivity {
                 Toast.makeText( getBaseContext(), R.string.error_message, Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public void LoadTheCursor() {
+        ayahcursor = mDatabase.getSuraText(suranomer);
     }
 
     public void playCycle() {

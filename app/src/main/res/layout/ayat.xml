@@ -2,11 +2,12 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+
     android:id="@+id/ayah_box"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="0dp"
+    android:background="#85CFCFCF"
     android:orientation="vertical"
     android:paddingBottom="0dp">
 
@@ -35,7 +36,7 @@
             android:layout_margin="5dp"
             android:background="@drawable/ayahsymbol"
             android:gravity="center"
-            android:text="1"
+
             android:textColor="#000000" />
 
         <TextView
@@ -44,7 +45,7 @@
             android:layout_height="wrap_content"
             android:gravity="end"
             android:padding="5dp"
-            android:text="TextView"
+
             android:textColor="#000000" />
 
     </LinearLayout>
@@ -141,7 +142,7 @@
 
                 android:background="@drawable/ayahsymbol"
                 android:gravity="center"
-                android:text="1"
+
                 android:textColor="#000000" />
 
             <TextView

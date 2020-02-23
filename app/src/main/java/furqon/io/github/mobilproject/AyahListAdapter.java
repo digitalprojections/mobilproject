@@ -294,9 +294,9 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     private void addToFavourites(View view) {
         // manage sqlite creation and data addition
         Log.i("AYAT FAVOURITED", String.valueOf(view));
+        fav_button = ((ViewGroup) view.getParent().getParent()).findViewById(R.id.favouritebut);
         if (mDatabase == null || !mDatabase.isOpen()) {
             try{
-                assert mDatabase != null;
                 mDatabase.open();
             }catch (NullPointerException npx){
                 Toast.makeText(view.getContext() , R.string.error_message, Toast.LENGTH_SHORT).show();
@@ -312,6 +312,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
                 fav_button.setImageResource(R.drawable.ic_favorite_black_24dp);
                 fav_button.setTag("1");
             }
+            mCursor = mDatabase.getSuraText(mCursor.getString(1));
         }
 
     }
@@ -347,21 +348,26 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         String numb = mCursor.getString(2);
         int is_fav = mCursor.getInt(7);
         verse_number = numb;
-        Log.i("TAG FAVOURITE AYAH", String.valueOf(etext));
+        fav_button = holder.actions_lin_layout.findViewById(R.id.favouritebut);
+        fav_button.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+        fav_button.setTag("0");
+        book_button.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
+        book_button.setTag("unselected");
+
 
         if (sharedPref.getDefaults("ar")) {
             holder.arabic_ayah_number.setVisibility(View.VISIBLE);
             holder.arabic_text.setVisibility(View.VISIBLE);
         }
-
+        Log.i("TAG FAVOURITE AYAH", numb + " " + is_fav + " " + mCursor.getString(2) + " " + mCursor.getString(1) + " " + mCursor.getString(8));
         if (is_fav == 1) {
-            fav_button = holder.actions_lin_layout.findViewById(R.id.favouritebut);
+
             fav_button.setImageResource(R.drawable.ic_favorite_black_24dp);
             fav_button.setTag("1");
-
-        } else {
-            fav_button.setTag("0");
+            Log.i("FAVOURITE AYAH ****** ", numb + " " + is_fav);
         }
+
+
 
         //holder.arabic_text.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
         holder.arabic_text.setGravity(Gravity.END);

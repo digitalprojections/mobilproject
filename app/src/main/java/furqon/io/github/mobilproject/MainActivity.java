@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     Uri deepLink;
     private sharedpref sharedPref;
     private ViewPager viewPager;
+    private boolean randomayahshown;
 
 
     @Override
@@ -107,8 +108,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,9 +117,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
-
-
-
 
 
         Fabric.with(this, new Crashlytics());
@@ -212,8 +208,7 @@ public class MainActivity extends AppCompatActivity {
         //TODO unlock downloads
 
         // Create a deep link and display it in the UI
-       deepLink = buildDeepLink(Uri.parse(DEEP_LINK_URL), 0);
-
+        deepLink = buildDeepLink(Uri.parse(DEEP_LINK_URL), 0);
 
 
         FirebaseDynamicLinks.getInstance()
@@ -262,9 +257,22 @@ public class MainActivity extends AppCompatActivity {
                 .monitor();
 
 
-
         // Show a dialog if meets conditions
         AppRate.showRateDialogIfMeetsConditions(this);
+        if (sharedPref.isFirstRun()) {
+            Intent intent = new Intent(this, ScrollingActivity.class);
+            startActivity(intent);
+
+        }else{
+
+            if (sharedPref.getDefaults("random_ayah_sw") && !randomayahshown) {
+                ayahOfTheDay();
+                randomayahshown = true;
+            }
+
+
+        }
+
 
     }
 
@@ -310,6 +318,7 @@ public class MainActivity extends AppCompatActivity {
 
         startActivity(intent);
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -460,7 +469,7 @@ public class MainActivity extends AppCompatActivity {
 
     //TODO ClassCastException fixed???
     private void continueReading() {
-        if(sharedPref.contains(sharedPref.XATCHUP)) {
+        if (sharedPref.contains(sharedPref.XATCHUP)) {
             String xatchup = sharedPref.read(sharedPref.XATCHUP, "");
             if (xatchup.length() > 0) {
                 Log.i("XATCHUP", xatchup);
@@ -469,7 +478,7 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(context, AyahList.class);
                 intent.putExtra("SURANAME", xatchup);
                 context.startActivity(intent);
-            }else{
+            } else {
                 Toast.makeText(getBaseContext(), getString(R.string.no_bookmarks), Toast.LENGTH_LONG).show();
             }
         } else {
@@ -497,11 +506,13 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
 
     }
+
     private void open_favourites() {
         Intent intent;
         intent = new Intent(this, furqon.io.github.mobilproject.Favourites.class);
         startActivity(intent);
     }
+
     private void open_search() {
         Intent intent;
         intent = new Intent(this, furqon.io.github.mobilproject.Search.class);
@@ -525,8 +536,6 @@ public class MainActivity extends AppCompatActivity {
         if (intent != null) {
 
             String data = intent.getStringExtra("data");
-
-
 
 
         }

@@ -3,6 +3,7 @@ package furqon.io.github.mobilproject;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -24,6 +25,8 @@ public class Settings extends AppCompatActivity {
     private Switch sw_uz;
     private Switch sw_ru;
     private Switch sw_en;
+
+    private Switch sw_random_ayah;
     private Button ok_but;
 
     @Override
@@ -36,15 +39,54 @@ public class Settings extends AppCompatActivity {
         sw_uz = findViewById(R.id.uzbek_sw);
         sw_ru = findViewById(R.id.ru_sw);
         sw_en = findViewById(R.id.en_sw);
-        ok_but = findViewById(R.id.done_setting);
+        sw_random_ayah = findViewById(R.id.random_ayah_switch);
+        ok_but = findViewById(R.id.ok_button);
+
+        sw_ar.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                sharedPref.write(sharedPref.ARSW, sw_ar.isChecked());
+                ok_but.setEnabled(true);
+            }
+        });
+        sw_en.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                sharedPref.write(sharedPref.ENSW, sw_en.isChecked());
+                ok_but.setEnabled(true);
+            }
+        });
+        sw_ru.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                sharedPref.write(sharedPref.RUSW, sw_ru.isChecked());
+                ok_but.setEnabled(true);
+            }
+        });
+        sw_uz.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                sharedPref.write(sharedPref.UZSW, sw_uz.isChecked());
+                ok_but.setEnabled(true);
+            }
+        });
+
+        sw_random_ayah.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                sharedPref.write(sharedPref.RANDOMAYAHSW, sw_random_ayah.isChecked());
+                ok_but.setEnabled(true);
+            }
+        });
 
         ok_but.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                save_settings();
+                Settings.super.onBackPressed();
+                Toast.makeText(view.getContext(), getString(R.string.settings_saved), Toast.LENGTH_SHORT).show();
+                sharedPref.init(getApplicationContext());
             }
         });
-
 
         MobileAds.initialize(this, "ca-app-pub-3838820812386239~2342916878");
         mInterstitialAd = new InterstitialAd(this);
@@ -59,15 +101,6 @@ public class Settings extends AppCompatActivity {
 
     }
 
-    public void save_settings() {
-
-        sharedPref.write(sharedPref.ARSW, sw_ar.isChecked());
-        sharedPref.write(sharedPref.UZSW, sw_uz.isChecked());
-        sharedPref.write(sharedPref.RUSW, sw_ru.isChecked());
-        sharedPref.write(sharedPref.ENSW, sw_en.isChecked());
-        Toast.makeText(this, "Setting are saved", Toast.LENGTH_SHORT).show();
-        sharedPref.init(getApplicationContext());
-    }
 
 
     public void updateView() {
@@ -75,6 +108,18 @@ public class Settings extends AppCompatActivity {
         sw_uz.setChecked(sharedPref.read(sharedPref.UZSW, false));
         sw_ru.setChecked(sharedPref.read(sharedPref.RUSW, false));
         sw_en.setChecked(sharedPref.read(sharedPref.ENSW, false));
+        sw_random_ayah.setChecked(sharedPref.read(sharedPref.RANDOMAYAHSW, true));
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        ok_but.setEnabled(false);
+    }
+    @Override
+    protected void  onPause(){
+        super.onPause();
+        ok_but.setEnabled(false);
     }
 
     @Override

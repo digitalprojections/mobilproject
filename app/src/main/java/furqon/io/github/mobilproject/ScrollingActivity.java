@@ -1,6 +1,5 @@
 package furqon.io.github.mobilproject;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -49,8 +48,9 @@ public class ScrollingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 sharedPref.setFirstRun(false);
-                Intent intent = new Intent(getApplicationContext(), AyahOfTheDay.class);
-                startActivity(intent);
+                //Intent intent = new Intent(getApplicationContext(), AyahOfTheDay.class);
+                //startActivity(intent);
+                ScrollingActivity.super.onBackPressed();
             }
         };
         button_done.setOnClickListener(clickListener);

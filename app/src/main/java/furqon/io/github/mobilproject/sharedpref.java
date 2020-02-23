@@ -6,6 +6,7 @@ import android.util.Log;
 
 public class sharedpref
 {
+
     private static SharedPreferences mSharedPref;
     final String TOKEN = "TOKEN";
     final String UZSW = "UZSW";
@@ -13,12 +14,14 @@ public class sharedpref
     final String RUSW = "RUSW";
     final String ENSW = "ENSW";
     final String XATCHUP = "xatchup";
+    final String RANDOMAYAHSW = "SHOW_ONE_AYAH";
     private static final String FIRSTRUN = "firstrun";
 
     private static boolean arsw;
     private static boolean uzsw;
     private static boolean rusw;
     private static boolean ensw;
+    private static boolean random_ayah_sw;
     private static sharedpref singleton_sharedpref = null;
     private static SharedPreferences.Editor prefsEditor;
 
@@ -61,6 +64,9 @@ public class sharedpref
             case "en":
                 rv = ensw;
                 break;
+            case "random_ayah_sw":
+                rv=random_ayah_sw;
+                break;
 
         }
 
@@ -81,6 +87,12 @@ public class sharedpref
             rusw = read(RUSW, false);
             ensw = read(ENSW, false);
 
+        }
+
+        if(!mSharedPref.contains(RANDOMAYAHSW)){
+            write(RANDOMAYAHSW, true);
+        }else {
+            random_ayah_sw = read(RANDOMAYAHSW, true);
         }
 
     }

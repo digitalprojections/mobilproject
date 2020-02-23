@@ -11,7 +11,7 @@
     <string name="audiopos_restored">continue playing</string>
     <string name="audio_load_fail">Failed to load! Check your network</string>
     <string name="save">Save</string>
-    <string name="shareayah">Share this ayah, fii sabi li-Allah to</string>
+    <string name="shareayah">Share this ayah, fii sabi li-llah</string>
     <string name="bookmark_it">Bookmark the ayah</string>
     <string name="favourite_it">Add to Favourites</string>
     <string name="banner_ad" translatable="false">ca-app-pub-3838820812386239/6533462802</string>
@@ -41,4 +41,6 @@
     <string name="error_message">Error occurred. Please, restart the app</string>
     <string name="furqan_definition">Al-Furqān (Arabic: الفرقان‎, \"The Criterion\") is the 25th chapter (sūrah) of the Qur\'an with 77 verses (āyāt). The name Al-Furqan,[1] or \"The Criterion\" refers to the Qur\'an itself as the decisive factor between good and evil.</string>
     <string name="show_a_randomly_selected_ayah_on_launch">Show a randomly selected ayah on launch</string>
+    <string name="app_logo_description">Application icon, Al Quran Al Kareem</string>
+    <string name="settings_saved">Setting are saved</string>
 </resources>

@@ -39,4 +39,6 @@
     <string name="error_message">Возникла ошибка. Пожалуйста, перезапустите приложение</string>
     <string name="furqan_definition">Аль–Фурка́н (араб. الفرقان — Различение) — двадцать пятая сура Корана. Сура мекканская, за исключением аятов 68–70, ниспосланных в Медине. Состоит из 77 аятов.</string>
     <string name="show_a_randomly_selected_ayah_on_launch">Показать случайно выбранный аят при запуске</string>
+    <string name="app_logo_description">Значок приложения, Аль Коран Аль Карим</string>
+    <string name="settings_saved">Настройки сохранены</string>
 </resources>
