@@ -13,9 +13,8 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 
 import java.io.IOException;
-import java.util.logging.Handler;
 
-public class DatabaseAccess {
+class DatabaseAccess {
     private DatabaseOpenHelper openHelper;
     private SQLiteDatabase db;
     private static DatabaseAccess instance;
@@ -30,11 +29,11 @@ public class DatabaseAccess {
 
     public static class FavouriteManager implements BaseColumns {
         public static final String TABLE_NAME = "quran";
-        public static final String TABLE_FAV = "favourites";
+        static final String TABLE_FAV = "favourites";
         public static final String COLUMN_REMARKS = "remarks";
-        public static final String COLUMN_VERSEID = "ayah_id";
-        public static final String COLUMN_SURAID = "sura_id";
-        public static final String COLUMN_FAV = "fav";
+        static final String COLUMN_VERSEID = "ayah_id";
+        static final String COLUMN_SURAID = "sura_id";
+        static final String COLUMN_FAV = "fav";
         public static final String COLUMN_SHARE_COUNT = "share_count";
         public static final String COLUMN_CATEGORY = "category_id";
         public static final String COLUMN_LANGUAGE = "language_id";
@@ -62,13 +61,13 @@ public class DatabaseAccess {
         }
 
 
-    public void close() {
+    void close() {
         if (db != null) {
             db.close();
         }
     }
 
-    public boolean isOpen() {
+    boolean isOpen() {
         if (db != null) {
             return db.isOpen();
         } else {
@@ -251,7 +250,7 @@ Cursor searchText(String st) {
                         "\tand qall.AyahText LIKE '%" + st + "%'", new String[]{});
             }
         } catch (SQLiteException e) {
-            Crashlytics.log("TABLE ERROR" + String.valueOf(c));
+            Crashlytics.log("TABLE ERROR" + c);
             c = null;
             try {
                 // clearing app data
@@ -276,7 +275,7 @@ Cursor searchText(String st) {
 
             } catch (Exception e1) {
                 e1.printStackTrace();
-                Crashlytics.log("ERROR" + String.valueOf(e1));
+                Crashlytics.log("ERROR" + e1);
             }
 
         }
@@ -297,41 +296,52 @@ Cursor searchText(String st) {
         return v;
     }
 
-    public void removeFromFavs(String suraid, String ayahno, String fav) {
+    void removeFromFavs(String suraid, String ayahno, String fav) {
 // New value for one column
 
         ContentValues values = new ContentValues();
         values.put(FavouriteManager.COLUMN_FAV, fav);
         String[] vals = {suraid, ayahno};
 
-        long count = db.updateWithOnConflict(FavouriteManager.TABLE_FAV, values, "sura_id=? and ayah_id=?", vals, SQLiteDatabase.CONFLICT_REPLACE);
-        if (count < 0) {
+        long count = db.delete(FavouriteManager.TABLE_FAV, "sura_id=? and ayah_id=?", vals);
 
-
-        }
 
         Log.i("UPDATE ", "database updated? " + suraid + " " + ayahno + " " + fav);
 
     }
 
-    public void removeFromFavs(int suraid, int ayahno, String fav) {
+    void removeFromFavs(int suraid, int ayahno, String fav) {
 // New value for one column
 
         ContentValues values = new ContentValues();
         values.put(FavouriteManager.COLUMN_FAV, fav);
         String[] vals = {String.valueOf(suraid), String.valueOf(ayahno)};
 
-        long count = db.updateWithOnConflict(FavouriteManager.TABLE_FAV, values, "sura_id=? and ayah_id=?", vals, SQLiteDatabase.CONFLICT_REPLACE);
-        if (count < 0) {
-
-
-        }
+        long count = db.delete(FavouriteManager.TABLE_FAV, "sura_id=? and ayah_id=?", vals);
 
         Log.i("UPDATE ", "database updated? " + suraid + " " + ayahno + " " + fav);
 
     }
 
-    public void saveToFavs(String suraid, String ayahno, String fav) {
+    void saveToFavs(String suraid, String ayahno, String fav) {
+// New value for one column
+
+        ContentValues values = new ContentValues();
+        values.put(FavouriteManager.COLUMN_FAV, fav);
+        values.put(FavouriteManager.COLUMN_SURAID, suraid);
+        values.put(FavouriteManager.COLUMN_VERSEID, ayahno);
+        String[] vals = {String.valueOf(suraid), String.valueOf(ayahno)};
+        long count = db.insertOrThrow(FavouriteManager.TABLE_FAV, null, values);
+        //long count = db.updateWithOnConflict(FavouriteManager.TABLE_FAV, values, "sura_id=? and ayah_id=?", vals, SQLiteDatabase.CONFLICT_REPLACE);
+
+
+        Log.i("UPDATE ", "database updated? " + suraid + " " + ayahno + " " + fav);
+
+
+
+    }
+
+    void saveToFavs(int suraid, int ayahno, String fav) {
 // New value for one column
 
         ContentValues values = new ContentValues();
@@ -340,30 +350,7 @@ Cursor searchText(String st) {
         values.put(FavouriteManager.COLUMN_VERSEID, ayahno);
 
         long count = db.insertOrThrow(FavouriteManager.TABLE_FAV, null, values);
-        if (count < 0) {
 
-
-        }
-
-        Log.i("UPDATE ", "database updated? " + suraid + " " + ayahno + " " + fav);
-
-
-
-    }
-
-    public void saveToFavs(int suraid, int ayahno, String fav) {
-// New value for one column
-
-        ContentValues values = new ContentValues();
-        values.put(FavouriteManager.COLUMN_FAV, fav);
-        values.put(FavouriteManager.COLUMN_SURAID, suraid);
-        values.put(FavouriteManager.COLUMN_VERSEID, ayahno);
-
-        long count = db.insertOrThrow(FavouriteManager.TABLE_FAV, null, values);
-        if (count < 0) {
-
-
-        }
 
         Log.i("UPDATE ", "database updated? " + suraid + " " + ayahno + " " + fav);
 
