@@ -64,18 +64,7 @@ dependencies {
     implementation 'androidx.core:core:1.2.0'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.viewpager:viewpager:1.0.0'
-    def room_version = "2.2.4"
 
-    implementation "androidx.room:room-runtime:$room_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
-
-    // optional - RxJava support for Room
-    implementation "androidx.room:room-rxjava2:$room_version"
-
-    // optional - Guava support for Room, including Optional and ListenableFuture
-    implementation "androidx.room:room-guava:$room_version"
-    // Test helpers
-    testImplementation "androidx.room:room-testing:$room_version"
 
 }
 apply plugin: 'com.google.gms.google-services'
