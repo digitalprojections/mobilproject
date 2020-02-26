@@ -4,13 +4,13 @@ apply plugin: 'io.fabric'
 android {
     signingConfigs {
         debug {
-            storeFile file('C:\\Users\\ahmad\\Documents\\GitHub\\mobilproject\\keystore.private')
+            storeFile file('C:\\Users\\ajadmin\\Documents\\GitHub\\mobilproject\\keystore.private')
             storePassword '1285422'
             keyAlias = 'baa'
             keyPassword '1285422'
         }
         release {
-            storeFile file('C:\\Users\\ahmad\\Documents\\GitHub\\mobilproject\\keystore.private')
+            storeFile file('C:\\Users\\ajadmin\\Documents\\GitHub\\mobilproject\\keystore.private')
             storePassword '1285422'
             keyAlias = 'baa'
             keyPassword '1285422'
@@ -24,7 +24,7 @@ android {
         targetSdkVersion rootProject.ext.compileSdkVersion
         versionCode 40012
         versionName "2.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
 
 

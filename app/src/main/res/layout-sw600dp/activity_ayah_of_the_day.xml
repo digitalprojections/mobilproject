@@ -68,11 +68,7 @@
                 android:id="@+id/random_verse_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="20dp"
+
                 android:background="@drawable/random_ayah_bg"
                 android:gravity="center"
                 android:padding="20dp"
@@ -100,7 +96,7 @@
                     style="@android:style/Widget.Holo.ImageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
+
                     android:layout_weight="1"
                     app:srcCompat="@drawable/ic_keyboard_arrow_left_black_24dp" />
 
@@ -109,12 +105,8 @@
                     style="@android:style/Widget.Holo.ImageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginBottom="8dp"
+
+                    android:layout_weight="1"
                     android:contentDescription="@string/shareayah"
                     app:srcCompat="@drawable/ic_share_black_24dp" />
 
@@ -123,11 +115,8 @@
                     style="@android:style/Widget.Holo.ImageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
+
+                    android:layout_weight="1"
                     android:contentDescription="@string/bookmark_it"
                     android:tag="unselected"
                     app:srcCompat="@drawable/ic_home_black_24dp" />
@@ -137,11 +126,8 @@
                     style="@android:style/Widget.Holo.ImageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
+
+                    android:layout_weight="1"
                     android:contentDescription="@string/bookmark_it"
                     android:tag="unselected"
                     app:srcCompat="@drawable/ic_find_in_page_black_24dp" />
@@ -151,11 +137,8 @@
                     style="@android:style/Widget.Holo.ImageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
+
+                    android:layout_weight="1"
                     android:contentDescription="@string/favourite_it"
                     app:srcCompat="@drawable/ic_favorite_border_black_24dp" />
 
@@ -164,7 +147,7 @@
                     style="@android:style/Widget.Holo.ImageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
+
                     android:layout_weight="1"
                     app:srcCompat="@drawable/ic_keyboard_arrow_right_black_24dp" />
 

@@ -39,7 +39,7 @@
             <include layout="@layout/favourite_button"></include>
 
             <include layout="@layout/search_button"></include>
-
+            <include layout="@layout/rate_button"></include>
         </LinearLayout>
 
     </LinearLayout>
