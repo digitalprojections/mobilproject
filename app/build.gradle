@@ -4,13 +4,13 @@ apply plugin: 'io.fabric'
 android {
     signingConfigs {
         debug {
-            storeFile file('C:\\Users\\ajadmin\\Documents\\GitHub\\mobilproject\\keystore.private')
+            storeFile file('C:\\Users\\HP0B\\source\\repos\\mobilproject\\keystore.private')
             storePassword '1285422'
             keyAlias = 'baa'
             keyPassword '1285422'
         }
         release {
-            storeFile file('C:\\Users\\ajadmin\\Documents\\GitHub\\mobilproject\\keystore.private')
+            storeFile file('C:\\Users\\HP0B\\source\\repos\\mobilproject\\keystore.private')
             storePassword '1285422'
             keyAlias = 'baa'
             keyPassword '1285422'
@@ -22,9 +22,11 @@ android {
         applicationId "furqon.io.github.mobilproject"
         minSdkVersion 19
         targetSdkVersion rootProject.ext.compileSdkVersion
-        versionCode 40012
+        versionCode 40013
         versionName "2.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.release
+        manifestPlaceholders = [:]
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
 
 
