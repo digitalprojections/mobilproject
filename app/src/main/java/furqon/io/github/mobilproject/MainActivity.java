@@ -1,6 +1,7 @@
 package furqon.io.github.mobilproject;
 
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -53,6 +54,8 @@ import hotchemi.android.rate.OnClickButtonListener;
 import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity {
+
+
 
     Button suralar_but;
     Button davomi_but;

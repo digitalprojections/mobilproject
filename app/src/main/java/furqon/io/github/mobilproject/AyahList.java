@@ -1,5 +1,6 @@
 package furqon.io.github.mobilproject;
 
+import android.app.Notification;
 import android.content.Context;
 import android.database.Cursor;
 import android.media.AudioManager;
@@ -21,14 +22,21 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.IOException;
 import java.util.Objects;
 
+import static furqon.io.github.mobilproject.Furqon.CHANNEL_AUDIO_PLAYING_ID;
+
 
 public class AyahList extends AppCompatActivity {
+
+    private NotificationManagerCompat managerCompat;
+
     private AyahListAdapter mAdapter;
     public DatabaseAccess mDatabase;
     Cursor ayahcursor;
@@ -60,6 +68,9 @@ public class AyahList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chapter_view);
+
+        managerCompat = NotificationManagerCompat.from(this);
+
         sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
 
@@ -154,6 +165,13 @@ public class AyahList extends AppCompatActivity {
             pos = mediaPlayer.getCurrentPosition();
             timer = findViewById(R.id.audio_timer);
             timer.setText(AudioTimer.getTimeStringFromMs(pos));
+
+            Notification notification = new NotificationCompat.Builder(this, CHANNEL_AUDIO_PLAYING_ID)
+                    .setSmallIcon(R.drawable.ic_surah_audio_24dp)
+                    .setContentTitle("New mail from ")
+                    .setContentText("content text")
+                    .build();
+            managerCompat.notify(1, notification);
 
             if (mediaPlayer.isPlaying()) {
                 runnable = new Runnable() {
