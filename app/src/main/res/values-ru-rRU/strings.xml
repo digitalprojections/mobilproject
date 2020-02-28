@@ -41,4 +41,11 @@
     <string name="show_a_randomly_selected_ayah_on_launch">Показать случайно выбранный аят при запуске</string>
     <string name="app_logo_description">Значок приложения, Аль Коран Аль Карим</string>
     <string name="settings_saved">Настройки сохранены</string>
+    <string name="play">Кнопка воспроизведения</string>
+    <string name="audio_playing">аудио плеер глав</string>
+    <string name="fast_rewind">Быстрая перемотка</string>
+    <string name="fast_forward">Перемотка вперед</string>
+    <string name="audio_downloaded">Аудио загружено</string>
+    <string name="audio_player_description">Аудио плеер в стиле уведомлений</string>
+    <string name="audio_downloaded_ready">аудио загружено и доступно для воспроизведения</string>
 </resources>

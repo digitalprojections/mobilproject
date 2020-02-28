@@ -1,7 +1,10 @@
 package furqon.io.github.mobilproject;
 
 import android.app.Notification;
+
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -24,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,6 +40,8 @@ import static furqon.io.github.mobilproject.Furqon.CHANNEL_AUDIO_PLAYING_ID;
 public class AyahList extends AppCompatActivity {
 
     private NotificationManagerCompat managerCompat;
+
+    PendingIntent pendingIntent;
 
     private AyahListAdapter mAdapter;
     public DatabaseAccess mDatabase;
@@ -70,6 +76,8 @@ public class AyahList extends AppCompatActivity {
         setContentView(R.layout.activity_chapter_view);
 
         managerCompat = NotificationManagerCompat.from(this);
+        Intent notifintent = new Intent(this, MainActivity.class);
+        pendingIntent = PendingIntent.getActivity(this, 0, notifintent, 0);
 
         sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
@@ -166,10 +174,20 @@ public class AyahList extends AppCompatActivity {
             timer = findViewById(R.id.audio_timer);
             timer.setText(AudioTimer.getTimeStringFromMs(pos));
 
-            Notification notification = new NotificationCompat.Builder(this, CHANNEL_AUDIO_PLAYING_ID)
+            Notification notification;
+            notification = new NotificationCompat.Builder(this, CHANNEL_AUDIO_PLAYING_ID)
                     .setSmallIcon(R.drawable.ic_surah_audio_24dp)
-                    .setContentTitle("New mail from ")
-                    .setContentText("content text")
+                    .setContentTitle("Furqon Audio Player")
+                    .setContentText(suranomi)
+                    .addAction(R.drawable.ic_previous, getString(R.string.fast_rewind), null)
+                    .addAction(R.drawable.ic_play_circle, getString(R.string.play), null)
+                    .addAction(R.drawable.ic_next, getString(R.string.fast_forward), null)
+                    .addAction(R.drawable.ic_favorite_border_black_24dp, getString(R.string.favorites), null)
+                    .setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0,1,2))
+                    .setPriority(NotificationCompat.PRIORITY_LOW)
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(false)
+                    .setOnlyAlertOnce(true)
                     .build();
             managerCompat.notify(1, notification);
 
@@ -177,8 +195,8 @@ public class AyahList extends AppCompatActivity {
                 runnable = new Runnable() {
                     @Override
                     public void run() {
-                        startTimer();
-                        playCycle();
+                        //startTimer();
+                        //playCycle();
                         Log.i("TIMER", "tick");
                     }
                 };

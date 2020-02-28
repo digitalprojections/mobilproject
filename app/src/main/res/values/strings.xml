@@ -39,8 +39,15 @@
     <string name="title_separate_audio">Audio</string>
     <string name="rate">Rate It</string>
     <string name="error_message">Error occurred. Please, restart the app</string>
-    <string name="furqan_definition">Al-Furqān (Arabic: الفرقان‎, \"The Criterion\") is the 25th chapter (sūrah) of the Qur\'an with 77 verses (āyāt). The name Al-Furqan,[1] or \"The Criterion\" refers to the Qur\'an itself as the decisive factor between good and evil.</string>
+    <string name="furqan_definition">Al-Furqān (Arabic: الفرقان‎, \"The Criterion\") is the 25th chapter (sūrah) of the Qur\'an with 77 verses (āyāt). The name Al-Furqan or \"The Criterion\" refers to the Qur\'an itself as the decisive factor between good and evil.</string>
     <string name="show_a_randomly_selected_ayah_on_launch">Show a randomly selected ayah on launch</string>
     <string name="app_logo_description">Application icon, Al Quran Al Kareem</string>
     <string name="settings_saved">Setting are saved</string>
+    <string name="play">play</string>
+    <string name="audio_playing">Chapter Audio Player</string>
+    <string name="fast_rewind">Fast Rewind</string>
+    <string name="fast_forward">Fast Forward</string>
+    <string name="audio_downloaded">Audio downloaded</string>
+    <string name="audio_player_description">Notification style audio player</string>
+    <string name="audio_downloaded_ready">audio is downloaded and available for playback</string>
 </resources>

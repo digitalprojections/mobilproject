@@ -16,12 +16,12 @@
     <string name="shareayah">Olloh yo`lida yatni ulashing</string>
     <string name="bookmark_it">oyatni belgilash</string>
     <string name="favourite_it">Tanlanganlarga qo\'shish</string>
-    <string name="russian">Rus tilida</string>
+    <string name="russian">rus tilida</string>
     <string name="english">inglizcha</string>
     <string name="app_shuts_down_now">Ilova 3 sekund ichida o\'chmasa, android sozlamalarida dasturning barcha ma\'lumotlarni o`chirib tashlang. Shunda yangi ma\'lumotlar bazasi ishga tushadi</string>
     <string name="ayah">", oyat: "</string>
     <string name="surah">"Sura: "</string>
-    <string name="language_selected">Til tanlandi</string>
+    <string name="language_selected">Ilova tili tanlandi</string>
     <string name="no_bookmarks">Xatcho\'plar topilmadi</string>
     <string name="invite_i">Taklif qiling</string>
     <string name="search_hint">намоз</string>
@@ -41,4 +41,11 @@
     <string name="show_a_randomly_selected_ayah_on_launch">Boshlashda tasodifiy tanlangan oyatni ko\'rsatish</string>
     <string name="app_logo_description">Ilova belgisi, Qur\'on Al Karim</string>
     <string name="settings_saved">Sozlamalar saqlandi</string>
+    <string name="play">tinglash</string>
+    <string name="audio_playing">Bob Ovozli Pleyeri</string>
+    <string name="fast_rewind">orqaga</string>
+    <string name="fast_forward">oldinga</string>
+    <string name="audio_downloaded">Ovoz yuklab olindi</string>
+    <string name="audio_player_description">Xabarnoma uslubidagi audio pleer</string>
+    <string name="audio_downloaded_ready">audio yuklab olingan va ijro etish uchun tayyor</string>
 </resources>
