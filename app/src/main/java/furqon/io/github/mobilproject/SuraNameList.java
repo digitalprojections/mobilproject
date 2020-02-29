@@ -16,17 +16,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.reward.RewardItem;
-import com.google.android.gms.ads.reward.RewardedVideoAd;
-import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
 import java.util.Objects;
 
 public class SuraNameList extends AppCompatActivity {
-    private RewardedVideoAd mRewardedVideoAd;
+
     private SuraNameListAdapter mAdapter;
     private DatabaseAccess mDatabase;
     private Cursor suralist;
+
 
     RecyclerView recyclerView;
     InterstitialAd mInterstitialAd;
@@ -71,57 +69,7 @@ public class SuraNameList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sura_name_list);
 
-        // Get reference to singleton RewardedVideoAd object
-        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
 
-        mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
-            @Override
-            public void onRewardedVideoAdLoaded() {
-                Toast.makeText(getBaseContext(),
-                        "Ad loaded.", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onRewardedVideoAdOpened() {
-                Toast.makeText(getBaseContext(),
-                        "Ad opened.", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onRewardedVideoStarted() {
-                Toast.makeText(getBaseContext(),
-                        "Ad started.", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onRewardedVideoAdClosed() {
-                Toast.makeText(getBaseContext(),
-                        "Ad closed.", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onRewarded(RewardItem rewardItem) {
-                Toast.makeText(getBaseContext(),
-                        "Ad triggered reward. " + rewardItem.getAmount(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onRewardedVideoAdLeftApplication() {
-                Toast.makeText(getBaseContext(),
-                        "Ad left application.", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onRewardedVideoAdFailedToLoad(int i) {
-                Toast.makeText(getBaseContext(),
-                        "Ad failed to load.", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onRewardedVideoCompleted() {
-
-            }
-        });
 
         sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
@@ -147,7 +95,7 @@ public class SuraNameList extends AppCompatActivity {
 
 
 
-        mAdapter = new SuraNameListAdapter(this, suralist, mRewardedVideoAd);
+        mAdapter = new SuraNameListAdapter(this, suralist);
         recyclerView.setAdapter(mAdapter);
 
 
@@ -163,19 +111,19 @@ public class SuraNameList extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        mRewardedVideoAd.resume(this);
+        //mRewardedVideoAd.resume(this);
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        mRewardedVideoAd.pause(this);
+        //mRewardedVideoAd.pause(this);
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
-        mRewardedVideoAd.destroy(this);
+        //mRewardedVideoAd.destroy(this);
         super.onDestroy();
         mInterstitialAd.show();
         if(mDatabase!=null) {

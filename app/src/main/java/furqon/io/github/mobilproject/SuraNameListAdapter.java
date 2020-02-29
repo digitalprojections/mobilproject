@@ -30,12 +30,14 @@ import java.util.ArrayList;
 public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapter.SuraListViewHolder> {
     private Context mContext;
     private Cursor mCursor;
-    private RewardedVideoAd mRewardedAd;
+
+    RewardAd mRewardedVideoAd;
+
     private ArrayList<String> mArrayList;
-    SuraNameListAdapter(Context context, Cursor cursor, RewardedVideoAd mRewardedAd){
+    SuraNameListAdapter(Context context, Cursor cursor){
         mContext = context;
         mCursor = cursor;
-        this.mRewardedAd = mRewardedAd;
+        mRewardedVideoAd = new RewardAd(mContext);
     }
 
 
@@ -58,9 +60,8 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
                 @Override
                 public void onClick(View view) {
                     //Toast.makeText(mContext,"Download surah number " + suraNumber.getText().toString(), Toast.LENGTH_SHORT).show();
-                    //ca-app-pub-3838820812386239/1790049383
-                    mRewardedAd.loadAd(mContext.getString(R.string.surahAudioUnlockAd),
-                            new AdRequest.Builder().build());
+
+                    ShowRewardAdForThisItem(view);
                 }
             });
             progressBar.setVisibility(View.GONE);
@@ -84,7 +85,16 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
 
 
         }
+        private void ShowRewardAdForThisItem(View view) {
+            //int position=this.getAdapterPosition();
+            String suranomer = suraNumber.getText().toString();
+            String suranomi = suraName.getText().toString();
+            mRewardedVideoAd.SHOW(suranomer);
+        }
     }
+
+
+
     @NonNull
     @Override
     public SuraListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
