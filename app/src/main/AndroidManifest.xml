@@ -22,9 +22,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
-            android:taskAffinity=""
-
-            ></activity>
+            android:taskAffinity=""/>
 
         <service
             android:name=".MyFirebaseMessagingService"
@@ -34,6 +32,11 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+        <receiver android:name=".Services.NotificationActionService">
+<intent-filter>
+    <action android:name="TRACKS_TRACKS"/>
+</intent-filter>
+        </receiver>
 
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
@@ -62,7 +65,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -76,8 +79,8 @@
         </activity>
         <activity
             android:name=".Search"
-            android:parentActivityName=".MainActivity"></activity>
-        <activity android:name=".AyahOfTheDay"></activity>
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".AyahOfTheDay"/>
 
 
     </application>

@@ -48,4 +48,5 @@
     <string name="audio_downloaded">Ovoz yuklab olindi</string>
     <string name="audio_player_description">Xabarnoma uslubidagi audio pleer</string>
     <string name="audio_downloaded_ready">audio yuklab olingan va ijro etish uchun tayyor</string>
+    <string name="download_surah">audio faylni yuklab oling</string>
 </resources>

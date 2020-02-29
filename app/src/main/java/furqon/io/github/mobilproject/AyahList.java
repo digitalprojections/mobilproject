@@ -3,15 +3,19 @@ package furqon.io.github.mobilproject;
 import android.app.Notification;
 
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,14 +38,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.io.IOException;
 import java.util.Objects;
 
-import static furqon.io.github.mobilproject.Furqon.CHANNEL_AUDIO_PLAYING_ID;
+import furqon.io.github.mobilproject.Services.NotificationActionService;
+
+import static furqon.io.github.mobilproject.Furqon.AUDIO_PLAYING_NOTIFICATION_CHANNEL;
 
 
 public class AyahList extends AppCompatActivity {
 
-    private NotificationManagerCompat managerCompat;
+    //private NotificationManagerCompat managerCompat;
 
-    PendingIntent pendingIntent;
+
+    //PendingIntent pendingIntent;
 
     private AyahListAdapter mAdapter;
     public DatabaseAccess mDatabase;
@@ -62,6 +69,13 @@ public class AyahList extends AppCompatActivity {
     Handler handler;
     Runnable runnable;
     private sharedpref sharedPref;
+    PendingIntent pendingIntentPrev;
+    PendingIntent pendingIntentPlay;
+    PendingIntent pendingIntentNext;
+    PendingIntent pendingIntentFav;
+    MediaSessionCompat mediaSessionCompat;
+
+    private NotificationManagerCompat managerCompat;
 
 
     @Override
@@ -74,15 +88,17 @@ public class AyahList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chapter_view);
-
         managerCompat = NotificationManagerCompat.from(this);
-        Intent notifintent = new Intent(this, MainActivity.class);
-        pendingIntent = PendingIntent.getActivity(this, 0, notifintent, 0);
+        //managerCompat = NotificationManagerCompat.from(this);
+        //Intent notifintent = new Intent(this, MainActivity.class);
+        //pendingIntent = PendingIntent.getActivity(this, 0, notifintent, 0);
+
 
         sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
 
 
+        mediaSessionCompat = new MediaSessionCompat(this, "tag");
 
         audiorestore = getString(R.string.audiopos_restored);
         audiostore = getString(R.string.audiopos_stored);
@@ -161,6 +177,29 @@ public class AyahList extends AppCompatActivity {
                 Toast.makeText( getBaseContext(), R.string.error_message, Toast.LENGTH_SHORT).show();
             }
         }
+
+        //PREV
+        Intent intentPrev;
+        intentPrev = new Intent(this, NotificationActionService.class).setAction(Furqon.ACTION_PREV);
+
+        pendingIntentPrev = PendingIntent.getBroadcast(this, 0, intentPrev, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        //PLAY
+        Intent intentPlay;
+        intentPlay = new Intent(this, NotificationActionService.class).setAction(Furqon.ACTION_PLAY);
+
+        pendingIntentPlay = PendingIntent.getBroadcast(this, 0, intentPrev, PendingIntent.FLAG_UPDATE_CURRENT);
+        //NEXT
+        Intent intentNext;
+        intentNext = new Intent(this, NotificationActionService.class).setAction(Furqon.ACTION_NEXT);
+
+        pendingIntentNext = PendingIntent.getBroadcast(this, 0, intentPrev, PendingIntent.FLAG_UPDATE_CURRENT);
+        //FAV
+        Intent intentFav;
+        intentFav = new Intent(this, NotificationActionService.class).setAction(Furqon.ACTION_FAV);
+
+
+        pendingIntentFav = PendingIntent.getBroadcast(this, 0, intentPrev, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     public void LoadTheCursor() {
@@ -174,22 +213,7 @@ public class AyahList extends AppCompatActivity {
             timer = findViewById(R.id.audio_timer);
             timer.setText(AudioTimer.getTimeStringFromMs(pos));
 
-            Notification notification;
-            notification = new NotificationCompat.Builder(this, CHANNEL_AUDIO_PLAYING_ID)
-                    .setSmallIcon(R.drawable.ic_surah_audio_24dp)
-                    .setContentTitle("Furqon Audio Player")
-                    .setContentText(suranomi)
-                    .addAction(R.drawable.ic_previous, getString(R.string.fast_rewind), null)
-                    .addAction(R.drawable.ic_play_circle, getString(R.string.play), null)
-                    .addAction(R.drawable.ic_next, getString(R.string.fast_forward), null)
-                    .addAction(R.drawable.ic_favorite_border_black_24dp, getString(R.string.favorites), null)
-                    .setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0,1,2))
-                    .setPriority(NotificationCompat.PRIORITY_LOW)
-                    .setContentIntent(pendingIntent)
-                    .setAutoCancel(false)
-                    .setOnlyAlertOnce(true)
-                    .build();
-            managerCompat.notify(1, notification);
+            ShowNotification(this, suranomi);
 
             if (mediaPlayer.isPlaying()) {
                 runnable = new Runnable() {
@@ -205,6 +229,51 @@ public class AyahList extends AppCompatActivity {
         }
     }
 
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getExtras().getString("actionname");
+
+            switch (action){
+                case Furqon
+                        .ACTION_PREV:
+                    Toast.makeText(context,"PREVCLICKED", Toast.LENGTH_SHORT).show();
+                    break;
+                case Furqon
+                        .ACTION_PLAY:
+                    break;
+                case Furqon
+                        .ACTION_NEXT:
+                    break;
+                case Furqon
+                        .ACTION_FAV:
+                    break;
+            }
+        }
+    };
+
+    public void ShowNotification(Context context, String suranomi){
+        Bitmap audio_player_icon = BitmapFactory.decodeResource(getResources(), R.drawable.nightsky);
+
+        Notification notification;
+        notification = new NotificationCompat.Builder(context, AUDIO_PLAYING_NOTIFICATION_CHANNEL)
+                .setSmallIcon(R.drawable.ic_surah_audio_24dp)
+                .setLargeIcon(audio_player_icon)
+                .setContentTitle("Furqon Audio Player")
+                .setContentText(suranomi)
+                .addAction(R.drawable.ic_previous, getString(R.string.fast_rewind), pendingIntentPrev)
+                .addAction(R.drawable.ic_play_circle, getString(R.string.play), pendingIntentPlay)
+                .addAction(R.drawable.ic_next, getString(R.string.fast_forward), pendingIntentNext)
+                .addAction(R.drawable.ic_favorite_border_black_24dp, getString(R.string.favorites), pendingIntentFav)
+                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                        .setShowActionsInCompactView(0,1,2)
+                        .setMediaSession(mediaSessionCompat.getSessionToken()))
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setAutoCancel(false)
+                .setOnlyAlertOnce(true)
+                .build();
+        managerCompat.notify(1, notification);
+    }
     @Override
     protected void onPause() {
         super.onPause();

@@ -48,4 +48,5 @@
     <string name="audio_downloaded">Аудио загружено</string>
     <string name="audio_player_description">Аудио плеер в стиле уведомлений</string>
     <string name="audio_downloaded_ready">аудио загружено и доступно для воспроизведения</string>
+    <string name="download_surah">скачать аудио файл</string>
 </resources>

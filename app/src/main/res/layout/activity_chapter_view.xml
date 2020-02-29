@@ -44,6 +44,10 @@
         layout="@layout/audio_player"
         android:layout_width="match_parent"
         android:layout_height="67dp"
+        android:layout_marginBottom="1dp"
+        app:layout_constraintBottom_toTopOf="@+id/audio_timer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -55,8 +59,9 @@
         android:gravity="center_horizontal"
         android:text="00:00"
         android:textColor="@color/common_google_signin_btn_text_dark_default"
-        app:layout_constraintTop_toBottomOf="@+id/audiobar"
-        tools:layout_editor_absoluteX="8dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/audiobar" />
 
     <SeekBar
         android:id="@+id/seekBar"
@@ -66,6 +71,7 @@
         android:layout_marginTop="1dp"
         android:layout_marginEnd="8dp"
         android:background="@color/trbg"
+        app:layout_constraintBottom_toTopOf="@+id/audio_timer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/audiobar" />

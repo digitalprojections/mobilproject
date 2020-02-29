@@ -3,15 +3,21 @@ package furqon.io.github.mobilproject;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.opengl.Visibility;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.rewarded.RewardedAd;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,11 +30,12 @@ import java.util.ArrayList;
 public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapter.SuraListViewHolder> {
     private Context mContext;
     private Cursor mCursor;
+    private RewardedVideoAd mRewardedAd;
     private ArrayList<String> mArrayList;
-    private InterstitialAd mInterstitialAd;
-    SuraNameListAdapter(Context context, Cursor cursor){
+    SuraNameListAdapter(Context context, Cursor cursor, RewardedVideoAd mRewardedAd){
         mContext = context;
         mCursor = cursor;
+        this.mRewardedAd = mRewardedAd;
     }
 
 
@@ -36,8 +43,8 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
         TextView suraName;
         TextView arabic_name;
         TextView suraNumber;
-
-
+        ImageView downloadButton;
+        ProgressBar progressBar;
 
         SuraListViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -45,6 +52,19 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
             suraName = itemView.findViewById(R.id.sura_name_item);
             arabic_name = itemView.findViewById(R.id.arabic);
             suraNumber = itemView.findViewById(R.id.sura_number_item);
+            downloadButton = itemView.findViewById(R.id.button_download);
+            progressBar = itemView.findViewById(R.id.progressBar_download);
+            downloadButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //Toast.makeText(mContext,"Download surah number " + suraNumber.getText().toString(), Toast.LENGTH_SHORT).show();
+                    //ca-app-pub-3838820812386239/1790049383
+                    mRewardedAd.loadAd(mContext.getString(R.string.surahAudioUnlockAd),
+                            new AdRequest.Builder().build());
+                }
+            });
+            progressBar.setVisibility(View.GONE);
+
         }
 
 
