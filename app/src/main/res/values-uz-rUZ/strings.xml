@@ -49,4 +49,6 @@
     <string name="audio_player_description">Xabarnoma uslubidagi audio pleer</string>
     <string name="audio_downloaded_ready">audio yuklab olingan va ijro etish uchun tayyor</string>
     <string name="download_surah">audio faylni yuklab oling</string>
+    <string name="unlock_the_download">Videoni tomosha qilish orqali yuklab olish tugmasini qulfni oching</string>
+    <string name="surah_audio_available">Sura audiosi mavjud</string>
 </resources>

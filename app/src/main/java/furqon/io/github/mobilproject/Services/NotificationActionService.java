@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import furqon.io.github.mobilproject.Furqon;
 
-public class NotificationActionService extends BroadcastReceiver {
+    public class NotificationActionService extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         context.sendBroadcast(new Intent("TRACKS_TRACKS")

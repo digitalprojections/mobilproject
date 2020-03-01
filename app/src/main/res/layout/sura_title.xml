@@ -60,10 +60,12 @@
                 android:id="@+id/button_download"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:contentDescription="@string/download_surah"
+                android:layout_margin="5dp"
+                android:contentDescription="@string/unlock_the_download"
                 android:focusable="true"
+                android:tag="2"
                 android:visibility="visible"
-                app:srcCompat="@drawable/ic_file_download_black_24dp" />
+                app:srcCompat="@drawable/ic_file_download_red" />
 
             <ProgressBar
                 android:id="@+id/progressBar_download"

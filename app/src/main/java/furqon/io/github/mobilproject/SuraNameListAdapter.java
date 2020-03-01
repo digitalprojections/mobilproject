@@ -1,9 +1,15 @@
 package furqon.io.github.mobilproject;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
 import android.opengl.Visibility;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,23 +28,43 @@ import com.google.android.gms.ads.rewarded.RewardedAd;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.io.File;
 import java.util.ArrayList;
+
+import static android.content.Context.DOWNLOAD_SERVICE;
+import static androidx.core.content.ContextCompat.getSystemService;
 
 public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapter.SuraListViewHolder> {
     private Context mContext;
     private Cursor mCursor;
 
-    RewardAd mRewardedVideoAd;
-
+    //created according to the available downloaded files
+    private ArrayList<String> trackList = new ArrayList<String>();
     private ArrayList<String> mArrayList;
-    SuraNameListAdapter(Context context, Cursor cursor){
+    private RewardAd mRewardedVideoAd;
+
+    private Track track;
+
+    SuraNameListAdapter(Context context, Cursor cursor, ArrayList<String> track){
         mContext = context;
         mCursor = cursor;
         mRewardedVideoAd = new RewardAd(mContext);
+        if(track.size()>0){
+            //generate tracks
+            for (String i:track
+                 ) {
+                trackList.add(i);
+            }
+        }
     }
+
+
 
 
     public class SuraListViewHolder extends RecyclerView.ViewHolder implements OnClickListener{
@@ -56,12 +82,23 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
             suraNumber = itemView.findViewById(R.id.sura_number_item);
             downloadButton = itemView.findViewById(R.id.button_download);
             progressBar = itemView.findViewById(R.id.progressBar_download);
+
+            Log.i("DOWNLOAD BUTTON", " " + downloadButton.getTag());
+
             downloadButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     //Toast.makeText(mContext,"Download surah number " + suraNumber.getText().toString(), Toast.LENGTH_SHORT).show();
+                    //String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suranomer + ".mp3"; // your URL here
+                    switch (downloadButton.getTag().toString()){
+                        case "1"://red
+                            ShowRewardAdForThisItem(view);
+                            break;
+                        case "2"://green
+                            StartDownload(view);
+                            break;
+                    }
 
-                    ShowRewardAdForThisItem(view);
                 }
             });
             progressBar.setVisibility(View.GONE);
@@ -91,9 +128,15 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
             String suranomi = suraName.getText().toString();
             mRewardedVideoAd.SHOW(suranomer);
         }
+        private void StartDownload(View view) {
+            MyListener myListener;
+            if(mContext instanceof MyListener){
+                myListener = (MyListener) mContext;
+                myListener.DownloadThis(suraNumber.getText().toString());
+            }
+
+        }
     }
-
-
 
     @NonNull
     @Override
@@ -116,9 +159,49 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
         holder.suraName.setText(name);
         holder.arabic_name.setText(arname);
         holder.suraNumber.setText(String.valueOf(numb));
-        mArrayList.add(name);
+        if(!nameNotFound(name)){
+            mArrayList.add(name);
+        }
+        if(TrackDownloaded(String.valueOf(numb))){
+            holder.downloadButton.setImageResource(R.drawable.ic_file_available);
+            holder.downloadButton.setFocusable(false);
+            holder.downloadButton.setTag(3);
+            holder.progressBar.setVisibility(View.VISIBLE);
+        }else{
+            holder.downloadButton.setImageResource(R.drawable.ic_file_download_red);
+            holder.downloadButton.setFocusable(true);
+            holder.downloadButton.setTag(2);
+            holder.progressBar.setVisibility(View.GONE);
+        }
 
     }
+
+    private boolean TrackDownloaded(String v) {
+        Log.i("TRACK DOWNLOADED?", v);
+        boolean retval = false;
+        for (String i:trackList
+             ) {
+            if(i.equals(v)){
+                //match found
+                retval = true;
+
+            }
+            Log.i("TRACK DOWNLOADED?", v + " " + i + " " + (i.equals(v)));
+        }
+        return retval;
+    }
+
+    private boolean nameNotFound(String name) {
+        boolean retval = false;
+        for (String i:mArrayList
+             ) {
+            if(i==name){
+                retval = true;
+            }
+        }
+        return retval;
+    }
+
 
     @Override
     public int getItemCount() {

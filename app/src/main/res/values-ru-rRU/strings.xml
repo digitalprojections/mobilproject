@@ -49,4 +49,6 @@
     <string name="audio_player_description">Аудио плеер в стиле уведомлений</string>
     <string name="audio_downloaded_ready">аудио загружено и доступно для воспроизведения</string>
     <string name="download_surah">скачать аудио файл</string>
+    <string name="unlock_the_download">Разблокируйте кнопку загрузки, посмотрев видео</string>
+    <string name="surah_audio_available">Аудио главы доступно</string>
 </resources>

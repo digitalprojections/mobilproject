@@ -1,12 +1,18 @@
 package furqon.io.github.mobilproject;
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.regex.PatternSyntaxException;
 
 public class sharedpref
 {
-
+    private Context mContext;
+    private static final String TRACKS = "TRACKS";
     private static SharedPreferences mSharedPref;
     final String TOKEN = "TOKEN";
     final String UZSW = "UZSW";
@@ -38,7 +44,7 @@ public class sharedpref
 
     public void init(Context context)
     {
-
+        mContext = context;
         if(mSharedPref == null) {
 
             mSharedPref = context.getSharedPreferences(context.getPackageName(), Activity.MODE_PRIVATE);
@@ -46,6 +52,36 @@ public class sharedpref
             prefsEditor.apply();
         }
         setDefaults();
+    }
+
+    public ArrayList GetTrackStates(){
+        String jstring = read(TRACKS, "");
+        ArrayList strings = new ArrayList();
+        if(!jstring.isEmpty()){
+            strings = GetJson(jstring);
+            Log.i("TRACK INFO", strings.size() + " size of array");
+        }
+        return strings;
+    }
+    public void SetTrackStates(ArrayList list){
+        Toast.makeText(mContext, list.toString(), Toast.LENGTH_LONG).show();
+        Log.i("LIST TO SAVE", list.toString());
+    }
+
+    private ArrayList GetJson(String jstring) {
+        String[] strings;
+        ArrayList json = new ArrayList();
+        try{
+            strings = jstring.split(":");
+
+            for (int i=0; i<strings.length;i++) {
+                json.add(strings[i].split(";"));
+                json.set(json.size()-1, json.get(json.size()-1).toString().split(","));
+            }
+        }catch (PatternSyntaxException psx){
+            Toast.makeText(mContext, psx.getMessage(), Toast.LENGTH_LONG).show();
+        }
+        return json;
     }
 
     boolean getDefaults(String sw){
@@ -95,6 +131,9 @@ public class sharedpref
             random_ayah_sw = read(RANDOMAYAHSW, true);
         }
 
+        if(!mSharedPref.contains(TRACKS)){
+            write(TRACKS, "");
+        }
     }
 
     Boolean contains(String s){
