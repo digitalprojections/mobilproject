@@ -46,12 +46,13 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
 
     //created according to the available downloaded files
     private ArrayList<String> trackList = new ArrayList<String>();
+    private ArrayList<String> enabledList = new ArrayList<String>();
     private ArrayList<String> mArrayList;
     private RewardAd mRewardedVideoAd;
 
     private Track track;
 
-    SuraNameListAdapter(Context context, Cursor cursor, ArrayList<String> track){
+    SuraNameListAdapter(Context context, Cursor cursor, ArrayList<String> track, ArrayList<String> downloadables){
         mContext = context;
         mCursor = cursor;
         mRewardedVideoAd = new RewardAd(mContext);
@@ -62,6 +63,7 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
                 trackList.add(i);
             }
         }
+        enabledList = downloadables;
     }
 
 
@@ -162,18 +164,41 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
         if(!nameNotFound(name)){
             mArrayList.add(name);
         }
-        if(TrackDownloaded(String.valueOf(numb))){
+        if(TrackDownloaded(numb)){
+            //set by the actually available audio files
             holder.downloadButton.setImageResource(R.drawable.ic_file_available);
             holder.downloadButton.setFocusable(false);
             holder.downloadButton.setTag(3);
             holder.progressBar.setVisibility(View.VISIBLE);
         }else{
-            holder.downloadButton.setImageResource(R.drawable.ic_file_download_red);
-            holder.downloadButton.setFocusable(true);
-            holder.downloadButton.setTag(2);
-            holder.progressBar.setVisibility(View.GONE);
+            if(DownloadEnabled(numb)){
+                //download allowed. Active within the session only. Forgotten on restart
+                holder.downloadButton.setImageResource(R.drawable.ic_file_download_done);
+                holder.downloadButton.setFocusable(true);
+                holder.downloadButton.setTag(2);
+                holder.progressBar.setVisibility(View.GONE);
+            }else{
+                holder.downloadButton.setImageResource(R.drawable.ic_file_download_red);
+                holder.downloadButton.setFocusable(true);
+                holder.downloadButton.setTag(1);
+                holder.progressBar.setVisibility(View.GONE);
+            }
         }
 
+    }
+
+    private boolean DownloadEnabled(String numb) {
+        Log.i("VIDEO AD WATCHED", numb);
+        boolean retval = false;
+        for (String i:enabledList
+        ) {
+            if(i.equals(numb)){
+                //match found
+                retval = true;
+            }
+            Log.i("DOWNLOADED ENABLED", numb + " " + i + " " + (i.equals(numb)));
+        }
+        return retval;
     }
 
     private boolean TrackDownloaded(String v) {

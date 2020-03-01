@@ -44,7 +44,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     private SuraNameListAdapter mAdapter;
     private DatabaseAccess mDatabase;
     private Cursor suralist;
-
+    private ArrayList<String> enabledList = new ArrayList<String>();
     long downloadId;
 
 
@@ -126,7 +126,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
 
 
-        mAdapter = new SuraNameListAdapter(this, suralist, trackList);
+        mAdapter = new SuraNameListAdapter(this, suralist, trackList, enabledList);
         recyclerView.setAdapter(mAdapter);
 
 
@@ -167,6 +167,24 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     }
 
     @Override
+    public void EnableThis(String suraNumber) {
+        if(NotInTheList(enabledList, suraNumber)){
+            enabledList.add(suraNumber);
+        }
+    }
+
+    private boolean NotInTheList(ArrayList<String> enabledList, String suraNumber) {
+        boolean retval = false;
+        for (String i:enabledList
+             ) {
+            if(i.equals(suraNumber)){
+                retval = true;
+            }
+        }
+        return retval;
+    }
+
+    @Override
     public void DownloadThis(String suraNumber) {
         if (WritePermission()) {
 
@@ -201,6 +219,8 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
     }
 
+
+
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -215,7 +235,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         }
     };
 
-    private void MoveFiles() {
+    /*private void MoveFiles() {
         File src = new File(Environment.getExternalStorageDirectory(), "SurahAudio");
         File dst = new File(getFilesDir().getAbsolutePath(), "Surah Audio");
         dst.mkdirs();
@@ -241,7 +261,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
             Toast.makeText(this, iox.getMessage(), Toast.LENGTH_LONG);
         }
 
-    }
+    }*/
     private void PopulateTrackList() {
         String path = getExternalFilesDir(null).getAbsolutePath();
         Log.d("Files", "Path: " + path);

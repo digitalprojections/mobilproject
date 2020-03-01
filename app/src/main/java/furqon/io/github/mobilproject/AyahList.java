@@ -35,6 +35,7 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -320,38 +321,61 @@ public class AyahList extends AppCompatActivity {
 
     public void play() throws IOException {
 
-        String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suranomer + ".mp3"; // your URL here
-        Log.i("PLAY", url);
-        if (mediaPlayer == null) {
+        String filePath = "";
 
-            mediaPlayer = new MediaPlayer();
-            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mediaPlayer) {
-
-                    seekBar.setMax(mediaPlayer.getDuration());
-                    progressBar.setVisibility(View.INVISIBLE);
-                    resume();
+        String path = getExternalFilesDir(null).getAbsolutePath();
+        File directory = new File(path);
+        File[] files = directory.listFiles();
+        if(files!=null){
+            for (int i = 0; i < files.length; i++)
+            {
+                String trackname = files[i].getName();
+                if(trackname.contains(".")){
+                    trackname = trackname.substring(0, trackname.lastIndexOf("."));
+                    if(trackname.equals(suranomer)){
+                        filePath = path + "/" + trackname + ".mp3";
+                    }
                 }
-            });
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mediaPlayer.setDataSource(url);
-
-            if (isNetworkAvailable()) {
-                progressBar.setVisibility(View.VISIBLE);
-                mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
-            } else {
-                Toast.makeText(getBaseContext(), loadfailed, Toast.LENGTH_SHORT).show();
             }
-
-
-        } else {
-
-            mediaPlayer.release();
-            mediaPlayer = null;
-            play();
+        }else{
+            //This surah is not available
         }
 
+        //String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suranomer + ".mp3"; // your URL here
+        String url = filePath;
+        if(!url.isEmpty()){
+            Log.i("PLAY", url);
+            if (mediaPlayer == null) {
+
+                mediaPlayer = new MediaPlayer();
+                mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mediaPlayer) {
+
+                        seekBar.setMax(mediaPlayer.getDuration());
+                        progressBar.setVisibility(View.INVISIBLE);
+                        resume();
+                    }
+                });
+                mediaPlayer.setAudioStreamType(AudioManager.USE_DEFAULT_STREAM_TYPE);
+                mediaPlayer.setDataSource(url);
+
+                if (isNetworkAvailable()) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
+                } else {
+                    Toast.makeText(getBaseContext(), loadfailed, Toast.LENGTH_SHORT).show();
+                }
+
+
+            } else {
+
+                mediaPlayer.release();
+                mediaPlayer = null;
+                play();
+            }
+
+        }
     }
 
     private boolean isNetworkAvailable() {
