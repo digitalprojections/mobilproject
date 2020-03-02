@@ -79,7 +79,7 @@ public class DatabaseAccess {
 
     Cursor getSuraTitles() {
         try {
-            c = db.rawQuery("SELECT at.ChapterID, at.SuraName as 'arabic', sn.SuraName as 'uzbek'  FROM arabic_titles at inner join suranames sn on sn.chapterid = at.chapterid", new String[]{});
+            c = db.rawQuery("SELECT at.ChapterID, at.SuraName as arabic, sn.SuraName as uzbek FROM arabic_titles at inner join suranames sn on sn.chapterid = at.chapterid", new String[]{});
         } catch (SQLiteException e) {
             Crashlytics.logException(e);
         }

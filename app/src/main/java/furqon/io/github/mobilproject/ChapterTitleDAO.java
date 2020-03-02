@@ -11,11 +11,11 @@ import java.util.List;
 public interface ChapterTitleDAO {
 
     @Insert
-    void insert(ChapterTitle title);
+    void insert(SurahTitles title);
 
-    @Query("DELETE FROM SuraNames")
+    @Query("DELETE FROM surah_titles")
     void deleteAll();
 
-    @Query("SELECT * from SuraNames ORDER BY chapterId ASC")
-    LiveData<List<ChapterTitle>> getAllTitles();
+    @Query("SELECT arabic_titles.chapterId, arabic_titles.SuraName as arabic, SuraNames.SuraName as uzbek FROM arabic_titles inner join SuraNames on SuraNames.ChapterID = arabic_titles.chapterid")
+    LiveData<List<SurahTitles>> getAllTitles();
 }

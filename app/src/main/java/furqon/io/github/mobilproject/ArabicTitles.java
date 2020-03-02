@@ -4,8 +4,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "SuraNames")
-public class ChapterTitle {
+@Entity(tableName = "arabic_titles")
+public class ArabicTitles{
     public int languageNo;
     public int orderNo;
     @ColumnInfo(name = "ChapterID")
@@ -17,4 +17,3 @@ public class ChapterTitle {
     public String surahtype;
     public int status;
 }
-

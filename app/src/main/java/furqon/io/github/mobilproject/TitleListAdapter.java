@@ -1,15 +1,8 @@
 package furqon.io.github.mobilproject;
 
-import android.Manifest;
-import android.app.Activity;
-import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.net.Uri;
-import android.opengl.Visibility;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,50 +11,31 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.reward.RewardedVideoAd;
-import com.google.android.gms.ads.rewarded.RewardedAd;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 
-public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapter.SuraListViewHolder> {
-    private Context mContext;
-    private Cursor mCursor;
+public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.SuraListViewHolder> {
 
     //created according to the available downloaded files
     private ArrayList<String> trackList = new ArrayList<String>();
-    private ArrayList<String> enabledList = new ArrayList<String>();
+    //private ArrayList<String> enabledList = new ArrayList<String>();
     private ArrayList<String> mArrayList;
     private RewardAd mRewardedVideoAd;
 
-    private Track track;
+    private final LayoutInflater mInflater;
+    private List<SurahTitles> mTitles; // Cached copy of titles
 
-    SuraNameListAdapter(Context context, Cursor cursor, ArrayList<String> track, ArrayList<String> downloadables){
-        mContext = context;
-        mCursor = cursor;
-        mRewardedVideoAd = new RewardAd(mContext);
-        if(track.size()>0){
-            //generate tracks
-            for (String i:track
-                 ) {
-                trackList.add(i);
-            }
-        }
-        enabledList = downloadables;
+
+
+    TitleListAdapter(Context context){
+        mRewardedVideoAd = new RewardAd(context);
+        mInflater = LayoutInflater.from(context);
+
     }
 
 
@@ -115,9 +89,9 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
 
             Log.d("CLICK", suranomer);
             Intent intent;
-            intent = new Intent(mContext, AyahList.class);
-            intent.putExtra("SURANAME",suranomi+":"+suranomer);
-            mContext.startActivity(intent);
+//            intent = new Intent(mContext, AyahList.class);
+//            intent.putExtra("SURANAME",suranomi+":"+suranomer);
+//            mContext.startActivity(intent);
 
 
 
@@ -130,10 +104,10 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
         }
         private void StartDownload(View view) {
             MyListener myListener;
-            if(mContext instanceof MyListener){
-                myListener = (MyListener) mContext;
-                myListener.DownloadThis(suraNumber.getText().toString());
-            }
+//            if(mContext instanceof MyListener){
+//                myListener = (MyListener) mContext;
+//                myListener.DownloadThis(suraNumber.getText().toString());
+//            }
 
         }
     }
@@ -141,35 +115,34 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
     @NonNull
     @Override
     public SuraListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.sura_title, parent, false);
-        mArrayList = new ArrayList<>();
+        View view = mInflater.inflate(R.layout.sura_title, parent, false);
         return new SuraListViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SuraListViewHolder holder, int i) {
-        if(!mCursor.moveToPosition(i)){
-            return;
-        }
+    public void onBindViewHolder(@NonNull SuraListViewHolder holder, int position) {
+        if (mTitles != null) {
+            SurahTitles current = mTitles.get(position);
 
-        String name = mCursor.getString(2);
-        String arname = mCursor.getString(1);
-        String numb = mCursor.getString(0);
+
+
+        String name = current.title;
+        String arname = current.artitle;
+        int numb = current.chapterId;
         holder.suraName.setText(name);
         holder.arabic_name.setText(arname);
         holder.suraNumber.setText(String.valueOf(numb));
         if(!nameNotFound(name)){
             mArrayList.add(name);
         }
-        if(TrackDownloaded(numb)){
+        if(TrackDownloaded(String.valueOf(numb))){
             //set by the actually available audio files
             holder.downloadButton.setImageResource(R.drawable.ic_file_available);
             holder.downloadButton.setFocusable(false);
             holder.downloadButton.setTag(3);
             holder.progressBar.setVisibility(View.VISIBLE);
         }else{
-            if(DownloadEnabled(numb)){
+            if(DownloadEnabled(String.valueOf(numb))){
                 //download allowed. Active within the session only. Forgotten on restart
                 holder.downloadButton.setImageResource(R.drawable.ic_file_download_done);
                 holder.downloadButton.setFocusable(true);
@@ -182,20 +155,23 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
                 holder.progressBar.setVisibility(View.GONE);
             }
         }
-
+        } else {
+            // Covers the case of data not being ready yet.
+            holder.suraName.setText("No Titles Found");
+        }
     }
 
     private boolean DownloadEnabled(String numb) {
         Log.i("VIDEO AD WATCHED", numb);
         boolean retval = false;
-        for (String i:enabledList
-        ) {
-            if(i.equals(numb)){
-                //match found
-                retval = true;
-            }
-            Log.i("DOWNLOADED ENABLED", numb + " " + i + " " + (i.equals(numb)));
-        }
+//        for (String i:enabledList
+//        ) {
+//            if(i.equals(numb)){
+//                //match found
+//                retval = true;
+//            }
+//            Log.i("DOWNLOADED ENABLED", numb + " " + i + " " + (i.equals(numb)));
+//        }
         return retval;
     }
 
@@ -228,25 +204,11 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
 
     @Override
     public int getItemCount() {
-        int c;
-        try{
-            c  = mCursor.getCount();
-        }
-        catch (NullPointerException e){
-            c = 0;
+        int c = 0;
+        if(mTitles!=null)
+        {
+            c = mTitles.size();
         }
         return c;
     }
-
-    public void swapCursor(Cursor newCursor){
-        if(mCursor!=null){
-            mCursor.close();
-        }
-
-        mCursor = newCursor;
-        if(newCursor!=null){
-            notifyDataSetChanged();
-        }
-    }
-
 }
