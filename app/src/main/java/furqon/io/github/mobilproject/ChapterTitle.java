@@ -2,11 +2,14 @@ package furqon.io.github.mobilproject;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "SuraNames")
 public class ChapterTitle {
-    public int languageNo;
+    @ColumnInfo(typeAffinity = 3)
+    public int LanguageNo;
+    @Ignore
     public int orderNo;
     @ColumnInfo(name = "ChapterID")
     public int chapterId;

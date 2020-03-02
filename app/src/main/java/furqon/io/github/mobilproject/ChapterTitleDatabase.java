@@ -6,7 +6,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {ChapterTitle.class}, version = 1, exportSchema = false)
+@Database(entities = {ChapterTitle.class, ArabicTitles.class}, version = 1, exportSchema = false)
 public abstract class ChapterTitleDatabase extends RoomDatabase {
 
     public abstract ChapterTitleDAO titleDAO();
@@ -17,15 +17,14 @@ public abstract class ChapterTitleDatabase extends RoomDatabase {
             synchronized (ChapterTitleDatabase.class) {
                 if (INSTANCE == null) {
                     // Create database here
-                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
+                    INSTANCE = Room.databaseBuilder(context,
                             ChapterTitleDatabase.class, "qurandb")
-                            // Wipes and rebuilds instead of migrating
-                            // if no Migration object.
-                            // Migration is not part of this practical.
+                            .createFromAsset("databases/qurandb")
                             .fallbackToDestructiveMigration()
                             .build();
                 }
             }
+
         }
         return INSTANCE;
     }

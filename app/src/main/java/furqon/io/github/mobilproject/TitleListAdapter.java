@@ -124,11 +124,11 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
         if (mTitles != null) {
             SurahTitles current = mTitles.get(position);
 
+Log.i("TITLES", current.arabic);
 
-
-        String name = current.title;
-        String arname = current.artitle;
-        int numb = current.chapterId;
+        String name = current.uzbek;
+        String arname = current.arabic;
+        int numb = current.ChapterID;
         holder.suraName.setText(name);
         holder.arabic_name.setText(arname);
         holder.suraNumber.setText(String.valueOf(numb));
@@ -158,7 +158,13 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
         } else {
             // Covers the case of data not being ready yet.
             holder.suraName.setText("No Titles Found");
+            Log.i("TITLES", " " + mTitles);
         }
+    }
+
+    void setTitles(List<SurahTitles> titles){
+        mTitles = titles;
+        notifyDataSetChanged();
     }
 
     private boolean DownloadEnabled(String numb) {

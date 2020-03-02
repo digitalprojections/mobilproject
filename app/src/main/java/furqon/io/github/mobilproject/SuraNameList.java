@@ -21,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,12 +38,14 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class SuraNameList extends AppCompatActivity implements MyListener {
 
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 0;
-    private SuraNameListAdapter mAdapter;
+    //private SuraNameListAdapter mAdapter;
+    private TitleListAdapter mAdapter;
     private DatabaseAccess mDatabase;
     private Cursor suralist;
     private ArrayList<String> enabledList = new ArrayList<String>();
@@ -52,6 +56,8 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     InterstitialAd mInterstitialAd;
     private sharedpref sharedPref;
     private ArrayList<String> trackList;
+
+    private TitleViewModel titleViewModel;
 
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -92,10 +98,19 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sura_name_list);
 
+        titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
+
         registerReceiver(broadcastReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
         trackList = new ArrayList<String>();
         PopulateTrackList();
+
+        titleViewModel.getAllTitles().observe(this, new Observer<List<SurahTitles>>() {
+            @Override
+            public void onChanged(List<SurahTitles> surahTitles) {
+                mAdapter.setTitles(surahTitles);
+            }
+        });
 
         //https://inventivesolutionste.ipage.com/ajax_quran.php
         //POST
@@ -126,7 +141,8 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
 
 
-        mAdapter = new SuraNameListAdapter(this, suralist, trackList, enabledList);
+        //mAdapter = new SuraNameListAdapter(this, suralist, trackList, enabledList);
+        mAdapter = new TitleListAdapter(this);
         recyclerView.setAdapter(mAdapter);
 
 

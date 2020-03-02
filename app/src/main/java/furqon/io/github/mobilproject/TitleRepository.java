@@ -9,7 +9,7 @@ import java.util.List;
 
 public class TitleRepository {
     private ChapterTitleDAO mTitleDao;
-    private LiveData<List<ChapterTitle>> mAllTitles;
+    private LiveData<List<SurahTitles>> mAllTitles;
 
     TitleRepository(Application application){
         ChapterTitleDatabase titleDatabase = ChapterTitleDatabase.getDatabase(application);
@@ -17,7 +17,7 @@ public class TitleRepository {
         mAllTitles = mTitleDao.getAllTitles();
     }
 
-    LiveData<List<ChapterTitle>> getmAllTitles(){
+    LiveData<List<SurahTitles>> getmAllTitles(){
         return mAllTitles;
     }
     public void insert(ChapterTitle title){
@@ -34,7 +34,7 @@ public class TitleRepository {
 
         @Override
         protected Void doInBackground(final ChapterTitle... chapterTitles) {
-            mAsyncTitleDAO.insert(chapterTitles[0]);
+            //mAsyncTitleDAO.insert(chapterTitles[0]);
             return null;
         }
     }
