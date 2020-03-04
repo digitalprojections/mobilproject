@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -54,6 +55,7 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
         mContext = context;
         mCursor = cursor;
         mRewardedVideoAd = new RewardAd(mContext);
+
         if(track.size()>0){
             //generate tracks
             for (String i:track
@@ -74,9 +76,11 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
         ImageView downloadButton;
         ProgressBar progressBar;
 
+
         SuraListViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
+
             suraName = itemView.findViewById(R.id.sura_name_item);
             arabic_name = itemView.findViewById(R.id.arabic);
             suraNumber = itemView.findViewById(R.id.sura_number_item);

@@ -24,11 +24,11 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
     //created according to the available downloaded files
     private ArrayList<String> trackList = new ArrayList<String>();
     //private ArrayList<String> enabledList = new ArrayList<String>();
-    private ArrayList<String> mArrayList;
+    private List<ChapterTitle> mTitleList = new ArrayList<>();
     private RewardAd mRewardedVideoAd;
 
     private final LayoutInflater mInflater;
-    private List<SurahTitles> mTitles; // Cached copy of titles
+    private List<ChapterTitle> mTitles = new ArrayList<>(); // Cached copy of titles
 
 
 
@@ -115,26 +115,26 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
     @NonNull
     @Override
     public SuraListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
-        View view = mInflater.inflate(R.layout.sura_title, parent, false);
+        //View view = mInflater.inflate(R.layout.sura_title, parent, false);
+        View view = mInflater.from(parent.getContext())
+                .inflate(R.layout.sura_title, parent, false);
         return new SuraListViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull SuraListViewHolder holder, int position) {
-        if (mTitles != null) {
-            SurahTitles current = mTitles.get(position);
 
-Log.i("TITLES", current.arabic);
+        ChapterTitle current = mTitles.get(position);
+
+        Log.i("TITLES", "dddddddddddddddddddddddddddddddddd" + current.arabic);
 
         String name = current.uzbek;
         String arname = current.arabic;
-        int numb = current.ChapterID;
+        int numb = current.chapter_id;
         holder.suraName.setText(name);
         holder.arabic_name.setText(arname);
         holder.suraNumber.setText(String.valueOf(numb));
-        if(!nameNotFound(name)){
-            mArrayList.add(name);
-        }
+
         if(TrackDownloaded(String.valueOf(numb))){
             //set by the actually available audio files
             holder.downloadButton.setImageResource(R.drawable.ic_file_available);
@@ -155,14 +155,9 @@ Log.i("TITLES", current.arabic);
                 holder.progressBar.setVisibility(View.GONE);
             }
         }
-        } else {
-            // Covers the case of data not being ready yet.
-            holder.suraName.setText("No Titles Found");
-            Log.i("TITLES", " " + mTitles);
-        }
     }
 
-    void setTitles(List<SurahTitles> titles){
+    void setTitles(List<ChapterTitle> titles){
         mTitles = titles;
         notifyDataSetChanged();
     }
@@ -198,12 +193,12 @@ Log.i("TITLES", current.arabic);
 
     private boolean nameNotFound(String name) {
         boolean retval = false;
-        for (String i:mArrayList
+        /*for (String i:mArrayList
              ) {
             if(i==name){
                 retval = true;
             }
-        }
+        }*/
         return retval;
     }
 

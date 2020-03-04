@@ -1,6 +1,7 @@
 package furqon.io.github.mobilproject;
 
 import android.Manifest;
+import android.app.Application;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,8 +16,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -42,14 +46,16 @@ import java.util.List;
 import java.util.Objects;
 
 public class SuraNameList extends AppCompatActivity implements MyListener {
-
+    HTTPRequestHandler requestHandler;
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 0;
     //private SuraNameListAdapter mAdapter;
     private TitleListAdapter mAdapter;
-    private DatabaseAccess mDatabase;
-    private Cursor suralist;
-    private ArrayList<String> enabledList = new ArrayList<String>();
+    //private DatabaseAccess mDatabase;
+    //private Cursor suralist;
+    //private ArrayList<String> enabledList = new ArrayList<String>();
     long downloadId;
+
+    Button tempbut;
 
 
     RecyclerView recyclerView;
@@ -100,17 +106,29 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
         titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
 
+
+
         registerReceiver(broadcastReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
         trackList = new ArrayList<String>();
         PopulateTrackList();
+        requestHandler = new HTTPRequestHandler(this);
 
-        titleViewModel.getAllTitles().observe(this, new Observer<List<SurahTitles>>() {
+        tempbut = findViewById(R.id.button);
+        tempbut.setVisibility(View.GONE);
+        tempbut.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onChanged(List<SurahTitles> surahTitles) {
-                mAdapter.setTitles(surahTitles);
+            public void onClick(View view) {
+                Log.i("CLICK", "clicking");
+                //ChapterTitle chapterTitle = new ChapterTitle(1, 2, 5, "uxtext", "arabic", "Makkah");
+                //titleViewModel.insert(chapterTitle);
+                requestHandler.httpRequest();
             }
         });
+
+
+
+
 
         //https://inventivesolutionste.ipage.com/ajax_quran.php
         //POST
@@ -126,17 +144,17 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        mDatabase = DatabaseAccess.getInstance(getApplicationContext());
-        if(!mDatabase.isOpen()) {
-            mDatabase.open();
-        }
+//        mDatabase = DatabaseAccess.getInstance(getApplicationContext());
+//        if(!mDatabase.isOpen()) {
+//            mDatabase.open();
+//        }
 
         recyclerView = findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
 
-        suralist = mDatabase.getSuraTitles();
+        //suralist = mDatabase.getSuraTitles();
 
 
 
@@ -145,7 +163,13 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         mAdapter = new TitleListAdapter(this);
         recyclerView.setAdapter(mAdapter);
 
-
+        titleViewModel.getAllTitles().observe(this, new Observer<List<ChapterTitle>>() {
+            @Override
+            public void onChanged(@Nullable List<ChapterTitle> surahTitles) {
+                Toast.makeText(SuraNameList.this, "LOADING TITLES " + surahTitles.size(), Toast.LENGTH_LONG).show();
+                mAdapter.setTitles(surahTitles);
+            }
+        });
 
         MobileAds.initialize(this, "ca-app-pub-3838820812386239~2342916878");
         mInterstitialAd = new InterstitialAd(this);
@@ -173,9 +197,9 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         //mRewardedVideoAd.destroy(this);
         super.onDestroy();
         mInterstitialAd.show();
-        if(mDatabase!=null) {
-            mDatabase.close();
-        }
+//        if(mDatabase!=null) {
+//            mDatabase.close();
+//        }
 
         if(broadcastReceiver!=null){
             unregisterReceiver(broadcastReceiver);
@@ -184,9 +208,23 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
     @Override
     public void EnableThis(String suraNumber) {
-        if(NotInTheList(enabledList, suraNumber)){
-            enabledList.add(suraNumber);
+//        if(NotInTheList(enabledList, suraNumber)){
+//            enabledList.add(suraNumber);
+//        }
+    }
+
+    @Override
+    public void LoadTitlesFromServer() {
+        Log.d("LOADED FROM SERVER", " ");
+        if(requestHandler!=null){
+            requestHandler.httpRequest();
+        }else{
+            tempbut.setVisibility(View.VISIBLE);
         }
+    }
+    @Override
+    public void DisableRefreshButton(){
+        tempbut.setVisibility(View.GONE);
     }
 
     private boolean NotInTheList(ArrayList<String> enabledList, String suraNumber) {

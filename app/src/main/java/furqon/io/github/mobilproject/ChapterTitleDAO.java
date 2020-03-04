@@ -4,24 +4,25 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import java.util.List;
 
 @Dao
 public interface ChapterTitleDAO {
 
-    @Query("DELETE FROM suranames")
+    @Query("DELETE FROM sura_names")
     void deleteAll();
 
-//    @Query("SELECT arabic_titles.ChapterID, " +
-//            "arabic_titles.SuraName as arabic, " +
-//            "SuraNames.SuraName as uzbek " +
-//            "FROM arabic_titles, SuraNames " +
-//            "WHERE " +
-//            "SuraNames.ChapterID = arabic_titles.ChapterID")
-    @Query("SELECT ChapterID, " +
-            "SuraName as arabic, " +
-            "SuraName as uzbek " +
-            "FROM SuraNames ")
-    public LiveData<List<SurahTitles>> getAllTitles();
+    @Insert
+    void insert(ChapterTitle title);
+
+    @Query("SELECT COUNT(*) FROM sura_names")
+    int getCount();
+
+    @Update
+    void update(ChapterTitle title);
+
+    @Query("SELECT * FROM sura_names ORDER BY chapter_id ASC")
+    LiveData<List<ChapterTitle>> getAllTitles();
 }

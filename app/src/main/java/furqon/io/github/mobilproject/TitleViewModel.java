@@ -10,14 +10,18 @@ import java.util.List;
 
 public class TitleViewModel extends AndroidViewModel {
     private TitleRepository titleRepository;
-    private LiveData<List<SurahTitles>> mAllTitles;
+    private LiveData<List<ChapterTitle>> mAllTitles;
     public TitleViewModel(@NonNull Application application) {
         super(application);
         titleRepository = new TitleRepository(application);
         mAllTitles = titleRepository.getmAllTitles();
     }
 
-    LiveData<List<SurahTitles>> getAllTitles(){return mAllTitles;}
+    LiveData<List<ChapterTitle>> getAllTitles(){
+        return mAllTitles;
+    }
 
-    public void insert(ChapterTitle title){titleRepository.insert(title);}
+    public void insert(ChapterTitle title){
+        titleRepository.insert(title);
+    }
 }

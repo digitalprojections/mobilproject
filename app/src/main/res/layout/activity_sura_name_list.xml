@@ -16,11 +16,24 @@
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
+tools:listitem="@layout/sura_title"
         android:layout_below="@+id/tool_bar"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="1dp"
         android:layout_marginBottom="1dp" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="false"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:text="Button" />
 
 
 </RelativeLayout>
