@@ -23,6 +23,8 @@ public class sharedpref
     final String RANDOMAYAHSW = "SHOW_ONE_AYAH";
     private static final String FIRSTRUN = "firstrun";
 
+    static String displayOrder = "displayOrder";
+
     private static boolean arsw;
     private static boolean uzsw;
     private static boolean rusw;
@@ -54,36 +56,6 @@ public class sharedpref
         setDefaults();
     }
 
-    public ArrayList GetTrackStates(){
-        String jstring = read(TRACKS, "");
-        ArrayList strings = new ArrayList();
-        if(!jstring.isEmpty()){
-            strings = GetJson(jstring);
-            Log.i("TRACK INFO", strings.size() + " size of array");
-        }
-        return strings;
-    }
-    public void SetTrackStates(ArrayList list){
-        Toast.makeText(mContext, list.toString(), Toast.LENGTH_LONG).show();
-        Log.i("LIST TO SAVE", list.toString());
-    }
-
-    private ArrayList GetJson(String jstring) {
-        String[] strings;
-        ArrayList json = new ArrayList();
-        try{
-            strings = jstring.split(":");
-
-            for (int i=0; i<strings.length;i++) {
-                json.add(strings[i].split(";"));
-                json.set(json.size()-1, json.get(json.size()-1).toString().split(","));
-            }
-        }catch (PatternSyntaxException psx){
-            Toast.makeText(mContext, psx.getMessage(), Toast.LENGTH_LONG).show();
-        }
-        return json;
-    }
-
     boolean getDefaults(String sw){
         boolean rv = false;
 
@@ -108,6 +80,8 @@ public class sharedpref
 
         return rv;
     }
+
+
 
     private void setDefaults(){
         if(!mSharedPref.contains(UZSW) || !mSharedPref.contains(RUSW) || !mSharedPref.contains(ENSW)){
@@ -148,11 +122,6 @@ public class sharedpref
 
 
 
-    void write(String key, String value) {
-
-        prefsEditor.putString(key, value);
-        prefsEditor.apply();
-    }
 
     String read(String key, String defValue) {
         return mSharedPref.getString(key, defValue);
@@ -164,16 +133,15 @@ public class sharedpref
         return mSharedPref.getInt(key, defValue);
     }
     void write(String key, boolean value) {
-
         prefsEditor.putBoolean(key, value);
         prefsEditor.apply();
     }
-
-
-
     void write(String key, Integer value) {
-
         prefsEditor.putInt(key, value).apply();
+    }
+    void write(String key, String value) {
+        prefsEditor.putString(key, value);
+        prefsEditor.apply();
     }
 
     boolean isFirstRun() {

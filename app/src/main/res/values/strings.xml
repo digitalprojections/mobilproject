@@ -56,5 +56,9 @@
     <string name="surahAudioUnlockAd" translatable="false">ca-app-pub-3838820812386239/1790049383</string>
     <string name="unlock_the_download">Unlock the download button by watching a video</string>
     <string name="surah_audio_available">Chapter audio is available</string>
-    <string name="reload">Reload</string>
+    <string name="reload">Retry</string>
+    <string name="quranic_order">Quranic order</string>
+    <string name="revelation_order">Revelation order</string>
+    <string name="order_description_revelation">order according to the order of revelation</string>
+    <string name="order_description_mushaf">order according to the order in the Mushaf</string>
 </resources>

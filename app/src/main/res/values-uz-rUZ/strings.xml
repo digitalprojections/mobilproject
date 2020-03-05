@@ -51,4 +51,9 @@
     <string name="download_surah">audio faylni yuklab oling</string>
     <string name="unlock_the_download">Videoni tomosha qilish orqali yuklab olish tugmasini qulfni oching</string>
     <string name="surah_audio_available">Sura audiosi mavjud</string>
+    <string name="reload">Qayta urinish</string>
+    <string name="quranic_order">Qur\'on tartibi</string>
+    <string name="revelation_order">Vahiy tartibi</string>
+    <string name="order_description_revelation">vahiy tartibi bo`yicha yuklash</string>
+    <string name="order_description_mushaf">Mushafdagi tartib bo\'yicha ro\'yxat</string>
 </resources>

@@ -12,14 +12,20 @@ import java.util.List;
 public class TitleViewModel extends AndroidViewModel {
     private TitleRepository titleRepository;
     private LiveData<List<ChapterTitle>> mAllTitles;
+    private sharedpref sharedPref;
+
     public TitleViewModel(@NonNull Application application) {
         super(application);
+        sharedPref = sharedpref.getInstance();
         titleRepository = new TitleRepository(application);
-        mAllTitles = titleRepository.getmAllTitles();
     }
 
     LiveData<List<ChapterTitle>> getAllTitles(){
-
+        if(sharedPref.read(sharedPref.displayOrder, 0)==0){
+            mAllTitles = titleRepository.getAllTitlesByQuranicOrder();
+        }else{
+            mAllTitles = titleRepository.getAllTitlesByRevelationOrder();
+        }
         return mAllTitles;
     }
 

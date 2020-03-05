@@ -58,27 +58,26 @@ import java.util.Map;
 import java.util.Objects;
 
 public class SuraNameList extends AppCompatActivity implements MyListener {
-    //HTTPRequestHandler requestHandler;
+
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 0;
-    //private SuraNameListAdapter mAdapter;
+
     private TitleListAdapter mAdapter;
     private Context context;
-    //private DatabaseAccess mDatabase;
     private ArrayList<JSONObject> jsonArrayResponse;
-    //private Cursor suralist;
-    //private ArrayList<String> enabledList = new ArrayList<String>();
     long downloadId;
 
-    Button tempbut;
+    private Button tempbut;
+    private Button quranic_order_btn;
+    private Button revelation_order_btn;
 
 
-    RecyclerView recyclerView;
-    InterstitialAd mInterstitialAd;
+    private RecyclerView recyclerView;
+    private InterstitialAd mInterstitialAd;
     private sharedpref sharedPref;
     private ArrayList<String> trackList;
 
     private TitleViewModel titleViewModel;
-    private boolean tempButtonOn;
+
 
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -122,6 +121,9 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
 
         context = this;
+
+        quranic_order_btn = findViewById(R.id.quranic_order);
+        revelation_order_btn = findViewById(R.id.revelation_order);
 
         registerReceiver(broadcastReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
@@ -262,6 +264,51 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         mAdapter = new TitleListAdapter(this, trackList);
         recyclerView.setAdapter(mAdapter);
 
+
+
+        LoadTheList();
+
+        MobileAds.initialize(this, "ca-app-pub-3838820812386239~2342916878");
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        quranic_order_btn.setClickable(true);
+        revelation_order_btn.setClickable(true);
+
+        if(sharedPref.read(sharedPref.displayOrder, 0)==0){
+            quranic_order_btn.setBackgroundColor(getResources().getColor(R.color.gold));
+            revelation_order_btn.setBackgroundColor(0);
+        }else{
+            revelation_order_btn.setBackgroundColor(getResources().getColor(R.color.gold));
+            quranic_order_btn.setBackgroundColor(0);
+        }
+
+        //LOAD in Mushaf order
+        quranic_order_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sharedPref.write(sharedPref.displayOrder, 0);
+                quranic_order_btn.setBackgroundColor(getResources().getColor(R.color.gold));
+                revelation_order_btn.setBackgroundColor(0);
+                mAdapter.notifyDataSetChanged();
+                LoadTheList();
+            }
+        });
+
+        //LOAD in revelation order
+        revelation_order_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sharedPref.write(sharedPref.displayOrder, 1);
+                revelation_order_btn.setBackgroundColor(getResources().getColor(R.color.gold));
+                quranic_order_btn.setBackgroundColor(0);
+                mAdapter.notifyDataSetChanged();
+                LoadTheList();
+            }
+        });
+    }
+
+    private void LoadTheList() {
         titleViewModel.getAllTitles().observe(this, new Observer<List<ChapterTitle>>() {
             @Override
             public void onChanged(@Nullable List<ChapterTitle> surahTitles) {
@@ -275,14 +322,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
                 mAdapter.setTitles(surahTitles);
             }
         });
-
-        MobileAds.initialize(this, "ca-app-pub-3838820812386239~2342916878");
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
-
     }
-
 
 
     @Override

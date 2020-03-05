@@ -24,5 +24,8 @@ public interface ChapterTitleDAO {
     void update(ChapterTitle title);
 
     @Query("SELECT * FROM sura_names ORDER BY chapter_id ASC")
-    LiveData<List<ChapterTitle>> getAllTitles();
+    LiveData<List<ChapterTitle>> getAllTitlesQuranicOrder();
+
+    @Query("SELECT * FROM sura_names ORDER BY order_no ASC")
+    LiveData<List<ChapterTitle>> getAllTitlesByRevelationOrder();
 }

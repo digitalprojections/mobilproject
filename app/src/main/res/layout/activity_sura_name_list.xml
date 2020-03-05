@@ -49,20 +49,23 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/quranic_order"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Quran" />
+                android:contentDescription="@string/order_description_mushaf"
+                android:text="@string/quranic_order" />
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/revelation_order"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Revelation" />
+                android:contentDescription="@string/order_description_revelation"
+                android:text="@string/revelation_order" />
+
         </LinearLayout>
 
     </LinearLayout>

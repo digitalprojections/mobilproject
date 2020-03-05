@@ -51,4 +51,9 @@
     <string name="download_surah">скачать аудио файл</string>
     <string name="unlock_the_download">Разблокируйте кнопку загрузки, посмотрев видео</string>
     <string name="surah_audio_available">Аудио главы доступно</string>
+    <string name="reload">Повтор</string>
+    <string name="quranic_order">Порядок по Корану</string>
+    <string name="revelation_order">Порядок по откровению</string>
+    <string name="order_description_revelation">порядок согласно порядку откровения</string>
+    <string name="order_description_mushaf">список по порядку в Мусхафе</string>
 </resources>

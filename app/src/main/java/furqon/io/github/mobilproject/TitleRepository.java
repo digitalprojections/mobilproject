@@ -18,17 +18,23 @@ public class TitleRepository {
     TitleRepository(Application application){
         ChapterTitleDatabase titleDatabase = ChapterTitleDatabase.getDatabase(application);
         mTitleDao = titleDatabase.titleDAO();
-        mAllTitles = mTitleDao.getAllTitles();
+
+        //mAllTitles = mTitleDao.getAllTitlesByRevelationOrder();
         Log.i("TITLES FOUND:", "--------------------------------- new rows");
 
         context = application;
 
         new readAsyncTask(mTitleDao).execute();
     }
-
-    LiveData<List<ChapterTitle>> getmAllTitles(){
+    LiveData<List<ChapterTitle>> getAllTitlesByQuranicOrder(){
+        mAllTitles = mTitleDao.getAllTitlesQuranicOrder();
         return mAllTitles;
     }
+    LiveData<List<ChapterTitle>> getAllTitlesByRevelationOrder(){
+        mAllTitles = mTitleDao.getAllTitlesByRevelationOrder();
+        return mAllTitles;
+    }
+
     public void insert(ChapterTitle title){
 
         new insertAsyncTask(mTitleDao).execute(title);
