@@ -37,7 +37,9 @@ public class TitleRepository {
 
         new updateAsyncTask(mTitleDao).execute(title);
     }
-
+    public void deteteAll(){
+        new deleteAsyncTask().execute();
+    }
 
 
     private class insertAsyncTask extends AsyncTask<ChapterTitle, Void, Void> {
@@ -63,6 +65,18 @@ public class TitleRepository {
         @Override
         protected Void doInBackground(ChapterTitle... chapterTitles) {
             mAsyncTitleDAO.update(chapterTitles[0]);
+            return null;
+        }
+    }
+    private class deleteAsyncTask extends AsyncTask<ChapterTitle, Void, Void> {
+        private ChapterTitleDAO mAsyncTitleDAO;
+        public deleteAsyncTask() {
+            mAsyncTitleDAO = mTitleDao;
+        }
+
+        @Override
+        protected Void doInBackground(ChapterTitle... chapterTitles) {
+            mAsyncTitleDAO.deleteAll();
             return null;
         }
     }

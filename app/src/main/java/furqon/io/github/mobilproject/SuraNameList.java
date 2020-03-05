@@ -30,9 +30,19 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,15 +52,19 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class SuraNameList extends AppCompatActivity implements MyListener {
-    HTTPRequestHandler requestHandler;
+    //HTTPRequestHandler requestHandler;
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 0;
     //private SuraNameListAdapter mAdapter;
     private TitleListAdapter mAdapter;
+    private Context context;
     //private DatabaseAccess mDatabase;
+    private ArrayList<JSONObject> jsonArrayResponse;
     //private Cursor suralist;
     //private ArrayList<String> enabledList = new ArrayList<String>();
     long downloadId;
@@ -64,6 +78,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     private ArrayList<String> trackList;
 
     private TitleViewModel titleViewModel;
+    private boolean tempButtonOn;
 
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -106,23 +121,107 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
         titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
 
-
+        context = this;
 
         registerReceiver(broadcastReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
         trackList = new ArrayList<String>();
         PopulateTrackList();
-        requestHandler = new HTTPRequestHandler(this);
+        //requestHandler = new HTTPRequestHandler(context, titleViewModel);
 
         tempbut = findViewById(R.id.button);
-        tempbut.setVisibility(View.GONE);
+
         tempbut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i("CLICK", "clicking");
                 //ChapterTitle chapterTitle = new ChapterTitle(1, 2, 5, "uxtext", "arabic", "Makkah");
                 //titleViewModel.insert(chapterTitle);
-                requestHandler.httpRequest();
+                //requestHandler.httpRequest();
+
+                RequestQueue queue = Volley.newRequestQueue(context);
+                String url = "https://inventivesolutionste.ipage.com/ajax_quran.php";
+
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                //progressBar.setVisibility(View.INVISIBLE);
+                                // Convert String to json object
+                                jsonArrayResponse = new ArrayList<JSONObject>();
+
+                                try {
+                                    JSONArray jsonArray = new JSONArray(response);
+                                    for (int i=0; i<jsonArray.length();i++)
+                                    {
+                                        JSONObject object = new JSONObject(jsonArray.getString(i));
+                                        jsonArrayResponse.add(object);
+                                    }
+
+                                    //PASS to SPINNER
+                                    //load auction names and available lot/bid count
+                                    populateAuctionList(jsonArrayResponse);
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Log.i("error json", "tttttttttttttttt");
+                                }
+
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        //progressBar.setVisibility(View.INVISIBLE);
+                    }
+                }) {
+                    protected Map<String, String> getParams() {
+                        Map<String, String> MyData = new HashMap<String, String>();
+                        MyData.put("action", "names_as_objects"); //Add the data you'd like to send to the server.
+                        MyData.put("language_id", "1");
+                        //https://inventivesolutionste.ipage.com/ajax_quran.php
+                        //POST
+                        //action:names_as_objects
+                        //language_id:1
+                        return MyData;
+                    }
+
+                };
+
+                queue.add(stringRequest);
+                //progressBar.setVisibility(View.VISIBLE);
+            }
+            void populateAuctionList(ArrayList<JSONObject> auclist){
+
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(, android.R.layout.simple_spinner_item, auclist);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                //spinner.setAdapter(adapter);
+                ChapterTitle title;
+
+                for (JSONObject i:auclist
+                ) {
+
+                    try{
+                        Log.d("JSONOBJECT", i.getString("arabic"));
+                        //int language_no = i.getInt("language_no");
+                        int order_no = i.getInt("order_no");
+                        int chapter_id = i.getInt("chapter_id");
+                        String surah_type = i.getString("surah_type");
+                        String uzbek = i.getString("uzbek");
+                        String arabic = i.getString("arabic");
+
+                        title = new ChapterTitle(1, order_no, chapter_id, uzbek, arabic, surah_type);
+                        titleViewModel.insert(title);
+
+
+                    }catch (Exception sx){
+                        Log.e("EXCEPTION", sx.getMessage());
+                    }
+                }
+
+
+
+
             }
         });
 
@@ -160,13 +259,19 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
 
         //mAdapter = new SuraNameListAdapter(this, suralist, trackList, enabledList);
-        mAdapter = new TitleListAdapter(this);
+        mAdapter = new TitleListAdapter(this, trackList);
         recyclerView.setAdapter(mAdapter);
 
         titleViewModel.getAllTitles().observe(this, new Observer<List<ChapterTitle>>() {
             @Override
             public void onChanged(@Nullable List<ChapterTitle> surahTitles) {
-                Toast.makeText(SuraNameList.this, "LOADING TITLES " + surahTitles.size(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(SuraNameList.this, "LOADING TITLES " + surahTitles.size(), Toast.LENGTH_LONG).show();
+                if(surahTitles.size()!=114){
+                    tempbut.setVisibility(View.VISIBLE);
+                    //titleViewModel.deleteAll();
+                }else{
+                    tempbut.setVisibility(View.GONE);
+                }
                 mAdapter.setTitles(surahTitles);
             }
         });
@@ -215,16 +320,37 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
     @Override
     public void LoadTitlesFromServer() {
-        Log.d("LOADED FROM SERVER", " ");
-        if(requestHandler!=null){
-            requestHandler.httpRequest();
-        }else{
-            tempbut.setVisibility(View.VISIBLE);
-        }
+//        Log.d("LOADED FROM SERVER", " ");
+//        if(requestHandler!=null){
+//            requestHandler.httpRequest();
+//        }else{
+//            //tempbut.setVisibility(View.VISIBLE);
+//
+//        }
     }
     @Override
-    public void DisableRefreshButton(){
-        tempbut.setVisibility(View.GONE);
+    public void insertTitle(ChapterTitle title){
+        Log.d("TITLE insert", title.uzbek);
+        titleViewModel.insert(title);
+    }
+
+    @Override
+    public void MarkAsAwarded(int surah_id) {
+        ChapterTitle ctitle = mAdapter.getTitleAt(surah_id);
+        ctitle.status = "2";
+        titleViewModel.update(ctitle);
+    }
+
+    @Override
+    public void MarkAsDownloaded(int surah_id) {
+        if(mAdapter!=null){
+            ChapterTitle ctitle = mAdapter.getTitleAt(surah_id-1);
+            if(!ctitle.status.equals("3"))
+            {
+                ctitle.status = "3";
+                titleViewModel.update(ctitle);
+            }
+        }
     }
 
     private boolean NotInTheList(ArrayList<String> enabledList, String suraNumber) {
@@ -241,8 +367,6 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     @Override
     public void DownloadThis(String suraNumber) {
         if (WritePermission()) {
-
-
             String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suraNumber + ".mp3"; // your URL here
             File file = new File(getExternalFilesDir(null), suraNumber + ".mp3");
             DownloadManager.Request request;
@@ -265,7 +389,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
                         .setAllowedOverRoaming(true);
             }
 
-            Log.i("PERMISSION GRANTED", "Download start " + url);
+            Log.i("PERMISSION OK", "Download start " + url);
             DownloadManager downloadManager = (DownloadManager) this.getSystemService(this.DOWNLOAD_SERVICE);
             downloadId = downloadManager.enqueue(request);
         }
@@ -331,6 +455,11 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
                 if(trackname.contains(".")){
                     trackname = trackname.substring(0, trackname.lastIndexOf("."));
                     trackList.add(trackname);
+
+
+                    MarkAsDownloaded(Integer.parseInt(trackname));
+
+
                     Log.i("TRACKNAME", trackname);
                 }
             }

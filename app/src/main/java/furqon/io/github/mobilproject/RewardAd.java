@@ -12,11 +12,13 @@ import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
+import io.reactivex.internal.schedulers.NewThreadWorker;
+
 public class RewardAd{
 
-    private RewardedVideoAd mRewardedVideoAd;
+    private static RewardedVideoAd mRewardedVideoAd;
     int currentSurahNumber;
-    Context mContext;
+    private Context mContext;
 
     public RewardAd(Context context){
         mContext = context;
@@ -27,62 +29,69 @@ public class RewardAd{
 
         //ca-app-pub-3838820812386239/1790049383
         //test ca-app-pub-3940256099942544/5224354917
-        //mRewardedAd.loadAd(mContext.getString(R.string.surahAudioUnlockAd),
+
 
 
         // Get reference to singleton RewardedVideoAd object
 
+        if(mRewardedVideoAd==null){
             mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(mContext);
+        }
+
 
             mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
                 @Override
                 public void onRewardedVideoAdLoaded() {
-                    Toast.makeText(mContext,
-                            "Ad loaded.", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mContext,                            "Ad loaded.", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onRewardedVideoAdOpened() {
-                    Toast.makeText(mContext,
-                            "Ad opened.", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mContext,                            "Ad opened.", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onRewardedVideoStarted() {
-                    Toast.makeText(mContext,
-                            "Ad started.", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mContext,                            "Ad started.", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onRewardedVideoAdClosed() {
-                    Toast.makeText(mContext,
-                            "Ad closed.", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mContext,                            "Ad closed.", Toast.LENGTH_SHORT).show();
+                    //mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917", new AdRequest.Builder().build());
+                    mRewardedVideoAd.loadAd(mContext.getString(R.string.surahAudioUnlockAd), new AdRequest.Builder().build());
                 }
 
                 @Override
                 public void onRewarded(RewardItem rewardItem) {
-                    Toast.makeText(mContext,
-                            "Ad triggered reward. Sura Number: " + currentSurahNumber + " " + rewardItem.getAmount(), Toast.LENGTH_LONG).show();
+                    //Toast.makeText(mContext,"Ad triggered reward. Sura Number: " + currentSurahNumber + " " + rewardItem.getAmount(), Toast.LENGTH_LONG).show();
+                    MyListener myListener;
+                    if(mContext instanceof MyListener){
+                        myListener = (MyListener) mContext;
+                        myListener.MarkAsAwarded(currentSurahNumber);
+                    }
                 }
 
                 @Override
                 public void onRewardedVideoAdLeftApplication() {
-                    Toast.makeText(mContext,
-                            "Ad left application.", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mContext,                            "Ad left application.", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onRewardedVideoAdFailedToLoad(int i) {
-                    Toast.makeText(mContext,
-                            "Ad failed to load.", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mContext,                            "Ad failed to load.", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onRewardedVideoCompleted() {
+                    //Toast.makeText(mContext,                            "onRewardedVideoCompleted.", Toast.LENGTH_SHORT).show();
+
+
 
                 }
             });
-        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917", new AdRequest.Builder().build());
+        //mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917", new AdRequest.Builder().build());
+        mRewardedVideoAd.loadAd(mContext.getString(R.string.surahAudioUnlockAd), new AdRequest.Builder().build());
     }
 
     public void pause(Context context) {
@@ -102,7 +111,7 @@ public class RewardAd{
     }
 
     public void SHOW(String s) {
-        currentSurahNumber = Integer.parseInt(s);
+        currentSurahNumber = Integer.parseInt(s)-1;
         if (mRewardedVideoAd.isLoaded()) {
             mRewardedVideoAd.show();
         }

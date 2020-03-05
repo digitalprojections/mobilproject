@@ -110,6 +110,8 @@ public class SuraNameListAdapter extends RecyclerView.Adapter<SuraNameListAdapte
         }
 
 
+
+
         @Override
         public void onClick(View view) {
 

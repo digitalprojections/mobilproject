@@ -8,11 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -22,20 +25,21 @@ import java.util.List;
 public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.SuraListViewHolder> {
 
     //created according to the available downloaded files
-    private ArrayList<String> trackList = new ArrayList<String>();
+    private ArrayList<String> trackList;
     //private ArrayList<String> enabledList = new ArrayList<String>();
     private List<ChapterTitle> mTitleList = new ArrayList<>();
     private RewardAd mRewardedVideoAd;
+    private Context mContext;
 
     private final LayoutInflater mInflater;
     private List<ChapterTitle> mTitles = new ArrayList<>(); // Cached copy of titles
 
 
-
-    TitleListAdapter(Context context){
+    TitleListAdapter(Context context, ArrayList<String> trackLst){
         mRewardedVideoAd = new RewardAd(context);
         mInflater = LayoutInflater.from(context);
-
+        mContext = context;
+        this.trackList = trackLst;
     }
 
 
@@ -47,6 +51,7 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
         TextView suraNumber;
         ImageView downloadButton;
         ProgressBar progressBar;
+        CardView down_cont;
 
         SuraListViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -56,6 +61,7 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
             suraNumber = itemView.findViewById(R.id.sura_number_item);
             downloadButton = itemView.findViewById(R.id.button_download);
             progressBar = itemView.findViewById(R.id.progressBar_download);
+            down_cont = itemView.findViewById(R.id.download_cont);
 
             Log.i("DOWNLOAD BUTTON", " " + downloadButton.getTag());
 
@@ -65,10 +71,10 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
                     //Toast.makeText(mContext,"Download surah number " + suraNumber.getText().toString(), Toast.LENGTH_SHORT).show();
                     //String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suranomer + ".mp3"; // your URL here
                     switch (downloadButton.getTag().toString()){
-                        case "1"://red
+                        case "1"://red arrow
                             ShowRewardAdForThisItem(view);
                             break;
-                        case "2"://green
+                        case "2"://blue arrow
                             StartDownload(view);
                             break;
                     }
@@ -104,10 +110,14 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
         }
         private void StartDownload(View view) {
             MyListener myListener;
-//            if(mContext instanceof MyListener){
-//                myListener = (MyListener) mContext;
-//                myListener.DownloadThis(suraNumber.getText().toString());
-//            }
+            String snumber = suraNumber.getText().toString();
+            if(mContext instanceof MyListener){
+                myListener = (MyListener) mContext;
+                myListener.DownloadThis(snumber);
+                //getTitleAt(Integer.parseInt(snumber)-1).;
+                progressBar.setVisibility(View.VISIBLE);
+                downloadButton.setVisibility(View.GONE);
+            }
 
         }
     }
@@ -126,7 +136,7 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
 
         ChapterTitle current = mTitles.get(position);
 
-        Log.i("TITLES", "dddddddddddddddddddddddddddddddddd" + current.arabic);
+        Log.i("TITLES", "ddddddddddddddd " + current.status + " " + current.chapter_id);
 
         String name = current.uzbek;
         String arname = current.arabic;
@@ -135,24 +145,27 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
         holder.arabic_name.setText(arname);
         holder.suraNumber.setText(String.valueOf(numb));
 
-        if(TrackDownloaded(String.valueOf(numb))){
+        if(TrackDownloaded(current.chapter_id+"")){
+
             //set by the actually available audio files
             holder.downloadButton.setImageResource(R.drawable.ic_file_available);
+            Log.i("TITLES", " TRUE " + current.status + " " + current.chapter_id + " " + current.uzbek);
             holder.downloadButton.setFocusable(false);
+            //holder.down_cont.setVisibility(View.INVISIBLE);
             holder.downloadButton.setTag(3);
-            holder.progressBar.setVisibility(View.VISIBLE);
+            holder.progressBar.setVisibility(View.INVISIBLE);
         }else{
-            if(DownloadEnabled(String.valueOf(numb))){
+            if(current.status.equals("2")){
                 //download allowed. Active within the session only. Forgotten on restart
-                holder.downloadButton.setImageResource(R.drawable.ic_file_download_done);
+                holder.downloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
                 holder.downloadButton.setFocusable(true);
                 holder.downloadButton.setTag(2);
-                holder.progressBar.setVisibility(View.GONE);
+                holder.progressBar.setVisibility(View.INVISIBLE);
             }else{
-                holder.downloadButton.setImageResource(R.drawable.ic_file_download_red);
+                holder.downloadButton.setImageResource(R.drawable.ic_unlock);
                 holder.downloadButton.setFocusable(true);
                 holder.downloadButton.setTag(1);
-                holder.progressBar.setVisibility(View.GONE);
+                holder.progressBar.setVisibility(View.INVISIBLE);
             }
         }
     }
@@ -161,7 +174,9 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
         mTitles = titles;
         notifyDataSetChanged();
     }
-
+    public ChapterTitle getTitleAt(int position){
+        return mTitles.get(position);
+    }
     private boolean DownloadEnabled(String numb) {
         Log.i("VIDEO AD WATCHED", numb);
         boolean retval = false;
@@ -177,16 +192,15 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
     }
 
     private boolean TrackDownloaded(String v) {
-        Log.i("TRACK DOWNLOADED?", v);
         boolean retval = false;
         for (String i:trackList
              ) {
             if(i.equals(v)){
                 //match found
+                Log.i("TRACK DOWNLOADED?", String.valueOf(v) + " " + i + " " + (i.equals(v)));
                 retval = true;
-
             }
-            Log.i("TRACK DOWNLOADED?", v + " " + i + " " + (i.equals(v)));
+
         }
         return retval;
     }

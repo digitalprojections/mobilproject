@@ -1,6 +1,7 @@
 package furqon.io.github.mobilproject;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -18,10 +19,21 @@ public class TitleViewModel extends AndroidViewModel {
     }
 
     LiveData<List<ChapterTitle>> getAllTitles(){
+
         return mAllTitles;
     }
 
     public void insert(ChapterTitle title){
+        Log.d("TITLE insert", title.uzbek);
         titleRepository.insert(title);
+    }
+    public void update(ChapterTitle title){
+        Log.d("TITLE UPDATING", "UUUUUUUUUU " + title.status);
+        titleRepository.update(title);
+    }
+
+    public void deleteAll(){
+
+        titleRepository.deteteAll();
     }
 }

@@ -14,6 +14,7 @@ public class ChapterTitle {
         this.uzbek = uzbek;
         this.arabic = arabic;
         this.surah_type = surah_type;
+        this.status = "1";
     }
 
     public void setId(int id) {

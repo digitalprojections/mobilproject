@@ -27,9 +27,11 @@ public class HTTPRequestHandler {
     private RequestQueue queue;
     private ArrayList<JSONObject> jsonArrayResponse;
     private static HTTPRequestHandler INSTANCE;
+    private TitleViewModel tvm;
 
-    public HTTPRequestHandler(Context context){
+    public HTTPRequestHandler(Context context, TitleViewModel titleViewModel){
         mContext = context;
+        tvm = titleViewModel;
 
     }
 
@@ -91,21 +93,34 @@ public class HTTPRequestHandler {
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(, android.R.layout.simple_spinner_item, auclist);
 //        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //spinner.setAdapter(adapter);
+        ChapterTitle title;
+        MyListener myListener;
+        SuraNameList nameList = (SuraNameList) mContext;
+        myListener =  (MyListener) nameList;
+
+
+
         for (JSONObject i:auclist
              ) {
 
             try{
                 Log.d("JSONOBJECT", i.getString("arabic"));
+                int language_no = i.getInt("language_no");
+                int order_no = i.getInt("order_no");
+                int chapter_id = i.getInt("chapter_id");
+                String surah_type = i.getString("surah_type");
+                String uzbek = i.getString("uzbek");
+                String arabic = i.getString("arabic");
+
+                title = new ChapterTitle(language_no, order_no, chapter_id, uzbek, arabic, surah_type);
+                tvm.insert(title);
+
+
             }catch (Exception sx){
 
             }
         }
 
-//        MyListener myListener;
-//        if(mContext instanceof MyListener){
-//            myListener = (MyListener) mContext;
-//            myListener.LoadTitlesFromServer();
-//        }
 
 
 
