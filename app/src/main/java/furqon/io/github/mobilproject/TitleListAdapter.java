@@ -27,12 +27,13 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
     //created according to the available downloaded files
     private ArrayList<String> trackList;
     //private ArrayList<String> enabledList = new ArrayList<String>();
-    private List<ChapterTitle> mTitleList = new ArrayList<>();
+    //private List<ChapterTitle> mTitleList = new ArrayList<>();
     private RewardAd mRewardedVideoAd;
     private Context mContext;
 
     private final LayoutInflater mInflater;
     private List<ChapterTitle> mTitles = new ArrayList<>(); // Cached copy of titles
+
 
 
     TitleListAdapter(Context context, ArrayList<String> trackLst){
@@ -95,9 +96,9 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
 
             Log.d("CLICK", suranomer);
             Intent intent;
-//            intent = new Intent(mContext, AyahList.class);
-//            intent.putExtra("SURANAME",suranomi+":"+suranomer);
-//            mContext.startActivity(intent);
+            intent = new Intent(mContext, AyahList.class);
+            intent.putExtra("SURANAME",suranomi+":"+suranomer);
+            mContext.startActivity(intent);
 
 
 
@@ -174,6 +175,9 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
         mTitles = titles;
         notifyDataSetChanged();
     }
+
+
+
     public ChapterTitle getTitleAt(int position){
         return mTitles.get(position);
     }

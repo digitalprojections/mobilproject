@@ -52,8 +52,8 @@ public class AyahList extends AppCompatActivity {
     //PendingIntent pendingIntent;
 
     private AyahListAdapter mAdapter;
-    public DatabaseAccess mDatabase;
-    Cursor ayahcursor;
+    //public DatabaseAccess mDatabase;
+    //Cursor ayahcursor;
     MediaPlayer mediaPlayer;
 
     Integer pos;
@@ -124,10 +124,10 @@ public class AyahList extends AppCompatActivity {
                 Objects.requireNonNull(getSupportActionBar()).setTitle(suranomi);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-                mDatabase = DatabaseAccess.getInstance(getApplicationContext());
-                if (!mDatabase.isOpen()) {
-                    mDatabase.open();
-                }
+//                mDatabase = DatabaseAccess.getInstance(getApplicationContext());
+//                if (!mDatabase.isOpen()) {
+//                    mDatabase.open();
+//                }
 
                 RecyclerView recyclerView = findViewById(R.id.chapter_scroll);
                 recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -136,7 +136,7 @@ public class AyahList extends AppCompatActivity {
                 LoadTheCursor();
 
 
-                mAdapter = new AyahListAdapter(this, ayahcursor, suranomi, suranomer);
+                mAdapter = new AyahListAdapter(this, suranomi, suranomer);
                 recyclerView.setAdapter(mAdapter);
 
 
@@ -204,7 +204,8 @@ public class AyahList extends AppCompatActivity {
     }
 
     public void LoadTheCursor() {
-        ayahcursor = mDatabase.getSuraText(suranomer);
+
+        //ayahcursor = mDatabase.getSuraText(suranomer);
     }
 
     public void playCycle() {
@@ -221,7 +222,7 @@ public class AyahList extends AppCompatActivity {
                     @Override
                     public void run() {
                         //startTimer();
-                        //playCycle();
+                        playCycle();
                         Log.i("TIMER", "tick");
                     }
                 };
@@ -357,7 +358,7 @@ public class AyahList extends AppCompatActivity {
                         resume();
                     }
                 });
-                mediaPlayer.setAudioStreamType(AudioManager.USE_DEFAULT_STREAM_TYPE);
+                //mediaPlayer.setAudioStreamType(AudioManager.USE_DEFAULT_STREAM_TYPE);
                 mediaPlayer.setDataSource(url);
 
                 if (isNetworkAvailable()) {
@@ -441,9 +442,9 @@ public class AyahList extends AppCompatActivity {
 
             handler.removeCallbacks(runnable);
         }
-        if (mDatabase != null) {
-            mDatabase.close();
-        }
+//        if (mDatabase != null) {
+//            mDatabase.close();
+//        }
     }
 
 

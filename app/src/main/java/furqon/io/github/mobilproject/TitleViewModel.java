@@ -12,12 +12,18 @@ import java.util.List;
 public class TitleViewModel extends AndroidViewModel {
     private TitleRepository titleRepository;
     private LiveData<List<ChapterTitle>> mAllTitles;
+    private LiveData<List<ChapterText>> mChapterText;
     private sharedpref sharedPref;
 
     public TitleViewModel(@NonNull Application application) {
         super(application);
         sharedPref = sharedpref.getInstance();
         titleRepository = new TitleRepository(application);
+    }
+
+    LiveData<List<ChapterText>> getChapterText(String surah_id, List<String> language_list){
+        mChapterText = titleRepository.getChapterText(surah_id, language_list);
+        return mChapterText;
     }
 
     LiveData<List<ChapterTitle>> getAllTitles(){

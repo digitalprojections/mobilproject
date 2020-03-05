@@ -10,7 +10,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {ChapterTitle.class}, version =4, exportSchema = false)
+@Database(entities = {ChapterTitle.class, ChapterText.class}, version =7, exportSchema = false)
 public abstract class ChapterTitleDatabase extends RoomDatabase {
 
     public abstract ChapterTitleDAO titleDAO();
@@ -22,7 +22,7 @@ public abstract class ChapterTitleDatabase extends RoomDatabase {
             if (INSTANCE == null) {
                 // Create database here
                 INSTANCE = Room.databaseBuilder(context,
-                        ChapterTitleDatabase.class, "quran3_db")
+                        ChapterTitleDatabase.class, "quran4_db")
                         //.createFromAsset("databases/qurandb")
                         .fallbackToDestructiveMigration()
                         .addCallback(callback)

@@ -12,6 +12,7 @@ import java.util.List;
 public class TitleRepository {
     private ChapterTitleDAO mTitleDao;
     private LiveData<List<ChapterTitle>> mAllTitles;
+    private LiveData<List<ChapterText>> mChapterText;
     private Context context;
     HTTPRequestHandler requestHandler;
     MyListener myListener = (MyListener) new SuraNameList();
@@ -34,6 +35,10 @@ public class TitleRepository {
         mAllTitles = mTitleDao.getAllTitlesByRevelationOrder();
         return mAllTitles;
     }
+    public LiveData<List<ChapterText>> getChapterText(String surah_id, List<String> language_list) {
+        mChapterText = mTitleDao.getChapterText(surah_id, language_list);
+        return mChapterText;
+    }
 
     public void insert(ChapterTitle title){
 
@@ -44,6 +49,7 @@ public class TitleRepository {
         new updateAsyncTask(mTitleDao).execute(title);
     }
     public void deteteAll(){
+
         new deleteAsyncTask().execute();
     }
 

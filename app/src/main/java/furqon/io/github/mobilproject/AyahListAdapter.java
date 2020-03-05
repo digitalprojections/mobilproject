@@ -25,14 +25,17 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahListViewHolder> {
     private static final String TAG = "AYAHLISTADAPTER";
     private final sharedpref sharedPref;
     private Context mContext;
-    private Cursor mCursor;
+    //private Cursor mCursor;
     private ArrayList<String> mArrayList;
-    private DatabaseAccess mDatabase;
+    //private DatabaseAccess mDatabase;
+
+    private List<ChapterText> mText = new ArrayList<>();
 
     //DONE create share/boomark/favourite and add programmatically
     private ImageButton share_button;
@@ -66,14 +69,14 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
     }
 
-    AyahListAdapter(Context context, Cursor cursor, String suraname, String chapter) {
+    AyahListAdapter(Context context, String suraname, String chapter) {
         sharedPref = sharedpref.getInstance();
 
         chapter_number = chapter;
         chaptername = suraname;
         mContext = context;
-        mCursor = cursor;
-        mDatabase = DatabaseAccess.getInstance(mContext);
+        //mCursor = cursor;
+        //mDatabase = DatabaseAccess.getInstance(mContext);
         scaler = AnimationUtils.loadAnimation(mContext, R.anim.bounce);
 
         ssb = new SpannableStringBuilder();
@@ -295,25 +298,17 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         // manage sqlite creation and data addition
         Log.i("AYAT FAVOURITED", String.valueOf(view));
         fav_button = ((ViewGroup) view.getParent().getParent()).findViewById(R.id.favouritebut);
-        if (mDatabase == null || !mDatabase.isOpen()) {
-            try{
-                mDatabase.open();
-            }catch (NullPointerException npx){
-                Toast.makeText(view.getContext() , R.string.error_message, Toast.LENGTH_SHORT).show();
-            }
 
-        } else {
             if (fav_button.getTag() == "1") {
-                mDatabase.removeFromFavs(chapter_number, verse_number, "0");
+                //mDatabase.removeFromFavs(chapter_number, verse_number, "0");
                 fav_button.setImageResource(R.drawable.ic_favorite_border_black_24dp);
                 fav_button.setTag("0");
             } else {
-                mDatabase.saveToFavs(chapter_number, verse_number, "1");
+                //mDatabase.saveToFavs(chapter_number, verse_number, "1");
                 fav_button.setImageResource(R.drawable.ic_favorite_black_24dp);
                 fav_button.setTag("1");
             }
-            mCursor = mDatabase.getSuraText(mCursor.getString(1));
-        }
+            //mCursor = mDatabase.getSuraText(mCursor.getString(1));
 
     }
 
@@ -338,15 +333,35 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
     @Override
     public void onBindViewHolder(@NonNull AyahListViewHolder holder, int i) {
-        if (!mCursor.moveToPosition(i)) {
+        ChapterText current = mText.get(i);
+        if (current==null) {
             return;
         }
-        String etext = mCursor.getString(6);
-        String rtext = mCursor.getString(5);
-        String ttext = mCursor.getString(4);
-        String artext = mCursor.getString(3);
-        String numb = mCursor.getString(2);
-        int is_fav = mCursor.getInt(7);
+        String etext;
+        String rtext;
+        String ttext;
+        String artext;
+        String numb;
+
+        if(current.language_id==59)
+            etext = current.ayah_text;
+        else
+            etext = "";
+        if(current.language_id==79)
+            rtext = current.ayah_text;
+        else
+            rtext = "";
+        if(current.language_id==120)
+            ttext = current.ayah_text;
+        else
+            ttext = "";
+        if(current.language_id==1)
+            artext = current.ayah_text;
+        else
+            artext = "";
+
+        numb = String.valueOf(current.verse_id);
+        int is_fav = current.favourite;
         verse_number = numb;
         fav_button = holder.actions_lin_layout.findViewById(R.id.favouritebut);
         fav_button.setImageResource(R.drawable.ic_favorite_border_black_24dp);
@@ -359,9 +374,8 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             holder.arabic_ayah_number.setVisibility(View.VISIBLE);
             holder.arabic_text.setVisibility(View.VISIBLE);
         }
-        Log.i("TAG FAVOURITE AYAH", numb + " " + is_fav + " " + mCursor.getString(2) + " " + mCursor.getString(1) + " " + mCursor.getString(8));
+        Log.i("TAG FAVOURITE AYAH", numb + " " + is_fav + " " + current.favourite + " " + current.sura_id + " ");
         if (is_fav == 1) {
-
             fav_button.setImageResource(R.drawable.ic_favorite_black_24dp);
             fav_button.setTag("1");
             Log.i("FAVOURITE AYAH ****** ", numb + " " + is_fav);
@@ -395,7 +409,10 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         mArrayList.add(numb);
 
     }
-
+    void setText(List<ChapterText> text){
+        mText = text;
+        notifyDataSetChanged();
+    }
     private String collapseBraces(String t) {
         String retval;
 
@@ -416,24 +433,11 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
     @Override
     public int getItemCount() {
-        int rv = 0;
-        if (mCursor != null) {
-            rv = mCursor.getCount();
+        int c = 0;
+        if(mText!=null)
+        {
+            c = mText.size();
         }
-
-        return rv;
+        return c;
     }
-
-    public void swapCursor(Cursor newCursor) {
-        if (mCursor != null) {
-            mCursor.close();
-        }
-
-        mCursor = newCursor;
-        if (newCursor != null) {
-            notifyDataSetChanged();
-        }
-    }
-
-
 }

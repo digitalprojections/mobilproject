@@ -15,6 +15,7 @@ public class ChapterTitle {
         this.arabic = arabic;
         this.surah_type = surah_type;
         this.status = "1";
+        this.d_progress = 0;
     }
 
     public void setId(int id) {
@@ -33,6 +34,8 @@ public class ChapterTitle {
     public String uzbek;
     public String arabic;
     public String surah_type;
+
+    public int d_progress;
 
     @ColumnInfo(defaultValue = "1")
     public String status;

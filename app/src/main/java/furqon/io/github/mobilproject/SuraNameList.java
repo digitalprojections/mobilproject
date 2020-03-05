@@ -70,6 +70,8 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     private Button quranic_order_btn;
     private Button revelation_order_btn;
 
+    private String suranomer = "";
+
 
     private RecyclerView recyclerView;
     private InterstitialAd mInterstitialAd;
@@ -406,6 +408,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
     @Override
     public void DownloadThis(String suraNumber) {
+        suranomer = suraNumber;
         if (WritePermission()) {
             String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suraNumber + ".mp3"; // your URL here
             File file = new File(getExternalFilesDir(null), suraNumber + ".mp3");
@@ -495,11 +498,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
                 if(trackname.contains(".")){
                     trackname = trackname.substring(0, trackname.lastIndexOf("."));
                     trackList.add(trackname);
-
-
                     MarkAsDownloaded(Integer.parseInt(trackname));
-
-
                     Log.i("TRACKNAME", trackname);
                 }
             }
@@ -513,14 +512,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            // Permission is not granted
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-            } else {
+
                 // No explanation needed; request the permission
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
@@ -530,11 +522,36 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
                 // app-defined int constant. The callback method gets the
                 // result of the request.
                 Log.i(  "MY PERMISSION TO WRITE", MY_PERMISSIONS_REQUEST_READ_CONTACTS + " granted?");
-            }
+
             return false;
         } else {
             // Permission has already been granted
             return true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    DownloadThis(suranomer);
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    LoadTheList();
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
         }
     }
 }

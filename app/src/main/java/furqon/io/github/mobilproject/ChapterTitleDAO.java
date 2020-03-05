@@ -28,4 +28,8 @@ public interface ChapterTitleDAO {
 
     @Query("SELECT * FROM sura_names ORDER BY order_no ASC")
     LiveData<List<ChapterTitle>> getAllTitlesByRevelationOrder();
+
+    //@Query("SELECT * FROM quran_text WHERE sura_id = :surah_id AND language_id IN (:language_list) ORDER BY verse_id ASC")
+    @Query("SELECT * FROM quran_text WHERE language_id IN (:language_list) AND sura_id = :surah_id ORDER BY verse_id ASC")
+    LiveData<List<ChapterText>> getChapterText( String surah_id, List<String> language_list);
 }
