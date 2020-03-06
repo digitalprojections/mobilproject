@@ -21,9 +21,6 @@ public class TitleRepository {
         ChapterTitleDatabase titleDatabase = ChapterTitleDatabase.getDatabase(application);
         mTitleDao = titleDatabase.titleDAO();
 
-        //mAllTitles = mTitleDao.getAllTitlesByRevelationOrder();
-        Log.i("TITLES FOUND:", "--------------------------------- new rows");
-
         context = application;
 
         new readAsyncTask(mTitleDao).execute();
@@ -57,6 +54,9 @@ public class TitleRepository {
     public void update(ChapterTitle title){
 
         new updateAsyncTask(mTitleDao).execute(title);
+    }
+    public void updateText(ChapterText text){
+        new updateTextAsyncTask(mTitleDao).execute(text);
     }
     public void deteteAll(){
 
@@ -102,6 +102,19 @@ public class TitleRepository {
         @Override
         protected Void doInBackground(ChapterTitle... chapterTitles) {
             mAsyncTitleDAO.update(chapterTitles[0]);
+            return null;
+        }
+    }
+    private class updateTextAsyncTask extends AsyncTask<ChapterText, Void, Void> {
+        private ChapterTitleDAO mAsyncTitleDAO;
+        public updateTextAsyncTask(ChapterTitleDAO mTitleDao) {
+
+            mAsyncTitleDAO = mTitleDao;
+        }
+
+        @Override
+        protected Void doInBackground(ChapterText... chapterTexts) {
+            mAsyncTitleDAO.updateText(chapterTexts[0]);
             return null;
         }
     }

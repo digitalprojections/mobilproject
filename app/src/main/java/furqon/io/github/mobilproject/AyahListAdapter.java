@@ -2,7 +2,6 @@ package furqon.io.github.mobilproject;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.Html;
@@ -18,7 +17,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
@@ -69,7 +67,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
     }
 
-    AyahListAdapter(Context context, String suraname, String chapter) {
+    AyahListAdapter(Context context, String suraname, String chapter, TitleViewModel titleViewModel) {
         sharedPref = sharedpref.getInstance();
 
         chapter_number = chapter;
@@ -298,18 +296,34 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         // manage sqlite creation and data addition
         Log.i("AYAT FAVOURITED", String.valueOf(view));
         fav_button = ((ViewGroup) view.getParent().getParent()).findViewById(R.id.favouritebut);
+        ManageSpecials manageSpecials;
+
+        if(mContext instanceof ManageSpecials) {
+            manageSpecials = (ManageSpecials) mContext;
+            AllTranslations allTranslations = getTextAt(Integer.parseInt(verse_number) - 1);
+            ChapterText text = MapTextObjects(allTranslations);
+
 
             if (fav_button.getTag() == "1") {
                 //mDatabase.removeFromFavs(chapter_number, verse_number, "0");
-                fav_button.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                //fav_button.setImageResource(R.drawable.ic_favorite_border_black_24dp);
                 fav_button.setTag("0");
+                allTranslations.favourite = 0;
             } else {
                 //mDatabase.saveToFavs(chapter_number, verse_number, "1");
-                fav_button.setImageResource(R.drawable.ic_favorite_black_24dp);
+                //fav_button.setImageResource(R.drawable.ic_favorite_black_24dp);
                 fav_button.setTag("1");
+                allTranslations.favourite = 1;
             }
+            manageSpecials.UpdateSpecialItem(text);
+            notifyDataSetChanged();
             //mCursor = mDatabase.getSuraText(mCursor.getString(1));
+        }
+    }
 
+    private ChapterText MapTextObjects(AllTranslations allTranslations) {
+        ChapterText ctext = new ChapterText(allTranslations.sura_id, allTranslations.verse_id, allTranslations.favourite, allTranslations.language_id, allTranslations.order_no, allTranslations.ayah_text, allTranslations.comments_text, allTranslations.surah_type, allTranslations.read_count, allTranslations.share_count, allTranslations.audio_progress );
+        return ctext;
     }
 
 
@@ -416,6 +430,9 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         return retval;
     }
 
+    public AllTranslations getTextAt(int position){
+        return mText.get(position);
+    }
 
 
     @Override

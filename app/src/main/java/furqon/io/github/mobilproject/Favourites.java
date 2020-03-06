@@ -26,12 +26,12 @@ import java.util.Objects;
 public class Favourites extends AppCompatActivity {
 
     private ProgressBar progressBar;
-    private DatabaseAccess mDatabase;
+    //private DatabaseAccess mDatabase;
     private RecyclerView recyclerView;
     private FavouriteListAdapter mAdapter;
     String suranomer;
     public String suranomi;
-    private Cursor cursor;
+    //private Cursor cursor;
     private AdView mAdView;
     private static final String TAG = "FAVOURITES ACTIVITY";
     private static final int REQUEST_INVITE = 0;
@@ -58,10 +58,10 @@ public class Favourites extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerfavs);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mDatabase = DatabaseAccess.getInstance(getApplicationContext());
-        if(!mDatabase.isOpen()) {
-            mDatabase.open();
-        }
+//        mDatabase = DatabaseAccess.getInstance(getApplicationContext());
+//        if(!mDatabase.isOpen()) {
+//            mDatabase.open();
+//        }
 
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -109,12 +109,12 @@ public class Favourites extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mInterstitialAd.show();
-        mDatabase.close();
+        //mDatabase.close();
     }
 
     public void loadFavourites(){
-        cursor = mDatabase.loadFavourites();
-        mAdapter = new FavouriteListAdapter(this, cursor, suranomi, suranomer);
+        //cursor = mDatabase.loadFavourites();
+        mAdapter = new FavouriteListAdapter(this, suranomi, suranomer);
         recyclerView.setAdapter(mAdapter);
 
 

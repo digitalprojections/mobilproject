@@ -28,9 +28,9 @@ import java.util.ArrayList;
 
 public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdapter.FavouriteListViewHolder> {
     private Context mContext;
-    private Cursor mCursor;
+    //private Cursor mCursor;
     private ArrayList<String> mArrayList;
-    private DatabaseAccess mDatabase;
+    //private DatabaseAccess mDatabase;
 
     //DONE create share/boomark/favourite and add programmatically
     private ImageButton sharebut;
@@ -57,13 +57,13 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
     private Animation scaler;
     private sharedpref sharedPref;
 
-    FavouriteListAdapter(Context context, Cursor cursor, String suraname, String chapter) {
+    FavouriteListAdapter(Context context, String suraname, String chapter) {
         sharedPref = sharedpref.getInstance();
         chapternumber = chapter;
 
         mContext = context;
-        mCursor = cursor;
-        mDatabase = DatabaseAccess.getInstance(mContext);
+//        mCursor = cursor;
+//        mDatabase = DatabaseAccess.getInstance(mContext);
         scaler = AnimationUtils.loadAnimation(mContext, R.anim.bounce);
 
     }
@@ -277,11 +277,11 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
                     bookbut.setImageResource(R.drawable.ic_turned_in_black_24dp);
                     bookbut.setTag("selected");
                     sharedPref.write("xatchup" + chaptername, Integer.parseInt(versenumber));
-                    mDatabase.removeFromFavs(chapternumber, versenumber, "0");
+                    //mDatabase.removeFromFavs(chapternumber, versenumber, "0");
                     Log.i("BOOKMARK", String.valueOf(bookbut.getTag()));
                 }
                 else {
-                    mDatabase.removeFromFavs(chapternumber, versenumber, "1");
+                    //mDatabase.removeFromFavs(chapternumber, versenumber, "1");
                     bookbut.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
                     bookbut.setTag("unselected");
                     sharedPref.write("xatchup" + chaptername, 0);
@@ -295,19 +295,14 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         //TODO manage sqlite creation and data addition
         Log.i("AYAT FAVOURITED", String.valueOf(view));
 
-        if (!mDatabase.isOpen()) {
-            mDatabase.open();
-        } else {
             if (favbut.getTag() == "1") {
-                mDatabase.removeFromFavs(chapternumber, versenumber, "0");
+                //mDatabase.removeFromFavs(chapternumber, versenumber, "0");
                 favbut.setImageResource(R.drawable.ic_favorite_border_black_24dp);
                 favbut.setTag("0");
-                mCursor = mDatabase.loadFavourites();
+                //mCursor = mDatabase.loadFavourites();
             }
             notifyItemRemoved(position);
-            notifyItemRangeChanged(position, mCursor.getCount());
-        }
-
+            notifyDataSetChanged();
     }
 
     @NonNull
@@ -339,23 +334,20 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
 
     @Override
     public void onBindViewHolder(@NonNull FavouriteListViewHolder holder, int i) {
-        if (!mCursor.moveToPosition(i)) {
-            return;
-        }
 
-        chapternumber = mCursor.getString(1);
-        String numb = mCursor.getString(2);
-        String artext = mCursor.getString(3);
-        String ttext = mCursor.getString(4);
-        String rtext = mCursor.getString(5);
-        String etext = mCursor.getString(6);
+//        chapternumber = mCursor.getString(1);
+        String numb = "";
+        String artext = "";
+        String ttext = "";
+        String rtext = "";
+        String etext = "";
 
-        int is_fav = mCursor.getInt(7);
-        chaptername = mCursor.getString(8);
+        int is_fav = 0;
+        chaptername = "";
         versenumber = numb;
 
 
-        Log.i("TAG FAVOURITE", String.valueOf(is_fav==1));
+        //Log.i("TAG FAVOURITE", String.valueOf(is_fav==1));
         if (sharedPref.getDefaults("ar")) {
             holder.arabic_ayahnumber.setVisibility(View.VISIBLE);
             holder.arabictext.setVisibility(View.VISIBLE);
@@ -421,27 +413,9 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
 
     @Override
     public int getItemCount() {
-        int c;
-        try{
-            c  = mCursor.getCount();
-        }
-        catch (NullPointerException e){
-            c = 0;
-        }
+        int c = 0;
+
+
         return c;
     }
-
-    public void swapCursor(Cursor newCursor) {
-        if (mCursor != null) {
-            mCursor.close();
-        }
-
-        mCursor = newCursor;
-        if (newCursor != null) {
-            notifyDataSetChanged();
-        }
-    }
-
-
-
 }

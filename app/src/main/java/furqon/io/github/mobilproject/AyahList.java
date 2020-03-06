@@ -61,7 +61,7 @@ import furqon.io.github.mobilproject.Services.NotificationActionService;
 import static furqon.io.github.mobilproject.Furqon.AUDIO_PLAYING_NOTIFICATION_CHANNEL;
 
 
-public class AyahList extends AppCompatActivity {
+public class AyahList extends AppCompatActivity implements ManageSpecials {
 
     //private NotificationManagerCompat managerCompat;
     private ArrayList<JSONObject> jsonArrayResponse;
@@ -143,7 +143,7 @@ public class AyahList extends AppCompatActivity {
                 suranomi = extratext.substring(0, extratext.indexOf(":"));
                 suranomer = extratext.substring(extratext.indexOf(":") + 1);
 
-                Log.i("LOADED SURA", suranomer + " " + suranomi);
+                //Log.i("LOADED SURA", suranomer + " " + suranomi);
 
                 Objects.requireNonNull(getSupportActionBar()).setTitle(suranomi);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -160,7 +160,7 @@ public class AyahList extends AppCompatActivity {
                 LoadTheCursor();
 
 
-                mAdapter = new AyahListAdapter(this, suranomi, suranomer);
+                mAdapter = new AyahListAdapter(this, suranomi, suranomer, titleViewModel);
                 recyclerView.setAdapter(mAdapter);
 
                 LoadTheList();
@@ -250,22 +250,19 @@ public class AyahList extends AppCompatActivity {
                                         JSONObject object = new JSONObject(jsonArray.getString(i));
                                         jsonArrayResponse.add(object);
                                     }
-
                                     //PASS to SPINNER
                                     //load auction names and available lot/bid count
                                     populateAyahList(jsonArrayResponse);
-
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                     Log.i("error json", "tttttttttttttttt");
                                 }
-
                             }
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
                         progressBar.setVisibility(View.INVISIBLE);
+                        tempbut.setVisibility(View.VISIBLE);
                     }
                 }) {
                     protected Map<String, String> getParams() {
@@ -279,9 +276,7 @@ public class AyahList extends AppCompatActivity {
                         //language_id:1
                         return MyData;
                     }
-
                 };
-
                 queue.add(stringRequest);
                 tempbut.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
@@ -586,4 +581,8 @@ public class AyahList extends AppCompatActivity {
     }
 
 
+    @Override
+    public void UpdateSpecialItem(ChapterText text) {
+        titleViewModel.updateText(text);
+    }
 }
