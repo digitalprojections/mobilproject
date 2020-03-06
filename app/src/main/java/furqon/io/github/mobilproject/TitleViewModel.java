@@ -13,12 +13,17 @@ public class TitleViewModel extends AndroidViewModel {
     private TitleRepository titleRepository;
     private LiveData<List<ChapterTitle>> mAllTitles;
     private LiveData<List<AllTranslations>> mChapterText;
+    private LiveData<List<FavouriteAyah>> mFavourites;
     private sharedpref sharedPref;
 
     public TitleViewModel(@NonNull Application application) {
         super(application);
         sharedPref = sharedpref.getInstance();
         titleRepository = new TitleRepository(application);
+    }
+    LiveData<List<FavouriteAyah>> getFavourites(){
+        mFavourites = titleRepository.getFavourites();
+        return mFavourites;
     }
 
     LiveData<List<AllTranslations>> getChapterText(String surah_id){
