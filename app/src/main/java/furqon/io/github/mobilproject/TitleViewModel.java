@@ -12,7 +12,7 @@ import java.util.List;
 public class TitleViewModel extends AndroidViewModel {
     private TitleRepository titleRepository;
     private LiveData<List<ChapterTitle>> mAllTitles;
-    private LiveData<List<ChapterText>> mChapterText;
+    private LiveData<List<AllTranslations>> mChapterText;
     private sharedpref sharedPref;
 
     public TitleViewModel(@NonNull Application application) {
@@ -21,8 +21,8 @@ public class TitleViewModel extends AndroidViewModel {
         titleRepository = new TitleRepository(application);
     }
 
-    LiveData<List<ChapterText>> getChapterText(String surah_id, List<String> language_list){
-        mChapterText = titleRepository.getChapterText(surah_id, language_list);
+    LiveData<List<AllTranslations>> getChapterText(String surah_id){
+        mChapterText = titleRepository.getChapterText(surah_id);
         return mChapterText;
     }
 
@@ -39,6 +39,11 @@ public class TitleViewModel extends AndroidViewModel {
         Log.d("TITLE insert", title.uzbek);
         titleRepository.insert(title);
     }
+    public void insertText(ChapterText text){
+        //Log.d("TITLE insert", text);
+        titleRepository.insertText(text);
+    }
+
     public void update(ChapterTitle title){
         Log.d("TITLE UPDATING", "UUUUUUUUUU " + title.status);
         titleRepository.update(title);

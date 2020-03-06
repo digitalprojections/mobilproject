@@ -28,8 +28,8 @@ public class AyahOfTheDay extends AppCompatActivity {
 
     private String suraname;
     private int language_id = 4;
-    public DatabaseAccess mDatabase;
-    Cursor ayahcursor;
+    //public DatabaseAccess mDatabase;
+    //Cursor ayahcursor;
     TextView ayah_reference;
     TextView ayah_text;
 
@@ -60,10 +60,10 @@ public class AyahOfTheDay extends AppCompatActivity {
         setContentView(R.layout.activity_ayah_of_the_day);
 
 
-        mDatabase = DatabaseAccess.getInstance(getApplicationContext());
-        if (!mDatabase.isOpen()) {
-            mDatabase.open();
-        }
+        //mDatabase = DatabaseAccess.getInstance(getApplicationContext());
+//        if (!mDatabase.isOpen()) {
+//            mDatabase.open();
+//        }
         pbar = findViewById(R.id.progBar);
         uztxt = findViewById(R.id.uztxt);
         rutxt = findViewById(R.id.rutxt);
@@ -223,7 +223,7 @@ public class AyahOfTheDay extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        mDatabase.close();
+        //mDatabase.close();
     }
 
     private void continueReading() {
@@ -246,24 +246,18 @@ public class AyahOfTheDay extends AppCompatActivity {
         // manage sqlite creation and data addition
         Log.i("AYAT FAVOURITED", String.valueOf(view));
 
-            if (!mDatabase.isOpen()) {
-                assert mDatabase!=null;
-                mDatabase.open();
-                if(mDatabase.isOpen()) {
-                    addToFavourites(view);
-                }
-            } else{
+
                 if (fav_btn.getTag() == "1") {
-                    mDatabase.removeFromFavs(random_surah, random_ayah, "0");
+                    //mDatabase.removeFromFavs(random_surah, random_ayah, "0");
                     fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
                     fav_btn.setTag("0");
                 } else {
-                    mDatabase.saveToFavs(random_surah, random_ayah, "1");
+                    //mDatabase.saveToFavs(random_surah, random_ayah, "1");
                     fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
                     fav_btn.setTag("1");
                 }
 
-        }
+
 
 
     }
@@ -271,9 +265,9 @@ public class AyahOfTheDay extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (ayahcursor != null) {
-            ayahcursor.close();
-        }
+//        if (ayahcursor != null) {
+//            ayahcursor.close();
+//        }
     }
 
     private void snackbarMessage(View view, String s) {
@@ -282,14 +276,14 @@ public class AyahOfTheDay extends AppCompatActivity {
     }
 
     private void makeCall() {
-        if(mDatabase.isOpen()) {
-
-            ayahcursor = mDatabase.getRandomAyah(random_surah, random_ayah);
-            if (ayahcursor != null) {
-                ayahcursor.moveToPosition(0);
-                displayAyah();
-            }
-        }
+//        if(mDatabase.isOpen()) {
+//
+//            ayahcursor = mDatabase.getRandomAyah(random_surah, random_ayah);
+//            if (ayahcursor != null) {
+//                ayahcursor.moveToPosition(0);
+//                displayAyah();
+//            }
+//        }
     }
 
     private void displayAyah() {
@@ -297,52 +291,52 @@ public class AyahOfTheDay extends AppCompatActivity {
     }
 
     private void ShowRandomAyah() {
-        if (ayahcursor != null) {
-            try{
-                suraname = ayahcursor.getString(2);
-                String randomayahreference = getString(R.string.surah) + suraname + getString(R.string.ayah) + random_ayah;
-                ayah_reference.setText(randomayahreference);
-                ayah_text.setText(ayahcursor.getString(language_id));
-
-                String is_fav = ayahcursor.getString(7);
-                Log.d(TAG, is_fav + " is fav");
-                if(is_fav!=null){
-                    if (is_fav.equals("1")) {
-                        fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
-                        fav_btn.setTag("1");
-                    } else {
-                        fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-                        fav_btn.setTag("0");
-                    }
-                }
-
-                Log.d(TAG, suraname + "-" + random_surah + " " + random_ayah);
-            }catch (CursorIndexOutOfBoundsException ciobx){
-                ++cursor_retry;
-                if(cursor_retry<3){
-                    //try recalling the cursor
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    makeCall();
-                }
-            }
-
-        }
-        else{
-            ++cursor_retry;
-            if(cursor_retry<3){
-                //try recalling the cursor
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                makeCall();
-            }
-        }
+//        if (ayahcursor != null) {
+//            try{
+//                suraname = ayahcursor.getString(2);
+//                String randomayahreference = getString(R.string.surah) + suraname + getString(R.string.ayah) + random_ayah;
+//                ayah_reference.setText(randomayahreference);
+//                ayah_text.setText(ayahcursor.getString(language_id));
+//
+//                String is_fav = ayahcursor.getString(7);
+//                Log.d(TAG, is_fav + " is fav");
+//                if(is_fav!=null){
+//                    if (is_fav.equals("1")) {
+//                        fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
+//                        fav_btn.setTag("1");
+//                    } else {
+//                        fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+//                        fav_btn.setTag("0");
+//                    }
+//                }
+//
+//                Log.d(TAG, suraname + "-" + random_surah + " " + random_ayah);
+//            }catch (CursorIndexOutOfBoundsException ciobx){
+//                ++cursor_retry;
+//                if(cursor_retry<3){
+//                    //try recalling the cursor
+//                    try {
+//                        Thread.sleep(1000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    makeCall();
+//                }
+//            }
+//
+//        }
+//        else{
+//            ++cursor_retry;
+//            if(cursor_retry<3){
+//                //try recalling the cursor
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                makeCall();
+//            }
+//        }
 
     }
 

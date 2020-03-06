@@ -8,10 +8,23 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:background="@color/colorPrimary"
+    android:foregroundGravity="center_horizontal"
     tools:context=".AyahList">
 
 
+    <Button
+        android:id="@+id/buttonReload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/reload"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout4"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout4"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout4"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone" />
+
     <LinearLayout
+        android:id="@+id/linearLayout4"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -59,6 +72,7 @@
             tools:listitem="@layout/ayat">
 
         </androidx.recyclerview.widget.RecyclerView>
+
     </LinearLayout>
 
     <ProgressBar

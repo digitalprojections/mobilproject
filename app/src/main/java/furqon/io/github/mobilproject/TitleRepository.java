@@ -12,9 +12,9 @@ import java.util.List;
 public class TitleRepository {
     private ChapterTitleDAO mTitleDao;
     private LiveData<List<ChapterTitle>> mAllTitles;
-    private LiveData<List<ChapterText>> mChapterText;
+    private LiveData<List<AllTranslations>> mChapterText;
     private Context context;
-    HTTPRequestHandler requestHandler;
+
     MyListener myListener = (MyListener) new SuraNameList();
     TitleRepository(Application application){
         ChapterTitleDatabase titleDatabase = ChapterTitleDatabase.getDatabase(application);
@@ -35,8 +35,8 @@ public class TitleRepository {
         mAllTitles = mTitleDao.getAllTitlesByRevelationOrder();
         return mAllTitles;
     }
-    public LiveData<List<ChapterText>> getChapterText(String surah_id, List<String> language_list) {
-        mChapterText = mTitleDao.getChapterText(surah_id, language_list);
+    LiveData<List<AllTranslations>> getChapterText(String surah_id) {
+        mChapterText = mTitleDao.getChapterText(surah_id);
         return mChapterText;
     }
 
@@ -44,6 +44,11 @@ public class TitleRepository {
 
         new insertAsyncTask(mTitleDao).execute(title);
     }
+    public void insertText(ChapterText text){
+
+        new insertTextAsyncTask(mTitleDao).execute(text);
+    }
+
     public void update(ChapterTitle title){
 
         new updateAsyncTask(mTitleDao).execute(title);
@@ -59,12 +64,27 @@ public class TitleRepository {
         private ChapterTitleDAO mAsyncTitleDAO;
 
         public insertAsyncTask(ChapterTitleDAO mTitleDao) {
+
             mAsyncTitleDAO = mTitleDao;
         }
 
         @Override
         protected Void doInBackground(final ChapterTitle... chapterTitles) {
             mAsyncTitleDAO.insert(chapterTitles[0]);
+            return null;
+        }
+    }
+    private class insertTextAsyncTask extends AsyncTask<ChapterText, Void, Void> {
+
+        private ChapterTitleDAO mAsyncTitleDAO;
+
+        public insertTextAsyncTask(ChapterTitleDAO mTitleDao) {
+            mAsyncTitleDAO = mTitleDao;
+        }
+
+        @Override
+        protected Void doInBackground(final ChapterText... chapterTexts) {
+            mAsyncTitleDAO.insertText(chapterTexts[0]);
             return null;
         }
     }

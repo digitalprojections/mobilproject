@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
@@ -17,13 +17,18 @@
         android:roundIcon="@mipmap/ic_launcher2_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <service
+            android:name=".Services.MyService"
+            android:enabled="true"
+            android:exported="true"></service>
+
         <activity
             android:name=".ScrollingActivity"
-            android:label="@string/title_activity_scrolling"
-            android:theme="@style/AppTheme.NoActionBar"
             android:excludeFromRecents="true"
+            android:label="@string/title_activity_scrolling"
             android:launchMode="singleTask"
-            android:taskAffinity=""/>
+            android:taskAffinity=""
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service
             android:name=".MyFirebaseMessagingService"
@@ -33,11 +38,13 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <receiver android:name=".Services.NotificationActionService">
-<intent-filter>
-    <action android:name="TRACKS_TRACKS"/>
-</intent-filter>
+            <intent-filter>
+                <action android:name="TRACKS_TRACKS" />
+            </intent-filter>
         </receiver>
+        
 
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
@@ -80,10 +87,8 @@
         </activity>
         <activity
             android:name=".Search"
-            android:parentActivityName=".MainActivity"/>
-        <activity android:name=".AyahOfTheDay"/>
-
-
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".AyahOfTheDay" />
     </application>
 
 </manifest>

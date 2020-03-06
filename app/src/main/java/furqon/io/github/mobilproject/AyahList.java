@@ -6,10 +6,8 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -21,22 +19,41 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import furqon.io.github.mobilproject.Services.NotificationActionService;
@@ -47,16 +64,16 @@ import static furqon.io.github.mobilproject.Furqon.AUDIO_PLAYING_NOTIFICATION_CH
 public class AyahList extends AppCompatActivity {
 
     //private NotificationManagerCompat managerCompat;
-
+    private ArrayList<JSONObject> jsonArrayResponse;
 
     //PendingIntent pendingIntent;
-
+    private TitleViewModel titleViewModel;
     private AyahListAdapter mAdapter;
     //public DatabaseAccess mDatabase;
     //Cursor ayahcursor;
     MediaPlayer mediaPlayer;
 
-    Integer pos;
+    Integer audio_pos;
     Integer ayah_position;
     public String suranomi;
     public String xatchup = "xatchup";
@@ -77,6 +94,8 @@ public class AyahList extends AppCompatActivity {
     MediaSessionCompat mediaSessionCompat;
 
     private NotificationManagerCompat managerCompat;
+    private Button tempbut;
+    private Context context;
 
 
     @Override
@@ -93,6 +112,11 @@ public class AyahList extends AppCompatActivity {
         //managerCompat = NotificationManagerCompat.from(this);
         //Intent notifintent = new Intent(this, MainActivity.class);
         //pendingIntent = PendingIntent.getActivity(this, 0, notifintent, 0);
+
+        tempbut = findViewById(R.id.buttonReload);
+        titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
+
+        context = this;
 
 
         sharedPref = sharedpref.getInstance();
@@ -139,8 +163,9 @@ public class AyahList extends AppCompatActivity {
                 mAdapter = new AyahListAdapter(this, suranomi, suranomer);
                 recyclerView.setAdapter(mAdapter);
 
+                LoadTheList();
 
-                pos = sharedPref.read(suranomi, 0);
+                audio_pos = sharedPref.read(suranomi, 0);
 
                 ayah_position = sharedPref.read(xatchup + suranomi, 0);
                 if (ayah_position > 4) {
@@ -201,6 +226,101 @@ public class AyahList extends AppCompatActivity {
 
 
         pendingIntentFav = PendingIntent.getBroadcast(this, 0, intentPrev, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+        tempbut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("CLICK", "clicking");
+                RequestQueue queue = Volley.newRequestQueue(context);
+                String url = "https://inventivesolutionste.ipage.com/ajax_quran.php";
+
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                progressBar.setVisibility(View.INVISIBLE);
+                                // Convert String to json object
+                                jsonArrayResponse = new ArrayList<JSONObject>();
+
+                                try {
+                                    JSONArray jsonArray = new JSONArray(response);
+                                    for (int i=0; i<jsonArray.length();i++)
+                                    {
+                                        JSONObject object = new JSONObject(jsonArray.getString(i));
+                                        jsonArrayResponse.add(object);
+                                    }
+
+                                    //PASS to SPINNER
+                                    //load auction names and available lot/bid count
+                                    populateAyahList(jsonArrayResponse);
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Log.i("error json", "tttttttttttttttt");
+                                }
+
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        progressBar.setVisibility(View.INVISIBLE);
+                    }
+                }) {
+                    protected Map<String, String> getParams() {
+                        Map<String, String> MyData = new HashMap<String, String>();
+                        MyData.put("action", "izohsiz_text_obj"); //Add the data you'd like to send to the server.
+                        MyData.put("database_id", "1, 120, 59, 79");
+                        MyData.put("surah_id", suranomer);
+                        //https://inventivesolutionste.ipage.com/ajax_quran.php
+                        //POST
+                        //action:names_as_objects
+                        //language_id:1
+                        return MyData;
+                    }
+
+                };
+
+                queue.add(stringRequest);
+                tempbut.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+            }
+            void populateAyahList(ArrayList<JSONObject> auclist){
+
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(, android.R.layout.simple_spinner_item, auclist);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                //spinner.setAdapter(adapter);
+                ChapterText text;
+
+                for (JSONObject i:auclist
+                ) {
+
+                    try{
+                        //"ID":"31206","VerseID":"7","AyahText":"صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ","DatabaseID":"1","SuraID":"1","OrderNo":"5","SuraType":"Meccan","Note":null
+                        //Log.d("JSONOBJECT", i.toString());
+                        int verse_id = i.getInt("VerseID");
+                        int DatabaseID = i.getInt("DatabaseID");
+                        int chapter_id = i.getInt("SuraID");
+                        int OrderNo = i.getInt("OrderNo");
+                        String surah_type = i.getString("SuraType");
+                        String AyahText = i.getString("AyahText");
+
+                        //int sura_id, int verse_id, int favourite, int language_id, String ayah_text, String surah_type, int order_no, String comment, int read_count, int shared_count, int audio_position
+                        text = new ChapterText(chapter_id, verse_id,0, DatabaseID, OrderNo, AyahText, "", surah_type, 0, 0, 0);
+                        titleViewModel.insertText(text);
+
+
+                    }catch (Exception sx){
+                        Log.e("EXCEPTION", sx.getMessage());
+                    }
+                }
+
+
+
+
+            }
+        });
     }
 
     public void LoadTheCursor() {
@@ -211,9 +331,9 @@ public class AyahList extends AppCompatActivity {
     public void playCycle() {
         if (mediaPlayer != null) {
             seekBar.setProgress(mediaPlayer.getCurrentPosition());
-            pos = mediaPlayer.getCurrentPosition();
+            audio_pos = mediaPlayer.getCurrentPosition();
             timer = findViewById(R.id.audio_timer);
-            timer.setText(AudioTimer.getTimeStringFromMs(pos));
+            timer.setText(AudioTimer.getTimeStringFromMs(audio_pos));
 
             ShowNotification(this, suranomi);
 
@@ -276,6 +396,24 @@ public class AyahList extends AppCompatActivity {
                 .build();
         managerCompat.notify(1, notification);
     }
+
+    private void LoadTheList() {
+        titleViewModel.getChapterText(suranomer).observe(this, new Observer<List<AllTranslations>>() {
+            @Override
+            public void onChanged(@Nullable List<AllTranslations> surahText) {
+                //Toast.makeText(SuraNameList.this, "LOADING TITLES " + surahTitles.size(), Toast.LENGTH_LONG).show();
+                if(surahText.size()==0){
+                    tempbut.setVisibility(View.VISIBLE);
+                    //titleViewModel.deleteAll();
+                }else{
+                    tempbut.setVisibility(View.GONE);
+                    //Toast.makeText(context, "LOADING TITLES " + surahText.size(), Toast.LENGTH_LONG).show();
+                }
+                mAdapter.setText(surahText);
+            }
+        });
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -415,12 +553,12 @@ public class AyahList extends AppCompatActivity {
     }
 
     public void resume() {
-        pos = sharedPref.read(suranomi, 0);
+        audio_pos = sharedPref.read(suranomi, 0);
 
         if (mediaPlayer != null) {
 
             //seekBar.setProgress(pos);
-            mediaPlayer.seekTo(pos);
+            mediaPlayer.seekTo(audio_pos);
             mediaPlayer.start();
             Toast.makeText(getBaseContext(), audiorestore, Toast.LENGTH_SHORT).show();
             playCycle();

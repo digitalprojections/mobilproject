@@ -35,7 +35,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     private ArrayList<String> mArrayList;
     //private DatabaseAccess mDatabase;
 
-    private List<ChapterText> mText = new ArrayList<>();
+    private List<AllTranslations> mText = new ArrayList<>();
 
     //DONE create share/boomark/favourite and add programmatically
     private ImageButton share_button;
@@ -333,32 +333,19 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
     @Override
     public void onBindViewHolder(@NonNull AyahListViewHolder holder, int i) {
-        ChapterText current = mText.get(i);
-        if (current==null) {
-            return;
-        }
-        String etext;
-        String rtext;
-        String ttext;
-        String artext;
+        AllTranslations current = mText.get(i);
+
+        String en_text;
+        String ru_text;
+        String uz_text;
+        String ar_text;
         String numb;
 
-        if(current.language_id==59)
-            etext = current.ayah_text;
-        else
-            etext = "";
-        if(current.language_id==79)
-            rtext = current.ayah_text;
-        else
-            rtext = "";
-        if(current.language_id==120)
-            ttext = current.ayah_text;
-        else
-            ttext = "";
-        if(current.language_id==1)
-            artext = current.ayah_text;
-        else
-            artext = "";
+
+        en_text = current.en_text;
+        ru_text = current.ru_text;
+        uz_text = current.uz_text;
+        ar_text = current.ar_text;
 
         numb = String.valueOf(current.verse_id);
         int is_fav = current.favourite;
@@ -386,30 +373,30 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         //holder.arabic_text.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
         holder.arabic_text.setGravity(Gravity.END);
 
-        holder.arabic_text.setText(artext);
+        holder.arabic_text.setText(ar_text);
         holder.arabic_ayah_number.setText(String.valueOf(numb));
 
         if (sharedPref.getDefaults("uz")) {
             //holder.ayah_number.setVisibility(View.VISIBLE);
             holder.ayah_text_uz.setVisibility(View.VISIBLE);
-            holder.ayah_text_uz.setText(Html.fromHtml(collapseBraces(ttext)));
+            holder.ayah_text_uz.setText(Html.fromHtml(collapseBraces(uz_text)));
             holder.ayah_number.setText(String.valueOf(numb));
         }
         if (sharedPref.getDefaults("ru")) {
             holder.ayah_text_ru.setVisibility(View.VISIBLE);
-            holder.ayah_text_ru.setText(Html.fromHtml(collapseBraces(rtext)));
+            holder.ayah_text_ru.setText(Html.fromHtml(collapseBraces(ru_text)));
             holder.ayah_number.setText(String.valueOf(numb));
         }
         if (sharedPref.getDefaults("en")) {
             holder.ayah_text_en.setVisibility(View.VISIBLE);
-            holder.ayah_text_en.setText(Html.fromHtml(collapseBraces(etext)));
+            holder.ayah_text_en.setText(Html.fromHtml(collapseBraces(en_text)));
             holder.ayah_number.setText(String.valueOf(numb));
         }
         Log.i("AYAT NUMBER", String.valueOf(numb));
         mArrayList.add(numb);
 
     }
-    void setText(List<ChapterText> text){
+    void setText(List<AllTranslations> text){
         mText = text;
         notifyDataSetChanged();
     }

@@ -82,6 +82,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
 
 
+
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options_menu, menu);
@@ -121,6 +122,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         setContentView(R.layout.activity_sura_name_list);
 
         titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
+
 
         context = this;
 
@@ -311,6 +313,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     }
 
     private void LoadTheList() {
+
         titleViewModel.getAllTitles().observe(this, new Observer<List<ChapterTitle>>() {
             @Override
             public void onChanged(@Nullable List<ChapterTitle> surahTitles) {
@@ -352,17 +355,17 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
             unregisterReceiver(broadcastReceiver);
         }
     }
-
-    @Override
-    public void EnableThis(String suraNumber) {
-//        if(NotInTheList(enabledList, suraNumber)){
-//            enabledList.add(suraNumber);
-//        }
-    }
-
+//
+//    @Override
+//    public void EnableThis(String suraNumber) {
+////        if(NotInTheList(enabledList, suraNumber)){
+////            enabledList.add(suraNumber);
+////        }
+//    }
+//
     @Override
     public void LoadTitlesFromServer() {
-//        Log.d("LOADED FROM SERVER", " ");
+        Log.d("LOADED FROM SERVER", " ");
 //        if(requestHandler!=null){
 //            requestHandler.httpRequest();
 //        }else{
@@ -395,16 +398,6 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         }
     }
 
-    private boolean NotInTheList(ArrayList<String> enabledList, String suraNumber) {
-        boolean retval = false;
-        for (String i:enabledList
-             ) {
-            if(i.equals(suraNumber)){
-                retval = true;
-            }
-        }
-        return retval;
-    }
 
     @Override
     public void DownloadThis(String suraNumber) {
@@ -456,33 +449,6 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         }
     };
 
-    /*private void MoveFiles() {
-        File src = new File(Environment.getExternalStorageDirectory(), "SurahAudio");
-        File dst = new File(getFilesDir().getAbsolutePath(), "Surah Audio");
-        dst.mkdirs();
-        try{
-            FileChannel inChannel = new FileInputStream(src).getChannel();
-            FileChannel outChannel = new FileOutputStream(dst).getChannel();
-
-            try
-            {
-                inChannel.transferTo(0, inChannel.size(), outChannel);
-            }
-            finally
-            {
-                if (inChannel != null)
-                    inChannel.close();
-                if (outChannel != null)
-                    outChannel.close();
-            }
-        }catch (FileNotFoundException fnfx){
-            Toast.makeText(this, fnfx.getMessage(), Toast.LENGTH_LONG);
-
-        }catch (IOException iox){
-            Toast.makeText(this, iox.getMessage(), Toast.LENGTH_LONG);
-        }
-
-    }*/
     private void PopulateTrackList() {
         String path = getExternalFilesDir(null).getAbsolutePath();
         Log.d("Files", "Path: " + path);

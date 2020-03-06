@@ -12,7 +12,7 @@ import furqon.io.github.mobilproject.Furqon;
     @Override
     public void onReceive(Context context, Intent intent) {
         context.sendBroadcast(new Intent("TRACKS_TRACKS")
-        .putExtra("actionname", Furqon.ACTION_PLAY));
+        .putExtra("actionname", intent.getAction()));
 
 
 
