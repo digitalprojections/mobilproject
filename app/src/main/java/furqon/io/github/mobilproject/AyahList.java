@@ -94,7 +94,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
     private Button tempbut;
     private Context context;
     private boolean httpresponse;
-
+    RecyclerView recyclerView;
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -151,7 +151,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
 //                    mDatabase.open();
 //                }
 
-                RecyclerView recyclerView = findViewById(R.id.chapter_scroll);
+
+                recyclerView = findViewById(R.id.chapter_scroll);
                 recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
@@ -165,11 +166,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
 
                 audio_pos = sharedPref.read(suranomi, 0);
 
-                ayah_position = sharedPref.read(xatchup + suranomi, 0);
-                if (ayah_position > 4) {
 
-                    recyclerView.scrollToPosition(ayah_position);
-                }
                 handler = new Handler();
 
                 seekBar = findViewById(R.id.seekBar);
@@ -410,6 +407,13 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
                 }
 
                 mAdapter.setText(surahText);
+
+                ayah_position = sharedPref.read(xatchup + suranomi, 0);
+                Log.i("XATCHOP", ayah_position + " ");
+                if (ayah_position > 4) {
+                    Toast.makeText(context, getString(R.string.bookmark_found), Toast.LENGTH_SHORT).show();
+                    recyclerView.scrollToPosition(ayah_position);
+                }
             }
         });
     }
