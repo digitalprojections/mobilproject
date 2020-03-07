@@ -44,7 +44,7 @@
                 <action android:name="TRACKS_TRACKS" />
             </intent-filter>
         </receiver>
-        
+
 
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
@@ -62,10 +62,12 @@
         <activity android:name=".Settings" />
         <activity
             android:name=".AyahList"
+            android:launchMode="singleInstance"
             android:parentActivityName=".SuraNameList" />
         <activity android:name=".Favourites" />
         <activity
             android:name=".SuraNameList"
+            android:launchMode="singleInstance"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

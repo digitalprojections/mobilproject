@@ -66,11 +66,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
     //private NotificationManagerCompat managerCompat;
     private ArrayList<JSONObject> jsonArrayResponse;
 
-    //PendingIntent pendingIntent;
     private TitleViewModel titleViewModel;
     private AyahListAdapter mAdapter;
-    //public DatabaseAccess mDatabase;
-    //Cursor ayahcursor;
     MediaPlayer mediaPlayer;
 
     Integer audio_pos;
@@ -96,6 +93,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
     private NotificationManagerCompat managerCompat;
     private Button tempbut;
     private Context context;
+    private boolean httpresponse;
 
 
     @Override
@@ -109,11 +107,9 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chapter_view);
         managerCompat = NotificationManagerCompat.from(this);
-        //managerCompat = NotificationManagerCompat.from(this);
-        //Intent notifintent = new Intent(this, MainActivity.class);
-        //pendingIntent = PendingIntent.getActivity(this, 0, notifintent, 0);
 
         tempbut = findViewById(R.id.buttonReload);
+        tempbut.setVisibility(View.INVISIBLE);
         titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
 
         context = this;
@@ -130,6 +126,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
         loadfailed = getString(R.string.audio_load_fail);
 
         progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
+
 
         Toolbar toolbar = findViewById(R.id.audiobar);
         setSupportActionBar(toolbar);
@@ -143,7 +141,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
                 suranomi = extratext.substring(0, extratext.indexOf(":"));
                 suranomer = extratext.substring(extratext.indexOf(":") + 1);
 
-                //Log.i("LOADED SURA", suranomer + " " + suranomi);
+                Log.i("LOADED SURA", suranomer + " " + suranomi);
 
                 Objects.requireNonNull(getSupportActionBar()).setTitle(suranomi);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -239,8 +237,9 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
-                                progressBar.setVisibility(View.INVISIBLE);
+                                //progressBar.setVisibility(View.INVISIBLE);
                                 // Convert String to json object
+                                httpresponse = true;
                                 jsonArrayResponse = new ArrayList<JSONObject>();
 
                                 try {
@@ -261,6 +260,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Log.i("ERROR RESPONSE", "enable reload button");
                         progressBar.setVisibility(View.INVISIBLE);
                         tempbut.setVisibility(View.VISIBLE);
                     }
@@ -293,13 +293,14 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
 
                     try{
                         //"ID":"31206","VerseID":"7","AyahText":"صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ","DatabaseID":"1","SuraID":"1","OrderNo":"5","SuraType":"Meccan","Note":null
-                        //Log.d("JSONOBJECT", i.toString());
+                        Log.d("JSONOBJECT", i.toString());
                         int verse_id = i.getInt("VerseID");
                         int DatabaseID = i.getInt("DatabaseID");
                         int chapter_id = i.getInt("SuraID");
                         int OrderNo = i.getInt("OrderNo");
                         String surah_type = i.getString("SuraType");
                         String AyahText = i.getString("AyahText");
+
 
                         //int sura_id, int verse_id, int favourite, int language_id, String ayah_text, String surah_type, int order_no, String comment, int read_count, int shared_count, int audio_position
                         text = new ChapterTextTable(chapter_id, verse_id,0, DatabaseID, OrderNo, AyahText, "", surah_type, 0, 0, 0);
@@ -398,12 +399,16 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
             public void onChanged(@Nullable List<AllTranslations> surahText) {
                 //Toast.makeText(SuraNameList.this, "LOADING TITLES " + surahTitles.size(), Toast.LENGTH_LONG).show();
                 if(surahText.size()==0){
-                    tempbut.setVisibility(View.VISIBLE);
-                    //titleViewModel.deleteAll();
+                    if(!httpresponse) {
+                        tempbut.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.INVISIBLE);
+                    }
                 }else{
                     tempbut.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.INVISIBLE);
                     //Toast.makeText(context, "LOADING TITLES " + surahText.size(), Toast.LENGTH_LONG).show();
                 }
+
                 mAdapter.setText(surahText);
             }
         });

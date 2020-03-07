@@ -14,6 +14,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -44,8 +45,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     private String chapter_number;
     private String verse_number;//oyat nomeri
     private String ayah_txt_uz;//oyat matni uzbek
-    private String ru_text;//oyat matni uzbek
-    private String en_text;//oyat matni uzbek
+
 
     SpannableStringBuilder ssb;
 
@@ -73,8 +73,6 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         chapter_number = chapter;
         chaptername = suraname;
         mContext = context;
-        //mCursor = cursor;
-        //mDatabase = DatabaseAccess.getInstance(mContext);
         scaler = AnimationUtils.loadAnimation(mContext, R.anim.bounce);
 
         ssb = new SpannableStringBuilder();
@@ -148,13 +146,6 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             ((LinearLayout.LayoutParams) lpmar).setMargins(5, 5, 5, 5);
             ((LinearLayout.LayoutParams) lp).setMargins(0, 0, 1, 1);
             ((LinearLayout.LayoutParams) lpartxt).setMargins(10, 0, 1, 1);
-            //lpmar.width = 32;
-            /*
-            ayah_number.setBackgroundResource(ic_ayahsymbolayahsymbol);
-            ayah_text_uz.setLayoutParams(lp);
-            ayah_text_uz.setTextSize(18);
-            ayah_text_uz.setPadding(0, 5, 0, 5);
-            */
 
             ayah_number.setTextSize(20);
             ayah_number.setLayoutParams(lp);
@@ -176,9 +167,6 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             //arabic_ayah_number.setBackgroundResource(ic_ayahsymbolayahsymbol);
 
             arabic_ayah_number.setGravity(Gravity.CENTER);
-            //arabic_ayah_number.setVisibility(View.GONE);
-
-
             arabic_text.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
 
             if (arabic_text.getParent() != null) {
@@ -227,6 +215,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             Log.d("CLICK", ayah_number.getText() + " position: " + position);
             verse_number = String.valueOf(ayah_number.getText());
             book_button = ((ViewGroup) view.getParent().getParent()).findViewById(R.id.actions).findViewById(R.id.f_bookmarkbut);
+            //book_button = view;
             book_button.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
 
             if (actions_lin_layout.getVisibility() == View.GONE) {
@@ -234,7 +223,8 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
                 ayah_txt_uz = String.valueOf(ayah_text_uz.getText());
                 ayah_position = sharedPref.read("xatchup" + chaptername, 0);
                 if (ayah_position == Integer.parseInt(verse_number)) {
-                    book_button = ((ViewGroup) view.getParent().getParent()).findViewById(R.id.actions).findViewById(R.id.f_bookmarkbut);
+                    //book_button = ((ViewGroup) view.getParent().getParent()).findViewById(R.id.actions).findViewById(R.id.f_bookmarkbut);
+                    //book_button = (ImageButton) view;
                     book_button.setImageResource(R.drawable.ic_turned_in_black_24dp);
                     book_button.setTag("selected");
                 }
@@ -249,7 +239,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
     private void takeAction(View view) {
         //Log.d("CLICK", view);
-        LinearLayout ll = ((ViewGroup) view.getParent().getParent()).findViewById(R.id.uzbektranslation);
+        //LinearLayout ll = ((ViewGroup) view.getParent().getParent()).findViewById(R.id.uzbektranslation);
 
         switch (view.getId()) {
             case R.id.f_sharebut:
@@ -265,6 +255,8 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
                 // favourite add to sqlite
                 //call the function
                 fav_button = ((ViewGroup) view.getParent().getParent()).findViewById(R.id.favouritebut);
+                //fav_button = (ImageButton) view;
+                //view.startAnimation(scaler);
                 addToFavourites(view);
                 fav_button.startAnimation(scaler);
                 break;
@@ -295,7 +287,8 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     private void addToFavourites(View view) {
         // manage sqlite creation and data addition
         Log.i("AYAT FAVOURITED", String.valueOf(view));
-        fav_button = ((ViewGroup) view.getParent().getParent()).findViewById(R.id.favouritebut);
+        //fav_button = ((ViewGroup) view.getParent().getParent()).findViewById(R.id.favouritebut);
+        fav_button = (ImageButton) view;
         ManageSpecials manageSpecials;
 
         if(mContext instanceof ManageSpecials) {
@@ -419,15 +412,20 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     private String collapseBraces(String t) {
         String retval;
 
-        if (t.indexOf("(") > 0) {
-            //all logic here
-            retval = t.replace("(", "<br><font color='#517D43'>");
-            Log.i("ARRAY", retval);
-            retval = retval.replace(")", "</font>");
+        if(t!=null){
+            if (t.indexOf("(") > 0) {
+                //all logic here
+                retval = t.replace("(", "<br><font color='#517D43'>");
+                Log.i("ARRAY", retval);
+                retval = retval.replace(")", "</font>");
 
-        } else {
-            retval = t;
+            } else {
+                retval = t;
+            }
+        }else{
+            retval = "";
         }
+
 
         return retval;
     }
