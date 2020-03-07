@@ -56,4 +56,5 @@
     <string name="revelation_order">Порядок по откровению</string>
     <string name="order_description_revelation">порядок согласно порядку откровения</string>
     <string name="order_description_mushaf">список по порядку в Мусхафе</string>
+    <string name="enter_a_word">введите слово</string>
 </resources>

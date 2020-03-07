@@ -28,15 +28,15 @@ public class Favourites extends AppCompatActivity {
     private ProgressBar progressBar;
     //private DatabaseAccess mDatabase;
     private RecyclerView recyclerView;
-    private FavouriteListAdapter mAdapter;
+    FavouriteListAdapter mAdapter;
     String suranomer;
     public String suranomi;
     //private Cursor cursor;
-    private AdView mAdView;
+    AdView mAdView;
     private static final String TAG = "FAVOURITES ACTIVITY";
     private static final int REQUEST_INVITE = 0;
     private InterstitialAd mInterstitialAd;
-    private sharedpref sharedPref;
+    sharedpref sharedPref;
 
 
 
@@ -67,9 +67,9 @@ public class Favourites extends AppCompatActivity {
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
-        MobileAds.initialize(this, getString(R.string.app_id_mobileinitialize));
+        MobileAds.initialize(this, getString(R.string.addmob_app_id));
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId(getString(R.string.AdUnitId_fullpage));
+        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_fullpage));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
         Log.i("FAVOURITES","loaded");

@@ -42,7 +42,7 @@ public abstract class ChapterTitleDatabase extends RoomDatabase {
     };
 
     public static class PopulateDBAsync extends AsyncTask<Void, Void, Void>{
-        private ChapterTitleDAO titleDAO;
+        ChapterTitleDAO titleDAO;
 
         public PopulateDBAsync(ChapterTitleDatabase db){
 

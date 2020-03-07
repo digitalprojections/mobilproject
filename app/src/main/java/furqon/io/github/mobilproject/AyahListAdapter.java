@@ -36,9 +36,9 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     private List<AllTranslations> mText = new ArrayList<>();
 
     //DONE create share/boomark/favourite and add programmatically
-    private ImageButton share_button;
-    private ImageButton fav_button;
-    private ImageButton book_button;
+    ImageButton share_button;
+    ImageButton fav_button;
+    ImageButton book_button;
 
     private String chaptername;//Sura nomi
     private String chapter_number;
@@ -47,12 +47,12 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     private String ru_text;//oyat matni uzbek
     private String en_text;//oyat matni uzbek
 
-    private SpannableStringBuilder ssb;
+    SpannableStringBuilder ssb;
 
-    private int ayah_position;
+    int ayah_position;
 
 
-    private Typeface madina;
+    Typeface madina;
 
     private ViewGroup.LayoutParams lp; // Height of TextView
     private ViewGroup.LayoutParams lpmar; // Height of TextView

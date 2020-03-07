@@ -33,9 +33,9 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
     //private DatabaseAccess mDatabase;
 
     //DONE create share/boomark/favourite and add programmatically
-    private ImageButton sharebut;
-    private ImageButton favbut;
-    private ImageButton bookbut;
+    ImageButton sharebut;
+    ImageButton favbut;
+    ImageButton bookbut;
 
     private int position;
 
@@ -44,10 +44,10 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
     private String chapternumber;
     private String versenumber;//oyat nomeri
     private String ayahtext;//oyat matni
-    private int ayah_position;
+    int ayah_position;
 
 
-    private Typeface madina;
+    Typeface madina;
 
 
     private ViewGroup.LayoutParams lp; // Height of TextView

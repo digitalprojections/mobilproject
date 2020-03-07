@@ -10,7 +10,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 
 public class ScrollingActivity extends AppCompatActivity {
-    private ScrollingAdapter scrollingAdapter;
+    ScrollingAdapter scrollingAdapter;
     sharedpref sharedPref;
     ViewPager viewPager;
     TabLayout tabLayout;

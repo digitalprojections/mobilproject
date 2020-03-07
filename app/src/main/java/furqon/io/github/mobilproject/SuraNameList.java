@@ -262,9 +262,9 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
         LoadTheList();
 
-        MobileAds.initialize(this, "ca-app-pub-3838820812386239~2342916878");
+        MobileAds.initialize(this, getString(R.string.addmob_app_id));
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_fullpage));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
         quranic_order_btn.setClickable(true);
         revelation_order_btn.setClickable(true);

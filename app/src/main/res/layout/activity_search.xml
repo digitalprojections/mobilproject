@@ -24,11 +24,13 @@
         android:layout_marginTop="8dp"
 
         android:ems="10"
+        android:hint="@string/enter_a_word"
         android:inputType="textPersonName"
         android:text="@string/search_hint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tool_bar" />
+        app:layout_constraintTop_toBottomOf="@+id/tool_bar"
+        android:autofillHints="" />
 
     <ImageButton
         android:id="@+id/imageButtonSearch"
@@ -36,6 +38,7 @@
         android:layout_height="@android:dimen/app_icon_size"
 
 
+        android:contentDescription="@string/search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextSearch"
@@ -46,7 +49,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
 
-        android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageButtonSearch" />
@@ -66,7 +68,8 @@
 
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            tools:listitem="@layout/search_result_row" />
     </FrameLayout>
 
     <ProgressBar

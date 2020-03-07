@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     private Handler handler;
 
     // Try to use more data here. ANDROID_ID is a single point of attack.
-    private InterstitialAd mInterstitialAd;
+    InterstitialAd mInterstitialAd;
 
 
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
 
         MobileAds.initialize(this, getString(R.string.addmob_app_id));
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId(getString(R.string.addmob_interstitial));
+        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_fullpage));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
 
