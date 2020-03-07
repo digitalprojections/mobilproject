@@ -11,7 +11,7 @@ import java.util.List;
 
 public class TitleViewModel extends AndroidViewModel {
     private TitleRepository titleRepository;
-    private LiveData<List<ChapterTitle>> mAllTitles;
+    private LiveData<List<ChapterTitleTable>> mAllTitles;
     private LiveData<List<AllTranslations>> mChapterText;
     private LiveData<List<FavouriteAyah>> mFavourites;
     private sharedpref sharedPref;
@@ -31,7 +31,7 @@ public class TitleViewModel extends AndroidViewModel {
         return mChapterText;
     }
 
-    LiveData<List<ChapterTitle>> getAllTitles(){
+    LiveData<List<ChapterTitleTable>> getAllTitles(){
         if(sharedPref.read(sharedPref.displayOrder, 0)==0){
             mAllTitles = titleRepository.getAllTitlesByQuranicOrder();
         }else{
@@ -40,20 +40,20 @@ public class TitleViewModel extends AndroidViewModel {
         return mAllTitles;
     }
 
-    public void insert(ChapterTitle title){
+    public void insert(ChapterTitleTable title){
         Log.d("TITLE insert", title.uzbek);
         titleRepository.insert(title);
     }
-    public void insertText(ChapterText text){
+    public void insertText(ChapterTextTable text){
         //Log.d("TITLE insert", text);
         titleRepository.insertText(text);
     }
 
-    public void update(ChapterTitle title){
+    public void update(ChapterTitleTable title){
         Log.d("TITLE UPDATING", "UUUUUUUUUU " + title.status);
         titleRepository.update(title);
     }
-    public void updateText(ChapterText text){
+    public void updateText(ChapterTextTable text){
         //Log.d("TITLE UPDATING", "UUUUUUUUUU " + title.status);
         titleRepository.updateText(text);
     }

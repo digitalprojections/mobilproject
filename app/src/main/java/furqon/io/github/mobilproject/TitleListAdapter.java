@@ -2,15 +2,12 @@ package furqon.io.github.mobilproject;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -32,7 +29,7 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
     private Context mContext;
 
     private final LayoutInflater mInflater;
-    private List<ChapterTitle> mTitles = new ArrayList<>(); // Cached copy of titles
+    private List<ChapterTitleTable> mTitles = new ArrayList<>(); // Cached copy of titles
 
 
 
@@ -135,7 +132,7 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
     @Override
     public void onBindViewHolder(@NonNull SuraListViewHolder holder, int position) {
 
-        ChapterTitle current = mTitles.get(position);
+        ChapterTitleTable current = mTitles.get(position);
 
         Log.i("TITLES", "ddddddddddddddd " + current.status + " " + current.chapter_id);
 
@@ -171,14 +168,14 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
         }
     }
 
-    void setTitles(List<ChapterTitle> titles){
+    void setTitles(List<ChapterTitleTable> titles){
         mTitles = titles;
         notifyDataSetChanged();
     }
 
 
 
-    public ChapterTitle getTitleAt(int position){
+    public ChapterTitleTable getTitleAt(int position){
         return mTitles.get(position);
     }
     private boolean DownloadEnabled(String numb) {

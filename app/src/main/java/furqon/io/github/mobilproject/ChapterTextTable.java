@@ -6,7 +6,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity (tableName = "quran_text")
-public class ChapterText {
+public class ChapterTextTable {
     @PrimaryKey(autoGenerate = true)
     public int id;
     public int sura_id;
@@ -26,7 +26,7 @@ public class ChapterText {
     public int share_count;
     public int audio_progress;
 
-    public ChapterText(int sura_id, int verse_id, int favourite, int language_id, int order_no, String ayah_text, String comments_text, String surah_type, int read_count, int share_count, int audio_progress) {
+    public ChapterTextTable(int sura_id, int verse_id, int favourite, int language_id, int order_no, String ayah_text, String comments_text, String surah_type, int read_count, int share_count, int audio_progress) {
         this.sura_id = sura_id;
         this.verse_id = verse_id;
         this.favourite = favourite;

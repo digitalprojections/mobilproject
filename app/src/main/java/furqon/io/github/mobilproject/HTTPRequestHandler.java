@@ -1,11 +1,7 @@
 package furqon.io.github.mobilproject;
 
-import android.app.Application;
 import android.content.Context;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-
-import androidx.lifecycle.ViewModelProviders;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -93,7 +89,7 @@ public class HTTPRequestHandler {
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(, android.R.layout.simple_spinner_item, auclist);
 //        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //spinner.setAdapter(adapter);
-        ChapterTitle title;
+        ChapterTitleTable title;
         MyListener myListener;
         SuraNameList nameList = (SuraNameList) mContext;
         myListener =  (MyListener) nameList;
@@ -112,7 +108,7 @@ public class HTTPRequestHandler {
                 String uzbek = i.getString("uzbek");
                 String arabic = i.getString("arabic");
 
-                title = new ChapterTitle(language_no, order_no, chapter_id, uzbek, arabic, surah_type);
+                title = new ChapterTitleTable(language_no, order_no, chapter_id, uzbek, arabic, surah_type);
                 tvm.insert(title);
 
 

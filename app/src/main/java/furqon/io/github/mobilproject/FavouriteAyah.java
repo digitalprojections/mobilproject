@@ -1,6 +1,7 @@
 package furqon.io.github.mobilproject;
 
 public class FavouriteAyah {
+    public int id;
     public int language_id;
     public int order_no;
     public int read_count;

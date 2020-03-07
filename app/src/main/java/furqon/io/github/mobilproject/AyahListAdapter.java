@@ -301,7 +301,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         if(mContext instanceof ManageSpecials) {
             manageSpecials = (ManageSpecials) mContext;
             AllTranslations allTranslations = getTextAt(Integer.parseInt(verse_number) - 1);
-            ChapterText text = MapTextObjects(allTranslations);
+
 
 
             if (fav_button.getTag() == "1") {
@@ -315,14 +315,16 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
                 fav_button.setTag("1");
                 allTranslations.favourite = 1;
             }
+            ChapterTextTable text = MapTextObjects(allTranslations);
             manageSpecials.UpdateSpecialItem(text);
             notifyDataSetChanged();
             //mCursor = mDatabase.getSuraText(mCursor.getString(1));
         }
     }
 
-    private ChapterText MapTextObjects(AllTranslations allTranslations) {
-        ChapterText ctext = new ChapterText(allTranslations.sura_id, allTranslations.verse_id, allTranslations.favourite, allTranslations.language_id, allTranslations.order_no, allTranslations.ayah_text, allTranslations.comments_text, allTranslations.surah_type, allTranslations.read_count, allTranslations.share_count, allTranslations.audio_progress );
+    private ChapterTextTable MapTextObjects(AllTranslations allTranslations) {
+        ChapterTextTable ctext = new ChapterTextTable(allTranslations.sura_id, allTranslations.verse_id, allTranslations.favourite, 1, allTranslations.order_no, allTranslations.ar_text, allTranslations.comments_text, allTranslations.surah_type, allTranslations.read_count, allTranslations.share_count, allTranslations.audio_progress);
+        ctext.setId(allTranslations.id);
         return ctext;
     }
 

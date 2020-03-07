@@ -286,7 +286,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(, android.R.layout.simple_spinner_item, auclist);
 //        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 //spinner.setAdapter(adapter);
-                ChapterText text;
+                ChapterTextTable text;
 
                 for (JSONObject i:auclist
                 ) {
@@ -302,7 +302,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
                         String AyahText = i.getString("AyahText");
 
                         //int sura_id, int verse_id, int favourite, int language_id, String ayah_text, String surah_type, int order_no, String comment, int read_count, int shared_count, int audio_position
-                        text = new ChapterText(chapter_id, verse_id,0, DatabaseID, OrderNo, AyahText, "", surah_type, 0, 0, 0);
+                        text = new ChapterTextTable(chapter_id, verse_id,0, DatabaseID, OrderNo, AyahText, "", surah_type, 0, 0, 0);
                         titleViewModel.insertText(text);
 
 
@@ -582,7 +582,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
 
 
     @Override
-    public void UpdateSpecialItem(ChapterText text) {
+    public void UpdateSpecialItem(ChapterTextTable text) {
         titleViewModel.updateText(text);
     }
 }

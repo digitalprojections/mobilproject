@@ -1,24 +1,20 @@
 package furqon.io.github.mobilproject;
 
 import android.Manifest;
-import android.app.Application;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,12 +41,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -202,7 +192,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(, android.R.layout.simple_spinner_item, auclist);
 //        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 //spinner.setAdapter(adapter);
-                ChapterTitle title;
+                ChapterTitleTable title;
 
                 for (JSONObject i:auclist
                 ) {
@@ -216,7 +206,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
                         String uzbek = i.getString("uzbek");
                         String arabic = i.getString("arabic");
 
-                        title = new ChapterTitle(1, order_no, chapter_id, uzbek, arabic, surah_type);
+                        title = new ChapterTitleTable(1, order_no, chapter_id, uzbek, arabic, surah_type);
                         titleViewModel.insert(title);
 
 
@@ -314,9 +304,9 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
     private void LoadTheList() {
 
-        titleViewModel.getAllTitles().observe(this, new Observer<List<ChapterTitle>>() {
+        titleViewModel.getAllTitles().observe(this, new Observer<List<ChapterTitleTable>>() {
             @Override
-            public void onChanged(@Nullable List<ChapterTitle> surahTitles) {
+            public void onChanged(@Nullable List<ChapterTitleTable> surahTitles) {
                 //Toast.makeText(SuraNameList.this, "LOADING TITLES " + surahTitles.size(), Toast.LENGTH_LONG).show();
                 if(surahTitles.size()!=114){
                     tempbut.setVisibility(View.VISIBLE);
@@ -374,14 +364,14 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 //        }
     }
     @Override
-    public void insertTitle(ChapterTitle title){
+    public void insertTitle(ChapterTitleTable title){
         Log.d("TITLE insert", title.uzbek);
         titleViewModel.insert(title);
     }
 
     @Override
     public void MarkAsAwarded(int surah_id) {
-        ChapterTitle ctitle = mAdapter.getTitleAt(surah_id);
+        ChapterTitleTable ctitle = mAdapter.getTitleAt(surah_id);
         ctitle.status = "2";
         titleViewModel.update(ctitle);
     }
@@ -389,7 +379,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     @Override
     public void MarkAsDownloaded(int surah_id) {
         if(mAdapter!=null){
-            ChapterTitle ctitle = mAdapter.getTitleAt(surah_id-1);
+            ChapterTitleTable ctitle = mAdapter.getTitleAt(surah_id-1);
             if(!ctitle.status.equals("3"))
             {
                 ctitle.status = "3";

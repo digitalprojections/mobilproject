@@ -6,8 +6,8 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "sura_names")
-public class ChapterTitle {
-    public ChapterTitle(int language_no, int order_no, int chapter_id, String uzbek, String arabic, String surah_type) {
+public class ChapterTitleTable {
+    public ChapterTitleTable(int language_no, int order_no, int chapter_id, String uzbek, String arabic, String surah_type) {
         this.language_no = language_no;
         this.order_no = order_no;
         this.chapter_id = chapter_id;
