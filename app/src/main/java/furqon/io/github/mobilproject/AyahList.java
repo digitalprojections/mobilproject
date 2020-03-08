@@ -300,7 +300,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
 
 
                         //int sura_id, int verse_id, int favourite, int language_id, String ayah_text, String surah_type, int order_no, String comment, int read_count, int shared_count, int audio_position
-                        text = new ChapterTextTable(chapter_id, verse_id,0, DatabaseID, OrderNo, AyahText, "", surah_type, 0, 0, 0);
+                        text = new ChapterTextTable(chapter_id, verse_id,0, DatabaseID, OrderNo, AyahText, "", surah_type);
                         titleViewModel.insertText(text);
 
 
@@ -410,9 +410,10 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
 
                 ayah_position = sharedPref.read(xatchup + suranomi, 0);
                 Log.i("XATCHOP", ayah_position + " ");
-                if (ayah_position > 4) {
+                if (ayah_position > 0) {
+                    //BOOKMARK FOUND
                     Toast.makeText(context, getString(R.string.bookmark_found), Toast.LENGTH_SHORT).show();
-                    recyclerView.scrollToPosition(ayah_position);
+                    recyclerView.scrollToPosition(ayah_position-1);
                 }
             }
         });

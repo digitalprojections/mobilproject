@@ -43,5 +43,7 @@ public interface ChapterTitleDAO {
     @Query("SELECT q.id, q.sura_id, q.verse_id, q.favourite, q.language_id, q.order_no, q.read_count, q.surah_type, q.share_count, q.audio_progress, q.ayah_text as ar_text, (SELECT qe.ayah_text FROM quran_text qe WHERE qe.sura_id = q.sura_id AND qe.verse_id = q.verse_id AND qe.language_id = 59) as en_text, (SELECT qr.ayah_text FROM quran_text qr WHERE qr.sura_id = q.sura_id AND qr.verse_id = q.verse_id AND qr.language_id = 79) as ru_text, (SELECT qu.ayah_text FROM quran_text qu WHERE qu.sura_id  = q.sura_id AND qu.verse_id = q.verse_id AND qu.language_id = 120) as uz_text FROM quran_text q WHERE q.sura_id = q.sura_id AND q.language_id LIKE 1 and q.favourite LIKE 1 ORDER BY q.verse_id ASC")
     LiveData<List<FavouriteAyah>> getFavourites();
 
+   @Query("SELECT sura_id FROM quran_text WHERE 1")
+   LiveData<List<RandomSurah>> getAvailableSurahIDs();
 
 }

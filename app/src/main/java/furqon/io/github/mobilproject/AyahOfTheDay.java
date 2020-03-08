@@ -16,9 +16,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.List;
 
 public class AyahOfTheDay extends AppCompatActivity {
     private static final String TAG = "RANDOM VERSE";
@@ -30,6 +35,8 @@ public class AyahOfTheDay extends AppCompatActivity {
     private int language_id = 4;
     //public DatabaseAccess mDatabase;
     //Cursor ayahcursor;
+    TitleViewModel viewModel;
+    List<RandomSurah> randomSurahs;
     TextView ayah_reference;
     TextView ayah_text;
 
@@ -64,6 +71,16 @@ public class AyahOfTheDay extends AppCompatActivity {
 //        if (!mDatabase.isOpen()) {
 //            mDatabase.open();
 //        }
+        viewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
+        viewModel.getRandomSurah().observe(this, new Observer<List<RandomSurah>>() {
+            @Override
+            public void onChanged(List<RandomSurah> randomSurah) {
+                randomSurahs = randomSurah;
+                displayAyah();
+            }
+        });
+
+
         pbar = findViewById(R.id.progBar);
         uztxt = findViewById(R.id.uztxt);
         rutxt = findViewById(R.id.rutxt);
@@ -86,8 +103,8 @@ public class AyahOfTheDay extends AppCompatActivity {
 
         pbar.setVisibility(View.INVISIBLE);
         //DONE upo create choose a random sura and ayah
-        random_surah = (int) Math.round(Math.random() * 113)+1;
-        random_ayah = (int) Math.round(Math.random() * QuranMap.AYAHCOUNT[random_surah-1]);
+
+
         //get a random verse within the range available in that sura
 
 
@@ -220,6 +237,18 @@ public class AyahOfTheDay extends AppCompatActivity {
         }
     }
 
+    private int AnAvailableSurahID() {
+        int randomnumber = 0;
+        if(randomSurahs!=null){
+            randomnumber = (int) Math.floor(Math.random()*randomSurahs.size());
+            return randomSurahs.get(randomnumber).sura_id;
+        }
+        else{
+            return 0;
+        }
+
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -287,56 +316,41 @@ public class AyahOfTheDay extends AppCompatActivity {
     }
 
     private void displayAyah() {
-            ShowRandomAyah();
+        random_surah = (int) Math.round(Math.random() * AnAvailableSurahID())+1;
+        random_ayah = (int) Math.round(Math.random() * QuranMap.AYAHCOUNT[random_surah]-1)+1;
+        Log.d("RANDOM SURAH AND AYAH", random_surah + " is surah " + random_ayah);
+        viewModel.getChapterText(String.valueOf(random_surah)).observe(this, new Observer<List<AllTranslations>>() {
+            @Override
+            public void onChanged(List<AllTranslations> allTranslations) {
+                ShowRandomAyah(allTranslations);
+            }
+        });
+
     }
 
-    private void ShowRandomAyah() {
-//        if (ayahcursor != null) {
-//            try{
-//                suraname = ayahcursor.getString(2);
-//                String randomayahreference = getString(R.string.surah) + suraname + getString(R.string.ayah) + random_ayah;
-//                ayah_reference.setText(randomayahreference);
-//                ayah_text.setText(ayahcursor.getString(language_id));
-//
-//                String is_fav = ayahcursor.getString(7);
-//                Log.d(TAG, is_fav + " is fav");
-//                if(is_fav!=null){
-//                    if (is_fav.equals("1")) {
-//                        fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
-//                        fav_btn.setTag("1");
-//                    } else {
-//                        fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-//                        fav_btn.setTag("0");
-//                    }
-//                }
-//
-//                Log.d(TAG, suraname + "-" + random_surah + " " + random_ayah);
-//            }catch (CursorIndexOutOfBoundsException ciobx){
-//                ++cursor_retry;
-//                if(cursor_retry<3){
-//                    //try recalling the cursor
-//                    try {
-//                        Thread.sleep(1000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    makeCall();
-//                }
-//            }
-//
-//        }
-//        else{
-//            ++cursor_retry;
-//            if(cursor_retry<3){
-//                //try recalling the cursor
-//                try {
-//                    Thread.sleep(1000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                makeCall();
-//            }
-//        }
+    private void ShowRandomAyah(List<AllTranslations> allTranslations) {
+
+
+        Log.d("RANDOM SURAH AND AYAH", random_surah + " is surah " + random_ayah);
+                suraname = QuranMap.SURAHNAMES[random_surah-1];//DONE fix it to the actual suraname
+                String randomayahreference = getString(R.string.surah) + suraname + getString(R.string.ayah) + random_ayah;
+                ayah_reference.setText(randomayahreference);
+                ayah_text.setText(allTranslations.get(random_ayah-1).uz_text);
+
+                int is_fav = allTranslations.get(random_ayah-1).favourite;
+                Log.d(TAG, is_fav + " is fav");
+                if(is_fav!=0){
+                        fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
+                        fav_btn.setTag("1");
+                    } else {
+                        fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                        fav_btn.setTag("0");
+                    }
+
+                Log.d(TAG, suraname + "-" + random_surah + " " + random_ayah);
+
+
+
 
     }
 

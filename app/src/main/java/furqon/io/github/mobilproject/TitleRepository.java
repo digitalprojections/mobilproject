@@ -14,6 +14,7 @@ public class TitleRepository {
     private LiveData<List<ChapterTitleTable>> mAllTitles;
     private LiveData<List<AllTranslations>> mChapterText;
     private LiveData<List<FavouriteAyah>> mFavourites;
+    private LiveData<List<RandomSurah>> randomSurah;
     private Context context;
 
     MyListener myListener = (MyListener) new SuraNameList();
@@ -40,6 +41,11 @@ public class TitleRepository {
     LiveData<List<FavouriteAyah>> getFavourites() {
         mFavourites = mTitleDao.getFavourites();
         return mFavourites;
+    }
+
+    LiveData<List<RandomSurah>> getAvailableSurahIDs(){
+        randomSurah = mTitleDao.getAvailableSurahIDs();
+        return randomSurah;
     }
 
     public void insert(ChapterTitleTable title){
