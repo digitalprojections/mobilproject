@@ -7,6 +7,7 @@ public interface MyListener {
     void insertTitle(ChapterTitleTable title);
     void MarkAsAwarded(int surah_id);
     void MarkAsDownloaded(int surah_id);
+    void MarkAsDownloading(int surah_id);
 
 
 }

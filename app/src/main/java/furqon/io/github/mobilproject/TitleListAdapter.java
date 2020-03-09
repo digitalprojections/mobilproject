@@ -112,6 +112,7 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
             if(mContext instanceof MyListener){
                 myListener = (MyListener) mContext;
                 myListener.DownloadThis(snumber);
+                myListener.MarkAsDownloading(Integer.parseInt(snumber)-1);
                 //getTitleAt(Integer.parseInt(snumber)-1).;
                 progressBar.setVisibility(View.VISIBLE);
                 downloadButton.setVisibility(View.GONE);
@@ -159,7 +160,13 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
                 holder.downloadButton.setFocusable(true);
                 holder.downloadButton.setTag(2);
                 holder.progressBar.setVisibility(View.INVISIBLE);
-            }else{
+            }else if(current.status.equals("4")){
+                holder.downloadButton.setVisibility(View.GONE);
+                holder.downloadButton.setFocusable(false);
+                holder.downloadButton.setTag(4);
+                holder.progressBar.setVisibility(View.VISIBLE);
+            }
+            else{
                 holder.downloadButton.setImageResource(R.drawable.ic_unlock);
                 holder.downloadButton.setFocusable(true);
                 holder.downloadButton.setTag(1);

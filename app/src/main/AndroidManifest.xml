@@ -67,7 +67,6 @@
         <activity android:name=".Favourites" />
         <activity
             android:name=".SuraNameList"
-            android:launchMode="singleInstance"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

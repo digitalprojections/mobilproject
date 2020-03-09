@@ -388,6 +388,14 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         }
     }
 
+    @Override
+    public void MarkAsDownloading(int surah_id) {
+        //TODO if quit while downloading, the progressbar is left permanently on
+        ChapterTitleTable ctitle = mAdapter.getTitleAt(surah_id);
+        ctitle.status = "4";
+        titleViewModel.update(ctitle);
+    }
+
 
     @Override
     public void DownloadThis(String suraNumber) {
@@ -440,6 +448,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     };
 
     private void PopulateTrackList() {
+        //TODO clean up wrong files
         String path = getExternalFilesDir(null).getAbsolutePath();
         Log.d("Files", "Path: " + path);
         File directory = new File(path);
