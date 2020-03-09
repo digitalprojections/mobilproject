@@ -2,8 +2,6 @@ package furqon.io.github.mobilproject;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.CursorIndexOutOfBoundsException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -37,6 +34,7 @@ public class AyahOfTheDay extends AppCompatActivity {
     //Cursor ayahcursor;
     TitleViewModel viewModel;
     List<RandomSurah> randomSurahs;
+    List<AllTranslations> allTranslationsList;
     TextView ayah_reference;
     TextView ayah_text;
 
@@ -126,7 +124,7 @@ public class AyahOfTheDay extends AppCompatActivity {
                 animateFabs();
                 language_id = 4;
                 sharedPref.write("r_language_id", language_id);
-                displayAyah();
+                ShowTheAyahBeside();
             }
 
         });
@@ -136,8 +134,8 @@ public class AyahOfTheDay extends AppCompatActivity {
                 snackbarMessage(view, getString(R.string.language_selected));
                 animateFabs();
                 language_id = 5;
-                sharedPref.write("r_language_id", 5);
-                displayAyah();
+                sharedPref.write("r_language_id", language_id);
+                ShowTheAyahBeside();
             }
         });
         entxt.setOnClickListener(new View.OnClickListener() {
@@ -146,8 +144,8 @@ public class AyahOfTheDay extends AppCompatActivity {
                 snackbarMessage(view, getString(R.string.language_selected));
                 animateFabs();
                 language_id = 6;
-                sharedPref.write("r_language_id", 6);
-                displayAyah();
+                sharedPref.write("r_language_id", language_id);
+                ShowTheAyahBeside();
             }
         });
         sharedPref.init(this);
@@ -168,7 +166,7 @@ public class AyahOfTheDay extends AppCompatActivity {
                 if (random_ayah > 1) {
                     random_ayah--;
                     prev_btn.startAnimation(scaler);
-                    makeCall();
+                    ShowTheAyahBeside();
                 }
             }
         });
@@ -178,7 +176,7 @@ public class AyahOfTheDay extends AppCompatActivity {
                 if (random_ayah < QuranMap.AYAHCOUNT[random_surah-1]) {
                     random_ayah++;
                     next_btn.startAnimation(scaler);
-                    makeCall();
+                    ShowTheAyahBeside();
                 }
             }
         });
@@ -220,7 +218,7 @@ public class AyahOfTheDay extends AppCompatActivity {
                 addToFavourites(view);
             }
         });
-        makeCall();
+        //makeCall();
         // ATTENTION: This was auto-generated to handle app links.
         Intent appLinkIntent = getIntent();
         String appLinkAction = appLinkIntent.getAction();
@@ -233,7 +231,7 @@ public class AyahOfTheDay extends AppCompatActivity {
             String antext = appLinkData.getQueryParameter("an");
             if(antext!=null)
                 random_ayah = Integer.parseInt(antext);
-            makeCall();
+            //makeCall();
         }
     }
 
@@ -308,15 +306,26 @@ public class AyahOfTheDay extends AppCompatActivity {
                 .setAction("Action", null).show();
     }
 
-    private void makeCall() {
-//        if(mDatabase.isOpen()) {
-//
-//            ayahcursor = mDatabase.getRandomAyah(random_surah, random_ayah);
-//            if (ayahcursor != null) {
-//                ayahcursor.moveToPosition(0);
-//                displayAyah();
-//            }
-//        }
+    private void ShowTheAyahBeside() {
+        String randomayahreference = getString(R.string.surah) + " " + random_surah + " " + suraname + getString(R.string.ayah) + random_ayah;
+        ayah_reference.setText(randomayahreference);
+        ayah_text.setText(getTextByLanguage());
+    }
+
+    private String getTextByLanguage() {
+        String ltext;
+        switch (language_id){
+            case 5:
+                ltext = allTranslationsList.get(random_ayah-1).ru_text;
+                break;
+            case 6:
+                ltext = allTranslationsList.get(random_ayah-1).en_text;
+                break;
+            default:
+                ltext = allTranslationsList.get(random_ayah-1).uz_text;
+                break;
+        }
+        return ltext;
     }
 
     private void displayAyah() {
@@ -327,11 +336,12 @@ public class AyahOfTheDay extends AppCompatActivity {
             return;
         }
 
-        random_ayah = (int) Math.round(Math.random() * QuranMap.AYAHCOUNT[random_surah]-1)+1;
-        Log.d("RANDOM SURAH AND AYAH", random_surah + " is surah " + random_ayah);
+        random_ayah = (int) Math.round(Math.random() * QuranMap.AYAHCOUNT[random_surah-1]);
+        Log.d("RANDOM SURAH MAX AYAH", random_surah + " is surah " + QuranMap.AYAHCOUNT[random_surah-1]);
         viewModel.getChapterText(String.valueOf(random_surah)).observe(this, new Observer<List<AllTranslations>>() {
             @Override
             public void onChanged(List<AllTranslations> allTranslations) {
+                allTranslationsList = allTranslations;
                 ShowRandomAyah(allTranslations);
             }
         });
@@ -346,7 +356,7 @@ public class AyahOfTheDay extends AppCompatActivity {
             suraname = QuranMap.SURAHNAMES[random_surah-1];//DONE fix it to the actual suraname
             String randomayahreference = getString(R.string.surah) + " " + random_surah + " " + suraname + getString(R.string.ayah) + random_ayah;
             ayah_reference.setText(randomayahreference);
-            ayah_text.setText(allTranslations.get(random_ayah-1).uz_text);
+            ayah_text.setText(getTextByLanguage());
 
             int is_fav = allTranslations.get(random_ayah-1).favourite;
             Log.d(TAG, is_fav + " is fav");

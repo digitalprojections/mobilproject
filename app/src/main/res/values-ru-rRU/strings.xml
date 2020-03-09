@@ -58,4 +58,9 @@
     <string name="order_description_mushaf">список по порядку в Мусхафе</string>
     <string name="enter_a_word">введите слово</string>
     <string name="bookmark_found">Найдена закладка</string>
+    <string name="chapters_not_available">База данных пуста. Пожалуйста, сначала загрузите несколько глав.</string>
+    <string name="previous_ayah">предыдущий аят</string>
+    <string name="next_ayah">следующий аят</string>
+    <string name="failed_to_load_ayah">Не удалось загрузить аят. Попробуйте еще раз</string>
+    <string name="failure_generic">Произошла ошибка, попробуйте позже</string>
 </resources>

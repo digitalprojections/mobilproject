@@ -58,4 +58,9 @@
     <string name="order_description_mushaf">Mushafdagi tartib bo\'yicha ro\'yxat</string>
     <string name="enter_a_word">so\'zni kiriting</string>
     <string name="bookmark_found">Xatcho\'p topildi</string>
+    <string name="chapters_not_available">Ma\'lumotlar bazasi bo\'sh. Iltimos, avval birorta surani yuklang.</string>
+    <string name="previous_ayah">avvalgi oyat</string>
+    <string name="next_ayah">keyingi oyat</string>
+    <string name="failed_to_load_ayah">Oyatni yuklab bo\'lmadi. Qayta urinib ko\'ring</string>
+    <string name="failure_generic">Xato yuz berdi, keyinroq qayta urinib ko\'ring</string>
 </resources>
