@@ -30,6 +30,8 @@ public class AyahOfTheDay extends AppCompatActivity {
 
     private String suraname;
     private int language_id = 4;
+    private boolean FavouriteSelected;
+
     //public DatabaseAccess mDatabase;
     //Cursor ayahcursor;
     TitleViewModel viewModel;
@@ -74,7 +76,14 @@ public class AyahOfTheDay extends AppCompatActivity {
             @Override
             public void onChanged(List<RandomSurah> randomSurah) {
                 randomSurahs = randomSurah;
-                displayAyah();
+                if(FavouriteSelected)
+                {
+                    ShowTheAyahBeside();
+                    FavouriteSelected = false;
+                }else{
+                    displayRandomAyah();
+                }
+
             }
         });
 
@@ -280,17 +289,21 @@ public class AyahOfTheDay extends AppCompatActivity {
 
                 if (fav_btn.getTag() == "1") {
                     //mDatabase.removeFromFavs(random_surah, random_ayah, "0");
-                    fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-                    fav_btn.setTag("0");
+                    allTranslationsList.get(random_ayah-1).favourite = 0;
                 } else {
                     //mDatabase.saveToFavs(random_surah, random_ayah, "1");
-                    fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
-                    fav_btn.setTag("1");
+                    allTranslationsList.get(random_ayah-1).favourite = 1;
                 }
+        ChapterTextTable text = MapTextObjects(allTranslationsList.get(random_ayah-1));
+                FavouriteSelected = true;
+        viewModel.updateText(text);
+        //SetFavouriteIconState();
 
-
-
-
+    }
+    private ChapterTextTable MapTextObjects(AllTranslations allTranslations) {
+        ChapterTextTable ctext = new ChapterTextTable(allTranslations.sura_id, allTranslations.verse_id, allTranslations.favourite, 1, allTranslations.order_no, allTranslations.ar_text, allTranslations.comments_text, allTranslations.surah_type);
+        ctext.setId(allTranslations.id);
+        return ctext;
     }
 
     @Override
@@ -310,6 +323,7 @@ public class AyahOfTheDay extends AppCompatActivity {
         String randomayahreference = getString(R.string.surah) + " " + random_surah + " " + suraname + getString(R.string.ayah) + random_ayah;
         ayah_reference.setText(randomayahreference);
         ayah_text.setText(getTextByLanguage());
+        SetFavouriteIconState();
     }
 
     private String getTextByLanguage() {
@@ -328,7 +342,7 @@ public class AyahOfTheDay extends AppCompatActivity {
         return ltext;
     }
 
-    private void displayAyah() {
+    private void displayRandomAyah() {
         random_surah = AnAvailableSurahID();
         if(random_surah==0){
             //database is empty. quit
@@ -358,15 +372,7 @@ public class AyahOfTheDay extends AppCompatActivity {
             ayah_reference.setText(randomayahreference);
             ayah_text.setText(getTextByLanguage());
 
-            int is_fav = allTranslations.get(random_ayah-1).favourite;
-            Log.d(TAG, is_fav + " is fav");
-            if(is_fav!=0){
-                fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
-                fav_btn.setTag("1");
-            } else {
-                fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-                fav_btn.setTag("0");
-            }
+            SetFavouriteIconState();
 
             Log.d(TAG, suraname + "-" + random_surah + " " + random_ayah);
 
@@ -381,6 +387,18 @@ public class AyahOfTheDay extends AppCompatActivity {
 
 
 
+    }
+
+    private void SetFavouriteIconState() {
+        int is_fav = allTranslationsList.get(random_ayah-1).favourite;
+        Log.d(TAG, is_fav + " is fav");
+        if(is_fav!=0){
+            fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
+            fav_btn.setTag("1");
+        } else {
+            fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+            fav_btn.setTag("0");
+        }
     }
 
     private void animateFabs() {
