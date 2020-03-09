@@ -61,4 +61,9 @@
     <string name="enter_a_word">enter a word</string>
     <string name="interstitial_fullpage" translatable="false">ca-app-pub-3838820812386239/2551267023</string>
     <string name="bookmark_found">Bookmark found</string>
+    <string name="chapters_not_available">Database empty. Please load some chapters first.</string>
+    <string name="previous_ayah">previous ayah</string>
+    <string name="next_ayah">next ayah</string>
+    <string name="failed_to_load_ayah">Failed to load ayah. Try again</string>
+    <string name="failure_generic">An error has uccurred, try again later</string>
 </resources>

@@ -238,12 +238,16 @@ public class AyahOfTheDay extends AppCompatActivity {
     }
 
     private int AnAvailableSurahID() {
-        int randomnumber = 0;
+        int randomSurahNumber;
         if(randomSurahs!=null){
-            randomnumber = (int) Math.floor(Math.random()*randomSurahs.size());
-            return randomSurahs.get(randomnumber).sura_id;
+            //get the size of the list.
+            int rslen = randomSurahs.size();//value between 1 and 114 inclusive
+            randomSurahNumber = (int) Math.floor(Math.random()*rslen);//get a random value of between 0-113
+            Log.i("RANDOM SURAH LIST", randomSurahNumber + ", " + randomSurahs.get(randomSurahNumber).sura_id);
+            return randomSurahs.get(randomSurahNumber).sura_id;//the actual surah id based on the random number generated above
         }
         else{
+            //if the database is empty, return 0
             return 0;
         }
 
@@ -316,7 +320,13 @@ public class AyahOfTheDay extends AppCompatActivity {
     }
 
     private void displayAyah() {
-        random_surah = (int) Math.round(Math.random() * AnAvailableSurahID())+1;
+        random_surah = AnAvailableSurahID();
+        if(random_surah==0){
+            //database is empty. quit
+            ayah_text.setText(R.string.chapters_not_available);
+            return;
+        }
+
         random_ayah = (int) Math.round(Math.random() * QuranMap.AYAHCOUNT[random_surah]-1)+1;
         Log.d("RANDOM SURAH AND AYAH", random_surah + " is surah " + random_ayah);
         viewModel.getChapterText(String.valueOf(random_surah)).observe(this, new Observer<List<AllTranslations>>() {
@@ -332,22 +342,31 @@ public class AyahOfTheDay extends AppCompatActivity {
 
 
         Log.d("RANDOM SURAH AND AYAH", random_surah + " is surah " + random_ayah);
-                suraname = QuranMap.SURAHNAMES[random_surah-1];//DONE fix it to the actual suraname
-                String randomayahreference = getString(R.string.surah) + suraname + getString(R.string.ayah) + random_ayah;
-                ayah_reference.setText(randomayahreference);
-                ayah_text.setText(allTranslations.get(random_ayah-1).uz_text);
+        try{
+            suraname = QuranMap.SURAHNAMES[random_surah-1];//DONE fix it to the actual suraname
+            String randomayahreference = getString(R.string.surah) + " " + random_surah + " " + suraname + getString(R.string.ayah) + random_ayah;
+            ayah_reference.setText(randomayahreference);
+            ayah_text.setText(allTranslations.get(random_ayah-1).uz_text);
 
-                int is_fav = allTranslations.get(random_ayah-1).favourite;
-                Log.d(TAG, is_fav + " is fav");
-                if(is_fav!=0){
-                        fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
-                        fav_btn.setTag("1");
-                    } else {
-                        fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-                        fav_btn.setTag("0");
-                    }
+            int is_fav = allTranslations.get(random_ayah-1).favourite;
+            Log.d(TAG, is_fav + " is fav");
+            if(is_fav!=0){
+                fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
+                fav_btn.setTag("1");
+            } else {
+                fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                fav_btn.setTag("0");
+            }
 
-                Log.d(TAG, suraname + "-" + random_surah + " " + random_ayah);
+            Log.d(TAG, suraname + "-" + random_surah + " " + random_ayah);
+
+        }catch (IndexOutOfBoundsException iobx) {
+            ayah_text.setText(R.string.failed_to_load_ayah);
+        }catch (Exception x){
+            Toast.makeText(this, R.string.failure_generic, Toast.LENGTH_SHORT).show();
+        }
+
+
 
 
 
