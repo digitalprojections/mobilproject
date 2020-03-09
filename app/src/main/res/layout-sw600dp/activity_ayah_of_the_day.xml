@@ -10,179 +10,19 @@
     tools:context=".AyahOfTheDay">
 
 
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical">
-
-
-            <ImageView
-                android:id="@+id/imageView3"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_asset_1furqon_logo"
-                android:contentDescription="TODO" />
-
-            <TextView
-                android:id="@+id/random_verse_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:text="Surah 42, Verse 29"
-                android:textColor="@color/common_google_signin_btn_text_dark_default"
-                android:textSize="18sp"
-                android:typeface="serif"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView3" />
-
-            <TextView
-                android:id="@+id/random_verse_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-
-                android:background="@drawable/random_ayah_bg"
-                android:gravity="center"
-                android:padding="20dp"
-                android:shadowColor="@color/gold"
-                android:shadowDx="1"
-                android:shadowDy="1"
-                android:shadowRadius="10"
-                android:textAllCaps="true"
-                android:textColor="@color/common_google_signin_btn_text_dark_default"
-                android:textSize="18sp"
-                android:textStyle="bold|italic"
-                android:typeface="serif"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.12"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/random_verse_title" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <ImageButton
-                    android:id="@+id/previous_verse"
-                    style="@android:style/Widget.Holo.ImageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    android:layout_weight="1"
-                    app:srcCompat="@drawable/ic_keyboard_arrow_left"
-                    android:contentDescription="TODO" />
-
-                <ImageButton
-                    android:id="@+id/random_share"
-                    style="@android:style/Widget.Holo.ImageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    android:layout_weight="1"
-                    android:contentDescription="@string/shareayah"
-                    app:srcCompat="@drawable/ic_share_black_24dp" />
-
-                <ImageButton
-                    android:id="@+id/random_home"
-                    style="@android:style/Widget.Holo.ImageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    android:layout_weight="1"
-                    android:contentDescription="@string/bookmark_it"
-                    android:tag="unselected"
-                    app:srcCompat="@drawable/ic_home_black_24dp" />
-
-                <ImageButton
-                    android:id="@+id/random_find"
-                    style="@android:style/Widget.Holo.ImageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    android:layout_weight="1"
-                    android:contentDescription="@string/bookmark_it"
-                    android:tag="unselected"
-                    app:srcCompat="@drawable/ic_find_in_page_black_24dp" />
-
-                <ImageButton
-                    android:id="@+id/random_favourite"
-                    style="@android:style/Widget.Holo.ImageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    android:layout_weight="1"
-                    android:contentDescription="@string/favourite_it"
-                    app:srcCompat="@drawable/ic_favorite_border_black_24dp" />
-
-                <ImageButton
-                    android:id="@+id/next_verse"
-                    style="@android:style/Widget.Holo.ImageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    android:layout_weight="1"
-                    app:srcCompat="@drawable/ic_keyboard_arrow_right"
-                    android:contentDescription="TODO" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-    </ScrollView>
-
-    <ProgressBar
-        android:id="@+id/progBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <LinearLayout
+        android:id="@+id/linearLayout5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:clickable="true"
+        android:focusable="true"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:focusable="true">
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
@@ -241,6 +81,167 @@
                 android:typeface="serif"
                 android:visibility="invisible" />
         </LinearLayout>
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:contentDescription="@string/app_logo_description"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_asset_1furqon_logo" />
+
+        <TextView
+            android:id="@+id/random_verse_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="Surah 42, Verse 29"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            android:textSize="18sp"
+            android:typeface="serif"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout8">
+
+        <TextView
+            android:id="@+id/random_verse_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:background="@drawable/random_ayah_bg"
+            android:gravity="center"
+            android:padding="20dp"
+            android:shadowColor="@color/gold"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="10"
+            android:textAllCaps="true"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            android:textSize="18sp"
+            android:textStyle="bold|italic"
+            android:typeface="serif"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/random_verse_title" />
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/linearLayout6"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageButton
+            android:id="@+id/previous_verse"
+            style="@android:style/Widget.Holo.ImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+
+            android:layout_weight="1"
+            android:contentDescription="TODO"
+            app:srcCompat="@drawable/ic_keyboard_arrow_left" />
+
+        <ImageButton
+            android:id="@+id/random_share"
+            style="@android:style/Widget.Holo.ImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+
+            android:layout_weight="1"
+            android:contentDescription="@string/shareayah"
+            app:srcCompat="@drawable/ic_share_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/random_home"
+            style="@android:style/Widget.Holo.ImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+
+            android:layout_weight="1"
+            android:contentDescription="@string/bookmark_it"
+            android:tag="unselected"
+            app:srcCompat="@drawable/ic_home_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/random_find"
+            style="@android:style/Widget.Holo.ImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+
+            android:layout_weight="1"
+            android:contentDescription="@string/bookmark_it"
+            android:tag="unselected"
+            app:srcCompat="@drawable/ic_find_in_page_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/random_favourite"
+            style="@android:style/Widget.Holo.ImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+
+            android:layout_weight="1"
+            android:contentDescription="@string/favourite_it"
+            app:srcCompat="@drawable/ic_favorite_border_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/next_verse"
+            style="@android:style/Widget.Holo.ImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+
+            android:layout_weight="1"
+            android:contentDescription="TODO"
+            app:srcCompat="@drawable/ic_keyboard_arrow_right" />
 
     </LinearLayout>
 
