@@ -146,20 +146,10 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
                 Objects.requireNonNull(getSupportActionBar()).setTitle(suranomi);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-//                mDatabase = DatabaseAccess.getInstance(getApplicationContext());
-//                if (!mDatabase.isOpen()) {
-//                    mDatabase.open();
-//                }
-
-
                 recyclerView = findViewById(R.id.chapter_scroll);
                 recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-
-                LoadTheCursor();
-
-
-                mAdapter = new AyahListAdapter(this, suranomi, suranomer, titleViewModel);
+                mAdapter = new AyahListAdapter(this, suranomi, suranomer);
                 recyclerView.setAdapter(mAdapter);
 
                 LoadTheList();
@@ -316,10 +306,6 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
         });
     }
 
-    public void LoadTheCursor() {
-
-        //ayahcursor = mDatabase.getSuraText(suranomer);
-    }
 
     public void playCycle() {
         if (mediaPlayer != null) {

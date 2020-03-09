@@ -2,7 +2,6 @@ package furqon.io.github.mobilproject;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.Html;
@@ -24,22 +23,21 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdapter.FavouriteListViewHolder> {
     private Context mContext;
     //private Cursor mCursor;
-    private ArrayList<String> mArrayList;
     //private DatabaseAccess mDatabase;
 
     //DONE create share/boomark/favourite and add programmatically
     ImageButton sharebut;
-    ImageButton favbut;
+    ImageButton fav_button;
     ImageButton bookbut;
 
     private int position;
-
-
+    private List<FavouriteAyah> mText = new ArrayList<>();
     private String chaptername;//Sura nomi
     private String chapternumber;
     private String versenumber;//oyat nomeri
@@ -49,7 +47,6 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
 
     Typeface madina;
 
-
     private ViewGroup.LayoutParams lp; // Height of TextView
     private ViewGroup.LayoutParams lpmar; // Height of TextView
     private ViewGroup.LayoutParams lpartxt; // Height of TextView
@@ -57,13 +54,10 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
     private Animation scaler;
     private sharedpref sharedPref;
 
-    FavouriteListAdapter(Context context, String suraname, String chapter) {
+    FavouriteListAdapter(Context context) {
         sharedPref = sharedpref.getInstance();
-        chapternumber = chapter;
 
         mContext = context;
-//        mCursor = cursor;
-//        mDatabase = DatabaseAccess.getInstance(mContext);
         scaler = AnimationUtils.loadAnimation(mContext, R.anim.bounce);
 
     }
@@ -95,7 +89,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
             top = itemView.findViewById(R.id.v_top);
 
             sharebut = itemView.findViewById(R.id.sharebut);
-            favbut = itemView.findViewById(R.id.favouritebut);
+            fav_button = itemView.findViewById(R.id.favouritebut);
             bookbut = itemView.findViewById(R.id.bookmarkbut);
 
             sharebut.setOnClickListener(new OnClickListener() {
@@ -104,7 +98,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
                     takeAction(view);
                 }
             });
-            favbut.setOnClickListener(new OnClickListener() {
+            fav_button.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     takeAction(view);
@@ -197,7 +191,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
             if (sharebut.getParent() != null) {
                 ((ViewGroup) sharebut.getParent()).removeView(sharebut);
                 ((ViewGroup) bookbut.getParent()).removeView(bookbut);
-                ((ViewGroup) favbut.getParent()).removeView(favbut);
+                ((ViewGroup) fav_button.getParent()).removeView(fav_button);
             }
 
             top.addView(chapterTitle);
@@ -214,7 +208,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
 
             linearLayout3.addView(sharebut);
             linearLayout3.addView(bookbut);
-            linearLayout3.addView(favbut);
+            linearLayout3.addView(fav_button);
             linearLayout3.setVisibility(View.GONE);
         }
 
@@ -262,9 +256,9 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
                 break;
             case R.id.favouritebut:
                 //favourite add to sqlite
-                favbut = ((ViewGroup) view.getParent()).findViewById(R.id.favouritebut);
+                fav_button = ((ViewGroup) view.getParent()).findViewById(R.id.favouritebut);
                 addToFavourites(view);
-                favbut.startAnimation(scaler);
+                fav_button.startAnimation(scaler);
                 break;
             case R.id.bookmarkbut:
 
@@ -292,17 +286,40 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
     }
 
     private void addToFavourites(View view){
-        //TODO manage sqlite creation and data addition
-        Log.i("AYAT FAVOURITED", String.valueOf(view));
+        // manage sqlite creation and data addition
+        LinearLayout ll = (LinearLayout) view.getParent();
+        //Log.i("AYAT FAVOURITED", String.valueOf());
+        //fav_button = ((ViewGroup) view.getParent().getParent()).findViewById(R.id.favouritebut);
+        fav_button = (ImageButton) view;
+        ManageSpecials manageSpecials;
 
-            if (favbut.getTag() == "1") {
-                //mDatabase.removeFromFavs(chapternumber, versenumber, "0");
-                favbut.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-                favbut.setTag("0");
-                //mCursor = mDatabase.loadFavourites();
+
+
+        if(mContext instanceof ManageSpecials) {
+            manageSpecials = (ManageSpecials) mContext;
+            FavouriteAyah favouriteAyah = getTextAt(Integer.parseInt(ll.getTag().toString()));
+            if (fav_button.getTag() == "1") {
+                //mDatabase.removeFromFavs(chapter_number, verse_number, "0");
+                //fav_button.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                fav_button.setTag("0");
+                favouriteAyah.favourite = 0;
+            } else {
+                //mDatabase.saveToFavs(chapter_number, verse_number, "1");
+                //fav_button.setImageResource(R.drawable.ic_favorite_black_24dp);
+                fav_button.setTag("1");
+                favouriteAyah.favourite = 1;
             }
-            notifyItemRemoved(position);
+            ChapterTextTable text = MapTextObjects(favouriteAyah);
+            manageSpecials.UpdateSpecialItem(text);
             notifyDataSetChanged();
+            //mCursor = mDatabase.getSuraText(mCursor.getString(1));
+        }
+    }
+
+    private ChapterTextTable MapTextObjects(FavouriteAyah allTranslations) {
+        ChapterTextTable ctext = new ChapterTextTable(allTranslations.sura_id, allTranslations.verse_id, allTranslations.favourite, 1, allTranslations.order_no, allTranslations.ar_text, "", allTranslations.surah_type);
+        ctext.setId(allTranslations.id);
+        return ctext;
     }
 
     @NonNull
@@ -328,72 +345,84 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
 
-        mArrayList = new ArrayList<>();
         return new FavouriteListViewHolder(view);
     }
-
+    void setText(List<FavouriteAyah> text){
+        mText = text;
+        notifyDataSetChanged();
+    }
     @Override
     public void onBindViewHolder(@NonNull FavouriteListViewHolder holder, int i) {
 
-//        chapternumber = mCursor.getString(1);
-        String numb = "";
-        String artext = "";
-        String ttext = "";
-        String rtext = "";
-        String etext = "";
+        FavouriteAyah ayah = mText.get(i);
+        String numb = String.valueOf(ayah.verse_id);
+        String artext = ayah.ar_text;
+        String ttext = ayah.uz_text;
+        String rtext = ayah.ru_text;
+        String etext = ayah.en_text;
 
-        int is_fav = 0;
-        chaptername = "";
+        int is_fav = ayah.favourite;
+        chaptername = QuranMap.SURAHNAMES[ayah.sura_id-1];
         versenumber = numb;
+        fav_button = holder.linearLayout3.findViewById(R.id.favouritebut);
+        holder.linearLayout3.setTag(i);
 
+        Log.i("TAG FAVOURITE", ayah.verse_id + " ");
 
-        //Log.i("TAG FAVOURITE", String.valueOf(is_fav==1));
-        if (sharedPref.getDefaults("ar")) {
-            holder.arabic_ayahnumber.setVisibility(View.VISIBLE);
-            holder.arabictext.setVisibility(View.VISIBLE);
-        }
         if(is_fav ==1)
         {
-            favbut = holder.linearLayout3.findViewById(R.id.favouritebut);
-            favbut.setImageResource(R.drawable.ic_favorite_black_24dp);
-            favbut.setTag("1");
+
+            fav_button.setImageResource(R.drawable.ic_favorite_black_24dp);
+            fav_button.setTag("1");
 
         }else {
-            favbut.setTag("0");
+            fav_button.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+            fav_button.setTag("0");
         }
 
         holder.chapterTitle.setText(chaptername);
         //holder.arabic_text.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
-        holder.arabictext.setGravity(Gravity.END);
 
-        holder.arabictext.setText(artext);
-        holder.arabic_ayahnumber.setText(String.valueOf(numb));
 
+        if (sharedPref.getDefaults("ar")) {
+            holder.arabic_ayahnumber.setVisibility(View.VISIBLE);
+            holder.arabictext.setVisibility(View.VISIBLE);
+            holder.arabictext.setText(artext);
+            holder.arabic_ayahnumber.setText(String.valueOf(numb));
+            holder.arabictext.setGravity(Gravity.END);
+            holder.ayahnumber.setVisibility(View.GONE);
+        }else{
+            holder.arabic_ayahnumber.setVisibility(View.GONE);
+            holder.arabictext.setVisibility(View.GONE);
+            holder.ayahnumber.setVisibility(View.VISIBLE);
+        }
         if (sharedPref.getDefaults("uz")) {
-            //holder.ayah_number.setVisibility(View.VISIBLE);
+            //
             holder.ayatext.setVisibility(View.VISIBLE);
             holder.ayatext.setText(Html.fromHtml(collapseBraces(ttext)));
             holder.ayahnumber.setText(String.valueOf(numb));
 
             holder.ayahnumber.setTag(chapternumber);
+        }else{
+            holder.ayatext.setVisibility(View.GONE);
         }
         if (sharedPref.getDefaults("ru")) {
             holder.ayah_text_ru.setVisibility(View.VISIBLE);
             holder.ayah_text_ru.setText(Html.fromHtml(collapseBraces(rtext)));
             holder.ayahnumber.setText(String.valueOf(numb));
             holder.ayahnumber.setTag(chapternumber);
+        }else{
+            holder.ayah_text_ru.setVisibility(View.GONE);
         }
         if (sharedPref.getDefaults("en")) {
             holder.ayah_text_en.setVisibility(View.VISIBLE);
             holder.ayah_text_en.setText(Html.fromHtml(collapseBraces(etext)));
             holder.ayahnumber.setText(String.valueOf(numb));
             holder.ayahnumber.setTag(chapternumber);
+        }else{
+            holder.ayah_text_en.setVisibility(View.GONE);
         }
         Log.i("SURANAME", String.valueOf(chaptername));
-        mArrayList.add(numb);
-
-
-
     }
 
     private String collapseBraces(String t) {
@@ -414,8 +443,15 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
     @Override
     public int getItemCount() {
         int c = 0;
-
-
+        if(mText!=null)
+        {
+            c = mText.size();
+        }
         return c;
+    }
+    public FavouriteAyah getTextAt(int position){
+
+
+        return mText.get(position);
     }
 }

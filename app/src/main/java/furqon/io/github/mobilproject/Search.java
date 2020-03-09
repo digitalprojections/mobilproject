@@ -25,8 +25,8 @@ import java.util.Objects;
 public class Search extends AppCompatActivity {
     private static final String TAG = "SEARCH";
     private SearchListAdapter mAdapter;
-    public DatabaseAccess mDatabase;
-    Cursor ayahcursor;
+    //public DatabaseAccess mDatabase;
+    //Cursor ayahcursor;
     String searchtxt;
     RecyclerView recyclerView;
     ProgressBar progressBar;
@@ -57,10 +57,11 @@ public class Search extends AppCompatActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mDatabase = DatabaseAccess.getInstance(getApplicationContext());
-        if (!mDatabase.isOpen()) {
-            mDatabase.open();
-        }
+        //TODO Serch functionality missing
+//        mDatabase = DatabaseAccess.getInstance(getApplicationContext());
+//        if (!mDatabase.isOpen()) {
+//            mDatabase.open();
+//        }
 
 
         ib_search.setOnClickListener(new View.OnClickListener() {
@@ -105,14 +106,14 @@ public class Search extends AppCompatActivity {
         if(word.length()>2) {
             ib_search.setEnabled(false);
             progressBar.setVisibility(View.VISIBLE);
-            ayahcursor = mDatabase.searchText(word);
+            //ayahcursor = mDatabase.searchText(word);
 
                 setProgressBarState(0);
 
 
-            mAdapter = new SearchListAdapter(context, ayahcursor);
-            recyclerView.setAdapter(mAdapter);
-            setProgressBarState(ayahcursor.getCount());
+            //mAdapter = new SearchListAdapter(context, ayahcursor);
+            //recyclerView.setAdapter(mAdapter);
+            //setProgressBarState(ayahcursor.getCount());
         }else{
             Toast.makeText(context, "Try a longer word", Toast.LENGTH_SHORT).show();
         }

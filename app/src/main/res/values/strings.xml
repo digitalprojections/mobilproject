@@ -66,4 +66,6 @@
     <string name="next_ayah">next ayah</string>
     <string name="failed_to_load_ayah">Failed to load ayah. Try again</string>
     <string name="failure_generic">An error has occurred, try again later</string>
+    <string name="download_audio_description">Now you can watch an ad and unlock chapter audio download</string>
+    <string name="downloadaudio_title">Download Audio</string>
 </resources>

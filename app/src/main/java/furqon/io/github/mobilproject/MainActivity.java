@@ -195,6 +195,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        if (sharedPref.contains(sharedPref.XATCHUP)) {
+            davomi_but.setVisibility(View.VISIBLE);
+        }else{
+            davomi_but.setVisibility(View.GONE);
+        }
 
         //String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -335,7 +340,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
+        if (sharedPref.contains(sharedPref.XATCHUP)) {
+            davomi_but.setVisibility(View.VISIBLE);
+        }else{
+            davomi_but.setVisibility(View.GONE);
+        }
     }
 
     private void sendRegistrationToServer(final String token) {

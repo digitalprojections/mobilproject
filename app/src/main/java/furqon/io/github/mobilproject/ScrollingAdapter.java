@@ -1,6 +1,7 @@
 package furqon.io.github.mobilproject;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,23 +12,29 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewpager.widget.PagerAdapter;
 
+import static furqon.io.github.mobilproject.R.drawable.ic_unlock;
+
 public class ScrollingAdapter extends PagerAdapter {
     private Context context;
     private LayoutInflater layoutInflater;
 
 
     private String[] titles;
+    private String[] images;
 
     private String[] descriptionText;
 
     ScrollingAdapter(Context context){
         this.context = context;
         descriptionText = new String[]{
-                this.context.getString(R.string.furqan_definition),
+                this.context.getString(R.string.furqan_definition), this.context.getString(R.string.download_audio_description),
                 this.context.getString(R.string.desc_ayah_of_the_day), this.context.getString(R.string.desc_comments), this.context.getString(R.string.desc_audio_seperate)
         };
         titles = new String[]{
-          context.getString(R.string.app_name), context.getString(R.string.title_daily_ayah), context.getString(R.string.title_color_comments), context.getString(R.string.title_separate_audio)
+          context.getString(R.string.app_name),context.getString(R.string.downloadaudio_title), context.getString(R.string.title_daily_ayah), context.getString(R.string.title_color_comments), context.getString(R.string.title_separate_audio)
+        };
+        images = new String[]{
+                "0","ic_unlock","0","0","0"
         };
 
 

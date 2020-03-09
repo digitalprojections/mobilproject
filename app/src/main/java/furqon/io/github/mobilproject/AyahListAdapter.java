@@ -67,7 +67,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
     }
 
-    AyahListAdapter(Context context, String suraname, String chapter, TitleViewModel titleViewModel) {
+    AyahListAdapter(Context context, String suraname, String chapter) {
         sharedPref = sharedpref.getInstance();
 
         chapter_number = chapter;
@@ -366,10 +366,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         book_button.setTag("unselected");
 
 
-        if (sharedPref.getDefaults("ar")) {
-            holder.arabic_ayah_number.setVisibility(View.VISIBLE);
-            holder.arabic_text.setVisibility(View.VISIBLE);
-        }
+
         Log.i("TAG FAVOURITE AYAH", numb + " " + is_fav + " " + current.favourite + " " + current.sura_id + " ");
         if (is_fav == 1) {
             fav_button.setImageResource(R.drawable.ic_favorite_black_24dp);
@@ -380,26 +377,40 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
 
         //holder.arabic_text.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
-        holder.arabic_text.setGravity(Gravity.END);
 
-        holder.arabic_text.setText(ar_text);
-        holder.arabic_ayah_number.setText(String.valueOf(numb));
-
+        if (sharedPref.getDefaults("ar")) {
+            holder.arabic_text.setGravity(Gravity.END);
+            holder.arabic_text.setText(ar_text);
+            holder.arabic_ayah_number.setText(String.valueOf(numb));
+            holder.arabic_ayah_number.setVisibility(View.VISIBLE);
+            holder.arabic_text.setVisibility(View.VISIBLE);
+            holder.ayah_number.setVisibility(View.GONE);
+        }else{
+            holder.arabic_ayah_number.setVisibility(View.GONE);
+            holder.arabic_text.setVisibility(View.GONE);
+            holder.ayah_number.setVisibility(View.VISIBLE);
+        }
         if (sharedPref.getDefaults("uz")) {
             //holder.ayah_number.setVisibility(View.VISIBLE);
             holder.ayah_text_uz.setVisibility(View.VISIBLE);
             holder.ayah_text_uz.setText(Html.fromHtml(collapseBraces(uz_text)));
             holder.ayah_number.setText(String.valueOf(numb));
+        }else{
+            holder.ayah_text_uz.setVisibility(View.GONE);
         }
         if (sharedPref.getDefaults("ru")) {
             holder.ayah_text_ru.setVisibility(View.VISIBLE);
             holder.ayah_text_ru.setText(Html.fromHtml(collapseBraces(ru_text)));
             holder.ayah_number.setText(String.valueOf(numb));
+        }else{
+            holder.ayah_text_ru.setVisibility(View.GONE);
         }
         if (sharedPref.getDefaults("en")) {
             holder.ayah_text_en.setVisibility(View.VISIBLE);
             holder.ayah_text_en.setText(Html.fromHtml(collapseBraces(en_text)));
             holder.ayah_number.setText(String.valueOf(numb));
+        }else{
+            holder.ayah_text_en.setVisibility(View.GONE);
         }
         Log.i("AYAT NUMBER", String.valueOf(numb));
         mArrayList.add(numb);
@@ -431,6 +442,8 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     }
 
     public AllTranslations getTextAt(int position){
+
+
         return mText.get(position);
     }
 

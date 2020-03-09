@@ -9,9 +9,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,13 +25,16 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 
+import java.util.List;
 import java.util.Objects;
 
 
-public class Favourites extends AppCompatActivity {
+public class Favourites extends AppCompatActivity implements ManageSpecials {
 
     private ProgressBar progressBar;
     //private DatabaseAccess mDatabase;
+
+    private TitleViewModel viewModel;
     private RecyclerView recyclerView;
     FavouriteListAdapter mAdapter;
     String suranomer;
@@ -47,6 +55,10 @@ public class Favourites extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_favourites);
+        viewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
+
+
+
         sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
         Toolbar toolbar = findViewById(R.id.tool_bar);
@@ -57,11 +69,6 @@ public class Favourites extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar2);
         recyclerView = findViewById(R.id.recyclerfavs);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-//        mDatabase = DatabaseAccess.getInstance(getApplicationContext());
-//        if(!mDatabase.isOpen()) {
-//            mDatabase.open();
-//        }
 
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -74,7 +81,19 @@ public class Favourites extends AppCompatActivity {
 
         Log.i("FAVOURITES","loaded");
 
+
+
+        mAdapter = new FavouriteListAdapter(this);
+        recyclerView.setAdapter(mAdapter);
+        viewModel.getFavourites().observe(this, new Observer<List<FavouriteAyah>>() {
+            @Override
+            public void onChanged(@Nullable List<FavouriteAyah> favouriteAyahs) {
+                Log.e("FAVOURITES", favouriteAyahs.size() + " ");
+                mAdapter.setText(favouriteAyahs);
+            }
+        });
         loadFavourites();
+
 
 
     }
@@ -99,6 +118,12 @@ public class Favourites extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAdapter.notifyDataSetChanged();
+    }
+
     private void open_settings(){
         Intent intent;
         intent = new Intent(this, furqon.io.github.mobilproject.Settings.class);
@@ -113,11 +138,11 @@ public class Favourites extends AppCompatActivity {
     }
 
     public void loadFavourites(){
-        //cursor = mDatabase.loadFavourites();
-        mAdapter = new FavouriteListAdapter(this, suranomi, suranomer);
-        recyclerView.setAdapter(mAdapter);
-
-
         progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void UpdateSpecialItem(ChapterTextTable text) {
+        viewModel.updateText(text);
     }
 }
