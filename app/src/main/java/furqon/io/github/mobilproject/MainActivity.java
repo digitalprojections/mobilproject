@@ -61,7 +61,9 @@ public class MainActivity extends AppCompatActivity {
     Button davomi_but;
     Button favourite_but;
     Button search_but;
+    Button message_but;
     Button rate_but;
+
 
     ImageView imageView;
 
@@ -153,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
         davomi_but = findViewById(R.id.davomi);
         favourite_but = findViewById(R.id.favouritebut);
         search_but = findViewById(R.id.searchbtn);
+        message_but = findViewById(R.id.messageButton);
         rate_but = findViewById(R.id.ratebtn);
 
         imageView = findViewById(R.id.imageView);
@@ -173,6 +176,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 open_search();
+            }
+        });
+        message_but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                open_messages();
             }
         });
         rate_but.setOnClickListener(new View.OnClickListener() {
@@ -532,6 +541,11 @@ public class MainActivity extends AppCompatActivity {
     private void open_search() {
         Intent intent;
         intent = new Intent(this, furqon.io.github.mobilproject.Search.class);
+        startActivity(intent);
+    }
+    private void open_messages() {
+        Intent intent;
+        intent = new Intent(this, furqon.io.github.mobilproject.MessageList.class);
         startActivity(intent);
     }
 

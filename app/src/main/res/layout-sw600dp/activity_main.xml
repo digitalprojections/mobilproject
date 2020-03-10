@@ -36,7 +36,10 @@
         <include layout="@layout/favourite_button"></include>
 
         <include layout="@layout/search_button"></include>
-        <include layout="@layout/messages_button"></include>
+
+        <include
+            android:id="@+id/messageButton"
+            layout="@layout/messages_button"></include>
         <include layout="@layout/rate_button"></include>
     </LinearLayout>
 

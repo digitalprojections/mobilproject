@@ -21,6 +21,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.Map;
+
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private ChapterTitleDatabase database;
@@ -49,7 +51,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             scheduleJob();
 
-            handleNow(remoteMessage.getData().get("body"));
+
         }
 
 
@@ -57,6 +59,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
             sendNotification(remoteMessage.getNotification().getBody());
+            handleNow(remoteMessage);
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
@@ -98,9 +101,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void scheduleJob(){
 
     }
-    private void handleNow(String s){
+    private void handleNow(RemoteMessage s){
         Log.d(TAG, "text received: " + s);
-        sendNotification(s);
+        sendNotification(s.getNotification().getBody());
 
         database = ChapterTitleDatabase.getDatabase(this);
         database.SaveMessage(s);
@@ -110,6 +113,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 
         Intent intent = new Intent(this, MessageView.class);
+
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);

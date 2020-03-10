@@ -15,6 +15,7 @@ public class TitleRepository {
     private LiveData<List<AllTranslations>> mChapterText;
     private LiveData<List<FavouriteAyah>> mFavourites;
     private LiveData<List<RandomSurah>> randomSurah;
+    private LiveData<List<MessageTable>> liveMessages;
     private Context context;
 
     MyListener myListener = (MyListener) new SuraNameList();
@@ -47,6 +48,10 @@ public class TitleRepository {
         randomSurah = mTitleDao.getAvailableSurahIDs();
         return randomSurah;
     }
+    LiveData<List<MessageTable>> getMessages(){
+        liveMessages = mTitleDao.getMessages();
+        return liveMessages;
+    }
 
     public void insert(ChapterTitleTable title){
 
@@ -56,6 +61,7 @@ public class TitleRepository {
 
         new insertTextAsyncTask(mTitleDao).execute(text);
     }
+
 
     public void update(ChapterTitleTable title){
 

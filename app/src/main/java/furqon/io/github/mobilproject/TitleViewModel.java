@@ -15,6 +15,7 @@ public class TitleViewModel extends AndroidViewModel {
     private LiveData<List<AllTranslations>> mChapterText;
     private LiveData<List<FavouriteAyah>> mFavourites;
     private LiveData<List<RandomSurah>> randomSurah;
+    private LiveData<List<MessageTable>> liveMessages;
 
     private sharedpref sharedPref;
 
@@ -44,6 +45,10 @@ public class TitleViewModel extends AndroidViewModel {
     LiveData<List<RandomSurah>> getRandomSurah(){
         randomSurah = titleRepository.getAvailableSurahIDs();
         return randomSurah;
+    }
+    LiveData<List<MessageTable>> getMessages(){
+        liveMessages = titleRepository.getMessages();
+        return liveMessages;
     }
 
     public void insert(ChapterTitleTable title){

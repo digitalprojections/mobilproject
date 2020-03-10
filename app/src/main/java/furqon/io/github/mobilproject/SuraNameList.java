@@ -304,6 +304,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
     private void LoadTheList() {
 
+
         titleViewModel.getAllTitles().observe(this, new Observer<List<ChapterTitleTable>>() {
             @Override
             public void onChanged(@Nullable List<ChapterTitleTable> surahTitles) {

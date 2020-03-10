@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <Button
-        android:id="@+id/messages_button"
+        android:id="@+id/messageButton"
         style="@android:style/Widget.Button"
         android:layout_width="match_parent"
         android:layout_height="@android:dimen/app_icon_size"

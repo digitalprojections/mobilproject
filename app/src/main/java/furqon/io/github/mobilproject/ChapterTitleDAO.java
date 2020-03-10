@@ -20,6 +20,9 @@ public interface ChapterTitleDAO {
     @Insert
     void insertText(ChapterTextTable text);
 
+    @Insert
+    void insertMessage(MessageTable text);
+
     @Query("SELECT COUNT(*) FROM sura_names")
     int getCount();
 
@@ -45,5 +48,8 @@ public interface ChapterTitleDAO {
 
    @Query("SELECT sura_id FROM quran_text WHERE 1 GROUP BY sura_id")
    LiveData<List<RandomSurah>> getAvailableSurahIDs();
+
+   @Query("SELECT * FROM messages WHERE 1 order by id DESC")
+   LiveData<List<MessageTable>> getMessages();
 
 }
