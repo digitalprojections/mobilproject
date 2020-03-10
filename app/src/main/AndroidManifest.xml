@@ -17,10 +17,16 @@
         android:roundIcon="@mipmap/ic_launcher2_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".MessageView"
+            android:parentActivityName=".MessageList"
+            ></activity>
+        <activity android:name=".MessageList"
+            android:parentActivityName=".MainActivity"/>
+
         <service
             android:name=".Services.MyService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
         <activity
             android:name=".ScrollingActivity"
@@ -29,6 +35,7 @@
             android:launchMode="singleTask"
             android:taskAffinity=""
             android:theme="@style/AppTheme.NoActionBar" />
+
 
         <service
             android:name=".MyFirebaseMessagingService"
@@ -44,7 +51,6 @@
                 <action android:name="TRACKS_TRACKS" />
             </intent-filter>
         </receiver>
-
 
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"

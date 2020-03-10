@@ -6,16 +6,23 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <include layout="@layout/toolbar"
-    android:id="@+id/tool_bar"
-        />
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
 
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tool_bar">
 
         <TextView
             android:id="@+id/result"
@@ -37,7 +44,7 @@
             android:layout_height="150dp"
             android:layout_marginBottom="10dp"
             android:adjustViewBounds="true"
-            android:contentDescription="Furqon"
+            android:contentDescription="@string/app_logo_description"
             app:srcCompat="@drawable/icon" />
 
         <include layout="@layout/suralar_button"></include>
@@ -47,7 +54,11 @@
         <include layout="@layout/favourite_button"></include>
 
         <include layout="@layout/search_button"></include>
+
+        <include layout="@layout/messages_button"></include>
+
         <include layout="@layout/rate_button"></include>
+
 
     </LinearLayout>
 

@@ -1,20 +1,36 @@
 package furqon.io.github.mobilproject;
 
+import android.app.Application;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
+
+    private ChapterTitleDatabase database;
 
     private static final String TAG = "FIREBASE Messages";
     private sharedpref sharedPref;
 
     public MyFirebaseMessagingService() {
         sharedPref = sharedpref.getInstance();
-
+        //Log.e("MyFirebaseMessage", "initiated");
 
     }
 
@@ -36,12 +52,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             handleNow(remoteMessage.getData().get("body"));
         }
 
+
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-
-
-
+            sendNotification(remoteMessage.getNotification().getBody());
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
@@ -85,7 +100,50 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
     private void handleNow(String s){
         Log.d(TAG, "text received: " + s);
+        sendNotification(s);
 
+        database = ChapterTitleDatabase.getDatabase(this);
+        database.SaveMessage(s);
+    }
+    private void sendNotification(String messageBody) {
+
+
+
+        Intent intent = new Intent(this, MessageView.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+
+        String channelId = getString(Furqon.NOTIFICATION_FROM_AUTHOR);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this, channelId)
+                        .setSmallIcon(R.drawable.ic_asset_1furqon_logo)
+                        .setContentTitle(getString(R.string.fcm_fallback_notification_channel_label))
+                        .setContentText(messageBody)
+                        .setAutoCancel(true)
+                        .setSound(defaultSoundUri)
+                        .setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // Since android Oreo notification channel is needed.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(channelId,
+                    "Channel human readable title",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+
+        //TODO add to database
+        //TODO open a special activity
+    }
+
+    private String getString(String notificationFromAuthor) {
+        return Furqon.NOTIFICATION_FROM_AUTHOR;
     }
 
     private void sendRegistrationToServer(String token){

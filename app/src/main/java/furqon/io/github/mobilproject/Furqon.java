@@ -18,6 +18,7 @@ import androidx.core.app.NotificationManagerCompat;
 import furqon.io.github.mobilproject.Services.NotificationActionService;
 
 public class Furqon extends Application {
+    public static final String NOTIFICATION_FROM_AUTHOR = "Muallifdan";
     public static final String AUDIO_PLAYING_NOTIFICATION_CHANNEL = "audio playing";
     public static final String AUDIO_DOWNLOADING_NOTIFICATION_CHANNEL = "downloading a surah";
     public static final String ACTION_PREV = "actionprevious";

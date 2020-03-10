@@ -43,19 +43,21 @@ public abstract class ChapterTitleDatabase extends RoomDatabase {
         }
     };
 
+    public static void SaveMessage(String s){
+
+    }
+
+
+
+
     public static class PopulateDBAsync extends AsyncTask<Void, Void, Void>{
         ChapterTitleDAO titleDAO;
-
         public PopulateDBAsync(ChapterTitleDatabase db){
-
             titleDAO = db.titleDAO();
         }
-
         @Override
         protected Void doInBackground(Void... voids) {
             //titleDAO.insert(new ChapterTitle(10, 1, 2, "uzbektitle", "arabictitle", "makka"));
-
-
             return null;
         }
     }

@@ -189,7 +189,7 @@ public class AyahOfTheDay extends AppCompatActivity {
                 }
             }
         });
-        //TODO SHARE
+        //
         share_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -201,7 +201,7 @@ public class AyahOfTheDay extends AppCompatActivity {
                 startActivity(Intent.createChooser(sendIntent, getApplicationContext().getResources().getText(R.string.shareayah)));
             }
         });
-        //TODO Home
+        //
         home_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -209,7 +209,7 @@ public class AyahOfTheDay extends AppCompatActivity {
                 AyahOfTheDay.super.onBackPressed();
             }
         });
-        //TODO Bookmark
+        //
         find_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -219,7 +219,7 @@ public class AyahOfTheDay extends AppCompatActivity {
                 continueReading();
             }
         });
-        //TODO Fav
+        //
         fav_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

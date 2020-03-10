@@ -11,38 +11,33 @@
         />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="10dp">
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tool_bar">
 
-        <LinearLayout
-            android:layout_width="400dp"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="149dp"
+            android:layout_height="150dp"
             android:layout_margin="10dp"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
+            android:contentDescription="@string/app_logo_description"
+            app:srcCompat="@drawable/icon" />
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="149dp"
-                android:layout_height="150dp"
-                android:layout_margin="10dp"
-                app:srcCompat="@drawable/icon"
-                android:contentDescription="TODO" />
+        <include layout="@layout/suralar_button"></include>
 
-            <include layout="@layout/suralar_button"></include>
+        <include layout="@layout/continue_button"></include>
 
-            <include layout="@layout/continue_button"></include>
+        <include layout="@layout/favourite_button"></include>
 
-            <include layout="@layout/favourite_button"></include>
-
-            <include layout="@layout/search_button"></include>
-            <include layout="@layout/rate_button"></include>
-        </LinearLayout>
-
+        <include layout="@layout/search_button"></include>
+        <include layout="@layout/messages_button"></include>
+        <include layout="@layout/rate_button"></include>
     </LinearLayout>
 
 
