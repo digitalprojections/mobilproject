@@ -63,6 +63,7 @@ public class TitleRepository {
     }
 
 
+
     public void update(ChapterTitleTable title){
 
         new updateAsyncTask(mTitleDao).execute(title);
@@ -74,7 +75,26 @@ public class TitleRepository {
 
         new deleteAsyncTask().execute();
     }
+    public void markAllAsRead(){
+        new markAsReadAsync().execute();
+    }
 
+    public void deleteMessage(MessageTable message){
+        new deleteMessageAsyncTask(mTitleDao).execute(message);
+    }
+
+    private class deleteMessageAsyncTask extends AsyncTask<MessageTable, Void, Void>{
+        private ChapterTitleDAO mAsyncTitleDAO;
+        public deleteMessageAsyncTask(ChapterTitleDAO dao){
+            mAsyncTitleDAO = dao;
+        }
+
+        @Override
+        protected Void doInBackground(MessageTable... messageTables) {
+            mAsyncTitleDAO.deleteMessage(messageTables[0]);
+            return null;
+        }
+    }
 
     private class insertAsyncTask extends AsyncTask<ChapterTitleTable, Void, Void> {
 
@@ -139,6 +159,18 @@ public class TitleRepository {
         @Override
         protected Void doInBackground(ChapterTitleTable... chapterTitles) {
             mAsyncTitleDAO.deleteAll();
+            return null;
+        }
+    }
+    private class markAsReadAsync extends AsyncTask<MessageTable, Void, Void> {
+        private ChapterTitleDAO mAsyncTitleDAO;
+        public markAsReadAsync() {
+            mAsyncTitleDAO = mTitleDao;
+        }
+
+        @Override
+        protected Void doInBackground(MessageTable... messages) {
+            mAsyncTitleDAO.markAllAsRead();
             return null;
         }
     }

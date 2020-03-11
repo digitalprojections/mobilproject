@@ -12,7 +12,7 @@ public class MessageTable {
     public String message_title;
     public String message_body;
     public String date_time;
-    public Boolean message_read;
+    public int message_read;
     public int category;
     public Boolean trashed;
 
@@ -24,7 +24,7 @@ public class MessageTable {
         this.message_title = message_title;
         this.message_body = message_body;
         this.date_time = date_time;
-        this.message_read = false;
+        this.message_read = 0;
         this.category = 0;
         this.trashed = false;
     }

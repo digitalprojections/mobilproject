@@ -48,9 +48,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
-
             scheduleJob();
-
+            database = ChapterTitleDatabase.getDatabase(this);
+            database.SaveMessage(remoteMessage.getData());
 
         }
 
@@ -112,13 +112,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 
 
-        Intent intent = new Intent(this, MessageView.class);
+        Intent intent = new Intent(this, MessageList.class);
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        String channelId = getString(Furqon.NOTIFICATION_FROM_AUTHOR);
+        String channelId = getString(R.string.notification_from_author_channel);
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)

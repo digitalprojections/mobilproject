@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
 
     private List<MessageTable> mMessages = new ArrayList<>();
     private final LayoutInflater mInflater;
+    private ViewGroup.LayoutParams fontStyle;
 
     public MessageListAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
@@ -27,7 +29,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     public MessageListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = mInflater.from(parent.getContext())
-                .inflate(R.layout.message_list_item, parent, false);
+                .inflate(R.layout.message_card_item, parent, false);
         return new MessageListViewHolder(view);
     }
 
@@ -38,7 +40,11 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
 
         holder.titleTextView.setText(current.message_title);
         holder.bodyTextView.setText(current.message_body);
-        holder.dateTextView.setText(current.date_time.toString());
+        holder.dateTextView.setText(current.date_time);
+        if(current.message_read==0){
+            ((LinearLayout.LayoutParams) fontStyle).weight = 500;
+            holder.titleTextView.setLayoutParams(fontStyle);
+        }
         Log.e("MESSAGES ONBIND", current.message_body);
 
     }
@@ -54,6 +60,9 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         mMessages = items;
         Log.e("MESSAGES on set", mMessages.size() + " long");
         notifyDataSetChanged();
+    }
+    public MessageTable getItemAt(int position){
+        return mMessages.get(position);
     }
 
     public class MessageListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

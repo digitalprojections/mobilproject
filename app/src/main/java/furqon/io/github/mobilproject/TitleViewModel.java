@@ -61,16 +61,23 @@ public class TitleViewModel extends AndroidViewModel {
     }
 
     public void update(ChapterTitleTable title){
-        Log.d("TITLE UPDATING", "UUUUUUUUUU " + title.status);
+
         titleRepository.update(title);
     }
     public void updateText(ChapterTextTable text){
-        //Log.d("TITLE UPDATING", "UUUUUUUUUU " + title.status);
+
         titleRepository.updateText(text);
     }
 
     public void deleteAll(){
 
         titleRepository.deteteAll();
+    }
+    public void markAllAsRead(){
+        titleRepository.markAllAsRead();
+    }
+
+    public void deleteMessage(MessageTable message){
+        titleRepository.deleteMessage(message);
     }
 }

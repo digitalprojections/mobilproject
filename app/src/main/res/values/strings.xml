@@ -69,4 +69,5 @@
     <string name="download_audio_description">Now you can watch an ad and unlock chapter audio download</string>
     <string name="downloadaudio_title">Download Audio</string>
     <string name="messages_button_text">Messages</string>
+    <string name="notification_from_author_channel">Muallifdan</string>
 </resources>

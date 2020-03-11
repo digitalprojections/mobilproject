@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     Button favourite_but;
     Button search_but;
     Button message_but;
+    TextView nbadge;
     Button rate_but;
 
 
@@ -184,6 +186,9 @@ public class MainActivity extends AppCompatActivity {
                 open_messages();
             }
         });
+
+        nbadge = findViewById(R.id.numeric_badge_txt);
+        nbadge.bringToFront();
         rate_but.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
