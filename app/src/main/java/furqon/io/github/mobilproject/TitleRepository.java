@@ -16,6 +16,7 @@ public class TitleRepository {
     private LiveData<List<FavouriteAyah>> mFavourites;
     private LiveData<List<RandomSurah>> randomSurah;
     private LiveData<List<MessageTable>> liveMessages;
+    private LiveData<List<NewMessages>> liveUnreadMessages;
     private Context context;
 
     MyListener myListener = (MyListener) new SuraNameList();
@@ -26,6 +27,10 @@ public class TitleRepository {
         context = application;
 
         new readAsyncTask(mTitleDao).execute();
+    }
+    LiveData<List<NewMessages>> getUnreadMessages(){
+        liveUnreadMessages = mTitleDao.getUnreadMessages();
+        return liveUnreadMessages;
     }
     LiveData<List<ChapterTitleTable>> getAllTitlesByQuranicOrder(){
         mAllTitles = mTitleDao.getAllTitlesQuranicOrder();

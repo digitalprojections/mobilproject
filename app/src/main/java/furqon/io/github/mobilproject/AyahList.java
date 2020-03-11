@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -305,7 +306,35 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
             }
         });
     }
+    private void PopulateTrackList() {
+        //TODO clean up wrong files
+        String path = getExternalFilesDir(null).getAbsolutePath();
+        Log.d("Files", "Path: " + path);
+        File directory = new File(path);
+        File[] files = directory.listFiles();
+        if(files!=null){
+            Log.d("FILES", "Size: "+ files.length);
 
+            for (int i = 0; i < files.length; i++)
+            {
+                Log.d("Files", "FileName:" + files[i].getName());
+                String trackname = files[i].getName().toString();
+                if(trackname.contains(".")){
+                    trackname = trackname.substring(0, trackname.lastIndexOf("."));
+                    if(trackname==suranomer){
+                        MarkAsDownloaded(Integer.parseInt(trackname));
+                        Log.i("TRACKNAME",  "number " + trackname + " track is available");
+
+                    }
+                }
+            }
+        }else{
+            Log.d("NULL ARRAY", "no files found");
+        }
+    }
+
+    private void MarkAsDownloaded(int parseInt) {
+    }
 
     public void playCycle() {
         if (mediaPlayer != null) {
@@ -432,7 +461,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
                 try {
 
                     play();
-
+                    item.setIcon(R.drawable.ic_pause);
                 } catch (IOException e) {
                     Toast.makeText(getBaseContext(), loadfailed, Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
@@ -441,6 +470,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
             case R.id.stop:
                 if (mediaPlayer != null) {
                     pause();
+                    item.setIcon(R.drawable.ic_play_arrow_black_24dp);
                 }
                 return true;
 

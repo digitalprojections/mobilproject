@@ -1,6 +1,7 @@
 package furqon.io.github.mobilproject;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,11 +42,12 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         holder.titleTextView.setText(current.message_title);
         holder.bodyTextView.setText(current.message_body);
         holder.dateTextView.setText(current.date_time);
+
         if(current.message_read==0){
-            ((LinearLayout.LayoutParams) fontStyle).weight = 500;
-            holder.titleTextView.setLayoutParams(fontStyle);
+            holder.titleTextView.setTextColor(Color.parseColor("#ffb700"));
+            holder.dateTextView.setTextColor(Color.parseColor("#ff0000"));
         }
-        Log.e("MESSAGES ONBIND", current.message_body);
+        Log.e("MESSAGES ONBIND", current.message_title);
 
     }
 

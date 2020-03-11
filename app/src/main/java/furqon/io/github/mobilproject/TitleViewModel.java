@@ -16,6 +16,7 @@ public class TitleViewModel extends AndroidViewModel {
     private LiveData<List<FavouriteAyah>> mFavourites;
     private LiveData<List<RandomSurah>> randomSurah;
     private LiveData<List<MessageTable>> liveMessages;
+    private LiveData<List<NewMessages>> liveUnreadMessages;
 
     private sharedpref sharedPref;
 
@@ -23,6 +24,10 @@ public class TitleViewModel extends AndroidViewModel {
         super(application);
         sharedPref = sharedpref.getInstance();
         titleRepository = new TitleRepository(application);
+    }
+    LiveData<List<NewMessages>> getUnreadCount(){
+        liveUnreadMessages = titleRepository.getUnreadMessages();
+        return liveUnreadMessages;
     }
     LiveData<List<FavouriteAyah>> getFavourites(){
         mFavourites = titleRepository.getFavourites();

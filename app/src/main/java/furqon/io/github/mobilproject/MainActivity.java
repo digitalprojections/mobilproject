@@ -25,6 +25,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.Request;
@@ -48,6 +51,7 @@ import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import java.io.File;
 import java.security.MessageDigest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import hotchemi.android.rate.AppRate;
@@ -74,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
     // Try to use more data here. ANDROID_ID is a single point of attack.
     InterstitialAd mInterstitialAd;
 
+    private TitleViewModel titleViewModel;
+    private LiveData<List<NewMessages>> newMessages;
 
     private FirebaseAnalytics mFirebaseAnalytics;
     private RequestQueue queue;
@@ -128,6 +134,20 @@ public class MainActivity extends AppCompatActivity {
         sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
 
+        titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
+
+        titleViewModel.getUnreadCount().observe(this, new Observer<List<NewMessages>>() {
+            @Override
+            public void onChanged(List<NewMessages> newMessages) {
+                if(newMessages.size()>0){
+                    nbadge.setVisibility(View.VISIBLE);
+                    nbadge.setText(String.valueOf(newMessages.size()));
+                }else {
+                    nbadge.setVisibility(View.INVISIBLE);
+                    nbadge.setText("0");
+                }
+            }
+        });
 
         Fabric.with(this, new Crashlytics());
         Crashlytics.log("Activity created");

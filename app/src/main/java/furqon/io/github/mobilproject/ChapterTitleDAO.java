@@ -59,4 +59,8 @@ public interface ChapterTitleDAO {
    @Query("SELECT * FROM messages WHERE 1 order by id DESC")
    LiveData<List<MessageTable>> getMessages();
 
+   @Query("SELECT message_title as mTitle, message_read as unread FROM messages WHERE message_read = 0")
+    LiveData<List<NewMessages>> getUnreadMessages();
+
+
 }
