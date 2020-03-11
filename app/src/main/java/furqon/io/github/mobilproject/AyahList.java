@@ -97,6 +97,9 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
     private boolean httpresponse;
     RecyclerView recyclerView;
 
+    private MenuItem playButton;
+    private MenuItem stopButton;
+
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -451,6 +454,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.my_navigation_items, menu);
+        stopButton = menu.getItem(0);
+        playButton = menu.getItem(1);
         return true;
     }
 
@@ -461,7 +466,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
                 try {
 
                     play();
-                    item.setIcon(R.drawable.ic_pause);
+
                 } catch (IOException e) {
                     Toast.makeText(getBaseContext(), loadfailed, Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
@@ -470,7 +475,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
             case R.id.stop:
                 if (mediaPlayer != null) {
                     pause();
-                    item.setIcon(R.drawable.ic_play_arrow_black_24dp);
+                     playButton.setIcon(R.drawable.ic_play_arrow_black_24dp);
                 }
                 return true;
 
@@ -520,13 +525,11 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
                 //mediaPlayer.setAudioStreamType(AudioManager.USE_DEFAULT_STREAM_TYPE);
                 mediaPlayer.setDataSource(url);
 
-                if (isNetworkAvailable()) {
-                    progressBar.setVisibility(View.VISIBLE);
-                    mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
-                } else {
-                    Toast.makeText(getBaseContext(), loadfailed, Toast.LENGTH_SHORT).show();
-                }
 
+                progressBar.setVisibility(View.VISIBLE);
+                mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
+
+                playButton.setIcon(R.drawable.ic_pause);
 
             } else {
 
@@ -557,8 +560,6 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
     public void pause() {
         if (mediaPlayer != null) {
             storeAudioPosition();
-
-
         }
     }
 
@@ -586,9 +587,6 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
         }
     }
 
-    private void startTimer() {
-
-    }
 
 
     @Override
@@ -597,18 +595,15 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
         pause();
         if (mediaPlayer != null) {
             mediaPlayer.release();
-
-
             handler.removeCallbacks(runnable);
         }
-//        if (mDatabase != null) {
-//            mDatabase.close();
-//        }
     }
 
 
     @Override
     public void UpdateSpecialItem(ChapterTextTable text) {
+
         titleViewModel.updateText(text);
+
     }
 }

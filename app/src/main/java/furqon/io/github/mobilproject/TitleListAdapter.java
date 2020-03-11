@@ -91,7 +91,7 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
             String suranomer = suraNumber.getText().toString();
             String suranomi = suraName.getText().toString();
 
-            Log.d("CLICK", suranomer);
+            Log.d("CLICK", suranomer + " " + position);
             Intent intent;
             intent = new Intent(mContext, AyahList.class);
             intent.putExtra("SURANAME",suranomi+":"+suranomer);
@@ -101,9 +101,9 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
 
         }
         private void ShowRewardAdForThisItem(View view) {
-            //int position=this.getAdapterPosition();
+            int position=this.getAdapterPosition();
             String suranomer = suraNumber.getText().toString();
-            String suranomi = suraName.getText().toString();
+            //String suranomi = suraName.getText().toString();
             mRewardedVideoAd.SHOW(suranomer);
         }
         private void StartDownload(View view) {
@@ -160,11 +160,6 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
                 holder.downloadButton.setFocusable(true);
                 holder.downloadButton.setTag(2);
                 holder.progressBar.setVisibility(View.INVISIBLE);
-            }else if(current.status.equals("4")){
-                holder.downloadButton.setVisibility(View.GONE);
-                holder.downloadButton.setFocusable(false);
-                holder.downloadButton.setTag(4);
-                holder.progressBar.setVisibility(View.VISIBLE);
             }
             else{
                 holder.downloadButton.setImageResource(R.drawable.ic_unlock);
@@ -183,7 +178,12 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
 
 
     public ChapterTitleTable getTitleAt(int position){
-        return mTitles.get(position);
+        try{
+            return mTitles.get(position);
+        }catch (IndexOutOfBoundsException iobx){
+            throw new IndexOutOfBoundsException();
+        }
+
     }
     private boolean DownloadEnabled(String numb) {
         Log.i("VIDEO AD WATCHED", numb);

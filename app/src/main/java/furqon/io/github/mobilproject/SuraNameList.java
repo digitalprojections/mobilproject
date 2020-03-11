@@ -41,6 +41,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -269,13 +270,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         quranic_order_btn.setClickable(true);
         revelation_order_btn.setClickable(true);
 
-        if(sharedPref.read(sharedPref.displayOrder, 0)==0){
-            quranic_order_btn.setBackgroundColor(getResources().getColor(R.color.gold));
-            revelation_order_btn.setBackgroundColor(0);
-        }else{
-            revelation_order_btn.setBackgroundColor(getResources().getColor(R.color.gold));
-            quranic_order_btn.setBackgroundColor(0);
-        }
+        SetButtonStates();
 
         //LOAD in Mushaf order
         quranic_order_btn.setOnClickListener(new View.OnClickListener() {
@@ -302,6 +297,16 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         });
     }
 
+    private void SetButtonStates() {
+        if(sharedPref.read(sharedPref.displayOrder, 0)==0){
+            quranic_order_btn.setBackgroundColor(getResources().getColor(R.color.gold));
+            revelation_order_btn.setBackgroundColor(0);
+        }else{
+            revelation_order_btn.setBackgroundColor(getResources().getColor(R.color.gold));
+            quranic_order_btn.setBackgroundColor(0);
+        }
+    }
+
     private void LoadTheList() {
 
 
@@ -316,6 +321,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
                     tempbut.setVisibility(View.GONE);
                 }
                 mAdapter.setTitles(surahTitles);
+                SetButtonStates();
             }
         });
     }
@@ -372,7 +378,14 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
     @Override
     public void MarkAsAwarded(int surah_id) {
-        ChapterTitleTable ctitle = mAdapter.getTitleAt(surah_id);
+        int actual_position = surah_id;
+        for(int i=0;i<mAdapter.getItemCount();i++){
+            if(mAdapter.getTitleAt(i).chapter_id==surah_id){
+                actual_position = i;
+            }
+        }
+        Log.e("ACTUAL SURAH ID?", surah_id + " " + actual_position);
+        ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
         ctitle.status = "2";
         titleViewModel.update(ctitle);
     }
@@ -380,7 +393,17 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     @Override
     public void MarkAsDownloaded(int surah_id) {
         if(mAdapter!=null){
-            ChapterTitleTable ctitle = mAdapter.getTitleAt(surah_id-1);
+            int actual_position = surah_id;
+            for(int i=0;i<mAdapter.getItemCount();i++){
+                try{
+                    if(mAdapter.getTitleAt(i).chapter_id==surah_id){
+                        actual_position = i;
+                    }
+                }catch (IndexOutOfBoundsException iobx){
+                    Log.e("CANNOT GET POSITION", iobx.getMessage());
+                }
+            }
+            ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
             if(!ctitle.status.equals("3"))
             {
                 ctitle.status = "3";
@@ -392,9 +415,9 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     @Override
     public void MarkAsDownloading(int surah_id) {
         //TODO if quit while downloading, the progressbar is left permanently on
-        ChapterTitleTable ctitle = mAdapter.getTitleAt(surah_id);
-        ctitle.status = "4";
-        titleViewModel.update(ctitle);
+        //ChapterTitleTable ctitle = mAdapter.getTitleAt(surah_id);
+        //ctitle.status = "4";
+        //titleViewModel.update(ctitle);
     }
 
 
@@ -455,23 +478,39 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         File directory = new File(path);
         File[] files = directory.listFiles();
         if(files!=null){
-            Log.d("FILES", "Size: "+ files.length);
+            //Log.d("FILES", "Size: "+ files.length);
 
             for (int i = 0; i < files.length; i++)
             {
-                Log.d("Files", "FileName:" + files[i].getName());
+                //Log.d("Files", "FileName:" + files[i].getName());
                 String trackname = files[i].getName().toString();
                 if(trackname.contains(".")){
                     trackname = trackname.substring(0, trackname.lastIndexOf("."));
-                    trackList.add(trackname);
-                    MarkAsDownloaded(Integer.parseInt(trackname));
-                    Log.i("TRACKNAME", trackname);
+                    try{
+                        int tt = Integer.parseInt(trackname);
+                        trackList.add(trackname);
+                        MarkAsDownloaded(tt);
+                    }catch (NumberFormatException nfx){
+                        Log.e("TRACKNAME ERROR", trackname);
+                        DeleteTheFile(files[i]);
+                        //TODO delete the file with x-y.mp3 naming format (dual download)
+                    }
+                    //Log.i("TRACKNAME", trackname);
                 }
             }
         }else{
             Log.d("NULL ARRAY", "no files found");
         }
     }
+
+    private void DeleteTheFile(File file) {
+        try{
+            file.delete();
+        }catch (SecurityException sx){
+            Log.e("FAILED to DELETE", sx.getMessage());
+        }
+    }
+
     private boolean WritePermission() {
 
         if (ContextCompat.checkSelfPermission(this,

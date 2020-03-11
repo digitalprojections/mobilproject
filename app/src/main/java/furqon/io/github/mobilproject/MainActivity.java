@@ -17,6 +17,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -93,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
     private sharedpref sharedPref;
     private ViewPager viewPager;
     private boolean randomayahshown;
-
+    private Animation scaler;
 
 
     @Override
@@ -134,6 +136,8 @@ public class MainActivity extends AppCompatActivity {
         sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
 
+        scaler = AnimationUtils.loadAnimation(this, R.anim.bounce);
+
         titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
 
         titleViewModel.getUnreadCount().observe(this, new Observer<List<NewMessages>>() {
@@ -142,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
                 if(newMessages.size()>0){
                     nbadge.setVisibility(View.VISIBLE);
                     nbadge.setText(String.valueOf(newMessages.size()));
+                    nbadge.startAnimation(scaler);
                 }else {
                     nbadge.setVisibility(View.INVISIBLE);
                     nbadge.setText("0");
