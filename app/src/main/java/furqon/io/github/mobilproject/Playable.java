@@ -4,4 +4,5 @@ public interface Playable {
     void OnTrackPrevious();
     void OnTrackPlay();
     void OnTrackNext();
+    void OnTrackPause();
 }

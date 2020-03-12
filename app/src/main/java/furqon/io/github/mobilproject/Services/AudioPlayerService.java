@@ -1,89 +1,98 @@
-package furqon.io.github.mobilproject;
+package furqon.io.github.mobilproject.Services;
 
-import android.app.Application;
+
 import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
+import android.media.session.MediaSession;
 import android.os.Build;
+import android.os.IBinder;
+import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.media.MediaSessionManager;
 
-import furqon.io.github.mobilproject.Services.NotificationActionService;
+import furqon.io.github.mobilproject.Furqon;
+import furqon.io.github.mobilproject.R;
 
-public class Furqon extends Application {
-    public static final String NOTIFICATION_FROM_AUTHOR = "Muallifdan";
-    public static final String AUDIO_PLAYING_NOTIFICATION_CHANNEL = "audio playing";
-    public static final String AUDIO_DOWNLOADING_NOTIFICATION_CHANNEL = "downloading a surah";
-    public static final String ACTION_PREV = "actionprevious";
-    public static final String ACTION_PLAY = "actionplay";
-    public static final String ACTION_NEXT = "actionnext";
-    public static final String ACTION_FAV = "actionfav";
+public class AudioPlayerService extends Service {
 
+
+    public static final String ACTION_PLAY = "action_play";
+    public static final String ACTION_PAUSE = "action_pause";
+    public static final String ACTION_PREVIOUS = "action_previous";
+    public static final String ACTION_NEXT = "action_next";
+    public static final String ACTION_STOP = "action_stop";
+
+    private MediaPlayer mediaPlayer;
+    private MediaSessionCompat mediaSession;
+    private MediaSessionManager mediaSessionManager;
+    private MediaControllerCompat controllerCompat;
     static PendingIntent pendingIntentPrev;
     static PendingIntent pendingIntentPlay;
     static PendingIntent pendingIntentNext;
     static PendingIntent pendingIntentFav;
 
-
     @Override
-    public void onCreate() {
-        super.onCreate();
-        CreateNotificationChannels();
-
-
-
+    public IBinder onBind(Intent intent) {
+        // A client is binding to the service with bindService()
+        return null;
+    }
+    @Override
+    public boolean onUnbind(Intent intent) {
+        // All clients have unbound with unbindService()
+        mediaSession.release();
+        return super.onUnbind(intent);
     }
 
-    private void CreateNotificationChannels() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+    private void handleIntent(Intent intent){
+        if(intent == null || intent.getAction() == null){
+            return;
+        }
+        String action = intent.getAction();
 
-            //these will actually show up in the Apps&Notifications as separate categories
-            NotificationChannel notificationChannel_audio_play = new NotificationChannel(AUDIO_PLAYING_NOTIFICATION_CHANNEL, getString(R.string.audio_playing), NotificationManager.IMPORTANCE_DEFAULT);
-            notificationChannel_audio_play.setDescription(getString(R.string.audio_player_description));
-            notificationChannel_audio_play.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-            //
-            NotificationChannel notificationChannel_audio_downloaded = new NotificationChannel(AUDIO_DOWNLOADING_NOTIFICATION_CHANNEL, getString(R.string.audio_downloaded), NotificationManager.IMPORTANCE_DEFAULT);
-            notificationChannel_audio_downloaded.setDescription(getString(R.string.audio_downloaded_ready));
-            notificationChannel_audio_downloaded.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(notificationChannel_audio_play);
-            notificationManager.createNotificationChannel(notificationChannel_audio_downloaded);
-
+        switch (action){
+            case ACTION_PLAY:
+                controllerCompat.getTransportControls().play();
+                break;
+            case ACTION_PAUSE:
+                controllerCompat.getTransportControls().pause();
+                break;
+            case ACTION_PREVIOUS:
+                controllerCompat.getTransportControls().skipToPrevious();
+                break;
+            case ACTION_NEXT:
+                controllerCompat.getTransportControls().skipToNext();
+                break;
+            case ACTION_STOP:
+                controllerCompat.getTransportControls().stop();
+                break;
 
         }
-
     }
+
+//
+//    private Notification.Action generateAction(int icon, String title, String intentAction){
+//        Intent intent = new Intent(getApplicationContext(), AudioPlayerService.class);
+//        intent.setAction(intentAction);
+//        PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 1, intent, 0);
+//        Notification.Action build;
+//        build = new Notification.Action(icon, title, pendingIntent);
+//        return build; //make sure to build where necessary
+//    }
+
     public static void ShowNotification(Context context, int playbutton, String suranomi, int pos) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
             MediaSessionCompat mediaSessionCompat = new MediaSessionCompat(context, "tag");
-
-//            pendingIntentPrev = PendingIntent.getBroadcast(this, 0, intentPrev, PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//            //PLAY
-//            Intent intentPlay;
-//            intentPlay = new Intent(this, NotificationActionService.class).setAction(Furqon.ACTION_PLAY);
-//
-//            pendingIntentPlay = PendingIntent.getBroadcast(this, 0, intentPrev, PendingIntent.FLAG_UPDATE_CURRENT);
-//            //NEXT
-//            Intent intentNext;
-//            intentNext = new Intent(this, NotificationActionService.class).setAction(Furqon.ACTION_NEXT);
-//
-//            pendingIntentNext = PendingIntent.getBroadcast(this, 0, intentPrev, PendingIntent.FLAG_UPDATE_CURRENT);
-//            //FAV
-//            Intent intentFav;
-//            intentFav = new Intent(this, NotificationActionService.class).setAction(Furqon.ACTION_FAV);
-//
-//
-//            pendingIntentFav = PendingIntent.getBroadcast(this, 0, intentPrev, PendingIntent.FLAG_UPDATE_CURRENT);
 
             int drw_previous;
             if (pos == 0) {
@@ -116,7 +125,7 @@ public class Furqon extends Application {
             Bitmap audio_player_icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.nightsky);
 
             Notification notification;
-            notification = new NotificationCompat.Builder(context, AUDIO_PLAYING_NOTIFICATION_CHANNEL)
+            notification = new NotificationCompat.Builder(context, Furqon.AUDIO_PLAYING_NOTIFICATION_CHANNEL)
                     .setSmallIcon(R.drawable.ic_surah_audio_24dp)
                     .setLargeIcon(audio_player_icon)
                     .setContentTitle("Furqon Audio Player")
@@ -134,6 +143,24 @@ public class Furqon extends Application {
                     .build();
             notificationManagerCompat.notify(1, notification);
         }
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if(mediaSessionManager==null){
+            initMediaSession();
+        }
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void initMediaSession() {
+        mediaPlayer = new MediaPlayer();
+        mediaSession = new MediaSessionCompat(getApplicationContext(), getString(R.string.audio_player_title));
+    }
+
+    @Override
+    public void onDestroy() {
+        // The service is no longer used and is being destroyed
     }
 
 

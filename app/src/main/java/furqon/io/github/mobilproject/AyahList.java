@@ -2,10 +2,12 @@ package furqon.io.github.mobilproject;
 
 import android.app.Notification;
 
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -59,18 +61,20 @@ import java.util.Map;
 import java.util.Objects;
 
 import furqon.io.github.mobilproject.Services.NotificationActionService;
+import furqon.io.github.mobilproject.Services.OnClearFromService;
 
 import static furqon.io.github.mobilproject.Furqon.AUDIO_PLAYING_NOTIFICATION_CHANNEL;
 
 
 public class AyahList extends AppCompatActivity implements ManageSpecials, Playable {
 
-    //private NotificationManagerCompat managerCompat;
     private ArrayList<JSONObject> jsonArrayResponse;
 
     private TitleViewModel titleViewModel;
     private AyahListAdapter mAdapter;
     MediaPlayer mediaPlayer;
+
+    boolean isPlaying;
 
     Integer audio_pos;
     Integer ayah_position;
@@ -86,13 +90,6 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     Handler handler;
     Runnable runnable;
     private sharedpref sharedPref;
-    PendingIntent pendingIntentPrev;
-    PendingIntent pendingIntentPlay;
-    PendingIntent pendingIntentNext;
-    PendingIntent pendingIntentFav;
-    MediaSessionCompat mediaSessionCompat;
-
-    private NotificationManagerCompat managerCompat;
     private Button tempbut;
     private Context context;
     private boolean httpresponse;
@@ -100,6 +97,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
     private MenuItem playButton;
     private MenuItem stopButton;
+
+    private NotificationManager notificationManager;
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -111,7 +110,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chapter_view);
-        managerCompat = NotificationManagerCompat.from(this);
+
 
         tempbut = findViewById(R.id.buttonReload);
         tempbut.setVisibility(View.INVISIBLE);
@@ -124,7 +123,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         sharedPref.init(getApplicationContext());
 
 
-        mediaSessionCompat = new MediaSessionCompat(this, "tag");
+
 
         audiorestore = getString(R.string.audiopos_restored);
         audiostore = getString(R.string.audiopos_stored);
@@ -132,6 +131,14 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
         progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
+
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+            registerReceiver(broadcastReceiver, new IntentFilter("TRACKS_TRACKS"));
+            startService(new Intent(getBaseContext(), OnClearFromService.class));
+
+
+        }
+
 
 
         Toolbar toolbar = findViewById(R.id.audiobar);
@@ -194,28 +201,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             }
         }
 
-        //PREV
-        Intent intentPrev;
-        intentPrev = new Intent(this, NotificationActionService.class).setAction(Furqon.ACTION_PREV);
 
-        pendingIntentPrev = PendingIntent.getBroadcast(this, 0, intentPrev, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        //PLAY
-        Intent intentPlay;
-        intentPlay = new Intent(this, NotificationActionService.class).setAction(Furqon.ACTION_PLAY);
-
-        pendingIntentPlay = PendingIntent.getBroadcast(this, 0, intentPrev, PendingIntent.FLAG_UPDATE_CURRENT);
-        //NEXT
-        Intent intentNext;
-        intentNext = new Intent(this, NotificationActionService.class).setAction(Furqon.ACTION_NEXT);
-
-        pendingIntentNext = PendingIntent.getBroadcast(this, 0, intentPrev, PendingIntent.FLAG_UPDATE_CURRENT);
-        //FAV
-        Intent intentFav;
-        intentFav = new Intent(this, NotificationActionService.class).setAction(Furqon.ACTION_FAV);
-
-
-        pendingIntentFav = PendingIntent.getBroadcast(this, 0, intentPrev, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
         tempbut.setOnClickListener(new View.OnClickListener() {
@@ -347,7 +333,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             timer = findViewById(R.id.audio_timer);
             timer.setText(AudioTimer.getTimeStringFromMs(audio_pos));
 
-            ShowNotification(this, suranomi, 0, audio_pos, mediaPlayer.getDuration());
+            //Furqon.ShowNotification(this, suranomi, audio_pos);
 
             if (mediaPlayer.isPlaying()) {
                 runnable = new Runnable() {
@@ -363,6 +349,9 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         }
     }
 
+
+
+
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -371,78 +360,30 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             switch (action){
                 case Furqon
                         .ACTION_PREV:
+                    OnTrackPrevious();
                     Toast.makeText(context,"PREVCLICKED", Toast.LENGTH_SHORT).show();
                     break;
                 case Furqon
                         .ACTION_PLAY:
+                    if(isPlaying){
+                        OnTrackPause();
+                    }else{
+                        OnTrackPlay();
+                    }
+
                     break;
                 case Furqon
                         .ACTION_NEXT:
+                    OnTrackNext();
                     break;
                 case Furqon
                         .ACTION_FAV:
+                    //TODO create fav action
+                    //OnTrackFavourite();
                     break;
             }
         }
     };
-
-    public void ShowNotification(Context context, String suranomi, int playbutton, int pos, int size){
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
-            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
-            MediaSessionCompat mediaSessionCompat = new MediaSessionCompat(context, "tag");
-
-
-            int drw_previous;
-            if(pos==0){
-                pendingIntentPrev = null;
-                drw_previous = 0;
-            }else{
-                Intent intentPrevious = new Intent(context, NotificationActionService.class)
-                        .setAction(Furqon.ACTION_PREV);
-
-                pendingIntentPrev = PendingIntent.getBroadcast(context, 0, intentPrevious, PendingIntent.FLAG_UPDATE_CURRENT);
-            }
-
-            Intent intentPlay = new Intent(context, NotificationActionService.class)
-                    .setAction(Furqon.ACTION_PLAY);
-            pendingIntentPlay = PendingIntent.getBroadcast(context, 0, intentPlay, PendingIntent.FLAG_UPDATE_CURRENT);
-
-
-            int drw_next;
-            if(pos==0){
-                pendingIntentNext = null;
-                drw_next = 0;
-            }else{
-                Intent intentNext = new Intent(context, NotificationActionService.class)
-                        .setAction(Furqon.ACTION_NEXT);
-
-                pendingIntentNext = PendingIntent.getBroadcast(context, 0, intentNext, PendingIntent.FLAG_UPDATE_CURRENT);
-            }
-        }
-
-
-        Bitmap audio_player_icon = BitmapFactory.decodeResource(getResources(), R.drawable.nightsky);
-
-        Notification notification;
-        notification = new NotificationCompat.Builder(context, AUDIO_PLAYING_NOTIFICATION_CHANNEL)
-                .setSmallIcon(R.drawable.ic_surah_audio_24dp)
-                .setLargeIcon(audio_player_icon)
-                .setContentTitle("Furqon Audio Player")
-                .setContentText(suranomi)
-                .addAction(R.drawable.ic_previous, getString(R.string.fast_rewind), pendingIntentPrev)
-                .addAction(R.drawable.ic_play_circle, getString(R.string.play), pendingIntentPlay)
-                .addAction(R.drawable.ic_next, getString(R.string.fast_forward), pendingIntentNext)
-                .addAction(R.drawable.ic_favorite_border_black_24dp, getString(R.string.favorites), pendingIntentFav)
-                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
-                        .setShowActionsInCompactView(0,1,2)
-                        .setMediaSession(mediaSessionCompat.getSessionToken()))
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setAutoCancel(false)
-                .setOnlyAlertOnce(true)
-                .build();
-        managerCompat.notify(1, notification);
-    }
-
     private void LoadTheList() {
         titleViewModel.getChapterText(suranomer).observe(this, new Observer<List<AllTranslations>>() {
             @Override
@@ -498,14 +439,10 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.play:
-                try {
 
                     play();
+                    OnTrackPlay();
 
-                } catch (IOException e) {
-                    Toast.makeText(getBaseContext(), loadfailed, Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
                 return true;
             case R.id.stop:
                 if (mediaPlayer != null) {
@@ -519,7 +456,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         }
     }
 
-    public void play() throws IOException {
+    public void play() {
 
         String filePath = "";
 
@@ -555,10 +492,16 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                         seekBar.setMax(mediaPlayer.getDuration());
                         progressBar.setVisibility(View.INVISIBLE);
                         resume();
+                        isPlaying = true;
                     }
                 });
                 //mediaPlayer.setAudioStreamType(AudioManager.USE_DEFAULT_STREAM_TYPE);
-                mediaPlayer.setDataSource(url);
+                try{
+                    mediaPlayer.setDataSource(url);
+                }catch (IOException iox){
+                    Log.e("ERROR", iox.getMessage());
+                }
+
 
 
                 progressBar.setVisibility(View.VISIBLE);
@@ -571,6 +514,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                 mediaPlayer.release();
                 mediaPlayer = null;
                 play();
+
             }
 
         }
@@ -595,6 +539,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     public void pause() {
         if (mediaPlayer != null) {
             storeAudioPosition();
+            isPlaying = false;
         }
     }
 
@@ -632,6 +577,10 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             mediaPlayer.release();
             handler.removeCallbacks(runnable);
         }
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+            notificationManager.cancelAll();
+        }
+        unregisterReceiver(broadcastReceiver);
     }
 
 
@@ -649,11 +598,19 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
     @Override
     public void OnTrackPlay() {
-
+        Furqon.ShowNotification(AyahList.this, R.drawable.ic_pause_circle, suranomi, audio_pos);
+        play();
     }
 
     @Override
     public void OnTrackNext() {
 
+    }
+
+    @Override
+    public void OnTrackPause() {
+        Furqon.ShowNotification(AyahList.this, R.drawable.ic_play_circle, suranomi, audio_pos);
+        isPlaying = false;
+        pause();
     }
 }

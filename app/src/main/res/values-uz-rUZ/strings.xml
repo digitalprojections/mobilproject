@@ -66,4 +66,5 @@
     <string name="download_audio_description">Endi siz reklama tomosha qilish orqali audio yuklab olish tugmasini ochishingiz mumkin</string>
     <string name="downloadaudio_title">Ovozni Yuklab Olish</string>
     <string name="messages_button_text">Xabarlar</string>
+    <string name="audio_player_title">Mediapleer Furqan</string>
 </resources>

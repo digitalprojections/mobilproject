@@ -66,4 +66,5 @@
     <string name="download_audio_description">Теперь вы можете смотреть рекламу и разблокировать скачивание аудио.</string>
     <string name="downloadaudio_title">Скачать Аудио</string>
     <string name="messages_button_text">Сообщения</string>
+    <string name="audio_player_title">Аудиоплеер Фуркан</string>
 </resources>

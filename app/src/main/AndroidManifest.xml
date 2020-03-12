@@ -26,7 +26,7 @@
             android:parentActivityName=".MainActivity"/>
 
         <service
-            android:name=".Services.MyService"
+            android:name=".Services.AudioPlayerService"
             android:enabled="true"
             android:exported="true" />
 
