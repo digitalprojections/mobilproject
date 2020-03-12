@@ -20,7 +20,7 @@ android {
 
     defaultConfig {
         applicationId "furqon.io.github.mobilproject"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion rootProject.ext.compileSdkVersion
         versionCode 40014
         versionName "3.0"
