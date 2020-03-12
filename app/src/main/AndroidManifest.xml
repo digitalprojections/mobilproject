@@ -48,6 +48,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+        <service android:name=".Services.OnClearFromService"/>
 
         <receiver android:name=".Services.NotificationActionService">
             <intent-filter>

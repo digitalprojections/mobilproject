@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -62,7 +63,7 @@ import furqon.io.github.mobilproject.Services.NotificationActionService;
 import static furqon.io.github.mobilproject.Furqon.AUDIO_PLAYING_NOTIFICATION_CHANNEL;
 
 
-public class AyahList extends AppCompatActivity implements ManageSpecials {
+public class AyahList extends AppCompatActivity implements ManageSpecials, Playable {
 
     //private NotificationManagerCompat managerCompat;
     private ArrayList<JSONObject> jsonArrayResponse;
@@ -346,7 +347,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
             timer = findViewById(R.id.audio_timer);
             timer.setText(AudioTimer.getTimeStringFromMs(audio_pos));
 
-            ShowNotification(this, suranomi);
+            ShowNotification(this, suranomi, 0, audio_pos, mediaPlayer.getDuration());
 
             if (mediaPlayer.isPlaying()) {
                 runnable = new Runnable() {
@@ -385,7 +386,41 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
         }
     };
 
-    public void ShowNotification(Context context, String suranomi){
+    public void ShowNotification(Context context, String suranomi, int playbutton, int pos, int size){
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
+            MediaSessionCompat mediaSessionCompat = new MediaSessionCompat(context, "tag");
+
+
+            int drw_previous;
+            if(pos==0){
+                pendingIntentPrev = null;
+                drw_previous = 0;
+            }else{
+                Intent intentPrevious = new Intent(context, NotificationActionService.class)
+                        .setAction(Furqon.ACTION_PREV);
+
+                pendingIntentPrev = PendingIntent.getBroadcast(context, 0, intentPrevious, PendingIntent.FLAG_UPDATE_CURRENT);
+            }
+
+            Intent intentPlay = new Intent(context, NotificationActionService.class)
+                    .setAction(Furqon.ACTION_PLAY);
+            pendingIntentPlay = PendingIntent.getBroadcast(context, 0, intentPlay, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+            int drw_next;
+            if(pos==0){
+                pendingIntentNext = null;
+                drw_next = 0;
+            }else{
+                Intent intentNext = new Intent(context, NotificationActionService.class)
+                        .setAction(Furqon.ACTION_NEXT);
+
+                pendingIntentNext = PendingIntent.getBroadcast(context, 0, intentNext, PendingIntent.FLAG_UPDATE_CURRENT);
+            }
+        }
+
+
         Bitmap audio_player_icon = BitmapFactory.decodeResource(getResources(), R.drawable.nightsky);
 
         Notification notification;
@@ -604,6 +639,21 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
     public void UpdateSpecialItem(ChapterTextTable text) {
 
         titleViewModel.updateText(text);
+
+    }
+
+    @Override
+    public void OnTrackPrevious() {
+
+    }
+
+    @Override
+    public void OnTrackPlay() {
+
+    }
+
+    @Override
+    public void OnTrackNext() {
 
     }
 }
