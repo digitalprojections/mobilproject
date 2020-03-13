@@ -182,11 +182,12 @@ public class AyahOfTheDay extends AppCompatActivity {
         next_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (random_ayah < QuranMap.AYAHCOUNT[random_surah-1]) {
-                    random_ayah++;
-                    next_btn.startAnimation(scaler);
-                    ShowTheAyahBeside();
-                }
+
+                    if (random_ayah < QuranMap.GetSurahLength(random_surah-1)) {
+                        random_ayah++;
+                        next_btn.startAnimation(scaler);
+                        ShowTheAyahBeside();
+                    }
             }
         });
         //
@@ -246,7 +247,7 @@ public class AyahOfTheDay extends AppCompatActivity {
 
     private int AnAvailableSurahID() {
         int randomSurahNumber;
-        if(randomSurahs!=null){
+        if(randomSurahs!=null && randomSurahs.size()>0){
             //get the size of the list.
             int rslen = randomSurahs.size();//value between 1 and 114 inclusive
             randomSurahNumber = (int) Math.floor(Math.random()*rslen);//get a random value of between 0-113
@@ -285,20 +286,22 @@ public class AyahOfTheDay extends AppCompatActivity {
     private void addToFavourites(View view) {
         // manage sqlite creation and data addition
         Log.i("AYAT FAVOURITED", String.valueOf(view));
-
-
+        if(allTranslationsList!=null){
                 if (fav_btn.getTag() == "1") {
                     //mDatabase.removeFromFavs(random_surah, random_ayah, "0");
-                    allTranslationsList.get(random_ayah-1).favourite = 0;
+
+                        allTranslationsList.get(random_ayah-1).favourite = 0;
                 } else {
                     //mDatabase.saveToFavs(random_surah, random_ayah, "1");
-                    allTranslationsList.get(random_ayah-1).favourite = 1;
-                }
-        ChapterTextTable text = MapTextObjects(allTranslationsList.get(random_ayah-1));
-                FavouriteSelected = true;
-        viewModel.updateText(text);
-        //SetFavouriteIconState();
 
+                        allTranslationsList.get(random_ayah-1).favourite = 1;
+                }
+
+            ChapterTextTable text = MapTextObjects(allTranslationsList.get(random_ayah-1));
+            FavouriteSelected = true;
+            viewModel.updateText(text);
+        }
+        //SetFavouriteIconState();
     }
     private ChapterTextTable MapTextObjects(AllTranslations allTranslations) {
         ChapterTextTable ctext = new ChapterTextTable(allTranslations.sura_id, allTranslations.verse_id, allTranslations.favourite, 1, allTranslations.order_no, allTranslations.ar_text, allTranslations.comments_text, allTranslations.surah_type);
@@ -327,18 +330,21 @@ public class AyahOfTheDay extends AppCompatActivity {
     }
 
     private String getTextByLanguage() {
-        String ltext;
-        switch (language_id){
-            case 5:
-                ltext = allTranslationsList.get(random_ayah-1).ru_text;
-                break;
-            case 6:
-                ltext = allTranslationsList.get(random_ayah-1).en_text;
-                break;
-            default:
-                ltext = allTranslationsList.get(random_ayah-1).uz_text;
-                break;
+        String ltext ="";
+        if(allTranslationsList!=null){
+            switch (language_id){
+                case 5:
+                    ltext = allTranslationsList.get(random_ayah-1).ru_text;
+                    break;
+                case 6:
+                    ltext = allTranslationsList.get(random_ayah-1).en_text;
+                    break;
+                default:
+                    ltext = allTranslationsList.get(random_ayah-1).uz_text;
+                    break;
+            }
         }
+
         return ltext;
     }
 
@@ -348,17 +354,19 @@ public class AyahOfTheDay extends AppCompatActivity {
             //database is empty. quit
             ayah_text.setText(R.string.chapters_not_available);
             return;
+        }else{
+            random_ayah = (int) Math.round(Math.random() * QuranMap.GetSurahLength(random_surah-1));
+            Log.d("RANDOM SURAH MAX AYAH", random_surah + " is surah " + QuranMap.GetSurahLength(random_surah-1));
+            viewModel.getChapterText(String.valueOf(random_surah)).observe(this, new Observer<List<AllTranslations>>() {
+                @Override
+                public void onChanged(List<AllTranslations> allTranslations) {
+                    allTranslationsList = allTranslations;
+                    ShowRandomAyah(allTranslations);
+                }
+            });
         }
 
-        random_ayah = (int) Math.round(Math.random() * QuranMap.AYAHCOUNT[random_surah-1]);
-        Log.d("RANDOM SURAH MAX AYAH", random_surah + " is surah " + QuranMap.AYAHCOUNT[random_surah-1]);
-        viewModel.getChapterText(String.valueOf(random_surah)).observe(this, new Observer<List<AllTranslations>>() {
-            @Override
-            public void onChanged(List<AllTranslations> allTranslations) {
-                allTranslationsList = allTranslations;
-                ShowRandomAyah(allTranslations);
-            }
-        });
+
 
     }
 
@@ -390,15 +398,18 @@ public class AyahOfTheDay extends AppCompatActivity {
     }
 
     private void SetFavouriteIconState() {
-        int is_fav = allTranslationsList.get(random_ayah-1).favourite;
-        Log.d(TAG, is_fav + " is fav");
-        if(is_fav!=0){
-            fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
-            fav_btn.setTag("1");
-        } else {
-            fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-            fav_btn.setTag("0");
+        if(allTranslationsList!=null){
+            int is_fav = allTranslationsList.get(random_ayah-1).favourite;
+            Log.d(TAG, is_fav + " is fav");
+            if(is_fav!=0){
+                fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
+                fav_btn.setTag("1");
+            } else {
+                fav_btn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                fav_btn.setTag("0");
+            }
         }
+
     }
 
     private void animateFabs() {

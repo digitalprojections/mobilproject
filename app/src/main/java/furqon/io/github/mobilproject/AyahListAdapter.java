@@ -63,7 +63,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     @Override
     public void onViewDetachedFromWindow(@NonNull AyahListViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        Log.i(TAG, String.valueOf(this));
+        //Log.i(TAG, String.valueOf(this));
 
     }
 
@@ -212,7 +212,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
-            Log.d("CLICK", ayah_number.getText() + " position: " + position);
+            //Log.d("CLICK", ayah_number.getText() + " position: " + position);
             verse_number = String.valueOf(ayah_number.getText());
             book_button = ((ViewGroup) view.getParent().getParent()).findViewById(R.id.actions).findViewById(R.id.f_bookmarkbut);
             //book_button = view;
@@ -229,7 +229,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
                     book_button.setTag("selected");
                 }
 
-                Log.d("verse number", verse_number + " " + ayah_position);
+                //Log.d("verse number", verse_number + " " + ayah_position);
             } else {
                 actions_lin_layout.setVisibility(View.GONE);
             }
@@ -238,12 +238,9 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     }
 
     private void takeAction(View view) {
-        //Log.d("CLICK", view);
-        //LinearLayout ll = ((ViewGroup) view.getParent().getParent()).findViewById(R.id.uzbektranslation);
 
         switch (view.getId()) {
             case R.id.f_sharebut:
-                Log.d("CLICK SHARE", ayah_txt_uz);
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, ayah_txt_uz + "\n(" + chaptername + ", " + verse_number + ")\nhttps://goo.gl/sXBkNt\nFurqon dasturi, Android");
@@ -252,32 +249,22 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
                 break;
             case R.id.favouritebut:
-                // favourite add to sqlite
-                //call the function
                 fav_button = ((ViewGroup) view.getParent().getParent()).findViewById(R.id.favouritebut);
-                //fav_button = (ImageButton) view;
-                //view.startAnimation(scaler);
                 addToFavourites(view);
                 fav_button.startAnimation(scaler);
                 break;
             case R.id.f_bookmarkbut:
-
-
-                //recolor the bookmark
                 book_button = ((ViewGroup) view.getParent().getParent()).findViewById(R.id.f_bookmarkbut);
                 if (book_button.getTag() == "unselected") {
                     book_button.setImageResource(R.drawable.ic_turned_in_black_24dp);
                     book_button.setTag("selected");
                     sharedPref.write("xatchup" + chaptername, Integer.parseInt(verse_number));
-
                     sharedPref.write("xatchup", chaptername + ":" + chapter_number);
-                    Log.i("BOOKMARK", String.valueOf(book_button.getTag()));
                 } else {
                     book_button.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
                     book_button.setTag("unselected");
                     sharedPref.write("xatchup" + chaptername, 0);
                     sharedPref.write("xatchup", "");
-
                 }
                 book_button.startAnimation(scaler);
                 break;
@@ -285,33 +272,21 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     }
 
     private void addToFavourites(View view) {
-        // manage sqlite creation and data addition
-        Log.i("AYAT FAVOURITED", String.valueOf(view));
-        //fav_button = ((ViewGroup) view.getParent().getParent()).findViewById(R.id.favouritebut);
         fav_button = (ImageButton) view;
         ManageSpecials manageSpecials;
-
         if(mContext instanceof ManageSpecials) {
             manageSpecials = (ManageSpecials) mContext;
             AllTranslations allTranslations = getTextAt(Integer.parseInt(verse_number) - 1);
-
-
-
             if (fav_button.getTag() == "1") {
-                //mDatabase.removeFromFavs(chapter_number, verse_number, "0");
-                //fav_button.setImageResource(R.drawable.ic_favorite_border_black_24dp);
                 fav_button.setTag("0");
                 allTranslations.favourite = 0;
             } else {
-                //mDatabase.saveToFavs(chapter_number, verse_number, "1");
-                //fav_button.setImageResource(R.drawable.ic_favorite_black_24dp);
                 fav_button.setTag("1");
                 allTranslations.favourite = 1;
             }
             ChapterTextTable text = MapTextObjects(allTranslations);
             manageSpecials.UpdateSpecialItem(text);
             notifyDataSetChanged();
-            //mCursor = mDatabase.getSuraText(mCursor.getString(1));
         }
     }
 
@@ -364,14 +339,11 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         fav_button.setTag("0");
         book_button.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
         book_button.setTag("unselected");
-
-
-
-        Log.i("TAG FAVOURITE AYAH", numb + " " + is_fav + " " + current.favourite + " " + current.sura_id + " ");
+        //Log.i("TAG FAVOURITE AYAH", numb + " " + is_fav + " " + current.favourite + " " + current.sura_id + " ");
         if (is_fav == 1) {
             fav_button.setImageResource(R.drawable.ic_favorite_black_24dp);
             fav_button.setTag("1");
-            Log.i("FAVOURITE AYAH ****** ", numb + " " + is_fav);
+            //Log.i("FAVOURITE AYAH ****** ", numb + " " + is_fav);
         }
 
         if(current.favourite==0){
@@ -417,7 +389,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         }else{
             holder.ayah_text_en.setVisibility(View.GONE);
         }
-        Log.i("AYAT NUMBER", String.valueOf(numb));
+        //Log.i("AYAT NUMBER", String.valueOf(numb));
         mArrayList.add(numb);
 
     }
@@ -432,7 +404,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             if (t.indexOf("(") > 0) {
                 //all logic here
                 retval = t.replace("(", "<br><font color='#517D43'>");
-                Log.i("ARRAY", retval);
+                //Log.i("ARRAY", retval);
                 retval = retval.replace(")", "</font>");
 
             } else {

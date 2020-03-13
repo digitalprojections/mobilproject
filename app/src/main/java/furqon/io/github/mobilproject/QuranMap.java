@@ -236,6 +236,14 @@ public class QuranMap {
             "An-Naas"      
     };
 
+    public static int GetSurahLength(int i){
+        try{
+            return AYAHCOUNT[i];
+        }catch (ArrayIndexOutOfBoundsException aiobx){
+            return 0;
+        }
+    }
+
     public static final int[] REVELATION_ORDER = {
 
     };

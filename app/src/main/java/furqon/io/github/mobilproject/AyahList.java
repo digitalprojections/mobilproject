@@ -33,8 +33,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -413,7 +411,9 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     }
 
     private int getSurahLength(String suranomer) {
-        return QuranMap.AYAHCOUNT[Integer.parseInt(suranomer)-1];
+        int sl = 0;
+            sl = QuranMap.GetSurahLength(Integer.parseInt(suranomer)-1);
+        return sl;
     }
 
     @Override
@@ -434,18 +434,24 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.my_navigation_items, menu);
 
-        playButton = menu.getItem(1);
-
-        ayah_position = sharedPref.read(xatchup + suranomi, 0);
-
-        if (ayah_position > 0) {
-            //BOOKMARK FOUND
-            Toast.makeText(context, getString(R.string.bookmark_found), Toast.LENGTH_SHORT).show();
+        try{
             menu_bookmark_btn = menu.getItem(0);
-            menu.getItem(0).setVisible(true);
-        }else{
-            menu.getItem(0).setVisible(false);
+            playButton = menu.getItem(1);
+            ayah_position = sharedPref.read(xatchup + suranomi, 0);
+
+
+            if (ayah_position > 0) {
+                //BOOKMARK FOUND
+                Toast.makeText(context, getString(R.string.bookmark_found), Toast.LENGTH_SHORT).show();
+                menu.getItem(0).setVisible(true);
+            }else{
+                menu.getItem(0).setVisible(false);
+            }
+        }catch (IndexOutOfBoundsException iobx){
+
         }
+
+
 
         return true;
     }
@@ -605,7 +611,13 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             if(notificationManager!=null)
                 notificationManager.cancelAll();
         }
-        unregisterReceiver(broadcastReceiver);
+        try{
+            unregisterReceiver(broadcastReceiver);
+        }catch (IllegalArgumentException iax){
+
+        }
+
+
     }
 
 
