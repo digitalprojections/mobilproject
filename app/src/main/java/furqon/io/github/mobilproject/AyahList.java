@@ -439,9 +439,12 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.play:
-
-                    play();
+                if(isPlaying){
+                    OnTrackPause();
+                    playButton.setIcon(R.drawable.ic_play_arrow_black_24dp);
+                }else{
                     OnTrackPlay();
+                }
 
                 return true;
             case R.id.stop:
@@ -510,10 +513,14 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                 playButton.setIcon(R.drawable.ic_pause);
 
             } else {
+                if(isPlaying){
+                    pause();
+                }else{
+                    mediaPlayer.release();
+                    mediaPlayer = null;
+                    play();
+                }
 
-                mediaPlayer.release();
-                mediaPlayer = null;
-                play();
 
             }
 
@@ -540,6 +547,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         if (mediaPlayer != null) {
             storeAudioPosition();
             isPlaying = false;
+
         }
     }
 
@@ -578,7 +586,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             handler.removeCallbacks(runnable);
         }
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
-            notificationManager.cancelAll();
+            if(notificationManager!=null)
+                notificationManager.cancelAll();
         }
         unregisterReceiver(broadcastReceiver);
     }

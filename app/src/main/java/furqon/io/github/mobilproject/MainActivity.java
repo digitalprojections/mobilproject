@@ -56,6 +56,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import furqon.io.github.mobilproject.Services.AudioPlayerService;
 import hotchemi.android.rate.AppRate;
 import hotchemi.android.rate.OnClickButtonListener;
 import io.fabric.sdk.android.Fabric;
@@ -320,11 +321,11 @@ public class MainActivity extends AppCompatActivity {
                 ayahOfTheDay();
                 randomayahshown = true;
             }
-
-
         }
 
-
+//        Intent intent = new Intent(getApplicationContext(), AudioPlayerService.class);
+//        intent.setAction(AudioPlayerService.ACTION_PLAY);
+//        startService(intent);
     }
 
     private void Rateus() {

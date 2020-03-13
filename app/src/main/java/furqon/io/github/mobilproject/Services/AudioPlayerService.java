@@ -102,6 +102,11 @@ public class AudioPlayerService extends Service {
                 .setContentText("Surah name")
                 .setDeleteIntent(pendingIntent)
                 .setStyle(style);
+        builder.addAction(generateAction(R.drawable.ic_previous, "Previous", ACTION_PREVIOUS));
+        builder.addAction(action);
+        builder.addAction(generateAction(R.drawable.ic_next, "Next", ACTION_NEXT));
+        style.setShowActionsInCompactView(1);
+
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(1, builder.build());
@@ -168,6 +173,7 @@ public class AudioPlayerService extends Service {
         if(mediaSessionManager==null){
             initMediaSession();
         }
+        handleIntent(intent);
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -186,6 +192,16 @@ public class AudioPlayerService extends Service {
             public void onPause() {
                 super.onPause();
                 buildNotification(generateAction(R.drawable.ic_play_circle, "Play", ACTION_PAUSE));
+            }
+
+            @Override
+            public void onStop() {
+                super.onStop();
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.cancel(1);
+                Intent intent = new Intent(getApplicationContext(), AudioPlayerService.class);
+                stopService(intent);
+
             }
         });
     }
