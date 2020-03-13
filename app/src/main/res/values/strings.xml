@@ -71,4 +71,5 @@
     <string name="messages_button_text">Messages</string>
     <string name="notification_from_author_channel" translatable="false">Muallifdan</string>
     <string name="audio_player_title">Furqon Player</string>
+    <string name="surah_size_issue">Chapter text was downloaded with errors. Trying to fix</string>
 </resources>

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -21,10 +22,13 @@ public interface ChapterTitleDAO {
     @Delete
     void deleteMessage(MessageTable messageTable);
 
-    @Insert
+    @Query("DELETE FROM quran_text WHERE sura_id like :x")
+    void deleteSurah(Integer x);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(ChapterTitleTable title);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertText(ChapterTextTable text);
 
     @Insert
@@ -61,6 +65,8 @@ public interface ChapterTitleDAO {
 
    @Query("SELECT message_title as mTitle, message_read as unread FROM messages WHERE message_read = 0")
     LiveData<List<NewMessages>> getUnreadMessages();
+
+
 
 
 }

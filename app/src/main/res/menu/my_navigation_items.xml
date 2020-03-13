@@ -4,6 +4,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     xmlns:tools="http://schemas.android.com/tools">
     <item
+        android:id="@+id/menu_bookmark_button"
+        android:enabled="true"
+        android:icon="@drawable/ic_turned_in_black_24dp"
+        android:title="@string/bookmark_found"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/stop"
         android:checkable="false"
         android:enabled="true"

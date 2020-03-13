@@ -74,10 +74,11 @@ public class TitleViewModel extends AndroidViewModel {
         titleRepository.updateText(text);
     }
 
-    public void deleteAll(){
+    public void deleteSurah(int x){
 
-        titleRepository.deteteAll();
+        titleRepository.deteteSurah(x);
     }
+
     public void markAllAsRead(){
         titleRepository.markAllAsRead();
     }

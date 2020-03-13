@@ -374,6 +374,11 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             Log.i("FAVOURITE AYAH ****** ", numb + " " + is_fav);
         }
 
+        if(current.favourite==0){
+            holder.actions_lin_layout.setVisibility(View.GONE);
+        }else{
+            holder.actions_lin_layout.setVisibility(View.VISIBLE);
+        }
 
 
         //holder.arabic_text.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);

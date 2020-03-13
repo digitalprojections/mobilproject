@@ -21,7 +21,7 @@ import java.util.Locale;
 import java.util.Map;
 
 @Database(entities = {ChapterTitleTable.class, ChapterTextTable.class, AyahDetailsTable.class, SajdaAyahTable.class, MessageTable.class},
-        version =3,
+        version =6,
         exportSchema = false)
 public abstract class ChapterTitleDatabase extends RoomDatabase {
 

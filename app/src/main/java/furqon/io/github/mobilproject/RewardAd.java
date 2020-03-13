@@ -94,21 +94,6 @@ public class RewardAd{
         mRewardedVideoAd.loadAd(mContext.getString(R.string.surahAudioUnlockAd), new AdRequest.Builder().build());
     }
 
-    public void pause(Context context) {
-        this.pause(context);
-    }
-
-    public void resume(Context context) {
-        this.resume(context);
-    }
-
-    public void destroy() {
-
-    }
-
-    public void destroy(Context context) {
-        this.destroy(context);
-    }
 
     public void SHOW(String s) {
         currentSurahNumber = Integer.parseInt(s);

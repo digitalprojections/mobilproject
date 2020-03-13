@@ -96,7 +96,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     RecyclerView recyclerView;
 
     private MenuItem playButton;
-    private MenuItem stopButton;
+    private MenuItem menu_bookmark_btn;
 
     private NotificationManager notificationManager;
 
@@ -165,6 +165,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                 recyclerView.setAdapter(mAdapter);
 
                 LoadTheList();
+
 
                 audio_pos = sharedPref.read(suranomi, 0);
 
@@ -389,8 +390,14 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             @Override
             public void onChanged(@Nullable List<AllTranslations> surahText) {
                 //Toast.makeText(SuraNameList.this, "LOADING TITLES " + surahTitles.size(), Toast.LENGTH_LONG).show();
-                if(surahText.size()==0){
+                int sc = getSurahLength(suranomer);
+                Log.e("SURAH AYAH COUNT", sc + " " +surahText.size());
+                if(surahText.size()!=sc){
                     if(!httpresponse) {
+                        if(surahText.size()!=0){
+                            titleViewModel.deleteSurah(Integer.parseInt(suranomer));
+                            Toast.makeText(getApplicationContext(), R.string.surah_size_issue, Toast.LENGTH_LONG).show();
+                        }
                         tempbut.setVisibility(View.VISIBLE);
                         progressBar.setVisibility(View.INVISIBLE);
                     }
@@ -401,16 +408,12 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                 }
 
                 mAdapter.setText(surahText);
-
-                ayah_position = sharedPref.read(xatchup + suranomi, 0);
-                Log.i("XATCHOP", ayah_position + " ");
-                if (ayah_position > 0) {
-                    //BOOKMARK FOUND
-                    Toast.makeText(context, getString(R.string.bookmark_found), Toast.LENGTH_SHORT).show();
-                    recyclerView.scrollToPosition(ayah_position-1);
-                }
             }
         });
+    }
+
+    private int getSurahLength(String suranomer) {
+        return QuranMap.AYAHCOUNT[Integer.parseInt(suranomer)-1];
     }
 
     @Override
@@ -430,8 +433,20 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.my_navigation_items, menu);
-        stopButton = menu.getItem(0);
+
         playButton = menu.getItem(1);
+
+        ayah_position = sharedPref.read(xatchup + suranomi, 0);
+
+        if (ayah_position > 0) {
+            //BOOKMARK FOUND
+            Toast.makeText(context, getString(R.string.bookmark_found), Toast.LENGTH_SHORT).show();
+            menu_bookmark_btn = menu.getItem(0);
+            menu.getItem(0).setVisible(true);
+        }else{
+            menu.getItem(0).setVisible(false);
+        }
+
         return true;
     }
 
@@ -445,7 +460,6 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                 }else{
                     OnTrackPlay();
                 }
-
                 return true;
             case R.id.stop:
                 if (mediaPlayer != null) {
@@ -453,7 +467,9 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                      playButton.setIcon(R.drawable.ic_play_arrow_black_24dp);
                 }
                 return true;
-
+            case R.id.menu_bookmark_button:
+                recyclerView.scrollToPosition(ayah_position-1);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

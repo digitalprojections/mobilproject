@@ -3,9 +3,10 @@ package furqon.io.github.mobilproject;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "sura_names")
+@Entity(tableName = "sura_names", indices = {@Index(value = {"chapter_id","language_no"}, unique = true)})
 public class ChapterTitleTable {
     public ChapterTitleTable(int language_no, int order_no, int chapter_id, String uzbek, String arabic, String surah_type) {
         this.language_no = language_no;

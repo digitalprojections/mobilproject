@@ -88,6 +88,23 @@ public class TitleRepository {
         new deleteMessageAsyncTask(mTitleDao).execute(message);
     }
 
+    public void deteteSurah(int x) {
+        new deleteSurahAsyncTask(mTitleDao).execute(x);
+    }
+    private class deleteSurahAsyncTask extends AsyncTask<Integer, Void, Void>{
+        private ChapterTitleDAO mAsyncTitleDAO;
+        public deleteSurahAsyncTask(ChapterTitleDAO dao){
+            mAsyncTitleDAO = dao;
+        }
+
+
+        @Override
+        protected Void doInBackground(Integer... integers) {
+            mAsyncTitleDAO.deleteSurah(integers[0]);
+            return null;
+        }
+    }
+
     private class deleteMessageAsyncTask extends AsyncTask<MessageTable, Void, Void>{
         private ChapterTitleDAO mAsyncTitleDAO;
         public deleteMessageAsyncTask(ChapterTitleDAO dao){
@@ -190,8 +207,6 @@ public class TitleRepository {
 
             int rows = mAsyncTitleDAO.getCount();
             if(rows!=114){
-                Log.i("TITLES MISSING", "--------------------------------- rows availabe " + rows);
-
                 myListener.LoadTitlesFromServer();
             }
             return null;

@@ -67,4 +67,5 @@
     <string name="downloadaudio_title">Скачать Аудио</string>
     <string name="messages_button_text">Сообщения</string>
     <string name="audio_player_title">Аудиоплеер Фуркан</string>
+    <string name="surah_size_issue">Текст главы был загружен с ошибками. Пытаясь исправить</string>
 </resources>

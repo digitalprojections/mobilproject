@@ -20,9 +20,9 @@ android {
 
     defaultConfig {
         applicationId "furqon.io.github.mobilproject"
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion rootProject.ext.compileSdkVersion
-        versionCode 40014
+        versionCode 40018
         versionName "3.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release
@@ -49,8 +49,8 @@ android {
     }
     buildscript {
         // Add Google's Maven repository.
-        //google()
-
+//        google()
+//
 //        maven {
 //            url 'https://maven.fabric.io/public'
 //        }

@@ -3,9 +3,10 @@ package furqon.io.github.mobilproject;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity (tableName = "quran_text")
+@Entity (tableName = "quran_text", indices = {@Index(value = {"sura_id", "verse_id", "language_id"}, unique = true)})
 public class ChapterTextTable {
     @PrimaryKey(autoGenerate = true)
     public int id;
