@@ -10,17 +10,10 @@
         android:title="@string/bookmark_found"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/stop"
-        android:checkable="false"
-        android:enabled="true"
-        android:icon="@drawable/ic_stop_black_24dp"
-        android:title=""
-        app:showAsAction="always" />
-    <item
         android:id="@+id/play"
         android:checkable="false"
         android:enabled="true"
-        android:icon="@drawable/ic_play_arrow_black_24dp"
+        android:icon="@drawable/ic_play_circle"
         android:title=""
         app:showAsAction="always" />
 

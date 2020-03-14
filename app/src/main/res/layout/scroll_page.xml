@@ -27,8 +27,10 @@
             android:layout_marginTop="240dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
+            android:layout_marginBottom="16dp"
             android:contentDescription="TODO"
-            tools:srcCompat="@tools:sample/avatars" />
+            android:padding="8dp"
+            tools:srcCompat="@mipmap/ic_launcher2" />
 
         <TextView
             android:id="@+id/screen_title"

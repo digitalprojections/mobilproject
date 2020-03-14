@@ -462,17 +462,17 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             case R.id.play:
                 if(isPlaying){
                     OnTrackPause();
-                    playButton.setIcon(R.drawable.ic_play_arrow_black_24dp);
+                    playButton.setIcon(R.drawable.ic_play_circle);
                 }else{
                     OnTrackPlay();
                 }
                 return true;
-            case R.id.stop:
-                if (mediaPlayer != null) {
-                    pause();
-                     playButton.setIcon(R.drawable.ic_play_arrow_black_24dp);
-                }
-                return true;
+//            case R.id.stop:
+//                if (mediaPlayer != null) {
+//                    pause();
+//                     playButton.setIcon(R.drawable.ic_play_arrow_black_24dp);
+//                }
+//                return true;
             case R.id.menu_bookmark_button:
                 recyclerView.scrollToPosition(ayah_position-1);
                 return true;
@@ -532,7 +532,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                 progressBar.setVisibility(View.VISIBLE);
                 mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
 
-                playButton.setIcon(R.drawable.ic_pause);
+                playButton.setIcon(R.drawable.ic_pause_circle);
 
             } else {
                 if(isPlaying){

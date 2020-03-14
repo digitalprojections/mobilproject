@@ -12,15 +12,18 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewpager.widget.PagerAdapter;
 
+import static furqon.io.github.mobilproject.R.drawable.ic_asset_32furqon_logo;
 import static furqon.io.github.mobilproject.R.drawable.ic_unlock;
 
 public class ScrollingAdapter extends PagerAdapter {
     private Context context;
     private LayoutInflater layoutInflater;
-
+    ImageView imageView;
+    TextView textViewTitle;
+    TextView textViewDesc;
 
     private String[] titles;
-    private String[] images;
+    private int[] images;
 
     private String[] descriptionText;
 
@@ -33,8 +36,8 @@ public class ScrollingAdapter extends PagerAdapter {
         titles = new String[]{
           context.getString(R.string.app_name),context.getString(R.string.downloadaudio_title), context.getString(R.string.title_daily_ayah), context.getString(R.string.title_color_comments), context.getString(R.string.title_separate_audio)
         };
-        images = new String[]{
-                "0","ic_unlock","0","0","0"
+        images = new int[]{
+                R.mipmap.ic_launcher2_round, R.layout,0,0,0
         };
 
 
@@ -56,12 +59,18 @@ public class ScrollingAdapter extends PagerAdapter {
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.scroll_page, container,false);
 
-        ImageView imageView = view.findViewById(R.id.screen_img);
-        TextView textViewTitle = view.findViewById(R.id.screen_title);
-        TextView textViewDesc = view.findViewById(R.id.screen_description);
+
+        imageView = view.findViewById(R.id.screen_img);
+        imageView.setScaleX(2);
+        imageView.setScaleY(2);
+
+        textViewTitle = view.findViewById(R.id.screen_title);
+
+        textViewDesc = view.findViewById(R.id.screen_description);
 
         textViewTitle.setText(titles[position]);
         textViewDesc.setText(descriptionText[position]);
+        imageView.setImageResource(images[position]);
 
         container.addView(view);
 
