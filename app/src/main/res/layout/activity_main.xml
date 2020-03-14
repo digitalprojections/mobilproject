@@ -57,6 +57,11 @@
 
         <include layout="@layout/messages_button"></include>
 
+        <include
+            layout="@layout/youtube_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></include>
+
         <include layout="@layout/rate_button"></include>
 
 

@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     Button davomi_but;
     Button favourite_but;
     Button search_but;
+    Button youtube_but;
     Button message_but;
     TextView nbadge;
     Button rate_but;
@@ -184,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
         favourite_but = findViewById(R.id.favouritebut);
         search_but = findViewById(R.id.searchbtn);
         message_but = findViewById(R.id.messageButton);
+        youtube_but = findViewById(R.id.youtubebut);
         rate_but = findViewById(R.id.ratebtn);
 
         imageView = findViewById(R.id.imageView);
@@ -210,6 +212,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 open_messages();
+            }
+        });
+        youtube_but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://www.youtube.com/watch?v=Cj7CLGGgRao"));
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                }
             }
         });
 

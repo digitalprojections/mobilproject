@@ -68,4 +68,5 @@
     <string name="messages_button_text">Xabarlar</string>
     <string name="audio_player_title">Mediapleer Furqan</string>
     <string name="surah_size_issue">Bo\'lim matni xatolar bilan yuklab olindi. Shu sura matnini qayta yuklab oling</string>
+    <string name="youtube_btn_title">Youtube</string>
 </resources>

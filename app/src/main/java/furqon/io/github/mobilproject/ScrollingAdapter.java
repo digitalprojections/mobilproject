@@ -37,7 +37,7 @@ public class ScrollingAdapter extends PagerAdapter {
           context.getString(R.string.app_name),context.getString(R.string.downloadaudio_title), context.getString(R.string.title_daily_ayah), context.getString(R.string.title_color_comments), context.getString(R.string.title_separate_audio)
         };
         images = new int[]{
-                R.mipmap.ic_launcher2_round, R.layout,0,0,0
+                R.mipmap.ic_launcher2_round, R.mipmap.download_snip_arrows,0,0,0
         };
 
 
@@ -61,8 +61,7 @@ public class ScrollingAdapter extends PagerAdapter {
 
 
         imageView = view.findViewById(R.id.screen_img);
-        imageView.setScaleX(2);
-        imageView.setScaleY(2);
+
 
         textViewTitle = view.findViewById(R.id.screen_title);
 
