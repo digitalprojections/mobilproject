@@ -69,4 +69,6 @@
     <string name="audio_player_title">Mediapleer Furqan</string>
     <string name="surah_size_issue">Bo\'lim matni xatolar bilan yuklab olindi. Shu sura matnini qayta yuklab oling</string>
     <string name="youtube_btn_title">Youtube</string>
+    <string name="please_watch_video">Audio faylni eshitishdan oldin, uni yuklab olish zarur. Video reklamani sanoq tugagunga qadar ko`rilmasa, yuklab olish tugmasi paydo bo`lmaydi</string>
+    <string name="audio_download">Ovozni yuklab olish tartibi</string>
 </resources>

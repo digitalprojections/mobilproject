@@ -24,6 +24,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -34,6 +36,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -93,6 +96,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     private boolean httpresponse;
     RecyclerView recyclerView;
 
+    LinearLayout cl;
+
     private MenuItem playButton;
     private MenuItem menu_bookmark_btn;
 
@@ -120,8 +125,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
 
-
-
+        cl = findViewById(R.id.linearLayout4);
 
         audiorestore = getString(R.string.audiopos_restored);
         audiostore = getString(R.string.audiopos_stored);
@@ -513,7 +517,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                 mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                     @Override
                     public void onPrepared(MediaPlayer mediaPlayer) {
-
+                        Furqon.ShowNotification(AyahList.this, R.drawable.ic_pause_circle, suranomi, audio_pos);
                         seekBar.setMax(mediaPlayer.getDuration());
                         progressBar.setVisibility(View.INVISIBLE);
                         resume();
@@ -546,6 +550,17 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
             }
 
+        }else{
+            final PopupWindow popupWindow = new PopupWindow(this);
+            View view = getLayoutInflater().inflate(R.layout.popup_hint, null);
+            popupWindow.setContentView(view);
+            popupWindow.showAtLocation(cl, 0, 0,0);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    popupWindow.dismiss();
+                }
+            });
         }
     }
 
@@ -635,7 +650,6 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
     @Override
     public void OnTrackPlay() {
-        Furqon.ShowNotification(AyahList.this, R.drawable.ic_pause_circle, suranomi, audio_pos);
         play();
     }
 

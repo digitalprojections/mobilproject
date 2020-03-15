@@ -73,4 +73,6 @@
     <string name="audio_player_title">Furqon Player</string>
     <string name="surah_size_issue">Chapter text was downloaded with errors. Trying to fix</string>
     <string name="youtube_btn_title">Youtube</string>
+    <string name="please_watch_video">Before you can listen to the audio file, you need to download it first. Please, make sure to watch the video till the end of the count down or the download icon will not be shown</string>
+    <string name="audio_download">How to download the audio files</string>
 </resources>

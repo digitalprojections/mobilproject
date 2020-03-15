@@ -69,4 +69,6 @@
     <string name="audio_player_title">Аудиоплеер Фуркан</string>
     <string name="surah_size_issue">Текст главы был загружен с ошибками. Пытаясь исправить</string>
     <string name="youtube_btn_title">Youtube</string>
+    <string name="please_watch_video">Прежде чем вы сможете прослушать аудиофайл, вам необходимо сначала загрузить его. Пожалуйста, убедитесь, что просмотр видео закончится или значок загрузки не будет отображаться</string>
+    <string name="audio_download">Скачать аудио</string>
 </resources>
