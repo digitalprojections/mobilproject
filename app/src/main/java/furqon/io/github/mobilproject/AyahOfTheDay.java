@@ -331,7 +331,7 @@ public class AyahOfTheDay extends AppCompatActivity {
 
     private String getTextByLanguage() {
         String ltext ="";
-        if(allTranslationsList!=null){
+        if(allTranslationsList!=null && allTranslationsList.size()>0){
             switch (language_id){
                 case 5:
                     ltext = allTranslationsList.get(random_ayah-1).ru_text;
