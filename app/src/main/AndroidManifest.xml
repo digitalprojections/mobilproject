@@ -8,8 +8,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-
-
     <application
         android:name=".Furqon"
         android:allowBackup="true"
@@ -18,13 +16,13 @@
         android:roundIcon="@mipmap/ic_launcher2_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MessageView"
-            android:parentActivityName=".MessageList"
-            ></activity>
-        <activity android:name=".MessageList"
-            android:parentActivityName=".MainActivity"/>
-
-
+        <activity android:name=".ExtraActivity"></activity>
+        <activity
+            android:name=".MessageView"
+            android:parentActivityName=".MessageList" />
+        <activity
+            android:name=".MessageList"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".ScrollingActivity"
             android:excludeFromRecents="true"
@@ -33,17 +31,15 @@
             android:taskAffinity=""
             android:theme="@style/AppTheme.NoActionBar" />
 
-
         <service
             android:name=".MyFirebaseMessagingService"
             android:enabled="true"
-            android:exported="true"
-            >
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".Services.OnClearFromService"/>
+        <service android:name=".Services.OnClearFromService" />
 
         <receiver android:name=".Services.NotificationActionService">
             <intent-filter>
@@ -63,8 +59,9 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3838820812386239~2342916878" />
-        <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="@string/notification_from_author_channel"/>
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/notification_from_author_channel" />
 
         <activity android:name=".Settings" />
         <activity
