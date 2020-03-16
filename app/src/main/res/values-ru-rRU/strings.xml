@@ -71,4 +71,6 @@
     <string name="youtube_btn_title">Youtube</string>
     <string name="please_watch_video">Прежде чем вы сможете прослушать аудиофайл, вам необходимо сначала загрузить его. Зарабатывайте монеты, поделившись приложением или просмотрев видеообъявления</string>
     <string name="audio_download">Скачать аудио</string>
+    <string name="earn_coins">Заработать монеты</string>
+    <string name="extra_title">Дополнительно</string>
 </resources>

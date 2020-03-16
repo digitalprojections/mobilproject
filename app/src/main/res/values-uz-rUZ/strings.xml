@@ -41,7 +41,7 @@
     <string name="show_a_randomly_selected_ayah_on_launch">Boshlashda tasodifiy tanlangan oyatni ko\'rsatish</string>
     <string name="app_logo_description">Ilova belgisi, Qur\'on Al Karim</string>
     <string name="settings_saved">Sozlamalar saqlandi</string>
-    <string name="play">tinglash</string>
+    <string name="play">Tinglash</string>
     <string name="audio_playing">Bob Ovozli Pleyeri</string>
     <string name="fast_rewind">orqaga</string>
     <string name="fast_forward">oldinga</string>
@@ -71,4 +71,6 @@
     <string name="youtube_btn_title">Youtube</string>
     <string name="please_watch_video">Ovoz faylini tinglashdan oldin, avval uni yuklab olishingiz kerak. Ilovani ulashish yoki video reklamalarni tomosha qilish orqali tanga ishlang</string>
     <string name="audio_download">Ovozni yuklab olish tartibi</string>
+    <string name="earn_coins">Tangani qo`lga kiritish</string>
+    <string name="extra_title">Qo\'shimcha</string>
 </resources>
