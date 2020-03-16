@@ -16,7 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher2_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ExtraActivity"></activity>
+        <activity android:name=".EarnCoinsActivity"></activity>
+        <activity android:name=".ExtraActivity" />
         <activity
             android:name=".MessageView"
             android:parentActivityName=".MessageList" />

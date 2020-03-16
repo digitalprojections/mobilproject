@@ -77,4 +77,6 @@
     <string name="audio_download">How to download the audio files</string>
     <string name="earn_coins">Earn Coins</string>
     <string name="extra_title">Extra</string>
+    <string name="watch_ads">Watch Ads</string>
+    <string name="share">Share</string>
 </resources>
