@@ -63,12 +63,12 @@
     <string name="next_ayah">keyingi oyat</string>
     <string name="failed_to_load_ayah">Oyatni yuklab bo\'lmadi. Qayta urinib ko\'ring</string>
     <string name="failure_generic">Xato yuz berdi, keyinroq qayta urinib ko\'ring</string>
-    <string name="download_audio_description">Endi siz reklama tomosha qilish orqali audio yuklab olish tugmasini ochishingiz mumkin</string>
+    <string name="download_audio_description">Endi siz tangalar yordamida sura audiosini yuklab olishingiz mumkin</string>
     <string name="downloadaudio_title">Ovozni Yuklab Olish</string>
     <string name="messages_button_text">Xabarlar</string>
     <string name="audio_player_title">Mediapleer Furqan</string>
     <string name="surah_size_issue">Bo\'lim matni xatolar bilan yuklab olindi. Shu sura matnini qayta yuklab oling</string>
     <string name="youtube_btn_title">Youtube</string>
-    <string name="please_watch_video">Audio faylni eshitishdan oldin, uni yuklab olish zarur. Video reklamani sanoq tugagunga qadar ko`rilmasa, yuklab olish tugmasi paydo bo`lmaydi</string>
+    <string name="please_watch_video">Ovoz faylini tinglashdan oldin, avval uni yuklab olishingiz kerak. Ilovani ulashish yoki video reklamalarni tomosha qilish orqali tanga ishlang</string>
     <string name="audio_download">Ovozni yuklab olish tartibi</string>
 </resources>

@@ -63,12 +63,12 @@
     <string name="next_ayah">следующий аят</string>
     <string name="failed_to_load_ayah">Не удалось загрузить аят. Попробуйте еще раз</string>
     <string name="failure_generic">Произошла ошибка, попробуйте позже</string>
-    <string name="download_audio_description">Теперь вы можете смотреть рекламу и разблокировать скачивание аудио.</string>
+    <string name="download_audio_description">Теперь вы можете разблокировать и скачать аудио с помощью монет</string>
     <string name="downloadaudio_title">Скачать Аудио</string>
     <string name="messages_button_text">Сообщения</string>
     <string name="audio_player_title">Аудиоплеер Фуркан</string>
     <string name="surah_size_issue">Текст главы был загружен с ошибками. Пытаясь исправить</string>
     <string name="youtube_btn_title">Youtube</string>
-    <string name="please_watch_video">Прежде чем вы сможете прослушать аудиофайл, вам необходимо сначала загрузить его. Пожалуйста, убедитесь, что просмотр видео закончится или значок загрузки не будет отображаться</string>
+    <string name="please_watch_video">Прежде чем вы сможете прослушать аудиофайл, вам необходимо сначала загрузить его. Зарабатывайте монеты, поделившись приложением или просмотрев видеообъявления</string>
     <string name="audio_download">Скачать аудио</string>
 </resources>

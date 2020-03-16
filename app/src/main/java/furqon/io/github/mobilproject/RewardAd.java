@@ -58,8 +58,8 @@ public class RewardAd{
                 @Override
                 public void onRewardedVideoAdClosed() {
                     //Toast.makeText(mContext,                            "Ad closed.", Toast.LENGTH_SHORT).show();
-                    //mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917", new AdRequest.Builder().build()); //TEST
-                    mRewardedVideoAd.loadAd(mContext.getString(R.string.surahAudioUnlockAd), new AdRequest.Builder().build());
+                    mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917", new AdRequest.Builder().build()); //TEST
+                    //mRewardedVideoAd.loadAd(mContext.getString(R.string.surahAudioUnlockAd), new AdRequest.Builder().build());
                 }
 
                 @Override
@@ -80,6 +80,8 @@ public class RewardAd{
                 @Override
                 public void onRewardedVideoAdFailedToLoad(int i) {
                     //Toast.makeText(mContext,                            "Ad failed to load.", Toast.LENGTH_SHORT).show();
+                    //enable direct access
+                    //
                 }
 
                 @Override
@@ -90,8 +92,8 @@ public class RewardAd{
 
                 }
             });
-        //mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917", new AdRequest.Builder().build()); //TEST
-        mRewardedVideoAd.loadAd(mContext.getString(R.string.surahAudioUnlockAd), new AdRequest.Builder().build());
+        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917", new AdRequest.Builder().build()); //TEST
+        //mRewardedVideoAd.loadAd(mContext.getString(R.string.surahAudioUnlockAd), new AdRequest.Builder().build());
     }
 
 

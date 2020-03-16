@@ -46,6 +46,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.appindexing.Action;
+import com.google.firebase.appindexing.FirebaseAppIndex;
+import com.google.firebase.appindexing.FirebaseUserActions;
+import com.google.firebase.appindexing.Indexable;
+import com.google.firebase.appindexing.builders.Actions;
 import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
@@ -145,11 +150,11 @@ public class MainActivity extends AppCompatActivity {
         titleViewModel.getUnreadCount().observe(this, new Observer<List<NewMessages>>() {
             @Override
             public void onChanged(List<NewMessages> newMessages) {
-                if(newMessages.size()>0){
+                if (newMessages.size() > 0) {
                     nbadge.setVisibility(View.VISIBLE);
                     nbadge.setText(String.valueOf(newMessages.size()));
                     nbadge.startAnimation(scaler);
-                }else {
+                } else {
                     nbadge.setVisibility(View.INVISIBLE);
                     nbadge.setText("0");
                 }
@@ -175,7 +180,6 @@ public class MainActivity extends AppCompatActivity {
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(getString(R.string.interstitial_fullpage));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
-
 
 
         handler = new Handler();
@@ -249,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (sharedPref.contains(sharedPref.XATCHUP)) {
             davomi_but.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             davomi_but.setVisibility(View.GONE);
         }
 
@@ -275,36 +279,7 @@ public class MainActivity extends AppCompatActivity {
         deepLink = buildDeepLink(Uri.parse(DEEP_LINK_URL), 0);
 
 
-        FirebaseDynamicLinks.getInstance()
-                .getDynamicLink(getIntent())
-                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
-                    @Override
-                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
-                        // Get deep link from result (may be null if no link is found)
-                        Uri deepLink = null;
-                        if (pendingDynamicLinkData != null) {
-                            deepLink = pendingDynamicLinkData.getLink();
-                            Log.i(TAG, "LINK FOUND " + deepLink);
-                            Snackbar.make(findViewById(android.R.id.content),
-                                    "Found deep link!", Snackbar.LENGTH_LONG).show();
-                        }
 
-
-                        // Handle the deep link. For example, open the linked
-                        // content, or apply promotional credit to the user's
-                        // account.
-                        // ...
-
-                        // ...
-                        Log.d(TAG, "getDynamicLink:SUCCESS " + deepLink);
-                    }
-                })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "getDynamicLink:onFailure", e);
-                    }
-                });
 
         AppRate.with(this)
                 .setInstallDays(0) // default 10, 0 means install day.
@@ -327,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, ScrollingActivity.class);
             startActivity(intent);
 
-        }else{
+        } else {
 
             if (sharedPref.getDefaults("random_ayah_sw") && !randomayahshown) {
                 ayahOfTheDay();
@@ -338,6 +313,12 @@ public class MainActivity extends AppCompatActivity {
 //        Intent intent = new Intent(getApplicationContext(), AudioPlayerService.class);
 //        intent.setAction(AudioPlayerService.ACTION_PLAY);
 //        startService(intent);
+        // ATTENTION: This was auto-generated to handle app links.
+        Intent appLinkIntent = getIntent();
+        String appLinkAction = appLinkIntent.getAction();
+        Uri appLinkData = appLinkIntent.getData();
+
+        checkForDynamicLink();
     }
 
     private void Rateus() {
@@ -346,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void open_settings() {
         Intent intent;
-        intent = new Intent(this, furqon.io.github.mobilproject.Settings.class);
+        intent = new Intent(this, Settings.class);
         startActivity(intent);
     }
 
@@ -386,7 +367,40 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        checkForDynamicLink();
+    }
 
+    private void checkForDynamicLink() {
+        FirebaseDynamicLinks.getInstance()
+                .getDynamicLink(getIntent())
+                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
+                    @Override
+                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
+                        // Get deep link from result (may be null if no link is found)
+                        Uri deepLink = null;
+                        if (pendingDynamicLinkData != null) {
+                            deepLink = pendingDynamicLinkData.getLink();
+                            Log.i(TAG, "LINK FOUND " + deepLink);
+                            Snackbar.make(findViewById(android.R.id.content),
+                                    "Found deep link!", Snackbar.LENGTH_LONG).show();
+                        }
+
+
+                        // Handle the deep link. For example, open the linked
+                        // content, or apply promotional credit to the user's
+                        // account.
+                        // ...
+
+                        // ...
+                        Log.d(TAG, "getDynamicLink:SUCCESS " + deepLink);
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "getDynamicLink:onFailure", e);
+                    }
+                });
     }
 
     @Override
@@ -405,7 +419,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("ATTEMPTING TOKEN SEND", token);
 
         queue = Volley.newRequestQueue(this);
-        String url = "https://inventivesolutionste.ipage.com/ajphp_sbs.php";
+        String url = "https://inventivesolutionste.ipage.com/apijson.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -423,9 +437,8 @@ public class MainActivity extends AppCompatActivity {
         }) {
             protected Map<String, String> getParams() {
                 Map<String, String> MyData = new HashMap<>();
-                MyData.put("action", "set_token"); //Add the data you'd like to send to the server.
-                MyData.put("appname", ""); //Add the data you'd like to send to the server.
-                MyData.put("username", ""); //Change to variable
+                MyData.put("action", "store_token"); //Add the data you'd like to send to the server.
+                MyData.put("appname", "furqon"); //Add the data you'd like to send to the server.
                 MyData.put("token", token); //Add the data you'd like to send to the server.
                 return MyData;
             }
@@ -480,15 +493,15 @@ public class MainActivity extends AppCompatActivity {
         //Add to the user account token, app id, device id
         Log.i("ATTEMPTING SIGNATURE", sign);
         queue = Volley.newRequestQueue(this);
-        String url = "https://inventivesolutionste.ipage.com/ajphp_sbs.php";
+        String url = "https://inventivesolutionste.ipage.com/apijson.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.i("APP SIGNATURE STORED", response);
+                        Log.i("APP SIGNATURE STORED?", response);
                         if (response.contains("app signature recorded")) {
-
+                            Log.i("APP SIGNATURE STORED", response);
                             sharedPref.write("appsignature", sign);
                         }
                     }
@@ -501,9 +514,7 @@ public class MainActivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 Map<String, String> MyData = new HashMap<>();
                 MyData.put("action", "set_shash"); //Add the data you'd like to send to the server.
-                MyData.put("appname", ""); //Add the data you'd like to send to the server.
-                MyData.put("username", ""); //Change to variable
-                MyData.put("password", ""); //Change to variable
+                MyData.put("appname", "furqon"); //Add the data you'd like to send to the server.
                 MyData.put("shash", sign); //Add the data you'd like to send to the server.
                 return MyData;
             }
@@ -577,18 +588,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void open_favourites() {
         Intent intent;
-        intent = new Intent(this, furqon.io.github.mobilproject.Favourites.class);
+        intent = new Intent(this, Favourites.class);
         startActivity(intent);
     }
 
     private void open_search() {
         Intent intent;
-        intent = new Intent(this, furqon.io.github.mobilproject.Search.class);
+        intent = new Intent(this, Search.class);
         startActivity(intent);
     }
     private void open_messages() {
         Intent intent;
-        intent = new Intent(this, furqon.io.github.mobilproject.MessageList.class);
+        intent = new Intent(this, MessageList.class);
         startActivity(intent);
     }
 
@@ -612,5 +623,22 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+    }
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        return Actions.newView("Main", "https://furqon.page.link/deeplink");
+    }
+
+    @Override
+    public void onStop() {
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        FirebaseUserActions.getInstance().end(getIndexApiAction());
+        super.onStop();
     }
 }

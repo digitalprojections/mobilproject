@@ -1,0 +1,9 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "furqon.io.github.mobilproject",
+    "sha256_cert_fingerprints":
+    ["32:2C:EE:AF:B9:94:FC:47:DA:A5:17:70:77:1C:3E:2D:D8:69:4D:F7:D2:66:72:C0:E7:ED:2C:1F:D2:D9:46:FB"]
+  }
+}]

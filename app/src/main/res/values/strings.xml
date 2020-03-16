@@ -35,7 +35,7 @@
     <string name="title_color_comments">Colored commentaries</string>
     <string name="title_daily_ayah">Random verse</string>
     <string name="title_separate_audio">Audio</string>
-    <string name="rate">Rate It</string>
+    <string name="rate">Rate Us</string>
     <string name="error_message">Error occurred. Please, restart the app</string>
     <string name="furqan_definition">Al-Furqān (Arabic: الفرقان‎, \"The Criterion\") is the 25th chapter (sūrah) of the Qur\'an with 77 verses (āyāt). The name Al-Furqan or \"The Criterion\" refers to the Qur\'an itself as the decisive factor between good and evil.</string>
     <string name="show_a_randomly_selected_ayah_on_launch">Show a randomly selected ayah on launch</string>
@@ -66,13 +66,14 @@
     <string name="next_ayah">next ayah</string>
     <string name="failed_to_load_ayah">Failed to load ayah. Try again</string>
     <string name="failure_generic">An error has occurred, try again later</string>
-    <string name="download_audio_description">Now you can watch an ad and unlock chapter audio download</string>
+    <string name="download_audio_description">Now you can unlock chapter audio download using coins</string>
     <string name="downloadaudio_title">Download Audio</string>
     <string name="messages_button_text">Messages</string>
     <string name="notification_from_author_channel" translatable="false">Muallifdan</string>
     <string name="audio_player_title">Furqon Player</string>
     <string name="surah_size_issue">Chapter text was downloaded with errors. Trying to fix</string>
     <string name="youtube_btn_title">Youtube</string>
-    <string name="please_watch_video">Before you can listen to the audio file, you need to download it first. Please, make sure to watch the video till the end of the count down or the download icon will not be shown</string>
+    <string name="please_watch_video">Before you can listen to the audio file, you need to download it first. Earn coins by sharing the app or watching video ads</string>
     <string name="audio_download">How to download the audio files</string>
+    <string name="earn_coins">Earn Coins</string>
 </resources>
