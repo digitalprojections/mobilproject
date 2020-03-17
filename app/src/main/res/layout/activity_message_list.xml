@@ -6,9 +6,42 @@
     android:layout_height="match_parent"
     tools:context=".MessageList">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/message_list"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/message_card_item" />
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/tool_bar"
+            layout="@layout/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/message_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            tools:listitem="@layout/message_card_item">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adViewMessageList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:adSize="BANNER"
+            app:adUnitId="@string/banner_ad"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.493"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </LinearLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

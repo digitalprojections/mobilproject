@@ -17,19 +17,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.Request;
@@ -61,9 +56,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import furqon.io.github.mobilproject.Services.AudioPlayerService;
-import hotchemi.android.rate.AppRate;
-import hotchemi.android.rate.OnClickButtonListener;
 import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity {
@@ -71,13 +63,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     Button suralar_but;
+    Button extra_btn;
     Button davomi_but;
-    Button favourite_but;
-    Button search_but;
-    Button youtube_but;
-    Button message_but;
-    TextView nbadge;
-    Button rate_but;
+
+
+
 
 
     ImageView imageView;
@@ -87,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
     // Try to use more data here. ANDROID_ID is a single point of attack.
     InterstitialAd mInterstitialAd;
 
-    private TitleViewModel titleViewModel;
+
     private LiveData<List<NewMessages>> newMessages;
 
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -100,9 +90,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String DEEP_LINK_URL = "https://furqon.page.link/deeplink";
     Uri deepLink;
     private sharedpref sharedPref;
-    private ViewPager viewPager;
     private boolean randomayahshown;
-    private Animation scaler;
 
 
     @Override
@@ -143,23 +131,9 @@ public class MainActivity extends AppCompatActivity {
         sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
 
-        scaler = AnimationUtils.loadAnimation(this, R.anim.bounce);
 
-        titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
 
-        titleViewModel.getUnreadCount().observe(this, new Observer<List<NewMessages>>() {
-            @Override
-            public void onChanged(List<NewMessages> newMessages) {
-                if (newMessages.size() > 0) {
-                    nbadge.setVisibility(View.VISIBLE);
-                    nbadge.setText(String.valueOf(newMessages.size()));
-                    nbadge.startAnimation(scaler);
-                } else {
-                    nbadge.setVisibility(View.INVISIBLE);
-                    nbadge.setText("0");
-                }
-            }
-        });
+
 
         Fabric.with(this, new Crashlytics());
         Crashlytics.log("Activity created");
@@ -185,63 +159,32 @@ public class MainActivity extends AppCompatActivity {
         handler = new Handler();
 
         suralar_but = findViewById(R.id.suralar);
+        extra_btn = findViewById(R.id.extra_button);
         davomi_but = findViewById(R.id.davomi);
-        favourite_but = findViewById(R.id.favouritebut);
-        search_but = findViewById(R.id.searchbtn);
-        message_but = findViewById(R.id.messageButton);
-        youtube_but = findViewById(R.id.youtubebut);
-        rate_but = findViewById(R.id.ratebtn);
+
+
+
 
         imageView = findViewById(R.id.imageView);
-
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ayahOfTheDay();
             }
         });
-        favourite_but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                open_favourites();
-            }
-        });
-        search_but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                open_search();
-            }
-        });
-        message_but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                open_messages();
-            }
-        });
-        youtube_but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("https://www.youtube.com/watch?v=Cj7CLGGgRao"));
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(intent);
-                }
-            }
-        });
 
-        nbadge = findViewById(R.id.numeric_badge_txt);
-        nbadge.bringToFront();
-        rate_but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Rateus();
-            }
-        });
+
         //day_but = findViewById(R.id.ayahoftheday);
         suralar_but.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openSuraNames(view);
+            }
+        });
+        extra_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                open_extraActivities();
             }
         });
         davomi_but.setOnClickListener(new View.OnClickListener() {
@@ -281,23 +224,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        AppRate.with(this)
-                .setInstallDays(0) // default 10, 0 means install day.
-                .setLaunchTimes(3) // default 10
-                .setRemindInterval(2) // default 1
-                .setShowLaterButton(true) // default true
-                .setDebug(false) // default false
-                .setOnClickButtonListener(new OnClickButtonListener() { // callback listener.
-                    @Override
-                    public void onClickButton(int which) {
-                        Log.d(MainActivity.class.getName(), Integer.toString(which));
-                    }
-                })
-                .monitor();
 
-
-        // Show a dialog if meets conditions
-        AppRate.showRateDialogIfMeetsConditions(this);
         if (sharedPref.isFirstRun()) {
             Intent intent = new Intent(this, ScrollingActivity.class);
             startActivity(intent);
@@ -321,8 +248,10 @@ public class MainActivity extends AppCompatActivity {
         checkForDynamicLink();
     }
 
-    private void Rateus() {
-        AppRate.with(this).showRateDialog(this);
+    private void open_extraActivities() {
+        Intent intent;
+        intent = new Intent(this, ExtraActivity.class);
+        startActivity(intent);
     }
 
     private void open_settings() {
@@ -354,7 +283,11 @@ public class MainActivity extends AppCompatActivity {
         // Return the dynamic link as a URI
         return link.getUri();
     }
-
+    private void open_favourites() {
+        Intent intent;
+        intent = new Intent(this, Favourites.class);
+        startActivity(intent);
+    }
     private void shareDeepLink(String deepLink) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
@@ -586,22 +519,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void open_favourites() {
-        Intent intent;
-        intent = new Intent(this, Favourites.class);
-        startActivity(intent);
-    }
 
-    private void open_search() {
-        Intent intent;
-        intent = new Intent(this, Search.class);
-        startActivity(intent);
-    }
-    private void open_messages() {
-        Intent intent;
-        intent = new Intent(this, MessageList.class);
-        startActivity(intent);
-    }
 
     private void displayResult(final String result) {
         handler.post(new Runnable() {

@@ -2,6 +2,7 @@ package furqon.io.github.mobilproject;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -25,6 +26,9 @@ public class MessageList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_list);
         //============================================
+
+        Toolbar toolbar = findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
 
         recyclerView = findViewById(R.id.message_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

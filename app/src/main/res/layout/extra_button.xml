@@ -5,11 +5,12 @@
     android:layout_height="wrap_content">
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/extra_button"
         style="@android:style/Widget.Button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:text="@string/extra_title"
         android:textSize="24sp"
         android:typeface="serif"

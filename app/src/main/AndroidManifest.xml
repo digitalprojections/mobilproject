@@ -16,14 +16,14 @@
         android:roundIcon="@mipmap/ic_launcher2_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EarnCoinsActivity"></activity>
-        <activity android:name=".ExtraActivity" />
+        <activity android:name=".EarnCoinsActivity" android:parentActivityName=".ExtraActivity"></activity>
+        <activity android:name=".ExtraActivity" android:parentActivityName=".MainActivity" />
         <activity
             android:name=".MessageView"
             android:parentActivityName=".MessageList" />
         <activity
             android:name=".MessageList"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".ExtraActivity" />
         <activity
             android:name=".ScrollingActivity"
             android:excludeFromRecents="true"

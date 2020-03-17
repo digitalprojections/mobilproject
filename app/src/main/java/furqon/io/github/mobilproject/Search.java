@@ -42,6 +42,7 @@ public class Search extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
+
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         String title = getString(R.string.search);

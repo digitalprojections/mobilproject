@@ -73,4 +73,6 @@
     <string name="audio_download">Скачать аудио</string>
     <string name="earn_coins">Заработать монеты</string>
     <string name="extra_title">Дополнительно</string>
+    <string name="watch_ads">Смотреть рекламу</string>
+    <string name="share">Поделиться</string>
 </resources>

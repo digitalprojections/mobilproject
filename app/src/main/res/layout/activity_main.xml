@@ -7,7 +7,7 @@
     tools:context=".MainActivity">
 
     <include
-        android:id="@+id/tool_bar"
+        android:id="@+id/tool_bar_main"
         layout="@layout/toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +22,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tool_bar">
+        app:layout_constraintTop_toBottomOf="@+id/tool_bar_main">
 
         <TextView
             android:id="@+id/result"
@@ -47,10 +47,9 @@
             android:contentDescription="@string/app_logo_description"
             app:srcCompat="@drawable/icon" />
 
-        <include layout="@layout/suralar_button"></include>
-
-        <include layout="@layout/continue_button"></include>
-
+        <include layout="@layout/suralar_button"/>
+        <include layout="@layout/continue_button"/>
+        <include layout="@layout/extra_button"/>
 
     </LinearLayout>
 
