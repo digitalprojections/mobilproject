@@ -97,8 +97,8 @@ public class RewardAd{
     }
 
 
-    public void SHOW(String s) {
-        currentSurahNumber = Integer.parseInt(s);
+    public void SHOW() {
+        //currentSurahNumber = Integer.parseInt(s);
         if (mRewardedVideoAd.isLoaded()) {
             mRewardedVideoAd.show();
         }

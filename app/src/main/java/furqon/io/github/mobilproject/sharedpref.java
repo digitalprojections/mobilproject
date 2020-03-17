@@ -11,9 +11,11 @@ import java.util.regex.PatternSyntaxException;
 
 public class sharedpref
 {
+    public static final String USERID = "USERID";
     private Context mContext;
     private static final String TRACKS = "TRACKS";
     private static SharedPreferences mSharedPref;
+    final String COINS = "COINS";
     final String TOKEN = "TOKEN";
     final String UZSW = "UZSW";
     final String ARSW = "ARSW";

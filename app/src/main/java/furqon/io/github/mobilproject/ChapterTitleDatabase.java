@@ -55,6 +55,7 @@ public abstract class ChapterTitleDatabase extends RoomDatabase {
         }
     };
 
+    //Message data sent directly to the app by token
     public static void SaveMessage(RemoteMessage s){
         MessageTable mt;
         try{

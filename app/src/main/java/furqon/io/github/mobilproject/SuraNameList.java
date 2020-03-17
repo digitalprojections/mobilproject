@@ -70,7 +70,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     private ArrayList<String> trackList;
 
     private TitleViewModel titleViewModel;
-    private RewardAd mRewardedVideoAd;
+
 
 
 
@@ -116,7 +116,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
 
         context = this;
-        mRewardedVideoAd = new RewardAd(context);
+
         quranic_order_btn = findViewById(R.id.quranic_order);
         revelation_order_btn = findViewById(R.id.revelation_order);
 

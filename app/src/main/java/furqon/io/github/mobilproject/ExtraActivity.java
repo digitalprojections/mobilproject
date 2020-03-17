@@ -12,6 +12,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -28,10 +31,37 @@ public class ExtraActivity extends AppCompatActivity {
     Button message_but;
     TextView nbadge;
 
+    Button coins_but;
+
     private TitleViewModel titleViewModel;
 
     private Animation scaler;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
 
+        inflater.inflate(R.menu.options_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.invite_i:
+                //shareDeepLink();
+                return true;
+            case R.id.settings_i:
+                //open_settings();
+                return true;
+            case R.id.favourites_i:
+                open_favourites();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +74,8 @@ public class ExtraActivity extends AppCompatActivity {
         search_but = findViewById(R.id.searchbtn);
         youtube_but = findViewById(R.id.youtubebut);
         rate_but = findViewById(R.id.ratebtn);
+        coins_but = findViewById(R.id.earn_coins_button);
+
         favourite_but.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,7 +88,6 @@ public class ExtraActivity extends AppCompatActivity {
                 open_search();
             }
         });
-
         youtube_but.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -73,6 +104,14 @@ public class ExtraActivity extends AppCompatActivity {
                 Rateus();
             }
         });
+        coins_but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                open_earn_coins();
+            }
+        });
+
+
         AppRate.with(this)
                 .setInstallDays(0) // default 10, 0 means install day.
                 .setLaunchTimes(3) // default 10
@@ -117,6 +156,13 @@ public class ExtraActivity extends AppCompatActivity {
         nbadge = findViewById(R.id.numeric_badge_txt);
         nbadge.bringToFront();
     }
+
+    private void open_earn_coins() {
+        Intent intent;
+        intent = new Intent(this, EarnCoinsActivity.class);
+        startActivity(intent);
+    }
+
     private void Rateus() {
         AppRate.with(this).showRateDialog(this);
     }

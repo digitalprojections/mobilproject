@@ -37,8 +37,10 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.appindexing.Action;
@@ -46,9 +48,13 @@ import com.google.firebase.appindexing.FirebaseAppIndex;
 import com.google.firebase.appindexing.FirebaseUserActions;
 import com.google.firebase.appindexing.Indexable;
 import com.google.firebase.appindexing.builders.Actions;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
+import com.google.firebase.dynamiclinks.ShortDynamicLink;
 
 import java.io.File;
 import java.security.MessageDigest;
@@ -59,27 +65,16 @@ import java.util.Map;
 import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity {
-
-
-
+    private FirebaseAuth mAuth;
+    FirebaseUser currentUser;
     Button suralar_but;
     Button extra_btn;
     Button davomi_but;
-
-
-
-
-
     ImageView imageView;
-
     private Handler handler;
-
     // Try to use more data here. ANDROID_ID is a single point of attack.
     InterstitialAd mInterstitialAd;
-
-
     private LiveData<List<NewMessages>> newMessages;
-
     private FirebaseAnalytics mFirebaseAnalytics;
     private RequestQueue queue;
     private String shash;
@@ -87,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int INVALID = 1;
     private static final String TAG = "MAIN ACTIVITY";
     private static final int REQUEST_INVITE = 0;
-    private static final String DEEP_LINK_URL = "https://furqon.page.link/deeplink";
+    private static final String DEEP_LINK_URL = "https://furqon.page.link/ThB2";
     Uri deepLink;
     private sharedpref sharedPref;
     private boolean randomayahshown;
@@ -105,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.invite_i:
-                shareDeepLink(deepLink.toString());
+                shareDeepLink();
                 return true;
             case R.id.settings_i:
                 open_settings();
@@ -128,9 +123,12 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
+
         sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
 
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
 
 
 
@@ -212,14 +210,16 @@ public class MainActivity extends AppCompatActivity {
             Crashlytics.logException(e);
         }
 
+        // Create a deep link and display it in the UI
+        deepLink = buildDeepLink(Uri.parse(DEEP_LINK_URL), 0);
+
         //TODO login?
+        //doing anonymous login
         //TODO point system
         //TODO share for points
         //TODO usage points
         //TODO unlock downloads
 
-        // Create a deep link and display it in the UI
-        deepLink = buildDeepLink(Uri.parse(DEEP_LINK_URL), 0);
 
 
 
@@ -230,7 +230,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
 
         } else {
-
             if (sharedPref.getDefaults("random_ayah_sw") && !randomayahshown) {
                 ayahOfTheDay();
                 randomayahshown = true;
@@ -259,51 +258,85 @@ public class MainActivity extends AppCompatActivity {
         intent = new Intent(this, Settings.class);
         startActivity(intent);
     }
-
-    public Uri buildDeepLink(@NonNull Uri deepLink, int minVersion) {
-        String uriPrefix = "furqon.page.link";
-
-        // Set dynamic link parameters:
-        //  * URI prefix (required)
-        //  * Android Parameters (required)
-        //  * Deep link
-        // [START build_dynamic_link]
-        DynamicLink.Builder builder = FirebaseDynamicLinks.getInstance()
-                .createDynamicLink()
-                .setDomainUriPrefix(uriPrefix)
-                .setAndroidParameters(new DynamicLink.AndroidParameters.Builder()
-                        .setMinimumVersion(minVersion)
-                        .build())
-                .setLink(deepLink);
-
-        // Build the dynamic link
-        DynamicLink link = builder.buildDynamicLink();
-        // [END build_dynamic_link]
-
-        // Return the dynamic link as a URI
-        return link.getUri();
+    private void shareDeepLink() {
+        createShortLink();
     }
     private void open_favourites() {
         Intent intent;
         intent = new Intent(this, Favourites.class);
         startActivity(intent);
     }
-    private void shareDeepLink(String deepLink) {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Firebase Deep Link");
-        intent.putExtra(Intent.EXTRA_TEXT, "QURAN KAREEM Android " + deepLink);
+    public Uri buildDeepLink(Uri dl, int version) {
+        String uriPrefix = "furqon.page.link";
 
-        startActivity(intent);
+        if(currentUser!=null){
+            Log.i("SHARING", currentUser.getUid());
+            //userId=currentUser.getUid()
+        }
+        // Set dynamic link parameters:
+        //  * URI prefix (required)
+        //  * Android Parameters (required)
+        //  * Deep link
+        // [START build_dynamic_link]
+
+
+        DynamicLink.Builder builder = FirebaseDynamicLinks.getInstance()
+                .createDynamicLink()
+                .setDomainUriPrefix(uriPrefix)
+                .setAndroidParameters(new DynamicLink.AndroidParameters.Builder()
+                        .setMinimumVersion(version)
+                        .build())
+                .setLink(dl);
+
+        // Build the dynamic link
+        DynamicLink link = builder.buildDynamicLink();
+        // [END build_dynamic_link]
+
+
+        // Return the dynamic link as a URI
+        return link.getUri();
     }
+    public void createShortLink() {
+        // [START create_short_link]
+        String val = "https://quran-kareem.web.app/?user_id="+currentUser.getUid();
+        Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                //.setLink(Uri.parse("https://furqon.page.link/ThB2"))
+                .setLink(Uri.parse(val))
+                .setDomainUriPrefix("https://furqon.page.link")
+                .setAndroidParameters(
+                        new DynamicLink.AndroidParameters.Builder("furqon.io.github.mobilproject")
+                                .setMinimumVersion(0)
+                                .build())
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        checkForDynamicLink();
+                // Set parameters
+                // ...
+                .buildShortDynamicLink()
+                .addOnCompleteListener(this, new OnCompleteListener<ShortDynamicLink>() {
+                    @Override
+                    public void onComplete(@NonNull Task<ShortDynamicLink> task) {
+                        if (task.isSuccessful()) {
+                            // Short link created
+                            Uri shortLink = task.getResult().getShortLink();
+                            Uri flowchartLink = task.getResult().getPreviewLink();
+                            Log.i("SHORT LINK", shortLink.getPath());
+                            Intent intent = new Intent(Intent.ACTION_SEND);
+                            intent.setType("text/plain");
+                            intent.putExtra(Intent.EXTRA_SUBJECT, R.string.quran_kareem_title);
+                            intent.putExtra(Intent.EXTRA_TEXT, shortLink.toString());
+                            startActivity(intent);
+                            //Log.i("SHARE", deepLink.getPath());
+                        } else {
+                            // Error
+                            // ...
+                            Log.i("LINK ERROR", task.getResult().toString());
+                        }
+                    }
+                });
+        // [END create_short_link]
     }
 
     private void checkForDynamicLink() {
+        Log.i(TAG, "LINK CHECKING");
         FirebaseDynamicLinks.getInstance()
                 .getDynamicLink(getIntent())
                 .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
@@ -313,9 +346,10 @@ public class MainActivity extends AppCompatActivity {
                         Uri deepLink = null;
                         if (pendingDynamicLinkData != null) {
                             deepLink = pendingDynamicLinkData.getLink();
-                            Log.i(TAG, "LINK FOUND " + deepLink);
+                            Log.i(TAG, "LINK FOUND " + deepLink.getQueryParameter("user_id"));
+                            pendingDynamicLinkData = null;
                             Snackbar.make(findViewById(android.R.id.content),
-                                    "Found deep link!", Snackbar.LENGTH_LONG).show();
+                                    R.string.invitation_confirm, Snackbar.LENGTH_LONG).show();
                         }
 
 
@@ -325,7 +359,7 @@ public class MainActivity extends AppCompatActivity {
                         // ...
 
                         // ...
-                        Log.d(TAG, "getDynamicLink:SUCCESS " + deepLink);
+
                     }
                 })
                 .addOnFailureListener(this, new OnFailureListener() {
@@ -334,6 +368,57 @@ public class MainActivity extends AppCompatActivity {
                         Log.w(TAG, "getDynamicLink:onFailure", e);
                     }
                 });
+    }
+
+
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //checkForDynamicLink();
+        // Check if user is signed in (non-null) and update UI accordingly.
+
+        currentUser = mAuth.getCurrentUser();
+        updateUI();
+    }
+
+    private void updateUI() {
+        boolean isSignedIn = (currentUser != null);
+
+        // Status text
+        if (isSignedIn) {
+            Log.i("FIREBASE AUTH", currentUser.getUid());
+            sharedpref.getInstance().write(sharedPref.USERID, currentUser.getUid());
+        } else {
+            signInAnonymously();
+        }
+
+    }
+    private void signInAnonymously() {
+        //showProgressBar();
+        // [START signin_anonymously]
+        mAuth.signInAnonymously()
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInAnonymously:success");
+                            currentUser = mAuth.getCurrentUser();
+                            updateUI();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInAnonymously:failure", task.getException());
+                            Toast.makeText(MainActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            currentUser = null;
+                            updateUI();
+                        }
+
+                    }
+                });
+        // [END signin_anonymously]
     }
 
     @Override

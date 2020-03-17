@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+
     package="furqon.io.github.mobilproject">
 
     <uses-permission android:name="com.android.vending.CHECK_LICENSE" />
@@ -15,8 +16,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher2_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".EarnCoinsActivity" android:parentActivityName=".ExtraActivity"></activity>
+        android:theme="@style/AppTheme"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:node="merge">
+
+        <activity android:name=".EarnCoinsActivity" android:parentActivityName=".ExtraActivity"/>
         <activity android:name=".ExtraActivity" android:parentActivityName=".MainActivity" />
         <activity
             android:name=".MessageView"
@@ -85,10 +89,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
+
                 <data
-                    android:host="furqon.page.link"
-                    android:path="/deeplink"
-                    android:scheme="https" />
+                    android:host="quran-kareem.web.app"
+                    android:pathPattern="*"
+                    android:scheme="https"/>
             </intent-filter>
         </activity>
         <activity
