@@ -2,6 +2,7 @@ package furqon.io.github.mobilproject;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
@@ -44,6 +45,11 @@ public class RewardAd{
                 @Override
                 public void onRewardedVideoAdLoaded() {
                     //Toast.makeText(mContext,                            "Ad loaded.", Toast.LENGTH_SHORT).show();
+                    ManageCoins manageCoins;
+                    if(mContext instanceof ManageCoins){
+                        manageCoins = (ManageCoins) mContext;
+                        manageCoins.SetCoinValues();
+                    }
                 }
 
                 @Override
@@ -65,18 +71,16 @@ public class RewardAd{
 
                 @Override
                 public void onRewarded(RewardItem rewardItem) {
-//
-//                    MyListener myListener;
-//                    if(mContext instanceof MyListener){
-//                        myListener = (MyListener) mContext;
-//                        myListener.MarkAsAwarded(currentSurahNumber);
-//
-//                    }
                     int coins = rewardItem.getAmount();
                     int existingCoins = sharedpref.getInstance().read(sharedpref.getInstance().COINS, 0);
                     int totalCoins = existingCoins + coins;
                     sharedpref.getInstance().write(sharedpref.getInstance().COINS, totalCoins);
                     Toast.makeText(mContext,"Ad triggered reward. Coins amount: " + totalCoins, Toast.LENGTH_LONG).show();
+                    ManageCoins manageCoins;
+                    if(mContext instanceof ManageCoins){
+                        manageCoins = (ManageCoins) mContext;
+                        manageCoins.SetCoinValues();
+                    }
                 }
 
                 @Override

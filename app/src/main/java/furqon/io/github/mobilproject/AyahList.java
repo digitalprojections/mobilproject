@@ -1,6 +1,7 @@
 package furqon.io.github.mobilproject;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.Notification;
 
@@ -48,6 +49,7 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.LayoutInflaterCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -118,8 +120,9 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
     private NotificationManager notificationManager;
 
-    private RewardAd mRewardedVideoAd;
+
     private String suraNumber;
+    private int status = 0;
 
     CardView download_container;
     ImageView downloadButton;
@@ -144,7 +147,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
 
         context = this;
-        mRewardedVideoAd = new RewardAd(context);
+        //mRewardedVideoAd = new RewardAd(context);
         trackList = new ArrayList<String>();
         PopulateTrackList();
 
@@ -326,6 +329,26 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         titleViewModel.getTitle(suraNumber).observe(this, new Observer<ChapterTitleTable>() {
             @Override
             public void onChanged(ChapterTitleTable chapterTitleTable) {
+
+                int currentStatus = Integer.parseInt(chapterTitleTable.status);
+                if(status==0){
+                    //just created
+                    //Toast.makeText(getApplicationContext(), status + " FIRST SHOW " + chapterTitleTable.status, Toast.LENGTH_SHORT).show();
+                    status = currentStatus;
+                }else if(status==currentStatus){
+                    //second or more tries
+                    //Toast.makeText(getApplicationContext(), status + " FAILED TO UPDATE " + chapterTitleTable.status, Toast.LENGTH_SHORT).show();
+                }else if(status<currentStatus){
+                    //Toast.makeText(getApplicationContext(), status + " TITLE UPDATED " + chapterTitleTable.status, Toast.LENGTH_SHORT).show();
+                    int xcoins = sharedPref.read(sharedPref.COINS, 0);
+                    int newtotal;
+                    if(xcoins>0){
+                        newtotal = xcoins-1;
+                    }else {
+                        newtotal = 0;
+                    }
+                    sharedPref.write(sharedPref.COINS, newtotal);
+                }
                 SetDownloadButtonState(chapterTitleTable);
             }
         });
@@ -706,15 +729,37 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             progressBarDownload.setVisibility(View.GONE);
     }
 
+
     private void ShowCoinAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Use coins to unlock");
         builder.setItems(R.array.unlock_actions, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Toast.makeText(getApplicationContext(), i + " selected", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), i + " selected", Toast.LENGTH_SHORT).show();
+                switch (i){
+                    case 0:
+                        int coins = sharedPref.read(sharedPref.COINS, 0);
+                        if(coins>0){
+                            MarkAsAwarded(Integer.parseInt(suraNumber));
+                        }
+                        Toast.makeText(getApplicationContext(),  R.string.use_coins, Toast.LENGTH_LONG).show();
+                        break;
+                    case 1:
+                        //Toast.makeText(getApplicationContext(),  R.string.earn_coins, Toast.LENGTH_SHORT).show();
+                        Intent intent;
+                        intent = new Intent(context, EarnCoinsActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 2:
+                        //Toast.makeText(getApplicationContext(),  R.string.cancel, Toast.LENGTH_SHORT).show();
+                        break;
+                }
             }
         });
+// Get the layout inflater
+
+        //builder.setView(R.layout.multiple_choice_for_use_coin_dialog);
 
 
 // Create the AlertDialog
@@ -824,7 +869,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     }
     @Override
     public void MarkAsAwarded(int surah_id) {
-        Log.e("ACTUAL SURAH ID?", surah_id + " " + suraNumber);
+        //Log.e("ACTUAL SURAH ID?", surah_id + " " + suraNumber);
         downloadText.setText(R.string.down_or_play);
         playButton.setVisible(true);
         titleViewModel.updateTitleAsRewarded(suraNumber);

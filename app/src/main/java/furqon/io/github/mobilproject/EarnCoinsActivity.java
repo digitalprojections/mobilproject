@@ -21,9 +21,11 @@ import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
 
+import org.w3c.dom.Text;
+
 import java.util.Objects;
 
-public class EarnCoinsActivity extends AppCompatActivity {
+public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins {
 
     private ImageButton share_btn;
     private ImageButton watchAds_btn;
@@ -51,9 +53,7 @@ public class EarnCoinsActivity extends AppCompatActivity {
 
         coins_txt = findViewById(R.id.coins_count_txt);
 
-        String mycoins = String.valueOf(sharedPref.read(sharedPref.COINS, 0));
-
-        coins_txt.setText(mycoins);
+        setCoinValue();
         // Create a deep link and display it in the UI
         deepLink = buildDeepLink(Uri.parse(DEEP_LINK_URL), 0);
 
@@ -61,6 +61,7 @@ public class EarnCoinsActivity extends AppCompatActivity {
 
         share_btn = findViewById(R.id.ShareImageButton);
         watchAds_btn = findViewById(R.id.WatchAdsImageButton);
+        watchAds_btn.setEnabled(false);
 
         share_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,6 +78,34 @@ public class EarnCoinsActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setCoinValue();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //setCoinValue();
+    }
+
+    private void setCoinValue() {
+        if(watchAds_btn!=null){
+            watchAds_btn.setEnabled(true);
+        }
+        if(coins_txt!=null){
+            String mycoins = String.valueOf(sharedPref.read(sharedPref.COINS, 0));
+            coins_txt.setText(mycoins);
+        }else{
+            TextView coins_txt = findViewById(R.id.coins_count_txt);
+            String mycoins = String.valueOf(sharedPref.read(sharedPref.COINS, 0));
+            coins_txt.setText(mycoins);
+        }
+
+    }
+
     private void ShowRewardAdForThisItem() {
         //String suranomi = suraName.getText().toString();
         mRewardedVideoAd.SHOW();
@@ -161,4 +190,8 @@ public class EarnCoinsActivity extends AppCompatActivity {
         // [END create_short_link]
     }
 
+    @Override
+    public void SetCoinValues() {
+        setCoinValue();
+    }
 }

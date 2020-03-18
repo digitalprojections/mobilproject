@@ -89,4 +89,7 @@
     <string name="ok">Unlock</string>
     <string name="cancel">Cancel</string>
     <string name="use_coins">Use Coins</string>
+    <string name="coins">Coins</string>
+    <string name="x1_coins">x1 Coins (get instantly)</string>
+    <string name="x10_coins">x10 Coins (available after approval)</string>
 </resources>

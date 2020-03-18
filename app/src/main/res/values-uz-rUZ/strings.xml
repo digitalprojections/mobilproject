@@ -85,4 +85,7 @@
     <string name="use_coins">Tangadan foydalanish</string>
     <string name="cancel">Bekor qilish</string>
     <string name="ok">Qulfni ochish</string>
+    <string name="coins">Tanga</string>
+    <string name="x1_coins">1 Tanga (bir zumda beriladi)</string>
+    <string name="x10_coins">10 Tanga (tasdiqlangach beriladi)</string>
 </resources>
