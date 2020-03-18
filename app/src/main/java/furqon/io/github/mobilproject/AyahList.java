@@ -8,6 +8,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -39,6 +40,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -613,10 +615,10 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         }
     }
 
-    private void ShowRewardAdForThisItem() {
-            //String suranomi = suraName.getText().toString();
-            mRewardedVideoAd.SHOW();
-        }
+//    private void ShowRewardAdForThisItem() {
+//            //String suranomi = suraName.getText().toString();
+//            mRewardedVideoAd.SHOW();
+//        }
     private void StartDownload() {
         DownloadThis(suraNumber);
         MarkAsDownloading(0);
@@ -680,7 +682,19 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                     //String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suranomer + ".mp3"; // your URL here
                     switch (downloadButton.getTag().toString()){
                         case "1"://red arrow
-                            ShowRewardAdForThisItem();
+                            ShowCoinAlert();
+
+                            //ShowRewardAdForThisItem();
+//                            final PopupWindow popupWindow = new PopupWindow(getApplicationContext());
+//                            View pop_view = getLayoutInflater().inflate(R.layout.popup_hint, null);
+//                            popupWindow.setContentView(pop_view);
+//                            popupWindow.showAtLocation(cl, 0, 0,0);
+//                            pop_view.setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View viewx) {
+//                                    popupWindow.dismiss();
+//                                }
+//                            });
                             break;
                         case "2"://blue arrow
                             StartDownload();
@@ -691,6 +705,24 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             });
             progressBarDownload.setVisibility(View.GONE);
     }
+
+    private void ShowCoinAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Use coins to unlock");
+        builder.setItems(R.array.unlock_actions, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Toast.makeText(getApplicationContext(), i + " selected", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+// Create the AlertDialog
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+    }
+
     private boolean WritePermission() {
 
         if (ContextCompat.checkSelfPermission(this,

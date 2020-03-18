@@ -86,4 +86,7 @@
     <string name="unlock_or_play"><![CDATA[<-Unlock | Play online->]]></string>
     <string name="play_local"><![CDATA[Play local audio->]]></string>
     <string name="downloading">downloading...</string>
+    <string name="ok">Unlock</string>
+    <string name="cancel">Cancel</string>
+    <string name="use_coins">Use Coins</string>
 </resources>

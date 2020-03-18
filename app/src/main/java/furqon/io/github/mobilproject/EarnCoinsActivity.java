@@ -77,6 +77,10 @@ public class EarnCoinsActivity extends AppCompatActivity {
             }
         });
     }
+    private void ShowRewardAdForThisItem() {
+        //String suranomi = suraName.getText().toString();
+        mRewardedVideoAd.SHOW();
+    }
     private void shareDeepLink() {
         if(userid!=null){
             Log.i("SHARING", userid);
@@ -89,6 +93,7 @@ public class EarnCoinsActivity extends AppCompatActivity {
         }
 
     }
+
     public Uri buildDeepLink(Uri dl, int version) {
         String uriPrefix = "furqon.page.link";
 

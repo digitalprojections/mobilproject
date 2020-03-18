@@ -82,4 +82,7 @@
     <string name="unlock_or_play"><![CDATA[<-разблокировать | слушать онлайн->]]></string>
     <string name="play_local"><![CDATA[слушать аудио->]]></string>
     <string name="downloading">скачивание...</string>
+    <string name="use_coins">Использовать монету</string>
+    <string name="cancel">Отмена</string>
+    <string name="ok">Разблокировать</string>
 </resources>

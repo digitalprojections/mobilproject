@@ -163,11 +163,10 @@ public class ExtraActivity extends AppCompatActivity {
     }
 
     private void open_earn_coins() {
-        Toast.makeText(getApplicationContext(), R.string.coming_soon, Toast.LENGTH_SHORT).show();
-
-//        Intent intent;
-//        intent = new Intent(this, EarnCoinsActivity.class);
-//        startActivity(intent);
+        //Toast.makeText(getApplicationContext(), R.string.coming_soon, Toast.LENGTH_SHORT).show();
+        Intent intent;
+        intent = new Intent(this, EarnCoinsActivity.class);
+        startActivity(intent);
     }
 
     private void Rateus() {

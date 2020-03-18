@@ -82,4 +82,7 @@
     <string name="unlock_or_play"><![CDATA[<-Qulfni ochish | onlayn tinglang-->]]></string>
     <string name="play_local"><![CDATA[audioni tinglang->]]></string>
     <string name="downloading">yuklab olinmoqda ...</string>
+    <string name="use_coins">Tangadan foydalanish</string>
+    <string name="cancel">Bekor qilish</string>
+    <string name="ok">Qulfni ochish</string>
 </resources>
