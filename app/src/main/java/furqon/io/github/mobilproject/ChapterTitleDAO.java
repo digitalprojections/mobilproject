@@ -9,6 +9,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import java.util.List;
+import java.util.Map;
 
 @Dao
 public interface ChapterTitleDAO {
@@ -39,6 +40,15 @@ public interface ChapterTitleDAO {
 
     @Update
     void update(ChapterTitleTable title);
+
+    @Query("UPDATE sura_names SET status=2 WHERE chapter_id LIKE:suraNomer")
+    void updateTitleAsRewarded(String suraNomer);
+    @Query("UPDATE sura_names SET status=3 WHERE chapter_id LIKE:suraNomer")
+    void updateTitleAsDownloaded(String suraNomer);
+
+    @Query("SELECT * FROM sura_names WHERE chapter_id LIKE:suraNomer")
+    void getTitle(String suraNomer);
+
     @Update
     void updateText(ChapterTextTable chapterText);
 

@@ -22,7 +22,10 @@
         android:id="@+id/download_cont"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_marginStart="8dp"
         android:layout_weight="0"
+        android:clickable="true"
+        android:focusable="true"
         app:cardBackgroundColor="#36FFFFFF"
         tools:visibility="visible">
 
@@ -34,7 +37,7 @@
             android:focusable="true"
             android:tag="1"
             android:visibility="visible"
-            app:srcCompat="@drawable/ic_file_download_red" />
+            app:srcCompat="@drawable/ic_unlock" />
 
         <ProgressBar
             android:id="@+id/progressBar_download"

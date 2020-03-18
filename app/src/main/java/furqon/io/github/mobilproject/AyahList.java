@@ -28,6 +28,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
@@ -40,6 +41,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -87,7 +89,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     Integer ayah_position;
     public String suranomi;
     public String xatchup = "xatchup";
-    String suranomer;
+    //String suranomer;
     TextView timer;
     String audiorestore;
     String audiostore;
@@ -109,6 +111,13 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
     private NotificationManager notificationManager;
 
+    ImageView downloadButton;
+    ProgressBar progressBarDownload;
+    CardView down_cont;
+    private RewardAd mRewardedVideoAd;
+    private String suraNumber;
+
+
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -126,7 +135,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
 
         context = this;
-
+        mRewardedVideoAd = new RewardAd(context);
 
         sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
@@ -143,14 +152,11 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
             registerReceiver(broadcastReceiverAudio, new IntentFilter("TRACKS_TRACKS"));
             startService(new Intent(getBaseContext(), OnClearFromService.class));
-
-
         }
-
-
 
         Toolbar toolbar = findViewById(R.id.audiobar);
         setSupportActionBar(toolbar);
+
         registerReceiver(broadcastReceiverDownload, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         Bundle intent = getIntent().getExtras();
         String extratext;
@@ -159,9 +165,9 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                 extratext = intent.getString("SURANAME");
                 assert extratext != null;
                 suranomi = extratext.substring(0, extratext.indexOf(":"));
-                suranomer = extratext.substring(extratext.indexOf(":") + 1);
+                suraNumber = extratext.substring(extratext.indexOf(":") + 1);
 
-                Log.i("LOADED SURA", suranomer + " " + suranomi);
+                Log.i("LOADED SURA", suraNumber + " " + suranomi);
 
                 Objects.requireNonNull(getSupportActionBar()).setTitle(suranomi);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -169,14 +175,12 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                 recyclerView = findViewById(R.id.chapter_scroll);
                 recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-                mAdapter = new AyahListAdapter(this, suranomi, suranomer);
+                mAdapter = new AyahListAdapter(this, suranomi, suraNumber);
                 recyclerView.setAdapter(mAdapter);
 
                 LoadTheList();
 
-
                 audio_pos = sharedPref.read(suranomi, 0);
-
 
                 handler = new Handler();
 
@@ -256,7 +260,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                         Map<String, String> MyData = new HashMap<String, String>();
                         MyData.put("action", "izohsiz_text_obj"); //Add the data you'd like to send to the server.
                         MyData.put("database_id", "1, 120, 59, 79");
-                        MyData.put("surah_id", suranomer);
+                        MyData.put("surah_id", suraNumber);
                         //https://inventivesolutionste.ipage.com/ajax_quran.php
                         //POST
                         //action:names_as_objects
@@ -320,7 +324,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                 String trackname = files[i].getName().toString();
                 if(trackname.contains(".")){
                     trackname = trackname.substring(0, trackname.lastIndexOf("."));
-                    if(trackname==suranomer){
+                    if(trackname==suraNumber){
                         MarkAsDownloaded(Integer.parseInt(trackname));
                         Log.i("TRACKNAME",  "number " + trackname + " track is available");
 
@@ -408,16 +412,16 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         }
     };
     private void LoadTheList() {
-        titleViewModel.getChapterText(suranomer).observe(this, new Observer<List<AllTranslations>>() {
+        titleViewModel.getChapterText(suraNumber).observe(this, new Observer<List<AllTranslations>>() {
             @Override
             public void onChanged(@Nullable List<AllTranslations> surahText) {
                 //Toast.makeText(SuraNameList.this, "LOADING TITLES " + surahTitles.size(), Toast.LENGTH_LONG).show();
-                int sc = getSurahLength(suranomer);
+                int sc = getSurahLength(suraNumber);
                 Log.e("SURAH AYAH COUNT", sc + " " +surahText.size());
                 if(surahText.size()!=sc){
                     if(!httpresponse) {
                         if(surahText.size()!=0){
-                            titleViewModel.deleteSurah(Integer.parseInt(suranomer));
+                            titleViewModel.deleteSurah(Integer.parseInt(suraNumber));
                             Toast.makeText(getApplicationContext(), R.string.surah_size_issue, Toast.LENGTH_LONG).show();
                         }
                         tempbut.setVisibility(View.VISIBLE);
@@ -518,7 +522,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                 String trackname = files[i].getName();
                 if(trackname.contains(".")){
                     trackname = trackname.substring(0, trackname.lastIndexOf("."));
-                    if(trackname.equals(suranomer)){
+                    if(trackname.equals(suraNumber)){
                         filePath = path + "/" + trackname + ".mp3";
                     }
                 }
@@ -583,6 +587,44 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             });
         }
     }
+
+    private void ShowRewardAdForThisItem() {
+            //String suranomi = suraName.getText().toString();
+            mRewardedVideoAd.SHOW();
+        }
+    private void StartDownload(View view) {
+        DownloadThis(suraNumber);
+        MarkAsDownloading(Integer.parseInt(suraNumber)-1);
+
+            progressBar.setVisibility(View.VISIBLE);
+            downloadButton.setVisibility(View.GONE);
+
+    }
+    private void SetDownloadButtonState(){
+        downloadButton = findViewById(R.id.button_download);
+        progressBar = findViewById(R.id.progressBar_download);
+        down_cont = findViewById(R.id.download_cont);
+
+        Log.i("DOWNLOAD BUTTON", " " + downloadButton.getTag());
+
+            downloadButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //Toast.makeText(mContext,"Download surah number " + suraNumber.getText().toString(), Toast.LENGTH_SHORT).show();
+                    //String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suranomer + ".mp3"; // your URL here
+                    switch (downloadButton.getTag().toString()){
+                        case "1"://red arrow
+                            //ShowRewardAdForThisItem(view);
+                            break;
+                        case "2"://blue arrow
+                            StartDownload(view);
+                            break;
+                    }
+
+                }
+            });
+            progressBar.setVisibility(View.GONE);
+    }
     private boolean WritePermission() {
 
         if (ContextCompat.checkSelfPermission(this,
@@ -617,7 +659,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
-                    DownloadThis(suranomer);
+                    DownloadThis(suraNumber);
 
                 } else {
                     // permission denied, boo! Disable the
@@ -633,7 +675,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     }
     @Override
     public void DownloadThis(String suraNumber) {
-        suranomer = suraNumber;
+
         if (WritePermission()) {
             String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suraNumber + ".mp3"; // your URL here
             File file = new File(getExternalFilesDir(null), suraNumber + ".mp3");
@@ -641,7 +683,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                 request = new DownloadManager.Request(Uri.parse(url))
                         .setTitle(suraNumber)
-                        .setDescription("Downloading")
+                        .setDescription("Downloading " + suranomi)
                         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
                         .setDestinationUri(Uri.fromFile(file))
                         .setRequiresCharging(false)
@@ -650,7 +692,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             } else {
                 request = new DownloadManager.Request(Uri.parse(url))
                         .setTitle(suraNumber)
-                        .setDescription("Downloading")
+                        .setDescription("Downloading " + suranomi)
                         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
                         .setDestinationUri(Uri.fromFile(file))
                         .setAllowedOverMetered(true)
@@ -668,6 +710,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     @Override
     public void LoadTitlesFromServer() {
 
+
     }
 
     @Override
@@ -677,12 +720,14 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
     @Override
     public void MarkAsAwarded(int surah_id) {
+        Log.e("ACTUAL SURAH ID?", surah_id + " " + suraNumber);
 
+        titleViewModel.updateTitleAsRewarded(suraNumber);
     }
 
     @Override
     public void MarkAsDownloaded(int surah_id) {
-
+            titleViewModel.updateTitleAsDownloaded(suraNumber);
     }
 
     private boolean isNetworkAvailable() {

@@ -8,6 +8,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+import java.util.Map;
 
 public class TitleRepository {
     private ChapterTitleDAO mTitleDao;
@@ -67,8 +68,12 @@ public class TitleRepository {
         new insertTextAsyncTask(mTitleDao).execute(text);
     }
 
-
-
+    public void updateTitleAsRewarded(String suraNomer){
+        new updateTitleRewardedAsyncTask(mTitleDao).execute(suraNomer);
+    }
+    public void updateTitleAsDownloaded(String suraNomer){
+        new updateTitleDownloadedAsyncTask(mTitleDao).execute(suraNomer);
+    }
     public void update(ChapterTitleTable title){
 
         new updateAsyncTask(mTitleDao).execute(title);
@@ -144,6 +149,29 @@ public class TitleRepository {
         @Override
         protected Void doInBackground(final ChapterTextTable... chapterTexts) {
             mAsyncTitleDAO.insertText(chapterTexts[0]);
+            return null;
+        }
+    }
+    private class updateTitleDownloadedAsyncTask extends AsyncTask<String, Void, Void> {
+        private ChapterTitleDAO mAsyncTitleDAO;
+        public updateTitleDownloadedAsyncTask(ChapterTitleDAO mTitleDao) {
+            mAsyncTitleDAO = mTitleDao;
+        }
+        @Override
+        protected Void doInBackground(String... suraNomer) {
+            mAsyncTitleDAO.updateTitleAsRewarded(suraNomer[0]);
+            return null;
+        }
+    }
+
+    private class updateTitleRewardedAsyncTask extends AsyncTask<String, Void, Void> {
+        private ChapterTitleDAO mAsyncTitleDAO;
+        public updateTitleRewardedAsyncTask(ChapterTitleDAO mTitleDao) {
+            mAsyncTitleDAO = mTitleDao;
+        }
+        @Override
+        protected Void doInBackground(String... suraNomer) {
+            mAsyncTitleDAO.updateTitleAsRewarded(suraNomer[0]);
             return null;
         }
     }

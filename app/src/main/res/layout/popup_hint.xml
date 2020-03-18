@@ -16,7 +16,6 @@
         android:layout_marginEnd="8dp"
         android:gravity="center"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/earn_coins_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -43,17 +42,5 @@
             android:textColor="#000000" />
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/earn_coins_button"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_weight="0"
-        android:text="@string/earn_coins"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout10" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

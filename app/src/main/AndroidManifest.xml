@@ -68,12 +68,14 @@
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/notification_from_author_channel" />
 
-        <activity android:name=".Settings" />
-        <activity
-            android:name=".AyahList"
+        <activity android:name=".Settings"
+            android:parentActivityName=".MainActivity"
+            />
+        <activity android:name=".AyahList"
             android:launchMode="singleInstance"
             android:parentActivityName=".SuraNameList" />
-        <activity android:name=".Favourites" />
+        <activity android:name=".Favourites"
+            android:parentActivityName=".ExtraActivity"/>
         <activity
             android:name=".SuraNameList"
             android:parentActivityName=".MainActivity" />
@@ -98,7 +100,7 @@
         </activity>
         <activity
             android:name=".Search"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".ExtraActivity" />
         <activity android:name=".AyahOfTheDay" />
     </application>
 

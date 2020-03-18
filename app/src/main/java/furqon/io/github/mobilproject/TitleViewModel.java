@@ -64,7 +64,12 @@ public class TitleViewModel extends AndroidViewModel {
         //Log.d("TITLE insert", text);
         titleRepository.insertText(text);
     }
-
+    public void updateTitleAsRewarded(String suraNomer){
+        titleRepository.updateTitleAsRewarded(suraNomer);
+    }
+    public void updateTitleAsDownloaded(String suraNomer){
+        titleRepository.updateTitleAsDownloaded(suraNomer);
+    }
     public void update(ChapterTitleTable title){
 
         titleRepository.update(title);

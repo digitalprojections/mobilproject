@@ -38,32 +38,32 @@ public class ExtraActivity extends AppCompatActivity {
     private TitleViewModel titleViewModel;
 
     private Animation scaler;
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-
-        inflater.inflate(R.menu.options_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.invite_i:
-                //shareDeepLink();
-                return true;
-            case R.id.settings_i:
-                //open_settings();
-                return true;
-            case R.id.favourites_i:
-                open_favourites();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//
+//        inflater.inflate(R.menu.options_menu, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.invite_i:
+//                //shareDeepLink();
+//                return true;
+//            case R.id.settings_i:
+//                //open_settings();
+//                return true;
+//            case R.id.favourites_i:
+//                open_favourites();
+//                return true;
+//
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//
+//    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,7 +163,7 @@ public class ExtraActivity extends AppCompatActivity {
     }
 
     private void open_earn_coins() {
-        Toast.makeText(getApplicationContext(), R.string.coming_soon, Toast.LENGTH_SHORT);
+        Toast.makeText(getApplicationContext(), R.string.coming_soon, Toast.LENGTH_SHORT).show();
 
 //        Intent intent;
 //        intent = new Intent(this, EarnCoinsActivity.class);

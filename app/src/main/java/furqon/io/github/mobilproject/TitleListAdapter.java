@@ -199,19 +199,7 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
         return retval;
     }
 
-    private boolean TrackDownloaded(String v) {
-        boolean retval = false;
-        for (String i:trackList
-             ) {
-            if(i.equals(v)){
-                //match found
-                Log.i("TRACK DOWNLOADED?", String.valueOf(v) + " " + i + " " + (i.equals(v)));
-                retval = true;
-            }
 
-        }
-        return retval;
-    }
 
     private boolean nameNotFound(String name) {
         boolean retval = false;
