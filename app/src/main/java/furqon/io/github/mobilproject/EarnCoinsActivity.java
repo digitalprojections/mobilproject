@@ -2,6 +2,7 @@ package furqon.io.github.mobilproject;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.app.usage.NetworkStats;
 import android.content.Intent;
@@ -20,6 +21,8 @@ import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
 
+import java.util.Objects;
+
 public class EarnCoinsActivity extends AppCompatActivity {
 
     private ImageButton share_btn;
@@ -35,6 +38,13 @@ public class EarnCoinsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_earn_coins);
+
+        Toolbar toolbar = findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
+        String title = getString(R.string.earn_coins);
+        Objects.requireNonNull(getSupportActionBar()).setTitle(title);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+
         sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
         mRewardedVideoAd = new RewardAd(getApplicationContext());

@@ -11,7 +11,7 @@
     <string name="audiopos_restored">continue playing</string>
     <string name="audio_load_fail">Failed to load! Check your network</string>
     <string name="save">Save</string>
-    <string name="shareayah">Share this ayah, fii sabi li-llah</string>
+    <string name="shareayah">Share this ayah, fii sabi li-llah and get 10 coins</string>
     <string name="bookmark_it">Bookmark the ayah</string>
     <string name="favourite_it">Add to Favourites</string>
     <string name="banner_ad" translatable="false">ca-app-pub-3838820812386239/6533462802</string>
@@ -19,7 +19,7 @@
     <string name="english">English</string>
     <string name="app_shuts_down_now">If the app does not shut down in 3 seconds, please, make sure to clear all its data to refresh and start using the new database</string>
     <string name="surah">"Surah: "</string>
-    <string name="ayah">", verse: "</string>
+    <string name="ayah">", ayah: "</string>
     <string name="language_selected">Language Selected</string>
     <string name="no_bookmarks">No bookmarks found</string>
     <string name="invite_i">Invite</string>
@@ -81,4 +81,5 @@
     <string name="share">Share</string>
     <string name="quran_kareem_title">Furqan - Quran Kareem for Android. Amazing app!</string>
     <string name="invitation_confirm">Invitation link confirmed!</string>
+    <string name="coming_soon">Coming Soon!</string>
 </resources>

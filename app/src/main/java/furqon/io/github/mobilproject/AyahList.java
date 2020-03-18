@@ -1,5 +1,7 @@
 package furqon.io.github.mobilproject;
 
+import android.Manifest;
+import android.app.DownloadManager;
 import android.app.Notification;
 
 import android.app.NotificationManager;
@@ -8,12 +10,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,6 +41,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -67,10 +73,10 @@ import furqon.io.github.mobilproject.Services.OnClearFromService;
 import static furqon.io.github.mobilproject.Furqon.AUDIO_PLAYING_NOTIFICATION_CHANNEL;
 
 
-public class AyahList extends AppCompatActivity implements ManageSpecials, Playable {
-
+public class AyahList extends AppCompatActivity implements ManageSpecials, Playable, MyListener {
+    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 0;
     private ArrayList<JSONObject> jsonArrayResponse;
-
+    long downloadId;
     private TitleViewModel titleViewModel;
     private AyahListAdapter mAdapter;
     MediaPlayer mediaPlayer;
@@ -135,7 +141,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         progressBar.setVisibility(View.VISIBLE);
 
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
-            registerReceiver(broadcastReceiver, new IntentFilter("TRACKS_TRACKS"));
+            registerReceiver(broadcastReceiverAudio, new IntentFilter("TRACKS_TRACKS"));
             startService(new Intent(getBaseContext(), OnClearFromService.class));
 
 
@@ -145,7 +151,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
         Toolbar toolbar = findViewById(R.id.audiobar);
         setSupportActionBar(toolbar);
-
+        registerReceiver(broadcastReceiverDownload, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         Bundle intent = getIntent().getExtras();
         String extratext;
         if(intent!=null){
@@ -325,8 +331,22 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             Log.d("NULL ARRAY", "no files found");
         }
     }
+    private BroadcastReceiver broadcastReceiverDownload = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+            if (id==downloadId){
+                Log.i("DOWNLOAD COMPLETE", "Download id " + downloadId);
+                //MoveFiles();
+                PopulateTrackList();
+            }else {
+                Log.i("DOWNLOAD FAILED", "Download id " + downloadId);
+            }
+        }
+    };
+    @Override
+    public void MarkAsDownloading(int surah_id) {
 
-    private void MarkAsDownloaded(int parseInt) {
     }
 
     public void playCycle() {
@@ -355,7 +375,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
 
 
-    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+    BroadcastReceiver broadcastReceiverAudio = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getExtras().getString("actionname");
@@ -563,6 +583,107 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             });
         }
     }
+    private boolean WritePermission() {
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+
+            // No explanation needed; request the permission
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+
+            // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+            // app-defined int constant. The callback method gets the
+            // result of the request.
+            Log.i(  "MY PERMISSION TO WRITE", MY_PERMISSIONS_REQUEST_READ_CONTACTS + " granted?");
+
+            return false;
+        } else {
+            // Permission has already been granted
+            return true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    DownloadThis(suranomer);
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    LoadTheList();
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
+    @Override
+    public void DownloadThis(String suraNumber) {
+        suranomer = suraNumber;
+        if (WritePermission()) {
+            String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suraNumber + ".mp3"; // your URL here
+            File file = new File(getExternalFilesDir(null), suraNumber + ".mp3");
+            DownloadManager.Request request;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                request = new DownloadManager.Request(Uri.parse(url))
+                        .setTitle(suraNumber)
+                        .setDescription("Downloading")
+                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+                        .setDestinationUri(Uri.fromFile(file))
+                        .setRequiresCharging(false)
+                        .setAllowedOverMetered(true)
+                        .setAllowedOverRoaming(true);
+            } else {
+                request = new DownloadManager.Request(Uri.parse(url))
+                        .setTitle(suraNumber)
+                        .setDescription("Downloading")
+                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+                        .setDestinationUri(Uri.fromFile(file))
+                        .setAllowedOverMetered(true)
+                        .setAllowedOverRoaming(true);
+            }
+
+            Log.i("PERMISSION OK", "Download start " + url);
+            DownloadManager downloadManager = (DownloadManager) this.getSystemService(this.DOWNLOAD_SERVICE);
+            downloadId = downloadManager.enqueue(request);
+        }
+
+
+    }
+
+    @Override
+    public void LoadTitlesFromServer() {
+
+    }
+
+    @Override
+    public void insertTitle(ChapterTitleTable title) {
+
+    }
+
+    @Override
+    public void MarkAsAwarded(int surah_id) {
+
+    }
+
+    @Override
+    public void MarkAsDownloaded(int surah_id) {
+
+    }
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
@@ -626,12 +747,12 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             if(notificationManager!=null)
                 notificationManager.cancelAll();
         }
-        try{
-            unregisterReceiver(broadcastReceiver);
-        }catch (IllegalArgumentException iax){
-
+        if(broadcastReceiverAudio!=null){
+            unregisterReceiver(broadcastReceiverAudio);
         }
-
+        if(broadcastReceiverDownload!=null){
+            unregisterReceiver(broadcastReceiverDownload);
+        }
 
     }
 

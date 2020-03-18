@@ -13,6 +13,7 @@
         android:background="#1E9575CD"
         android:gravity="center"
         android:orientation="vertical"
+        android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,7 +31,7 @@
             android:layout_marginBottom="16dp"
             android:contentDescription="TODO"
             android:padding="8dp"
-            tools:srcCompat="@mipmap/download_snip" />
+            tools:srcCompat="@mipmap/gold_coin" />
 
         <TextView
             android:id="@+id/screen_title"

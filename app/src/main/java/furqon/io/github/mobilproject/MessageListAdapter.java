@@ -47,7 +47,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
             holder.titleTextView.setTextColor(Color.parseColor("#ffb700"));
             holder.dateTextView.setTextColor(Color.parseColor("#ff0000"));
         }
-        Log.e("MESSAGES ONBIND", current.message_title);
+        //Log.e("MESSAGES ONBIND", current.message_title);
 
     }
 

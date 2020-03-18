@@ -63,8 +63,10 @@ public class Favourites extends AppCompatActivity implements ManageSpecials {
         sharedPref.init(getApplicationContext());
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
+        String title = getString(R.string.favorites);
+        Objects.requireNonNull(getSupportActionBar()).setTitle(title);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Favorites");
 
         progressBar = findViewById(R.id.progressBar2);
         recyclerView = findViewById(R.id.recyclerfavs);

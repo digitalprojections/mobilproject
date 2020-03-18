@@ -20,8 +20,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ExtraActivity extends AppCompatActivity {
     Button favourite_but;
@@ -69,6 +71,9 @@ public class ExtraActivity extends AppCompatActivity {
         //=============================================
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
+        String title = getString(R.string.extra_title);
+        Objects.requireNonNull(getSupportActionBar()).setTitle(title);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         favourite_but = findViewById(R.id.favouritebut);
         search_but = findViewById(R.id.searchbtn);
@@ -158,9 +163,11 @@ public class ExtraActivity extends AppCompatActivity {
     }
 
     private void open_earn_coins() {
-        Intent intent;
-        intent = new Intent(this, EarnCoinsActivity.class);
-        startActivity(intent);
+        Toast.makeText(getApplicationContext(), R.string.coming_soon, Toast.LENGTH_SHORT);
+
+//        Intent intent;
+//        intent = new Intent(this, EarnCoinsActivity.class);
+//        startActivity(intent);
     }
 
     private void Rateus() {

@@ -2,6 +2,7 @@
 
 <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
 
     android:id="@+id/audiobar"
     android:layout_width="match_parent"
@@ -16,5 +17,31 @@
     android:paddingBottom="0dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/download_cont"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="0"
+        app:cardBackgroundColor="#36FFFFFF"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/button_download"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/unlock_the_download"
+            android:focusable="true"
+            android:tag="1"
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_file_download_red" />
+
+        <ProgressBar
+            android:id="@+id/progressBar_download"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:visibility="invisible" />
+    </androidx.cardview.widget.CardView>
 
 </androidx.appcompat.widget.Toolbar>

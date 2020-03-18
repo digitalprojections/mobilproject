@@ -48,30 +48,7 @@
             android:textColor="#F7FF00"
             android:textSize="24sp" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/download_cont"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0"
-            app:cardBackgroundColor="#36FFFFFF">
 
-            <ImageView
-                android:id="@+id/button_download"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/unlock_the_download"
-                android:focusable="true"
-                android:tag="1"
-                android:visibility="visible"
-                app:srcCompat="@drawable/ic_file_download_red" />
-
-            <ProgressBar
-                android:id="@+id/progressBar_download"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:visibility="invisible" />
-        </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"

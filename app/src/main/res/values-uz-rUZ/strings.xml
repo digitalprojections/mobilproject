@@ -13,7 +13,7 @@
     <string name="audiopos_restored">davom etish</string>
     <string name="audio_load_fail">Yuklashda xatolik! Internet tarmoqqa ulanganmisiz?</string>
     <string name="save">Yodda tut</string>
-    <string name="shareayah">Olloh yo`lida yatni ulashing</string>
+    <string name="shareayah">Olloh yo`lida yatni ulashing va 10 tangani qo`lga kiriting</string>
     <string name="bookmark_it">oyatni belgilash</string>
     <string name="favourite_it">Tanlanganlarga qo\'shish</string>
     <string name="russian">rus tilida</string>
@@ -76,4 +76,6 @@
     <string name="watch_ads">Reklamalarni ko`rish</string>
     <string name="share">Ulashish</string>
     <string name="quran_kareem_title">Android uchun Qur\'on Karim. Ajoyib ilova!</string>
+    <string name="invitation_confirm">Taklif havolasi tasdiqlandi!</string>
+    <string name="coming_soon">Tez kunda!</string>
 </resources>

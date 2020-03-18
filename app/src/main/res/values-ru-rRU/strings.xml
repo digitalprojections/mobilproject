@@ -12,14 +12,14 @@
     <string name="audiopos_restored">продолжить с последней позиции</string>
     <string name="audio_load_fail">Ошибка загрузки! Проверьте свою сеть</string>
     <string name="save">Сохранить</string>
-    <string name="shareayah">Поделись этим на пути Аллаха, субханаху ва таала</string>
-    <string name="bookmark_it">добавить стих в закладки</string>
+    <string name="shareayah">Поделись этим на пути Аллаха, и получите 10 монет</string>
+    <string name="bookmark_it">добавить аят в закладки</string>
     <string name="favourite_it">Добавить в избранное</string>
     <string name="russian">русский</string>
     <string name="english">английский</string>
     <string name="app_shuts_down_now">Если приложение не закрывается в течение 3 секунд, пожалуйста, обязательно очистите все его данные, начните использовать</string>
     <string name="surah">"Глава: "</string>
-    <string name="ayah">", стих: "</string>
+    <string name="ayah">, Аят:</string>
     <string name="language_selected">Язык выбран</string>
     <string name="no_bookmarks">Закладки не найдены</string>
     <string name="invite_i">Пригласить</string>
@@ -27,14 +27,14 @@
     <string name="search">Поиск</string>
     <string name="action_settings">Настройки</string>
     <string name="desc_audio_seperate">Отдельное аудио для каждой суры</string>
-    <string name="desc_ayah_of_the_day">Каждый раз начните с нового стиха</string>
+    <string name="desc_ayah_of_the_day">Каждый раз начните с нового аята</string>
     <string name="desc_comments">Комментарии различаются от основного текста и их легче пропускать</string>
     <string name="found">Найдено:</string>
     <string name="title_activity_scrolling">Знакомство</string>
     <string name="tryagain">Попробовать снова</string>
     <string name="title_separate_audio">Аудио</string>
-    <string name="title_daily_ayah">Случайный стих</string>
-    <string name="title_color_comments">Стих и комментарии</string>
+    <string name="title_daily_ayah">Случайный аят</string>
+    <string name="title_color_comments">Аят и комментарии</string>
     <string name="rate">Рейтинг</string>
     <string name="error_message">Возникла ошибка. Пожалуйста, перезапустите приложение</string>
     <string name="furqan_definition">Аль–Фурка́н (араб. الفرقان — Различение) — двадцать пятая сура Корана. Сура мекканская, за исключением аятов 68–70, ниспосланных в Медине. Состоит из 77 аятов.</string>
@@ -76,4 +76,6 @@
     <string name="watch_ads">Смотреть рекламу</string>
     <string name="share">Поделиться</string>
     <string name="quran_kareem_title">Фуркан - Коран Карим для Android. Удивительное приложение!</string>
+    <string name="invitation_confirm">Пригласительная ссылка подтверждена!</string>
+    <string name="coming_soon">Скоро!</string>
 </resources>

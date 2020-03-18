@@ -49,30 +49,19 @@ import java.util.Map;
 import java.util.Objects;
 
 public class SuraNameList extends AppCompatActivity implements MyListener {
-
-    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 0;
-
     private TitleListAdapter mAdapter;
     private Context context;
     private ArrayList<JSONObject> jsonArrayResponse;
-    long downloadId;
 
     private Button tempbut;
     private Button quranic_order_btn;
     private Button revelation_order_btn;
-
     private String suranomer = "";
-
-
     private RecyclerView recyclerView;
     private InterstitialAd mInterstitialAd;
     private sharedpref sharedPref;
     private ArrayList<String> trackList;
-
     private TitleViewModel titleViewModel;
-
-
-
 
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -120,7 +109,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         quranic_order_btn = findViewById(R.id.quranic_order);
         revelation_order_btn = findViewById(R.id.revelation_order);
 
-        registerReceiver(broadcastReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
 
         trackList = new ArrayList<String>();
         PopulateTrackList();
@@ -348,9 +337,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 //            mDatabase.close();
 //        }
 
-        if(broadcastReceiver!=null){
-            unregisterReceiver(broadcastReceiver);
-        }
+
     }
 //
 //    @Override
@@ -360,16 +347,17 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 ////        }
 //    }
 //
+
+    @Override
+    public void DownloadThis(String suraNumber) {
+
+    }
+
     @Override
     public void LoadTitlesFromServer() {
-        Log.d("LOADED FROM SERVER", " ");
-//        if(requestHandler!=null){
-//            requestHandler.httpRequest();
-//        }else{
-//            //tempbut.setVisibility(View.VISIBLE);
-//
-//        }
+
     }
+
     @Override
     public void insertTitle(ChapterTitleTable title){
         Log.d("TITLE insert", title.uzbek);
@@ -378,38 +366,38 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
     @Override
     public void MarkAsAwarded(int surah_id) {
-        int actual_position = surah_id;
-        for(int i=0;i<mAdapter.getItemCount();i++){
-            if(mAdapter.getTitleAt(i).chapter_id==surah_id){
-                actual_position = i;
-            }
-        }
-        Log.e("ACTUAL SURAH ID?", surah_id + " " + actual_position);
-        ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
-        ctitle.status = "2";
-        titleViewModel.update(ctitle);
+//        int actual_position = surah_id;
+//        for(int i=0;i<mAdapter.getItemCount();i++){
+//            if(mAdapter.getTitleAt(i).chapter_id==surah_id){
+//                actual_position = i;
+//            }
+//        }
+//        Log.e("ACTUAL SURAH ID?", surah_id + " " + actual_position);
+//        ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
+//        ctitle.status = "2";
+//        titleViewModel.update(ctitle);
     }
 
     @Override
     public void MarkAsDownloaded(int surah_id) {
-        if(mAdapter!=null){
-            int actual_position = surah_id;
-            for(int i=0;i<mAdapter.getItemCount();i++){
-                try{
-                    if(mAdapter.getTitleAt(i).chapter_id==surah_id){
-                        actual_position = i;
-                    }
-                }catch (IndexOutOfBoundsException iobx){
-                    Log.e("CANNOT GET POSITION", iobx.getMessage());
-                }
-            }
-            ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
-            if(!ctitle.status.equals("3"))
-            {
-                ctitle.status = "3";
-                titleViewModel.update(ctitle);
-            }
-        }
+//        if(mAdapter!=null){
+//            int actual_position = surah_id;
+//            for(int i=0;i<mAdapter.getItemCount();i++){
+//                try{
+//                    if(mAdapter.getTitleAt(i).chapter_id==surah_id){
+//                        actual_position = i;
+//                    }
+//                }catch (IndexOutOfBoundsException iobx){
+//                    Log.e("CANNOT GET POSITION", iobx.getMessage());
+//                }
+//            }
+//            ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
+//            if(!ctitle.status.equals("3"))
+//            {
+//                ctitle.status = "3";
+//                titleViewModel.update(ctitle);
+//            }
+//        }
     }
 
     @Override
@@ -421,55 +409,11 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     }
 
 
-    @Override
-    public void DownloadThis(String suraNumber) {
-        suranomer = suraNumber;
-        if (WritePermission()) {
-            String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suraNumber + ".mp3"; // your URL here
-            File file = new File(getExternalFilesDir(null), suraNumber + ".mp3");
-            DownloadManager.Request request;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                request = new DownloadManager.Request(Uri.parse(url))
-                        .setTitle(suraNumber)
-                        .setDescription("Downloading")
-                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-                        .setDestinationUri(Uri.fromFile(file))
-                        .setRequiresCharging(false)
-                        .setAllowedOverMetered(true)
-                        .setAllowedOverRoaming(true);
-            } else {
-                request = new DownloadManager.Request(Uri.parse(url))
-                        .setTitle(suraNumber)
-                        .setDescription("Downloading")
-                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-                        .setDestinationUri(Uri.fromFile(file))
-                        .setAllowedOverMetered(true)
-                        .setAllowedOverRoaming(true);
-            }
-
-            Log.i("PERMISSION OK", "Download start " + url);
-            DownloadManager downloadManager = (DownloadManager) this.getSystemService(this.DOWNLOAD_SERVICE);
-            downloadId = downloadManager.enqueue(request);
-        }
-
-
-    }
 
 
 
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-            if (id==downloadId){
-                Log.i("DOWNLOAD COMPLETE", "Download id " + downloadId);
-                //MoveFiles();
-                PopulateTrackList();
-            }else {
-                Log.i("DOWNLOAD FAILED", "Download id " + downloadId);
-            }
-        }
-    };
+
+
 
     private void PopulateTrackList() {
         //TODO clean up wrong files
@@ -511,52 +455,6 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         }
     }
 
-    private boolean WritePermission() {
-
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
 
 
-                // No explanation needed; request the permission
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        MY_PERMISSIONS_REQUEST_READ_CONTACTS);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-                Log.i(  "MY PERMISSION TO WRITE", MY_PERMISSIONS_REQUEST_READ_CONTACTS + " granted?");
-
-            return false;
-        } else {
-            // Permission has already been granted
-            return true;
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                    DownloadThis(suranomer);
-
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                    LoadTheList();
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request.
-        }
-    }
 }
