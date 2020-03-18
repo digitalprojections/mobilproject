@@ -28,6 +28,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -45,6 +46,7 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -78,6 +80,8 @@ import static furqon.io.github.mobilproject.Furqon.AUDIO_PLAYING_NOTIFICATION_CH
 public class AyahList extends AppCompatActivity implements ManageSpecials, Playable, MyListener {
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 0;
     private ArrayList<JSONObject> jsonArrayResponse;
+    private ArrayList<String> trackList;
+
     long downloadId;
     private TitleViewModel titleViewModel;
     private AyahListAdapter mAdapter;
@@ -89,6 +93,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     Integer ayah_position;
     public String suranomi;
     public String xatchup = "xatchup";
+    Boolean trackDownload;
     //String suranomer;
     TextView timer;
     String audiorestore;
@@ -111,11 +116,13 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
     private NotificationManager notificationManager;
 
-    ImageView downloadButton;
-    ProgressBar progressBarDownload;
-    CardView down_cont;
     private RewardAd mRewardedVideoAd;
     private String suraNumber;
+
+    CardView download_container;
+    ImageView downloadButton;
+    ProgressBar progressBarDownload;
+    TextView downloadText;
 
 
     @Override
@@ -136,6 +143,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
         context = this;
         mRewardedVideoAd = new RewardAd(context);
+        trackList = new ArrayList<String>();
+        PopulateTrackList();
 
         sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
@@ -148,6 +157,10 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
         progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
+        download_container = findViewById(R.id.download_cont);
+        progressBarDownload = findViewById(R.id.progressBar_download);
+        downloadButton = findViewById(R.id.button_download);
+        downloadText = findViewById(R.id.download_text);
 
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
             registerReceiver(broadcastReceiverAudio, new IntentFilter("TRACKS_TRACKS"));
@@ -308,9 +321,15 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
             }
         });
+        titleViewModel.getTitle(suraNumber).observe(this, new Observer<ChapterTitleTable>() {
+            @Override
+            public void onChanged(ChapterTitleTable chapterTitleTable) {
+                SetDownloadButtonState(chapterTitleTable);
+            }
+        });
+
     }
     private void PopulateTrackList() {
-        //TODO clean up wrong files
         String path = getExternalFilesDir(null).getAbsolutePath();
         Log.d("Files", "Path: " + path);
         File directory = new File(path);
@@ -320,15 +339,14 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
             for (int i = 0; i < files.length; i++)
             {
-                Log.d("Files", "FileName:" + files[i].getName());
+                Log.d("Files",  suraNumber + " FileName:" + files[i].getName());
                 String trackname = files[i].getName().toString();
                 if(trackname.contains(".")){
                     trackname = trackname.substring(0, trackname.lastIndexOf("."));
-                    if(trackname==suraNumber){
-                        MarkAsDownloaded(Integer.parseInt(trackname));
-                        Log.i("TRACKNAME",  "number " + trackname + " track is available");
-
+                    if(!TrackDownloaded(trackname)){
+                        trackList.add(trackname);
                     }
+                    Log.i("TRACKNAME",  "number " + trackname + " track is available");
                 }
             }
         }else{
@@ -342,16 +360,17 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             if (id==downloadId){
                 Log.i("DOWNLOAD COMPLETE", "Download id " + downloadId);
                 //MoveFiles();
-                PopulateTrackList();
+
+                    PopulateTrackList();
+                    MarkAsDownloaded(Integer.parseInt(suraNumber));
+
+
             }else {
-                Log.i("DOWNLOAD FAILED", "Download id " + downloadId);
+                Log.i("DOWNLOAD OTHER FILE", "Download id " + downloadId);
             }
         }
     };
-    @Override
-    public void MarkAsDownloading(int surah_id) {
 
-    }
 
     public void playCycle() {
         if (mediaPlayer != null) {
@@ -523,16 +542,21 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                 if(trackname.contains(".")){
                     trackname = trackname.substring(0, trackname.lastIndexOf("."));
                     if(trackname.equals(suraNumber)){
-                        filePath = path + "/" + trackname + ".mp3";
+                        filePath = new StringBuilder().append(path).append("/").append(trackname).append(".mp3").toString();
                     }
                 }
             }
         }else{
             //This surah is not available
         }
+        String url; // your URL here
+        if(TrackDownloaded(suraNumber)){
+            url = filePath;
+        }else{
 
-        //String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suranomer + ".mp3"; // your URL here
-        String url = filePath;
+            url = new StringBuilder().append("https://mobilproject.github.io/furqon_web_express/by_sura/").append(suraNumber).append(".mp3").toString();
+        }
+
         if(!url.isEmpty()){
             Log.i("PLAY", url);
             if (mediaPlayer == null) {
@@ -573,7 +597,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
 
             }
-
+            trackDownload = true;
         }else{
             final PopupWindow popupWindow = new PopupWindow(this);
             View view = getLayoutInflater().inflate(R.layout.popup_hint, null);
@@ -585,6 +609,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                     popupWindow.dismiss();
                 }
             });
+            trackDownload = false;
         }
     }
 
@@ -592,18 +617,59 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             //String suranomi = suraName.getText().toString();
             mRewardedVideoAd.SHOW();
         }
-    private void StartDownload(View view) {
+    private void StartDownload() {
         DownloadThis(suraNumber);
-        MarkAsDownloading(Integer.parseInt(suraNumber)-1);
-
-            progressBar.setVisibility(View.VISIBLE);
-            downloadButton.setVisibility(View.GONE);
-
+        MarkAsDownloading(0);
     }
-    private void SetDownloadButtonState(){
-        downloadButton = findViewById(R.id.button_download);
-        progressBar = findViewById(R.id.progressBar_download);
-        down_cont = findViewById(R.id.download_cont);
+    private boolean TrackDownloaded(String v) {
+        boolean retval = false;
+        for (String i:trackList
+        ) {
+            if(i.equals(v)){
+                //match found
+                Log.i("TRACK DOWNLOADED?", String.valueOf(v) + " " + i + " " + (i.equals(v)));
+                retval = true;
+            }
+
+        }
+        return retval;
+    }
+    private void SetDownloadButtonState(ChapterTitleTable titleTable){
+
+
+        PopulateTrackList();
+
+        if(TrackDownloaded(suraNumber)){
+
+            //set by the actually available audio files
+            //playButton.setIcon(R.drawable.ic_play_circle);
+            //Log.i("TITLES", " TRUE ");
+            //downloadButton.setFocusable(false);
+            download_container.setVisibility(View.INVISIBLE);
+            downloadText.setText(R.string.play_local);
+            downloadText.setVisibility(View.VISIBLE);
+            downloadButton.setVisibility(View.INVISIBLE);
+            progressBar.setVisibility(View.INVISIBLE);
+        }else{
+            if(titleTable.status.equals("2")){
+                //download allowed. Active within the session only. Forgotten on restart
+                downloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
+                //playButton.setIcon(R.drawable.ic_play_circle);
+                downloadButton.setFocusable(true);
+                downloadButton.setTag(2);
+                progressBarDownload.setVisibility(View.INVISIBLE);
+                downloadText.setText(R.string.down_or_play);
+            }
+            else{
+                downloadButton.setImageResource(R.drawable.ic_unlock);
+                downloadButton.setFocusable(true);
+                downloadButton.setTag(1);
+                progressBarDownload.setVisibility(View.INVISIBLE);
+                downloadText.setText(R.string.unlock_or_play);
+            }
+        }
+
+
 
         Log.i("DOWNLOAD BUTTON", " " + downloadButton.getTag());
 
@@ -614,16 +680,16 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                     //String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suranomer + ".mp3"; // your URL here
                     switch (downloadButton.getTag().toString()){
                         case "1"://red arrow
-                            //ShowRewardAdForThisItem(view);
+                            ShowRewardAdForThisItem();
                             break;
                         case "2"://blue arrow
-                            StartDownload(view);
+                            StartDownload();
                             break;
                     }
 
                 }
             });
-            progressBar.setVisibility(View.GONE);
+            progressBarDownload.setVisibility(View.GONE);
     }
     private boolean WritePermission() {
 
@@ -717,17 +783,26 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     public void insertTitle(ChapterTitleTable title) {
 
     }
-
+    @Override
+    public void MarkAsDownloading(int surah_id) {
+        download_container.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+        playButton.setVisible(false);
+        downloadText.setText(R.string.downloading);
+    }
     @Override
     public void MarkAsAwarded(int surah_id) {
         Log.e("ACTUAL SURAH ID?", surah_id + " " + suraNumber);
-
+        downloadText.setText(R.string.down_or_play);
+        playButton.setVisible(true);
         titleViewModel.updateTitleAsRewarded(suraNumber);
     }
 
     @Override
     public void MarkAsDownloaded(int surah_id) {
-            titleViewModel.updateTitleAsDownloaded(suraNumber);
+        downloadText.setText(R.string.play_local);
+        playButton.setVisible(true);
+        titleViewModel.updateTitleAsDownloaded(suraNumber);
     }
 
     private boolean isNetworkAvailable() {

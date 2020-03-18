@@ -17,6 +17,7 @@
     android:paddingBottom="0dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
     <Space
         android:layout_width="8dp"
         android:layout_height="wrap_content" />
@@ -63,5 +64,4 @@
         android:layout_height="match_parent"
         tools:text="@string/downloadaudio_title"
         tools:visibility="visible" />
-
 </androidx.appcompat.widget.Toolbar>

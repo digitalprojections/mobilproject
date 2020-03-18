@@ -56,6 +56,10 @@ public class TitleViewModel extends AndroidViewModel {
         return liveMessages;
     }
 
+    LiveData<ChapterTitleTable> getTitle(String suraNomer){
+        return titleRepository.getTitle(suraNomer);
+    }
+
     public void insert(ChapterTitleTable title){
         Log.d("TITLE insert", title.uzbek);
         titleRepository.insert(title);

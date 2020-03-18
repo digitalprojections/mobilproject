@@ -22,7 +22,7 @@ import java.util.List;
 public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.SuraListViewHolder> {
 
     //created according to the available downloaded files
-    private ArrayList<String> trackList;
+    //private ArrayList<String> trackList;
     //private ArrayList<String> enabledList = new ArrayList<String>();
     //private List<ChapterTitle> mTitleList = new ArrayList<>();
 
@@ -37,7 +37,7 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
 
         mInflater = LayoutInflater.from(context);
         mContext = context;
-        this.trackList = trackLst;
+        //this.trackList = trackLst;
     }
 
 

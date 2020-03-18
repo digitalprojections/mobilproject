@@ -59,6 +59,11 @@ public class TitleRepository {
         return liveMessages;
     }
 
+    LiveData<ChapterTitleTable> getTitle(String suraNomer){
+
+        return mTitleDao.getTitle(suraNomer);
+    }
+
     public void insert(ChapterTitleTable title){
 
         new insertAsyncTask(mTitleDao).execute(title);
@@ -159,7 +164,7 @@ public class TitleRepository {
         }
         @Override
         protected Void doInBackground(String... suraNomer) {
-            mAsyncTitleDAO.updateTitleAsRewarded(suraNomer[0]);
+            mAsyncTitleDAO.updateTitleAsDownloaded(suraNomer[0]);
             return null;
         }
     }

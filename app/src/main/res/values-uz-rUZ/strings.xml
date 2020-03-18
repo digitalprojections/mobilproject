@@ -78,4 +78,8 @@
     <string name="quran_kareem_title">Android uchun Qur\'on Karim. Ajoyib ilova!</string>
     <string name="invitation_confirm">Taklif havolasi tasdiqlandi!</string>
     <string name="coming_soon">Tez kunda!</string>
+    <string name="down_or_play"><![CDATA[<-yuklab oling | onlayn tinglang->]]></string>
+    <string name="unlock_or_play"><![CDATA[<-Qulfni ochish | onlayn tinglang-->]]></string>
+    <string name="play_local"><![CDATA[audioni tinglang->]]></string>
+    <string name="downloading">yuklab olinmoqda ...</string>
 </resources>

@@ -82,4 +82,8 @@
     <string name="quran_kareem_title">Furqan - Quran Kareem for Android. Amazing app!</string>
     <string name="invitation_confirm">Invitation link confirmed!</string>
     <string name="coming_soon">Coming Soon!</string>
+    <string name="down_or_play"><![CDATA[<-Download | Play online->]]></string>
+    <string name="unlock_or_play"><![CDATA[<-Unlock | Play online->]]></string>
+    <string name="play_local"><![CDATA[Play local audio->]]></string>
+    <string name="downloading">downloading...</string>
 </resources>
