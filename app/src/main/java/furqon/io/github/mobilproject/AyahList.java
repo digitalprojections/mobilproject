@@ -742,8 +742,10 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                         int coins = sharedPref.read(sharedPref.COINS, 0);
                         if(coins>0){
                             MarkAsAwarded(Integer.parseInt(suraNumber));
+                        }else{
+                            Toast.makeText(getApplicationContext(),  R.string.not_enough_coins, Toast.LENGTH_LONG).show();
                         }
-                        Toast.makeText(getApplicationContext(),  R.string.use_coins, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(),  R.string.use_coins, Toast.LENGTH_LONG).show();
                         break;
                     case 1:
                         //Toast.makeText(getApplicationContext(),  R.string.earn_coins, Toast.LENGTH_SHORT).show();
