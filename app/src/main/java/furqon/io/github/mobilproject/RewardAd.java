@@ -20,6 +20,7 @@ public class RewardAd{
     int currentSurahNumber;
     private Context mContext;
 
+
     public RewardAd(Context context){
         mContext = context;
         Init();
@@ -64,12 +65,18 @@ public class RewardAd{
 
                 @Override
                 public void onRewarded(RewardItem rewardItem) {
-                    //Toast.makeText(mContext,"Ad triggered reward. Sura Number: " + currentSurahNumber + " " + rewardItem.getAmount(), Toast.LENGTH_LONG).show();
-                    MyListener myListener;
-                    if(mContext instanceof MyListener){
-                        myListener = (MyListener) mContext;
-                        myListener.MarkAsAwarded(currentSurahNumber);
-                    }
+//
+//                    MyListener myListener;
+//                    if(mContext instanceof MyListener){
+//                        myListener = (MyListener) mContext;
+//                        myListener.MarkAsAwarded(currentSurahNumber);
+//
+//                    }
+                    int coins = rewardItem.getAmount();
+                    int existingCoins = sharedpref.getInstance().read(sharedpref.getInstance().COINS, 0);
+                    int totalCoins = existingCoins + coins;
+                    sharedpref.getInstance().write(sharedpref.getInstance().COINS, totalCoins);
+                    Toast.makeText(mContext,"Ad triggered reward. Coins amount: " + totalCoins, Toast.LENGTH_LONG).show();
                 }
 
                 @Override

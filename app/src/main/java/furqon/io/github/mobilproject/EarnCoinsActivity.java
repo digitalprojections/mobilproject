@@ -51,8 +51,7 @@ public class EarnCoinsActivity extends AppCompatActivity {
 
         coins_txt = findViewById(R.id.coins_count_txt);
 
-        String mycoins = sharedPref.read(sharedPref.COINS, "0");
-
+        String mycoins = String.valueOf(sharedPref.read(sharedPref.COINS, 0));
 
         coins_txt.setText(mycoins);
         // Create a deep link and display it in the UI
