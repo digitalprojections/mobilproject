@@ -733,35 +733,35 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     private void ShowCoinAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Use coins to unlock");
-        builder.setItems(R.array.unlock_actions, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //Toast.makeText(getApplicationContext(), i + " selected", Toast.LENGTH_SHORT).show();
-                switch (i){
-                    case 0:
-                        int coins = sharedPref.read(sharedPref.COINS, 0);
-                        if(coins>0){
-                            MarkAsAwarded(Integer.parseInt(suraNumber));
-                        }else{
-                            Toast.makeText(getApplicationContext(),  R.string.not_enough_coins, Toast.LENGTH_LONG).show();
-                        }
-                        //Toast.makeText(getApplicationContext(),  R.string.use_coins, Toast.LENGTH_LONG).show();
-                        break;
-                    case 1:
-                        //Toast.makeText(getApplicationContext(),  R.string.earn_coins, Toast.LENGTH_SHORT).show();
-                        Intent intent;
-                        intent = new Intent(context, EarnCoinsActivity.class);
-                        startActivity(intent);
-                        break;
-                    case 2:
-                        //Toast.makeText(getApplicationContext(),  R.string.cancel, Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            }
-        });
+//        builder.setItems(R.array.unlock_actions, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                //Toast.makeText(getApplicationContext(), i + " selected", Toast.LENGTH_SHORT).show();
+//                switch (i){
+//                    case 0:
+//                        int coins = sharedPref.read(sharedPref.COINS, 0);
+//                        if(coins>0){
+//                            MarkAsAwarded(Integer.parseInt(suraNumber));
+//                        }else{
+//                            Toast.makeText(getApplicationContext(),  R.string.not_enough_coins, Toast.LENGTH_LONG).show();
+//                        }
+//                        //Toast.makeText(getApplicationContext(),  R.string.use_coins, Toast.LENGTH_LONG).show();
+//                        break;
+//                    case 1:
+//                        //Toast.makeText(getApplicationContext(),  R.string.earn_coins, Toast.LENGTH_SHORT).show();
+//                        Intent intent;
+//                        intent = new Intent(context, EarnCoinsActivity.class);
+//                        startActivity(intent);
+//                        break;
+//                    case 2:
+//                        //Toast.makeText(getApplicationContext(),  R.string.cancel, Toast.LENGTH_SHORT).show();
+//                        break;
+//                }
+//            }
+//        });
 // Get the layout inflater
 
-        //builder.setView(R.layout.multiple_choice_for_use_coin_dialog);
+        builder.setView(R.layout.multiple_choice_for_use_coin_dialog);
 
 
 // Create the AlertDialog
