@@ -371,7 +371,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     private void setAyahCost() {
         int ayah_number = Integer.parseInt(suraNumber);
         if(status==0 && ayah_number>0){
-            ayah_unlock_cost = QuranMap.AYAHCOUNT[ayah_number];
+            ayah_unlock_cost = QuranMap.AYAHCOUNT[ayah_number-1];
         }else{
             if(status==0)
                 ayah_unlock_cost = 10;//default
@@ -757,15 +757,9 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
 
     private void ShowCoinAlert() {
-
-
-
-
-        TextView cost_txt = dialog.findViewById(R.id.required_value_textView);
-            TextView coins_txt = dialog.findViewById(R.id.exchange_coins_textView);
-            cost_txt.setText(ayah_unlock_cost);
-            coins_txt.setText(available_coins);
-
+        SetCoinValues();
+        CoinDialog coinDialog = new CoinDialog(ayah_unlock_cost, available_coins);
+        coinDialog.show(getSupportFragmentManager(), "TAG");
 
 //        Button use_coins_btn = findViewById(R.id.use_coin_btn);
 //        Button earn_coins_btn = findViewById(R.id.use_coin_btn);
@@ -794,9 +788,6 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 //                dialog.dismiss();
 //            }
 //        });
-        dialog.show();
-
-
     }
 
     private boolean WritePermission() {
@@ -901,9 +892,15 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     @Override
     public void MarkAsAwarded(int surah_id) {
         //Log.e("ACTUAL SURAH ID?", surah_id + " " + suraNumber);
+        int coins = sharedPref.read(sharedPref.COINS, 0);
+        if(coins>0){
+            titleViewModel.updateTitleAsRewarded(suraNumber);
+        }else{
+            Toast.makeText(this,  R.string.not_enough_coins, Toast.LENGTH_LONG).show();
+        }
         downloadText.setText(R.string.down_or_play);
         playButton.setVisible(true);
-        titleViewModel.updateTitleAsRewarded(suraNumber);
+
     }
 
     @Override
@@ -1035,6 +1032,14 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
     @Override
     public void UseCoins(int val) {
-        Log.d("AYAHLIST:", "usecoins");
+
+        Log.d("AYAHLIST:", "usecoins " + val);
+    }
+
+    @Override
+    public void EarnCoins() {
+        Intent intent;
+        intent = new Intent(context, EarnCoinsActivity.class);
+        startActivity(intent);
     }
 }

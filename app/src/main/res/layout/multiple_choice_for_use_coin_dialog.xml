@@ -19,7 +19,7 @@
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Required"
+                android:text="coins"
                 android:textAlignment="center"
                 android:textColor="@color/colorPrimaryDark" />
 
@@ -31,7 +31,7 @@
                 android:gravity="center"
                 android:text="10"
                 android:textAlignment="center"
-                android:textColor="@color/gold" />
+                android:textColor="@color/colorAccent" />
         </TableRow>
 
         <TableRow
@@ -45,7 +45,7 @@
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/coins"
+                android:text="@string/available_coins"
                 android:textAlignment="center"
                 android:textColor="@color/colorPrimaryDark" />
 
@@ -57,47 +57,7 @@
                 android:gravity="center"
                 android:text="58"
                 android:textAlignment="center"
-                android:textColor="@color/gold" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <Button
-                android:id="@+id/use_coin_btn"
-                style="@android:style/Widget.Holo.Button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:lines="3"
-                android:text="@string/use_coins" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <Button
-                android:id="@+id/earn_coin_button"
-                style="@android:style/Widget.Holo.Button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/earn_coins" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <Button
-                android:id="@+id/dismiss_button"
-                style="@android:style/Widget.Holo.Button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/cancel" />
+                android:textColor="@color/colorAccent" />
         </TableRow>
 
     </TableLayout>

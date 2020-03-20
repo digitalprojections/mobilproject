@@ -90,8 +90,9 @@
     <string name="cancel">Cancel</string>
     <string name="use_coins">Use Coins</string>
     <string name="coins">Coins</string>
-    <string name="x1_coins">x1 Coins (get instantly)</string>
-    <string name="x10_coins">x10 Coins (available after approval)</string>
+    <string name="x1_coins">x50 Coins (get instantly)</string>
+    <string name="x10_coins">x100 Coins (available after approval)</string>
     <string name="not_enough_coins">You don`t have enough coins</string>
     <string name="available_coins">Available Coins</string>
+    <string name="required_coins">Required</string>
 </resources>

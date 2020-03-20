@@ -206,4 +206,9 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
     public void UseCoins(int val) {
         Log.d("EarnCoins:", "use coins");
     }
+
+    @Override
+    public void EarnCoins() {
+
+    }
 }
