@@ -71,7 +71,7 @@ public class RewardAd{
 
                 @Override
                 public void onRewarded(RewardItem rewardItem) {
-                    int coins = rewardItem.getAmount();
+                    int coins = rewardItem.getAmount()*50;
                     int existingCoins = sharedpref.getInstance().read(sharedpref.getInstance().COINS, 0);
                     int totalCoins = existingCoins + coins;
                     sharedpref.getInstance().write(sharedpref.getInstance().COINS, totalCoins);
