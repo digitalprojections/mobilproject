@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -74,6 +75,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.zip.Inflater;
 
 import furqon.io.github.mobilproject.Services.NotificationActionService;
 import furqon.io.github.mobilproject.Services.OnClearFromService;
@@ -133,6 +135,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     TextView coins_txt;
 
     private int ayah_unlock_cost;
+    private int available_coins;
 
 
 
@@ -181,12 +184,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         Toolbar toolbar = findViewById(R.id.audiobar);
         setSupportActionBar(toolbar);
 
-        int ayah_number = Integer.parseInt(suraNumber);
-        if(ayah_number>0){
-            ayah_unlock_cost = QuranMap.AYAHCOUNT[ayah_number];
-        }else{
-            ayah_unlock_cost = 10; //default value
-        }
+
 
 
         registerReceiver(broadcastReceiverDownload, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
@@ -244,6 +242,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             catch (NullPointerException npx){
                 Toast.makeText( getBaseContext(), R.string.error_message, Toast.LENGTH_SHORT).show();
             }
+            setAyahCost();
         }
 
 
@@ -356,8 +355,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                     //Toast.makeText(getApplicationContext(), status + " TITLE UPDATED " + chapterTitleTable.status, Toast.LENGTH_SHORT).show();
                     int xcoins = sharedPref.read(sharedPref.COINS, 0);
                     int newtotal;
-                    if(xcoins>0){
-                        newtotal = xcoins-1;
+                    if(xcoins>=ayah_unlock_cost){
+                        newtotal = xcoins-ayah_unlock_cost;
                     }else {
                         newtotal = 0;
                     }
@@ -368,6 +367,20 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         });
 
     }
+
+    private void setAyahCost() {
+        int ayah_number = Integer.parseInt(suraNumber);
+        if(status==0 && ayah_number>0){
+            ayah_unlock_cost = QuranMap.AYAHCOUNT[ayah_number];
+        }else{
+            if(status==0)
+                ayah_unlock_cost = 10;//default
+            else
+                ayah_unlock_cost = 0; //no need
+        }
+        available_coins = sharedPref.read(sharedPref.COINS, 0);
+    }
+
     private void PopulateTrackList() {
         String path = getExternalFilesDir(null).getAbsolutePath();
         Log.d("Files", "Path: " + path);
@@ -721,7 +734,6 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                         case "1"://red arrow
                             ShowCoinAlert();
 
-                            //ShowRewardAdForThisItem();
 //                            final PopupWindow popupWindow = new PopupWindow(getApplicationContext());
 //                            View pop_view = getLayoutInflater().inflate(R.layout.popup_hint, null);
 //                            popupWindow.setContentView(pop_view);
@@ -745,66 +757,43 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
 
     private void ShowCoinAlert() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Use coins to unlock");
-//        builder.setItems(R.array.unlock_actions, new DialogInterface.OnClickListener() {
+
+
+
+
+        TextView cost_txt = dialog.findViewById(R.id.required_value_textView);
+            TextView coins_txt = dialog.findViewById(R.id.exchange_coins_textView);
+            cost_txt.setText(ayah_unlock_cost);
+            coins_txt.setText(available_coins);
+
+
+//        Button use_coins_btn = findViewById(R.id.use_coin_btn);
+//        Button earn_coins_btn = findViewById(R.id.use_coin_btn);
+//        Button dismiss_btn = findViewById(R.id.dismiss_button);
+
+//        use_coins_btn.setOnClickListener(new View.OnClickListener() {
 //            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//                //Toast.makeText(getApplicationContext(), i + " selected", Toast.LENGTH_SHORT).show();
-//                switch (i){
-//                    case 0:
-//                        int coins = sharedPref.read(sharedPref.COINS, 0);
-//                        if(coins>0){
-//                            MarkAsAwarded(Integer.parseInt(suraNumber));
-//                        }else{
-//                            Toast.makeText(getApplicationContext(),  R.string.not_enough_coins, Toast.LENGTH_LONG).show();
-//                        }
-//                        //Toast.makeText(getApplicationContext(),  R.string.use_coins, Toast.LENGTH_LONG).show();
-//                        break;
-//                    case 1:
-//                        //Toast.makeText(getApplicationContext(),  R.string.earn_coins, Toast.LENGTH_SHORT).show();
-//                        Intent intent;
-//                        intent = new Intent(context, EarnCoinsActivity.class);
-//                        startActivity(intent);
-//                        break;
-//                    case 2:
-//                        //Toast.makeText(getApplicationContext(),  R.string.cancel, Toast.LENGTH_SHORT).show();
-//                        break;
-//                }
+//            public void onClick(View view) {
+//                MarkAsAwarded(Integer.parseInt(suraNumber));
 //            }
 //        });
-// Get the layout inflater
-        builder.setView(R.layout.multiple_choice_for_use_coin_dialog);
-// Create the AlertDialog
-        final AlertDialog dialog = builder.create();
-
-        Button use_coins_btn = findViewById(R.id.use_coin_btn);
-        Button earn_coins_btn = findViewById(R.id.use_coin_btn);
-        Button dismiss_btn = findViewById(R.id.dismiss_button);
-
-        use_coins_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MarkAsAwarded(Integer.parseInt(suraNumber));
-            }
-        });
-
-        earn_coins_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                Intent intent;
-                intent = new Intent(context, EarnCoinsActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        dismiss_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
+//
+//        earn_coins_btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                dialog.dismiss();
+//                Intent intent;
+//                intent = new Intent(context, EarnCoinsActivity.class);
+//                startActivity(intent);
+//            }
+//        });
+//
+//        dismiss_btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                dialog.dismiss();
+//            }
+//        });
         dialog.show();
 
 
@@ -1030,18 +1019,18 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         Log.d("AYAHLIST:", "setcoinsvalue");
 
         String mycoins = String.valueOf(sharedPref.read(sharedPref.COINS, 0));
-        int unlock_cost = Integer.parseInt(cost_txt.getText().toString());
-        int total_coins = Integer.parseInt(mycoins) - unlock_cost;
+        //int unlock_cost = Integer.parseInt();
+        //int total_coins = Integer.parseInt(mycoins) - unlock_cost;
 
-        if(coins_txt!=null){
-            cost_txt.setText("0");
-            coins_txt.setText(mycoins);
-        }else{
-            TextView cost_txt = findViewById(R.id.required_value_textView);
-            TextView coins_txt = findViewById(R.id.exchange_coins_textView);
-            cost_txt.setText("0");
-            coins_txt.setText(mycoins);
-        }
+//        if(coins_txt!=null){
+//            cost_txt.setText("0");
+//            coins_txt.setText(mycoins);
+//        }else{
+//            TextView cost_txt = findViewById(R.id.required_value_textView);
+//            TextView coins_txt = findViewById(R.id.exchange_coins_textView);
+//            cost_txt.setText(ayah_unlock_cost);
+//            coins_txt.setText(mycoins);
+//        }
     }
 
     @Override
