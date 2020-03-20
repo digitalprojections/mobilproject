@@ -77,10 +77,10 @@ public class RewardAd{
                     sharedpref.getInstance().write(sharedpref.getInstance().COINS, totalCoins);
                     Toast.makeText(mContext,"Ad triggered reward. Coins amount: " + totalCoins, Toast.LENGTH_LONG).show();
                     ManageCoins manageCoins;
-                    if(mContext instanceof ManageCoins){
-                        manageCoins = (ManageCoins) mContext;
-                        manageCoins.SetCoinValues();
-                    }
+
+                    manageCoins = (ManageCoins) mContext;
+                    manageCoins.SetCoinValues();
+
                 }
 
                 @Override

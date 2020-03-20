@@ -52,7 +52,7 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
 
         sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
-        mRewardedVideoAd = new RewardAd(getApplicationContext());
+        mRewardedVideoAd = new RewardAd(this);
 
         coins_txt = findViewById(R.id.coins_count_txt);
 
@@ -198,6 +198,12 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
 
     @Override
     public void SetCoinValues() {
+        Log.d("EarnCoins:", "setcoinsvalue");
         setCoinValue();
+    }
+
+    @Override
+    public void UseCoins(int val) {
+        Log.d("EarnCoins:", "use coins");
     }
 }

@@ -81,7 +81,7 @@ import furqon.io.github.mobilproject.Services.OnClearFromService;
 import static furqon.io.github.mobilproject.Furqon.AUDIO_PLAYING_NOTIFICATION_CHANNEL;
 
 
-public class AyahList extends AppCompatActivity implements ManageSpecials, Playable, MyListener {
+public class AyahList extends AppCompatActivity implements ManageSpecials, Playable, MyListener, ManageCoins {
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 0;
     private ArrayList<JSONObject> jsonArrayResponse;
     private ArrayList<String> trackList;
@@ -129,6 +129,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     ProgressBar progressBarDownload;
     TextView downloadText;
 
+    private int mycoins;
+
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -147,7 +149,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
 
         context = this;
-        //mRewardedVideoAd = new RewardAd(context);
+
         trackList = new ArrayList<String>();
         PopulateTrackList();
 
@@ -983,5 +985,15 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         Furqon.ShowNotification(AyahList.this, R.drawable.ic_play_circle, suranomi, audio_pos);
         isPlaying = false;
         pause();
+    }
+
+    @Override
+    public void SetCoinValues() {
+        Log.d("AYAHLIST:", "setcoinsvalue");
+    }
+
+    @Override
+    public void UseCoins(int val) {
+        Log.d("AYAHLIST:", "usecoins");
     }
 }
