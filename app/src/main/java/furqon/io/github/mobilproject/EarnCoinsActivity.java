@@ -88,7 +88,7 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
     @Override
     protected void onResume() {
         super.onResume();
-        setCoinValue();
+        //setCoinValue();
     }
 
     @Override

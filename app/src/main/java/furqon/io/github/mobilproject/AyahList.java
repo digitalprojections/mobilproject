@@ -129,7 +129,11 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     ProgressBar progressBarDownload;
     TextView downloadText;
 
-    private int mycoins;
+    TextView cost_txt;
+    TextView coins_txt;
+
+    private int ayah_unlock_cost;
+
 
 
     @Override
@@ -176,6 +180,14 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
         Toolbar toolbar = findViewById(R.id.audiobar);
         setSupportActionBar(toolbar);
+
+        int ayah_number = Integer.parseInt(suraNumber);
+        if(ayah_number>0){
+            ayah_unlock_cost = QuranMap.AYAHCOUNT[ayah_number];
+        }else{
+            ayah_unlock_cost = 10; //default value
+        }
+
 
         registerReceiver(broadcastReceiverDownload, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         Bundle intent = getIntent().getExtras();
@@ -733,7 +745,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
 
     private void ShowCoinAlert() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Use coins to unlock");
 //        builder.setItems(R.array.unlock_actions, new DialogInterface.OnClickListener() {
 //            @Override
@@ -762,14 +774,40 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 //            }
 //        });
 // Get the layout inflater
-
         builder.setView(R.layout.multiple_choice_for_use_coin_dialog);
-
-
 // Create the AlertDialog
-        AlertDialog dialog = builder.create();
+        final AlertDialog dialog = builder.create();
 
+        Button use_coins_btn = findViewById(R.id.use_coin_btn);
+        Button earn_coins_btn = findViewById(R.id.use_coin_btn);
+        Button dismiss_btn = findViewById(R.id.dismiss_button);
+
+        use_coins_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MarkAsAwarded(Integer.parseInt(suraNumber));
+            }
+        });
+
+        earn_coins_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                Intent intent;
+                intent = new Intent(context, EarnCoinsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        dismiss_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
         dialog.show();
+
+
     }
 
     private boolean WritePermission() {
@@ -990,6 +1028,20 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     @Override
     public void SetCoinValues() {
         Log.d("AYAHLIST:", "setcoinsvalue");
+
+        String mycoins = String.valueOf(sharedPref.read(sharedPref.COINS, 0));
+        int unlock_cost = Integer.parseInt(cost_txt.getText().toString());
+        int total_coins = Integer.parseInt(mycoins) - unlock_cost;
+
+        if(coins_txt!=null){
+            cost_txt.setText("0");
+            coins_txt.setText(mycoins);
+        }else{
+            TextView cost_txt = findViewById(R.id.required_value_textView);
+            TextView coins_txt = findViewById(R.id.exchange_coins_textView);
+            cost_txt.setText("0");
+            coins_txt.setText(mycoins);
+        }
     }
 
     @Override
