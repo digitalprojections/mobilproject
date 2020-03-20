@@ -13,6 +13,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -21,7 +24,7 @@ public class MessageList extends AppCompatActivity {
     private RecyclerView recyclerView;
     private MessageListAdapter listAdapter;
     private TitleViewModel messageViewModel;
-
+    private AdView mAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +70,9 @@ public class MessageList extends AppCompatActivity {
                 Toast.makeText(MessageList.this, "Message has been deleted", Toast.LENGTH_SHORT).show();
             }
         }).attachToRecyclerView(recyclerView);
-
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
     @Override

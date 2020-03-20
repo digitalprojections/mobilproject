@@ -20,6 +20,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+
 import java.util.Objects;
 
 public class Search extends AppCompatActivity {
@@ -34,6 +37,7 @@ public class Search extends AppCompatActivity {
     ImageButton ib_search;
     TextView result_count;
     private sharedpref sharedPref;
+    InterstitialAd mInterstitialAd;
 
 
     @Override
@@ -75,6 +79,9 @@ public class Search extends AppCompatActivity {
                 }
             }
         });
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
 
     @Override
@@ -140,4 +147,9 @@ public class Search extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mInterstitialAd.show();
+    }
 }

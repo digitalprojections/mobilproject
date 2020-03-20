@@ -11,7 +11,7 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryDark">
+            android:background="@color/colorPrimary">
 
             <TextView
                 android:id="@+id/textView9"
@@ -21,10 +21,10 @@
                 android:gravity="center"
                 android:text="Required"
                 android:textAlignment="center"
-                android:textColor="@color/colorPrimary" />
+                android:textColor="@color/colorPrimaryDark" />
 
             <TextView
-                android:id="@+id/textView12"
+                android:id="@+id/required_value_textView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -37,7 +37,7 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimaryDark">
+            android:background="@color/colorPrimary">
 
             <TextView
                 android:id="@+id/textView4"
@@ -47,7 +47,7 @@
                 android:gravity="center"
                 android:text="@string/coins"
                 android:textAlignment="center"
-                android:textColor="@color/colorPrimary" />
+                android:textColor="@color/colorPrimaryDark" />
 
             <TextView
                 android:id="@+id/exchange_coins_textView"
@@ -66,9 +66,11 @@
 
             <Button
                 android:id="@+id/use_coin_btn"
+                style="@android:style/Widget.Holo.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:lines="3"
                 android:text="@string/use_coins" />
         </TableRow>
 
@@ -78,6 +80,7 @@
 
             <Button
                 android:id="@+id/earn_coin_button"
+                style="@android:style/Widget.Holo.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -90,6 +93,7 @@
 
             <Button
                 android:id="@+id/cancel_button"
+                style="@android:style/Widget.Holo.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

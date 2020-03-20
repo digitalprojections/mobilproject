@@ -22,6 +22,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -32,10 +36,9 @@ public class ExtraActivity extends AppCompatActivity {
     Button rate_but;
     Button message_but;
     TextView nbadge;
-
+    private AdView mAdView;
+    InterstitialAd mInterstitialAd;
     Button coins_but;
-
-    private TitleViewModel titleViewModel;
 
     private Animation scaler;
 //    @Override
@@ -134,7 +137,7 @@ public class ExtraActivity extends AppCompatActivity {
 
         // Show a dialog if meets conditions
         AppRate.showRateDialogIfMeetsConditions(this);
-        titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
+        TitleViewModel titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
 
         scaler = AnimationUtils.loadAnimation(this, R.anim.bounce);
         titleViewModel.getUnreadCount().observe(this, new Observer<List<NewMessages>>() {
@@ -160,6 +163,12 @@ public class ExtraActivity extends AppCompatActivity {
 
         nbadge = findViewById(R.id.numeric_badge_txt);
         nbadge.bringToFront();
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
     private void open_earn_coins() {
@@ -187,5 +196,10 @@ public class ExtraActivity extends AppCompatActivity {
         Intent intent;
         intent = new Intent(this, MessageList.class);
         startActivity(intent);
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mInterstitialAd.show();
     }
 }
