@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 
 import java.util.Objects;
@@ -38,7 +39,7 @@ public class Search extends AppCompatActivity {
     TextView result_count;
     private sharedpref sharedPref;
     InterstitialAd mInterstitialAd;
-
+    private AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +83,9 @@ public class Search extends AppCompatActivity {
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mAdView = findViewById(R.id.adViewMessageList);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
     @Override

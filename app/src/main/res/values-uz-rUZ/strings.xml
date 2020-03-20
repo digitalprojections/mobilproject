@@ -89,4 +89,5 @@
     <string name="x1_coins">1 Tanga (bir zumda beriladi)</string>
     <string name="x10_coins">10 Tanga (tasdiqlangach beriladi)</string>
     <string name="not_enough_coins">Tangalar yetishmayapti</string>
+    <string name="available_coins">Mavjud Tangalar</string>
 </resources>

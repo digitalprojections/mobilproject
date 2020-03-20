@@ -80,7 +80,7 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
                 mRewardedVideoAd.SHOW();
             }
         });
-        mAdView = findViewById(R.id.adView);
+        mAdView = findViewById(R.id.adViewEarnCoins);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
     }

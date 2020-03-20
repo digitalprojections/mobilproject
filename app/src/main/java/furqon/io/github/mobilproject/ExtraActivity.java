@@ -166,7 +166,7 @@ public class ExtraActivity extends AppCompatActivity {
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
-        mAdView = findViewById(R.id.adView);
+        mAdView = findViewById(R.id.adViewExtra);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
     }

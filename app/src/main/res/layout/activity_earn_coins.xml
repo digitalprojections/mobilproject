@@ -33,9 +33,10 @@
                 <TextView
                     android:id="@+id/textView62"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/coins"
+                    android:gravity="center"
+                    android:text="@string/available_coins"
                     android:textAlignment="center"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -45,13 +46,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
-                    android:background="@drawable/coin" />
+                    android:background="@drawable/coin"
+                    android:gravity="center" />
 
                 <TextView
                     android:id="@+id/coins_count_txt"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:gravity="center"
                     android:textAlignment="center"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -141,7 +144,7 @@
 
     </LinearLayout>
     <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/adView"
+        android:id="@+id/adViewEarnCoins"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

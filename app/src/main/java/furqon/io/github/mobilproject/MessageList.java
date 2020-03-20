@@ -70,7 +70,7 @@ public class MessageList extends AppCompatActivity {
                 Toast.makeText(MessageList.this, "Message has been deleted", Toast.LENGTH_SHORT).show();
             }
         }).attachToRecyclerView(recyclerView);
-        mAdView = findViewById(R.id.adView);
+        mAdView = findViewById(R.id.adViewMessageList);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
     }

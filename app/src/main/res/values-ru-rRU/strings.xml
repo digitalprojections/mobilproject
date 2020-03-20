@@ -89,4 +89,5 @@
     <string name="x10_coins">10 Монет (доступно после утверждения)</string>
     <string name="coins">Монеты</string>
     <string name="not_enough_coins">Вам не хватает монет</string>
+    <string name="available_coins">Доступные монеты</string>
 </resources>
