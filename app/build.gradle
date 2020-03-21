@@ -4,13 +4,13 @@ apply plugin: 'io.fabric'
 android {
     signingConfigs {
         debug {
-            storeFile file('C:\\Users\\HP0B\\source\\repos\\mobilproject\\keystore.private')
+            storeFile file('C:\\Users\\denta\\OneDrive\\Documents\\GitHub\\mobilproject\\keystore.private')
             storePassword '1285422'
             keyAlias = 'baa'
             keyPassword '1285422'
         }
         release {
-            storeFile file('C:\\Users\\HP0B\\source\\repos\\mobilproject\\keystore.private')
+            storeFile file('C:\\Users\\denta\\OneDrive\\Documents\\GitHub\\mobilproject\\keystore.private')
             storePassword '1285422'
             keyAlias = 'baa'
             keyPassword '1285422'
@@ -64,10 +64,10 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.github.hotchemi:android-rate:1.0.1'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.google.firebase:firebase-messaging:20.1.2'
+    implementation 'com.google.firebase:firebase-messaging:20.1.3'
     implementation 'com.google.firebase:firebase-dynamic-links:19.1.0'
     implementation 'com.google.firebase:firebase-core:17.2.3'
-    implementation 'com.google.firebase:firebase-ads:19.0.0'
+    implementation 'com.google.firebase:firebase-ads:19.0.1'
     implementation 'com.google.firebase:firebase-auth:19.3.0'
     // (Recommended) Add the Google Analytics dependency.
     implementation 'com.google.firebase:firebase-analytics:17.2.3'

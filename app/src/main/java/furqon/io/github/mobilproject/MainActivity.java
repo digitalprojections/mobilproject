@@ -86,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
     Uri deepLink;
     private sharedpref sharedPref;
     private boolean randomayahshown;
+    private String token;
+
 
 
     @Override
@@ -136,11 +138,11 @@ public class MainActivity extends AppCompatActivity {
         Fabric.with(this, new Crashlytics());
         Crashlytics.log("Activity created");
         if (!sharedPref.read(sharedPref.TOKEN, "").isEmpty()) {
-            String token = sharedPref.read(sharedPref.TOKEN, "");
+            token = sharedPref.read(sharedPref.TOKEN, "");
             Log.d("TOKEN", "TOKEN RESTORED:" + token);
-            sendRegistrationToServer(token);
+
         } else {
-            String token = sharedPref.read(sharedPref.TOKEN, "");
+            token = sharedPref.read(sharedPref.TOKEN, "");
             Log.d("TOKEN", "TOKEN MISSING? " + token);
 
         }
@@ -390,6 +392,7 @@ public class MainActivity extends AppCompatActivity {
         if (isSignedIn) {
             Log.i("FIREBASE AUTH", currentUser.getUid());
             sharedpref.getInstance().write(sharedPref.USERID, currentUser.getUid());
+            sendRegistrationToServer();
         } else {
             signInAnonymously();
         }
@@ -431,14 +434,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void sendRegistrationToServer(final String token) {
+    private void sendRegistrationToServer() {
         //TODO send the token to  database.
         //Add to the user account token, app id, device id
         Log.i("ATTEMPTING TOKEN SEND", token);
 
         queue = Volley.newRequestQueue(this);
-        String url = "https://inventivesolutionste.ipage.com/apijson.php";
-
+        //String url = "https://inventivesolutionste.ipage.com/apijson.php";
+        String url = "http://localhost/apijson/apijson.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -450,7 +453,7 @@ public class MainActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i("That did not work! ", error.toString());
+                Log.i("TOKEN That did not", error.toString());
             }
         }) {
             protected Map<String, String> getParams() {
@@ -458,6 +461,7 @@ public class MainActivity extends AppCompatActivity {
                 MyData.put("action", "store_token"); //Add the data you'd like to send to the server.
                 MyData.put("appname", "furqon"); //Add the data you'd like to send to the server.
                 MyData.put("token", token); //Add the data you'd like to send to the server.
+                MyData.put("user_id", currentUser.getUid());
                 return MyData;
             }
 
@@ -489,7 +493,7 @@ public class MainActivity extends AppCompatActivity {
                 String manufacturer = Build.MANUFACTURER;
                 String bootloader = Build.BOOTLOADER;
 
-                sendSignatureToServer(currentSignature);
+
                 //checkSignatureOnServer(currentSignature);
                 //Log.d("REMOVE_ME", "Include this string as a value for SIGNATURE:" + currentSignature + model + manufacturer + bootloader);
 
@@ -511,7 +515,8 @@ public class MainActivity extends AppCompatActivity {
         //Add to the user account token, app id, device id
         Log.i("ATTEMPTING SIGNATURE", sign);
         queue = Volley.newRequestQueue(this);
-        String url = "https://inventivesolutionste.ipage.com/apijson.php";
+        //String url = "https://inventivesolutionste.ipage.com/apijson.php";
+        String url = "http://localhost/apijson/apijson.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
