@@ -56,8 +56,13 @@ import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,8 +92,8 @@ public class MainActivity extends AppCompatActivity {
     private sharedpref sharedPref;
     private boolean randomayahshown;
     private String token;
-
-
+    private String currentSignature;
+    private ArrayList<JSONObject> jsonArrayResponse;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -132,6 +137,9 @@ public class MainActivity extends AppCompatActivity {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
+        currentUser = mAuth.getCurrentUser();
+
+
 
 
 
@@ -147,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        checkAppSignature(this);
+        updateUI();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         MobileAds.initialize(this, getString(R.string.addmob_app_id));
@@ -381,8 +389,7 @@ public class MainActivity extends AppCompatActivity {
         //checkForDynamicLink();
         // Check if user is signed in (non-null) and update UI accordingly.
 
-        currentUser = mAuth.getCurrentUser();
-        updateUI();
+
     }
 
     private void updateUI() {
@@ -392,7 +399,9 @@ public class MainActivity extends AppCompatActivity {
         if (isSignedIn) {
             Log.i("FIREBASE AUTH", currentUser.getUid());
             sharedpref.getInstance().write(sharedPref.USERID, currentUser.getUid());
-            sendRegistrationToServer();
+
+            checkAppSignature(this);
+            //sendRegistrationToServer();
         } else {
             signInAnonymously();
         }
@@ -437,18 +446,37 @@ public class MainActivity extends AppCompatActivity {
     private void sendRegistrationToServer() {
         //TODO send the token to  database.
         //Add to the user account token, app id, device id
-        Log.i("ATTEMPTING TOKEN SEND", token);
+        //Log.i("ATTEMPTING TOKEN SEND", token);
 
         queue = Volley.newRequestQueue(this);
-        //String url = "https://inventivesolutionste.ipage.com/apijson.php";
-        String url = "http://localhost/apijson/apijson.php";
+        String url = "https://inventivesolutionste.ipage.com/apijson.php";
+        //String url = "http://localhost/apijson/apijson.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         //progressBar.setVisibility(View.INVISIBLE);
                         //textView.setText(response);
+                        //handle response. ["{\"last_visit\":null,\"fcm_token\":null,\"id\":\"1\"}"]
                         Log.i("TOKEN STORED", response);
+                        //jsonArrayResponse = new ArrayList<JSONObject>();
+
+//                        try {
+//                            JSONArray jsonArray = new JSONArray(response);
+//                            for (int i=0; i<jsonArray.length();i++)
+//                            {
+//                                JSONObject object = new JSONObject(jsonArray.getString(i));
+//                                jsonArrayResponse.add(object);
+//                            }
+//
+//                            //PASS to SPINNER
+//                            //load auction names and available lot/bid count
+//                            //populateUserData(jsonArrayResponse);
+//
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                            //Log.i("error json", "tttttttttttttttt");
+//                        }
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -462,12 +490,15 @@ public class MainActivity extends AppCompatActivity {
                 MyData.put("appname", "furqon"); //Add the data you'd like to send to the server.
                 MyData.put("token", token); //Add the data you'd like to send to the server.
                 MyData.put("user_id", currentUser.getUid());
+                MyData.put("app_id", currentSignature);
                 return MyData;
             }
 
         };
         queue.add(stringRequest);
     }
+
+
 
     private int checkAppSignature(Context context) {
         try {
@@ -488,7 +519,8 @@ public class MainActivity extends AppCompatActivity {
 
                 md.update(signature.toByteArray());
 
-                final String currentSignature = Base64.encodeToString(md.digest(), Base64.DEFAULT);
+
+                currentSignature = Base64.encodeToString(md.digest(), Base64.DEFAULT);
                 String model = Build.MODEL;
                 String manufacturer = Build.MANUFACTURER;
                 String bootloader = Build.BOOTLOADER;
@@ -505,7 +537,7 @@ public class MainActivity extends AppCompatActivity {
 //assumes an issue in checking signature., but we let the caller decide on what to do.
 
         }
-
+        sendRegistrationToServer();
         return INVALID;
 
     }
@@ -515,8 +547,8 @@ public class MainActivity extends AppCompatActivity {
         //Add to the user account token, app id, device id
         Log.i("ATTEMPTING SIGNATURE", sign);
         queue = Volley.newRequestQueue(this);
-        //String url = "https://inventivesolutionste.ipage.com/apijson.php";
-        String url = "http://localhost/apijson/apijson.php";
+        String url = "https://inventivesolutionste.ipage.com/apijson.php";
+        //String url = "http://localhost/apijson/apijson.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -531,7 +563,7 @@ public class MainActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i("That did not work! ", error.toString());
+                Log.i("Signature send fail ", error.toString());
             }
         }) {
             protected Map<String, String> getParams() {

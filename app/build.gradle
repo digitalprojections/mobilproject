@@ -75,7 +75,7 @@ dependencies {
     // Add the Firebase Crashlytics dependency.
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.google.firebase:firebase-appindexing:19.1.0'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
     implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'androidx.appcompat:appcompat:1.1.0'

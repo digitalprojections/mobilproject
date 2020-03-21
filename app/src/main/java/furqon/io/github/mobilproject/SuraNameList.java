@@ -150,7 +150,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
-                                    Log.i("error json", "tttttttttttttttt");
+                                    //Log.i("error json", "tttttttttttttttt");
                                 }
 
                             }
