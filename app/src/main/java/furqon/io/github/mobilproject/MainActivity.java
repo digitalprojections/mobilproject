@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
             token = sharedPref.read(sharedPref.TOKEN, "");
-            Log.d(TAG, "TOKEN MISSING? " + token);
+            Log.d(TAG, "TOKEN MISSING, RENEW");
 
         }
         updateUI();
@@ -342,19 +342,21 @@ public class MainActivity extends AppCompatActivity {
                             deepLink = pendingDynamicLinkData.getLink();
                             String inviter_id = deepLink.getQueryParameter("user_id");
                             Log.i(TAG, "LINK FOUND " + inviter_id);
-
                             pendingDynamicLinkData = null;
                             Snackbar.make(findViewById(android.R.id.content),
                                     R.string.invitation_confirm, Snackbar.LENGTH_LONG).show();
                             //Send confirmation
-                            sendConfirmationToServer(inviter_id);
-
+                            if(sharedpref.getInstance().read(sharedpref.getInstance().INVITER, 0)==0)
+                            {
+                                sendConfirmationToServer(inviter_id);
+                            }else{
+                                //user is already invited
+                            }
                         }
                         // Handle the deep link. For example, open the linked
                         // content, or apply promotional credit to the user's
                         // account.
                         // ...
-
                         // ...
                     }
                 })
@@ -364,12 +366,13 @@ public class MainActivity extends AppCompatActivity {
                         Log.w(TAG, "getDynamicLink:onFailure", e);
                     }
                 });
+        //sendConfirmationToServer("b4sGS2mH92RIv8bTJnomGzH9IDp1");
     }
 
     private void sendConfirmationToServer(final String inviter_id) {
         //TODO send the token to  database.
         //Add to the user account token, app id, device id
-        Log.i("ATTEMPTING confirmation", inviter_id);
+        Log.i(TAG, "ATTEMPTING confirmation " + inviter_id);
         queue = Volley.newRequestQueue(this);
         String url = "https://inventivesolutionste.ipage.com/apijson.php";
 
@@ -378,9 +381,14 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         //Log.i("APP SIGNATURE STORED?", response);
-                        if (response.contains("confirmation received")) {
+                        if (response.contains("confirmation")) {
                             Log.i(  TAG,"Invitation " + response);
-                            sharedpref.AddCoins(getApplicationContext(), 50);
+                            sharedPref.AddCoins(getApplicationContext(), 50);
+
+                            sharedPref.getInstance().write(sharedPref.getInstance().INVITER, 1);
+
+                        }else{
+                            Log.i(  TAG,"Invitation failed " + response);
                         }
                     }
                 }, new Response.ErrorListener() {

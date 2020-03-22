@@ -1,6 +1,8 @@
 package furqon.io.github.mobilproject;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.Application;
 import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.Notification;
@@ -84,7 +86,7 @@ import static furqon.io.github.mobilproject.Furqon.AUDIO_PLAYING_NOTIFICATION_CH
 
 
 public class AyahList extends AppCompatActivity implements ManageSpecials, Playable, MyListener, ManageCoins {
-    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 0;
+    private static final int MY_WRITE_EXTERNAL_STORAGE = 101;
     private ArrayList<JSONObject> jsonArrayResponse;
     private ArrayList<String> trackList;
 
@@ -136,7 +138,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
     private int ayah_unlock_cost;
     private int available_coins;
-
+    private int currentStatus;
 
 
     @Override
@@ -242,7 +244,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             catch (NullPointerException npx){
                 Toast.makeText( getBaseContext(), R.string.error_message, Toast.LENGTH_SHORT).show();
             }
-            setAyahCost();
+
         }
 
 
@@ -322,13 +324,9 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                         int OrderNo = i.getInt("OrderNo");
                         String surah_type = i.getString("SuraType");
                         String AyahText = i.getString("AyahText");
-
-
                         //int sura_id, int verse_id, int favourite, int language_id, String ayah_text, String surah_type, int order_no, String comment, int read_count, int shared_count, int audio_position
                         text = new ChapterTextTable(chapter_id, verse_id,0, DatabaseID, OrderNo, AyahText, "", surah_type);
                         titleViewModel.insertText(text);
-
-
                     }catch (Exception sx){
                         Log.e("EXCEPTION", sx.getMessage());
                     }
@@ -343,7 +341,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             @Override
             public void onChanged(ChapterTitleTable chapterTitleTable) {
 
-                int currentStatus = Integer.parseInt(chapterTitleTable.status);
+
+                currentStatus = Integer.parseInt(chapterTitleTable.status);
                 if(status==0){
                     //just created
                     //Toast.makeText(getApplicationContext(), status + " FIRST SHOW " + chapterTitleTable.status, Toast.LENGTH_SHORT).show();
@@ -365,7 +364,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                 SetDownloadButtonState(chapterTitleTable);
             }
         });
-
+        setAyahCost();
     }
 
     private void setAyahCost() {
@@ -513,6 +512,12 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         int sl = 0;
             sl = QuranMap.GetSurahLength(Integer.parseInt(suranomer)-1);
         return sl;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
     }
 
     @Override
@@ -671,7 +676,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 //        }
     private void StartDownload() {
         DownloadThis(suraNumber);
-        MarkAsDownloading(0);
+
     }
     private boolean TrackDownloaded(String v) {
         boolean retval = false;
@@ -757,7 +762,9 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
 
     private void ShowCoinAlert() {
-        SetCoinValues();
+        //SetCoinValues();
+        //setAyahCost();
+        available_coins = sharedPref.read(sharedPref.COINS, 0);
         CoinDialog coinDialog = new CoinDialog(ayah_unlock_cost, available_coins);
         coinDialog.show(getSupportFragmentManager(), "TAG");
 
@@ -791,34 +798,51 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     }
 
     private boolean WritePermission() {
-
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-
-
+        Log.i(  "MY PERMISSION TO WRITE", this + " granted?");
+        if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             // No explanation needed; request the permission
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+                    MY_WRITE_EXTERNAL_STORAGE);
 
             // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
             // app-defined int constant. The callback method gets the
             // result of the request.
-            Log.i(  "MY PERMISSION TO WRITE", MY_PERMISSIONS_REQUEST_READ_CONTACTS + " granted?");
+
+
+            // Permission is not granted
+            // Should we show an explanation?
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(getParent(),
+//                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//                // Show an explanation to the user *asynchronously* -- don't block
+//                // this thread waiting for the user's response! After the user
+//                // sees the explanation, try again to request the permission.
+//                Log.i(  "MY PERMISSION TO WRITE", MY_WRITE_EXTERNAL_STORAGE + " explain");
+//            } else {
+//                // No explanation needed, we can request the permission.
+//                ActivityCompat.requestPermissions(getParent(),
+//                        new String[]{Manifest.permission.READ_CONTACTS},
+//                        MY_WRITE_EXTERNAL_STORAGE);
+//                Log.i(  "MY PERMISSION TO WRITE", MY_WRITE_EXTERNAL_STORAGE + " request");
+//                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+//                // app-defined int constant. The callback method gets the
+//                // result of the request.
+//            }
 
             return false;
         } else {
             // Permission has already been granted
+            Log.i(  "MY PERMISSION TO WRITE", MY_WRITE_EXTERNAL_STORAGE + " already granted");
             return true;
         }
+
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String[] permissions, int[] grantResults) {
         switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
+            case MY_WRITE_EXTERNAL_STORAGE: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -867,6 +891,9 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             Log.i("PERMISSION OK", "Download start " + url);
             DownloadManager downloadManager = (DownloadManager) this.getSystemService(this.DOWNLOAD_SERVICE);
             downloadId = downloadManager.enqueue(request);
+            MarkAsDownloading(0);
+        }else{
+            Log.i("PERMISSION NG", "Download fail");
         }
 
 
@@ -1015,7 +1042,10 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     public void SetCoinValues() {
         Log.d("AYAHLIST:", "setcoinsvalue");
 
-        String mycoins = String.valueOf(sharedPref.read(sharedPref.COINS, 0));
+
+        available_coins = sharedPref.read(sharedPref.COINS, 0);
+
+
         //int unlock_cost = Integer.parseInt();
         //int total_coins = Integer.parseInt(mycoins) - unlock_cost;
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
 
     package="furqon.io.github.mobilproject">
 
@@ -7,7 +8,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
 
     <application
         android:name=".Furqon"
@@ -16,9 +18,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher2_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        xmlns:tools="http://schemas.android.com/tools"
-        tools:node="merge">
+        android:theme="@style/AppTheme">
 
         <activity android:name=".EarnCoinsActivity" android:parentActivityName=".ExtraActivity"/>
         <activity android:name=".ExtraActivity" android:parentActivityName=".MainActivity" />
@@ -72,7 +72,7 @@
             android:parentActivityName=".MainActivity"
             />
         <activity android:name=".AyahList"
-            android:launchMode="singleInstance"
+            android:launchMode="standard"
             android:parentActivityName=".SuraNameList" />
         <activity android:name=".Favourites"
             android:parentActivityName=".ExtraActivity"/>

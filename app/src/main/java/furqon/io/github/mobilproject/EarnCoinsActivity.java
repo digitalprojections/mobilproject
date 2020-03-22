@@ -64,7 +64,7 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
 
         share_btn = findViewById(R.id.ShareImageButton);
         watchAds_btn = findViewById(R.id.WatchAdsImageButton);
-        watchAds_btn.setEnabled(false);
+        //watchAds_btn.setEnabled(false);
 
         share_btn.setOnClickListener(new View.OnClickListener() {
             @Override
