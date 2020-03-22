@@ -11,7 +11,7 @@
     <string name="audiopos_restored">continue playing</string>
     <string name="audio_load_fail">Failed to load! Check your network</string>
     <string name="save">Save</string>
-    <string name="shareayah">Share this ayah, fii sabi li-llah and get 10 coins</string>
+    <string name="shareayah">Share this and get coins</string>
     <string name="bookmark_it">Bookmark the ayah</string>
     <string name="favourite_it">Add to Favourites</string>
     <string name="banner_ad" translatable="false">ca-app-pub-3838820812386239/6533462802</string>
@@ -95,4 +95,6 @@
     <string name="not_enough_coins">You don`t have enough coins</string>
     <string name="available_coins">Available Coins</string>
     <string name="required_coins">Required</string>
+    <string name="u_received">"You have received "</string>
+    <string name="_coins">" coins"</string>
 </resources>

@@ -13,7 +13,7 @@
     <string name="audiopos_restored">davom etish</string>
     <string name="audio_load_fail">Yuklashda xatolik! Internet tarmoqqa ulanganmisiz?</string>
     <string name="save">Yodda tut</string>
-    <string name="shareayah">Olloh yo`lida yatni ulashing va 10 tangani qo`lga kiriting</string>
+    <string name="shareayah">Ulashing va tangalarni qo`lga kiriting</string>
     <string name="bookmark_it">oyatni belgilash</string>
     <string name="favourite_it">Tanlanganlarga qo\'shish</string>
     <string name="russian">rus tilida</string>
@@ -91,4 +91,6 @@
     <string name="not_enough_coins">Tangalar yetishmayapti</string>
     <string name="available_coins">Mavjud Tangalar</string>
     <string name="required_coins">Qiymati</string>
+    <string name="u_received">"Siz "</string>
+    <string name="_coins">" tanga oldingiz"</string>
 </resources>

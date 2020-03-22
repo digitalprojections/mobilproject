@@ -37,6 +37,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.measurement.module.Analytics;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -62,9 +63,13 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.security.MessageDigest;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
@@ -135,26 +140,22 @@ public class MainActivity extends AppCompatActivity {
         sharedPref.init(getApplicationContext());
 
         // Initialize Firebase Auth
+        //--------------------------------------------------------
         mAuth = FirebaseAuth.getInstance();
-
         currentUser = mAuth.getCurrentUser();
-
-
-
-
+        //========================================================
 
         Fabric.with(this, new Crashlytics());
         Crashlytics.log("Activity created");
         if (!sharedPref.read(sharedPref.TOKEN, "").isEmpty()) {
             token = sharedPref.read(sharedPref.TOKEN, "");
-            Log.d("TOKEN", "TOKEN RESTORED:" + token);
+            Log.d(TAG, "TOKEN RESTORED:" + token);
 
         } else {
             token = sharedPref.read(sharedPref.TOKEN, "");
-            Log.d("TOKEN", "TOKEN MISSING? " + token);
+            Log.d(TAG, "TOKEN MISSING? " + token);
 
         }
-
         updateUI();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
@@ -163,15 +164,11 @@ public class MainActivity extends AppCompatActivity {
         mInterstitialAd.setAdUnitId(getString(R.string.interstitial_fullpage));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
-
         handler = new Handler();
 
         suralar_but = findViewById(R.id.suralar);
         extra_btn = findViewById(R.id.extra_button);
         davomi_but = findViewById(R.id.davomi);
-
-
-
 
         imageView = findViewById(R.id.imageView);
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -180,7 +177,6 @@ public class MainActivity extends AppCompatActivity {
                 ayahOfTheDay();
             }
         });
-
 
         //day_but = findViewById(R.id.ayahoftheday);
         suralar_but.setOnClickListener(new View.OnClickListener() {
@@ -210,7 +206,6 @@ public class MainActivity extends AppCompatActivity {
 
         //String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-
         try {
             File dir = this.getCacheDir();
             deleteDir(dir);
@@ -222,18 +217,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Create a deep link and display it in the UI
         deepLink = buildDeepLink(Uri.parse(DEEP_LINK_URL), 0);
-
-        //TODO login?
-        //doing anonymous login
-        //TODO point system
-        //TODO share for points
-        //TODO usage points
-        //TODO unlock downloads
-
-
-
-
-
 
         if (sharedPref.isFirstRun()) {
             Intent intent = new Intent(this, ScrollingActivity.class);
@@ -254,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
         String appLinkAction = appLinkIntent.getAction();
         Uri appLinkData = appLinkIntent.getData();
 
-        checkForDynamicLink();
+
     }
 
     private void open_extraActivities() {
@@ -280,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
         String uriPrefix = "furqon.page.link";
 
         if(currentUser!=null){
-            Log.i("SHARING", currentUser.getUid());
+            Log.i(TAG, "CURRENT USER ID " + currentUser.getUid());
             //userId=currentUser.getUid()
         }
         // Set dynamic link parameters:
@@ -328,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
                             // Short link created
                             Uri shortLink = task.getResult().getShortLink();
                             Uri flowchartLink = task.getResult().getPreviewLink();
-                            Log.i("SHORT LINK", shortLink.getPath());
+                            Log.i(TAG, "SHORT LINK " + shortLink.getPath());
                             Intent intent = new Intent(Intent.ACTION_SEND);
                             intent.setType("text/plain");
                             intent.putExtra(Intent.EXTRA_SUBJECT, R.string.quran_kareem_title);
@@ -338,7 +321,8 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             // Error
                             // ...
-                            Log.i("LINK ERROR", task.getResult().toString());
+                            Log.i(TAG, "LINK ERROR" + task.getResult().toString());
+                            Crashlytics.log(Log.ERROR, TAG, task.getResult().toString());
                         }
                     }
                 });
@@ -356,20 +340,22 @@ public class MainActivity extends AppCompatActivity {
                         Uri deepLink = null;
                         if (pendingDynamicLinkData != null) {
                             deepLink = pendingDynamicLinkData.getLink();
-                            Log.i(TAG, "LINK FOUND " + deepLink.getQueryParameter("user_id"));
+                            String inviter_id = deepLink.getQueryParameter("user_id");
+                            Log.i(TAG, "LINK FOUND " + inviter_id);
+
                             pendingDynamicLinkData = null;
                             Snackbar.make(findViewById(android.R.id.content),
                                     R.string.invitation_confirm, Snackbar.LENGTH_LONG).show();
+                            //Send confirmation
+                            sendConfirmationToServer(inviter_id);
+
                         }
-
-
                         // Handle the deep link. For example, open the linked
                         // content, or apply promotional credit to the user's
                         // account.
                         // ...
 
                         // ...
-
                     }
                 })
                 .addOnFailureListener(this, new OnFailureListener() {
@@ -380,6 +366,42 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    private void sendConfirmationToServer(final String inviter_id) {
+        //TODO send the token to  database.
+        //Add to the user account token, app id, device id
+        Log.i("ATTEMPTING confirmation", inviter_id);
+        queue = Volley.newRequestQueue(this);
+        String url = "https://inventivesolutionste.ipage.com/apijson.php";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //Log.i("APP SIGNATURE STORED?", response);
+                        if (response.contains("confirmation received")) {
+                            Log.i(  TAG,"Invitation " + response);
+                            sharedpref.AddCoins(getApplicationContext(), 50);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i(TAG, "Signature send fail " + error.toString());
+                Crashlytics.log(Log.ERROR, TAG, error.toString());
+            }
+        }) {
+            protected Map<String, String> getParams() {
+                Map<String, String> MyData = new HashMap<>();
+                MyData.put("action", "confirm"); //Add the data you'd like to send to the server.
+                MyData.put("appname", "furqon"); //Add the data you'd like to send to the server.
+                MyData.put("user_id", currentUser.getUid()); //Add the data you'd like to send to the server.
+                MyData.put("inviter_id", inviter_id);
+                return MyData;
+            }
+
+        };
+        queue.add(stringRequest);
+    }
 
 
 
@@ -397,7 +419,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Status text
         if (isSignedIn) {
-            Log.i("FIREBASE AUTH", currentUser.getUid());
+            Log.i(TAG, "FIREBASE AUTH " + currentUser.getUid());
             sharedpref.getInstance().write(sharedPref.USERID, currentUser.getUid());
 
             checkAppSignature(this);
@@ -422,6 +444,7 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInAnonymously:failure", task.getException());
+                            Crashlytics.log(Log.ERROR, TAG, task.getException().toString());
                             Toast.makeText(MainActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                             currentUser = null;
@@ -450,7 +473,7 @@ public class MainActivity extends AppCompatActivity {
 
         queue = Volley.newRequestQueue(this);
         String url = "https://inventivesolutionste.ipage.com/apijson.php";
-        //String url = "http://localhost/apijson/apijson.php";
+        //String url = "http://127.0.0.1:1234/apijson/localhost_test.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -458,30 +481,38 @@ public class MainActivity extends AppCompatActivity {
                         //progressBar.setVisibility(View.INVISIBLE);
                         //textView.setText(response);
                         //handle response. ["{\"last_visit\":null,\"fcm_token\":null,\"id\":\"1\"}"]
-                        Log.i("TOKEN STORED", response);
-                        //jsonArrayResponse = new ArrayList<JSONObject>();
+                        Log.d(TAG, "JSON raw " + response);
+                        jsonArrayResponse = new ArrayList<>();
+                        try {
+                            JSONArray jsonArray = new JSONArray(response);
+                            for (int i=0; i<jsonArray.length();i++)
+                            {
+                                JSONObject object = new JSONObject(jsonArray.getString(i));
+                                jsonArrayResponse.add(object);
+                            }
+                            int sdate = jsonArrayResponse.get(0).getInt("last_visit");
+                            if (sdate==0) {
+                                //too early or too late
+                                //String mes = new StringBuilder().append(getString(R.string.u_received)).append(String.valueOf(sdate)).append(getString(R.string._coins)).toString();
+                                //Toast.makeText(getApplicationContext(), mes, Toast.LENGTH_LONG).show();
+                            }
+                             else {
+                                sharedPref.AddCoins(getApplicationContext(), sdate);
+                                String mes = new StringBuilder().append(getString(R.string.u_received)).append(String.valueOf(sdate)).append(getString(R.string._coins)).toString();
+                                Toast.makeText(getApplicationContext(), mes, Toast.LENGTH_LONG).show();
+                            }
 
-//                        try {
-//                            JSONArray jsonArray = new JSONArray(response);
-//                            for (int i=0; i<jsonArray.length();i++)
-//                            {
-//                                JSONObject object = new JSONObject(jsonArray.getString(i));
-//                                jsonArrayResponse.add(object);
-//                            }
-//
-//                            //PASS to SPINNER
-//                            //load auction names and available lot/bid count
-//                            //populateUserData(jsonArrayResponse);
-//
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                            //Log.i("error json", "tttttttttttttttt");
-//                        }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            //Log.i("error json", "tttttttttttttttt");
+                            Crashlytics.log(Log.ERROR, TAG, e.getStackTrace().toString());
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i("TOKEN That did not", error.toString());
+                Log.i(TAG, "TOKEN That did not work" + error.toString());
             }
         }) {
             protected Map<String, String> getParams() {
@@ -496,6 +527,8 @@ public class MainActivity extends AppCompatActivity {
 
         };
         queue.add(stringRequest);
+
+        checkForDynamicLink();
     }
 
 
@@ -530,9 +563,11 @@ public class MainActivity extends AppCompatActivity {
                 //Log.d("REMOVE_ME", "Include this string as a value for SIGNATURE:" + currentSignature + model + manufacturer + bootloader);
 
                 //compare signatures
+
             }
 
         } catch (Exception e) {
+            Crashlytics.log(Log.ERROR, TAG, e.getStackTrace().toString());
 
 //assumes an issue in checking signature., but we let the caller decide on what to do.
 
@@ -541,42 +576,42 @@ public class MainActivity extends AppCompatActivity {
         return INVALID;
 
     }
-
-    private void sendSignatureToServer(final String sign) {
-        //TODO send the token to  database.
-        //Add to the user account token, app id, device id
-        Log.i("ATTEMPTING SIGNATURE", sign);
-        queue = Volley.newRequestQueue(this);
-        String url = "https://inventivesolutionste.ipage.com/apijson.php";
-        //String url = "http://localhost/apijson/apijson.php";
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("APP SIGNATURE STORED?", response);
-                        if (response.contains("app signature recorded")) {
-                            Log.i("APP SIGNATURE STORED", response);
-                            sharedPref.write("appsignature", sign);
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i("Signature send fail ", error.toString());
-            }
-        }) {
-            protected Map<String, String> getParams() {
-                Map<String, String> MyData = new HashMap<>();
-                MyData.put("action", "set_shash"); //Add the data you'd like to send to the server.
-                MyData.put("appname", "furqon"); //Add the data you'd like to send to the server.
-                MyData.put("shash", sign); //Add the data you'd like to send to the server.
-                return MyData;
-            }
-
-        };
-        queue.add(stringRequest);
-    }
+//
+//    private void sendSignatureToServer(final String sign) {
+//        //TODO send the token to  database.
+//        //Add to the user account token, app id, device id
+//        Log.i(TAG, "ATTEMPTING SIGNATURE " + sign);
+//        queue = Volley.newRequestQueue(this);
+//        String url = "https://inventivesolutionste.ipage.com/apijson.php";
+//        //String url = "http://localhost/apijson/apijson.php";
+//
+//        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        Log.i("APP SIGNATURE STORED?", response);
+//                        if (response.contains("app signature recorded")) {
+//                            Log.i("APP SIGNATURE STORED", response);
+//                            sharedPref.write("appsignature", sign);
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.i("Signature send fail ", error.toString());
+//            }
+//        }) {
+//            protected Map<String, String> getParams() {
+//                Map<String, String> MyData = new HashMap<>();
+//                MyData.put("action", "set_shash"); //Add the data you'd like to send to the server.
+//                MyData.put("appname", "furqon"); //Add the data you'd like to send to the server.
+//                MyData.put("shash", sign); //Add the data you'd like to send to the server.
+//                return MyData;
+//            }
+//
+//        };
+//        queue.add(stringRequest);
+//    }
 
     public static boolean deleteDir(File dir) {
         if (dir != null && dir.isDirectory()) {

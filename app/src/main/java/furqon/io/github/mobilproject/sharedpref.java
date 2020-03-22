@@ -46,6 +46,13 @@ public class sharedpref
 
     }
 
+    public static void AddCoins(Context mContext, int coins) {
+        int existingCoins = getInstance().read(getInstance().COINS, 0);
+        int totalCoins = existingCoins + coins;
+        getInstance().write(getInstance().COINS, totalCoins);
+        Toast.makeText(mContext,"Ad triggered reward. Coins amount: " + totalCoins, Toast.LENGTH_LONG).show();
+    }
+
     public void init(Context context)
     {
         mContext = context;

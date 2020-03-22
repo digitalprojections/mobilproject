@@ -12,7 +12,7 @@
     <string name="audiopos_restored">продолжить с последней позиции</string>
     <string name="audio_load_fail">Ошибка загрузки! Проверьте свою сеть</string>
     <string name="save">Сохранить</string>
-    <string name="shareayah">Поделись этим на пути Аллаха, и получите 10 монет</string>
+    <string name="shareayah">Поделись и получите монеты</string>
     <string name="bookmark_it">добавить аят в закладки</string>
     <string name="favourite_it">Добавить в избранное</string>
     <string name="russian">русский</string>
@@ -91,4 +91,6 @@
     <string name="not_enough_coins">Вам не хватает монет</string>
     <string name="available_coins">Доступные монеты</string>
     <string name="required_coins">Необходимо</string>
+    <string name="u_received">"Вы получили "</string>
+    <string name="_coins">" монет"</string>
 </resources>
