@@ -3,6 +3,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -12,6 +13,7 @@ import java.util.regex.PatternSyntaxException;
 public class sharedpref
 {
     public static final String USERID = "USERID";
+    public static final String INVITER = "INVITER";
     private Context mContext;
     private static final String TRACKS = "TRACKS";
     private static SharedPreferences mSharedPref;
@@ -50,7 +52,8 @@ public class sharedpref
         int existingCoins = getInstance().read(getInstance().COINS, 0);
         int totalCoins = existingCoins + coins;
         getInstance().write(getInstance().COINS, totalCoins);
-        Toast.makeText(mContext,"Ad triggered reward. Coins amount: " + totalCoins, Toast.LENGTH_LONG).show();
+        String mes = R.string.u_received + String.valueOf(totalCoins) + R.string._coins;
+        Toast.makeText(mContext,  "+" + String.valueOf(coins), Toast.LENGTH_LONG).show();
     }
 
     public void init(Context context)
