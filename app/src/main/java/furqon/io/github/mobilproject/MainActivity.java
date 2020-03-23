@@ -492,7 +492,7 @@ public class MainActivity extends AppCompatActivity {
                         //progressBar.setVisibility(View.INVISIBLE);
                         //textView.setText(response);
                         //handle response. ["{\"last_visit\":null,\"fcm_token\":null,\"id\":\"1\"}"]
-                        Log.d(TAG, "JSON raw " + response);
+                        //Log.d(TAG, "JSON raw " + response);
                         jsonArrayResponse = new ArrayList<>();
                         try {
                             JSONArray jsonArray = new JSONArray(response);
@@ -501,23 +501,33 @@ public class MainActivity extends AppCompatActivity {
                                 JSONObject object = new JSONObject(jsonArray.getString(i));
                                 jsonArrayResponse.add(object);
                             }
-                            int sdate = jsonArrayResponse.get(0).getInt("last_visit");
-                            if (sdate==0) {
-                                //too early or too late
-                                //String mes = new StringBuilder().append(getString(R.string.u_received)).append(String.valueOf(sdate)).append(getString(R.string._coins)).toString();
-                                //Toast.makeText(getApplicationContext(), mes, Toast.LENGTH_LONG).show();
-                            }
-                             else {
-                                sharedPref.AddCoins(getApplicationContext(), sdate);
-                                String mes = new StringBuilder().append(getString(R.string.u_received)).append(String.valueOf(sdate)).append(getString(R.string._coins)).toString();
-                                Toast.makeText(getApplicationContext(), mes, Toast.LENGTH_LONG).show();
-                            }
+
+
+                                int sdate = jsonArrayResponse.get(0).getInt("last_visit");
+                                Log.d(TAG, "JSON " + sdate);
+                                if (sdate==0) {
+                                    //too early or too late
+                                    //String mes = new StringBuilder().append(getString(R.string.u_received)).append(String.valueOf(sdate)).append(getString(R.string._coins)).toString();
+                                    //Toast.makeText(getApplicationContext(), mes, Toast.LENGTH_LONG).show();
+                                }
+                                else {
+                                    sharedPref.AddCoins(getApplicationContext(), sdate);
+                                    //String mes = new StringBuilder().append(getString(R.string.u_received)).append(String.valueOf(sdate)).append(getString(R.string._coins)).toString();
+                                    Toast.makeText(getApplicationContext(), "+"+sdate, Toast.LENGTH_LONG).show();
+                                }
+
+
+
+
 
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                             //Log.i("error json", "tttttttttttttttt");
                             Crashlytics.log(Log.ERROR, TAG, e.getStackTrace().toString());
+                        }
+                        catch (IndexOutOfBoundsException iobx){
+                            Log.d(TAG, "JSON " + iobx);
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -539,7 +549,7 @@ public class MainActivity extends AppCompatActivity {
         };
         if(token!=null && currentUser!=null){
             queue.add(stringRequest);
-            Toast.makeText(this, "Initiation", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Initiation", Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(this, "You are missing important credentials. Try to restart the app!", Toast.LENGTH_LONG).show();
         }
