@@ -74,7 +74,6 @@ public class RewardAd{
                     int coins = rewardItem.getAmount()*10;
                     sharedpref.AddCoins(mContext, coins);
                     ManageCoins manageCoins;
-
                     manageCoins = (ManageCoins) mContext;
                     manageCoins.SetCoinValues();
 

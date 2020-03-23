@@ -1014,10 +1014,11 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         if(broadcastReceiverAudio!=null){
             unregisterReceiver(broadcastReceiverAudio);
         }
-        if(broadcastReceiverDownload!=null){
-            unregisterReceiver(broadcastReceiverDownload);
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O) {
+            if (broadcastReceiverDownload != null) {
+                unregisterReceiver(broadcastReceiverDownload);
+            }
         }
-
     }
 
 
