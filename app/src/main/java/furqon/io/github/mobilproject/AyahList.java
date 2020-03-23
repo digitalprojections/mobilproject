@@ -65,6 +65,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -1011,14 +1012,19 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             if(notificationManager!=null)
                 notificationManager.cancelAll();
         }
-        if(broadcastReceiverAudio!=null){
-            unregisterReceiver(broadcastReceiverAudio);
-        }
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O) {
-            if (broadcastReceiverDownload != null) {
-                unregisterReceiver(broadcastReceiverDownload);
+        try{
+            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O) {
+                if (broadcastReceiverDownload != null) {
+                    unregisterReceiver(broadcastReceiverDownload);
+                }
+                if(broadcastReceiverAudio!=null){
+                    unregisterReceiver(broadcastReceiverAudio);
+                }
             }
+        }catch (IllegalArgumentException iax){
+            Crashlytics.log("AYAHLIST " + iax.getMessage() + iax.getStackTrace());
         }
+
     }
 
 

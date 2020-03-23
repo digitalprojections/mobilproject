@@ -120,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.favourites_i:
                 open_favourites();
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -237,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
         String appLinkAction = appLinkIntent.getAction();
         Uri appLinkData = appLinkIntent.getData();
 
-
+        CheckInviterThanked();
     }
 
     private void open_extraActivities() {
@@ -371,6 +370,21 @@ public class MainActivity extends AppCompatActivity {
         //sendConfirmationToServer("b4sGS2mH92RIv8bTJnomGzH9IDp1");
     }
 
+    private void CheckInviterThanked() {
+        if(sharedpref.getInstance().read(sharedpref.getInstance().INVITER, 0)==0)
+        {
+            String inviter_id = sharedPref.getInstance().read(sharedPref.getInstance().INVITER_ID, "");
+            if(!inviter_id.isEmpty()){
+                sendConfirmationToServer(inviter_id);
+            }
+            else{
+                Crashlytics.log( Log.ERROR, TAG, "INVITER ID WAS EMPTY");
+            }
+        }else{
+            //user is already invited
+        }
+    }
+
     private void sendConfirmationToServer(final String inviter_id) {
         //TODO send the token to  database.
         //Add to the user account token, app id, device id
@@ -391,6 +405,8 @@ public class MainActivity extends AppCompatActivity {
 
                         }else{
                             Log.i(  TAG,"Invitation failed " + response);
+                            //failed, save for future
+                            sharedPref.getInstance().write(sharedPref.getInstance().INVITER_ID, inviter_id);
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -492,7 +508,7 @@ public class MainActivity extends AppCompatActivity {
                         //progressBar.setVisibility(View.INVISIBLE);
                         //textView.setText(response);
                         //handle response. ["{\"last_visit\":null,\"fcm_token\":null,\"id\":\"1\"}"]
-                        //Log.d(TAG, "JSON raw " + response);
+                        Log.d(TAG, "JSON raw " + response);
                         jsonArrayResponse = new ArrayList<>();
                         try {
                             JSONArray jsonArray = new JSONArray(response);
@@ -501,8 +517,6 @@ public class MainActivity extends AppCompatActivity {
                                 JSONObject object = new JSONObject(jsonArray.getString(i));
                                 jsonArrayResponse.add(object);
                             }
-
-
                                 int sdate = jsonArrayResponse.get(0).getInt("last_visit");
                                 Log.d(TAG, "JSON " + sdate);
                                 if (sdate==0) {
@@ -515,12 +529,6 @@ public class MainActivity extends AppCompatActivity {
                                     //String mes = new StringBuilder().append(getString(R.string.u_received)).append(String.valueOf(sdate)).append(getString(R.string._coins)).toString();
                                     Toast.makeText(getApplicationContext(), "+"+sdate, Toast.LENGTH_LONG).show();
                                 }
-
-
-
-
-
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                             //Log.i("error json", "tttttttttttttttt");
@@ -529,6 +537,7 @@ public class MainActivity extends AppCompatActivity {
                         catch (IndexOutOfBoundsException iobx){
                             Log.d(TAG, "JSON " + iobx);
                         }
+                        checkForDynamicLink();
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -550,12 +559,15 @@ public class MainActivity extends AppCompatActivity {
         if(token!=null && currentUser!=null){
             queue.add(stringRequest);
             //Toast.makeText(this, "Initiation", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "sending creds " + token + " " + currentUser.getUid());
+
         }else{
+            Log.d(TAG, "missing important creds");
             Toast.makeText(this, "You are missing important credentials. Try to restart the app!", Toast.LENGTH_LONG).show();
         }
 
 
-        checkForDynamicLink();
+
     }
 
 

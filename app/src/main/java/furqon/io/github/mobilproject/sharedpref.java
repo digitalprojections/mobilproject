@@ -14,6 +14,7 @@ public class sharedpref
 {
     public static final String USERID = "USERID";
     public static final String INVITER = "INVITER";
+    public static final String INVITER_ID = "INVITER_ID";
     private Context mContext;
     private static final String TRACKS = "TRACKS";
     private static SharedPreferences mSharedPref;
