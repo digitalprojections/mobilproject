@@ -291,41 +291,43 @@ public class MainActivity extends AppCompatActivity {
     }
     public void createShortLink() {
         // [START create_short_link]
-        String val = "https://quran-kareem.web.app/?user_id="+currentUser.getUid();
-        Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
-                //.setLink(Uri.parse("https://furqon.page.link/ThB2"))
-                .setLink(Uri.parse(val))
-                .setDomainUriPrefix("https://furqon.page.link")
-                .setAndroidParameters(
-                        new DynamicLink.AndroidParameters.Builder("furqon.io.github.mobilproject")
-                                .setMinimumVersion(0)
-                                .build())
+        if(currentUser!=null){
+            String val = "https://quran-kareem.web.app/?user_id="+currentUser.getUid();
+            Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                    //.setLink(Uri.parse("https://furqon.page.link/ThB2"))
+                    .setLink(Uri.parse(val))
+                    .setDomainUriPrefix("https://furqon.page.link")
+                    .setAndroidParameters(
+                            new DynamicLink.AndroidParameters.Builder("furqon.io.github.mobilproject")
+                                    .setMinimumVersion(0)
+                                    .build())
 
-                // Set parameters
-                // ...
-                .buildShortDynamicLink()
-                .addOnCompleteListener(this, new OnCompleteListener<ShortDynamicLink>() {
-                    @Override
-                    public void onComplete(@NonNull Task<ShortDynamicLink> task) {
-                        if (task.isSuccessful()) {
-                            // Short link created
-                            Uri shortLink = task.getResult().getShortLink();
-                            Uri flowchartLink = task.getResult().getPreviewLink();
-                            Log.i(TAG, "SHORT LINK " + shortLink.getPath());
-                            Intent intent = new Intent(Intent.ACTION_SEND);
-                            intent.setType("text/plain");
-                            intent.putExtra(Intent.EXTRA_SUBJECT, R.string.quran_kareem_title);
-                            intent.putExtra(Intent.EXTRA_TEXT, shortLink.toString());
-                            startActivity(intent);
-                            //Log.i("SHARE", deepLink.getPath());
-                        } else {
-                            // Error
-                            // ...
-                            Log.i(TAG, "LINK ERROR" + task.getResult().toString());
-                            Crashlytics.log(Log.ERROR, TAG, task.getResult().toString());
+                    // Set parameters
+                    // ...
+                    .buildShortDynamicLink()
+                    .addOnCompleteListener(this, new OnCompleteListener<ShortDynamicLink>() {
+                        @Override
+                        public void onComplete(@NonNull Task<ShortDynamicLink> task) {
+                            if (task.isSuccessful()) {
+                                // Short link created
+                                Uri shortLink = task.getResult().getShortLink();
+                                Uri flowchartLink = task.getResult().getPreviewLink();
+                                Log.i(TAG, "SHORT LINK " + shortLink.getPath());
+                                Intent intent = new Intent(Intent.ACTION_SEND);
+                                intent.setType("text/plain");
+                                intent.putExtra(Intent.EXTRA_SUBJECT, R.string.quran_kareem_title);
+                                intent.putExtra(Intent.EXTRA_TEXT, shortLink.toString());
+                                startActivity(intent);
+                                //Log.i("SHARE", deepLink.getPath());
+                            } else {
+                                // Error
+                                // ...
+                                Log.i(TAG, "LINK ERROR" + task.getResult().toString());
+                                Crashlytics.log(Log.ERROR, TAG, task.getResult().toString());
+                            }
                         }
-                    }
-                });
+                    });
+        }
         // [END create_short_link]
     }
 
@@ -418,7 +420,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         //checkForDynamicLink();
         // Check if user is signed in (non-null) and update UI accordingly.
-
+        updateUI();
 
     }
 
@@ -452,16 +454,17 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInAnonymously:failure", task.getException());
+
                             Crashlytics.log(Log.ERROR, TAG, task.getException().toString());
                             Toast.makeText(MainActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                             currentUser = null;
-                            updateUI();
                         }
 
                     }
                 });
         // [END signin_anonymously]
+        Log.e(TAG, "Signin ATTEMPT: " + mAuth);
     }
 
     @Override
@@ -534,7 +537,13 @@ public class MainActivity extends AppCompatActivity {
             }
 
         };
-        queue.add(stringRequest);
+        if(token!=null && currentUser!=null){
+            queue.add(stringRequest);
+            Toast.makeText(this, "Initiation", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(this, "You are missing important credentials. Try to restart the app!", Toast.LENGTH_LONG).show();
+        }
+
 
         checkForDynamicLink();
     }

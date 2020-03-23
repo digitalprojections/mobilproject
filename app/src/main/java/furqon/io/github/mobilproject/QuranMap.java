@@ -226,7 +226,7 @@ public class QuranMap {
             "Al-Humazah",
             "Al-Fiil",
             "Quraisy",
-            "Al-Maaﾂｴuun",
+            "Al-Maa'uun",
             "Al-Kauthar",
             "Al-Kaafiruun",
             "An-Nasr",

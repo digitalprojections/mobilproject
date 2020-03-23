@@ -44,7 +44,7 @@ public class RewardAd{
             mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
                 @Override
                 public void onRewardedVideoAdLoaded() {
-                    //Toast.makeText(mContext,                            "Ad loaded.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext,                            "Ad loaded.", Toast.LENGTH_SHORT).show();
                     ManageCoins manageCoins;
                     if(mContext instanceof ManageCoins){
                         manageCoins = (ManageCoins) mContext;
@@ -71,7 +71,7 @@ public class RewardAd{
 
                 @Override
                 public void onRewarded(RewardItem rewardItem) {
-                    int coins = rewardItem.getAmount()*50;
+                    int coins = rewardItem.getAmount()*10;
                     sharedpref.AddCoins(mContext, coins);
                     ManageCoins manageCoins;
 

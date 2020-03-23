@@ -123,7 +123,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.ic_asset_1furqon_logo)
-                        .setContentTitle(getString(R.string.fcm_fallback_notification_channel_label))
+                        .setContentTitle(getString(R.string.app_name))
                         .setContentText(messageBody)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)

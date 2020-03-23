@@ -355,8 +355,8 @@ public class AyahOfTheDay extends AppCompatActivity {
             ayah_text.setText(R.string.chapters_not_available);
             return;
         }else{
-            random_ayah = (int) Math.round(Math.random() * QuranMap.GetSurahLength(random_surah-1));
-            Log.d("RANDOM SURAH MAX AYAH", random_surah + " is surah " + QuranMap.GetSurahLength(random_surah-1));
+            random_ayah = (int) Math.floor(Math.random() * QuranMap.GetSurahLength(random_surah-1))+1;
+            //Log.d("RANDOM SURAH MAX AYAH", random_surah + " is surah " + QuranMap.GetSurahLength(random_surah-1));
             viewModel.getChapterText(String.valueOf(random_surah)).observe(this, new Observer<List<AllTranslations>>() {
                 @Override
                 public void onChanged(List<AllTranslations> allTranslations) {

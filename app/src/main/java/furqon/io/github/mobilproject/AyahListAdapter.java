@@ -159,7 +159,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             arabic_text.setTextSize(30);
             arabic_text.setGravity(Gravity.END);
             arabic_text.setTextColor(Color.BLACK);
-            arabic_text.setShadowLayer(1.5f, 0, 0, Color.BLACK);
+            //arabic_text.setShadowLayer(1.5f, 0, 0, Color.BLACK);
 
             arabic_text.setTypeface(madina);
             book_button.setTag("unselected");

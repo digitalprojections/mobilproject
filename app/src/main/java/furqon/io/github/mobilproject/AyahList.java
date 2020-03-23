@@ -178,10 +178,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         downloadButton = findViewById(R.id.button_download);
         downloadText = findViewById(R.id.download_text);
 
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
-            registerReceiver(broadcastReceiverAudio, new IntentFilter("TRACKS_TRACKS"));
-            startService(new Intent(getBaseContext(), OnClearFromService.class));
-        }
+
 
         Toolbar toolbar = findViewById(R.id.audiobar);
         setSupportActionBar(toolbar);
@@ -189,7 +186,16 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
 
 
-        registerReceiver(broadcastReceiverDownload, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
+
+        registerReceiver(broadcastReceiverAudio, new IntentFilter("TRACKS_TRACKS"));
+
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+            registerReceiver(broadcastReceiverDownload, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+            startService(new Intent(getBaseContext(), OnClearFromService.class));
+        }
+
+
         Bundle intent = getIntent().getExtras();
         String extratext;
         if(intent!=null){
@@ -341,25 +347,29 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             @Override
             public void onChanged(ChapterTitleTable chapterTitleTable) {
 
-
-                currentStatus = Integer.parseInt(chapterTitleTable.status);
-                if(status==0){
-                    //just created
-                    //Toast.makeText(getApplicationContext(), status + " FIRST SHOW " + chapterTitleTable.status, Toast.LENGTH_SHORT).show();
-                    status = currentStatus;
-                }else if(status==currentStatus){
-                    //second or more tries
-                    //Toast.makeText(getApplicationContext(), status + " FAILED TO UPDATE " + chapterTitleTable.status, Toast.LENGTH_SHORT).show();
-                }else if(status<currentStatus){
-                    //Toast.makeText(getApplicationContext(), status + " TITLE UPDATED " + chapterTitleTable.status, Toast.LENGTH_SHORT).show();
-                    int xcoins = sharedPref.read(sharedPref.COINS, 0);
-                    int newtotal;
-                    if(xcoins>=ayah_unlock_cost){
-                        newtotal = xcoins-ayah_unlock_cost;
-                    }else {
-                        newtotal = 0;
+                if(chapterTitleTable!=null){
+                    currentStatus = Integer.parseInt(chapterTitleTable.status);
+                    if(status==0){
+                        //just created
+                        //Toast.makeText(getApplicationContext(), status + " FIRST SHOW " + chapterTitleTable.status, Toast.LENGTH_SHORT).show();
+                        status = currentStatus;
+                    }else if(status==currentStatus){
+                        //second or more tries
+                        //Toast.makeText(getApplicationContext(), status + " FAILED TO UPDATE " + chapterTitleTable.status, Toast.LENGTH_SHORT).show();
+                    }else if(status<currentStatus){
+                        //Toast.makeText(getApplicationContext(), status + " TITLE UPDATED " + chapterTitleTable.status, Toast.LENGTH_SHORT).show();
+                        int xcoins = sharedPref.read(sharedPref.COINS, 0);
+                        int newtotal;
+                        if(xcoins>=ayah_unlock_cost){
+                            newtotal = xcoins-ayah_unlock_cost;
+                        }else {
+                            newtotal = 0;
+                        }
+                        sharedPref.write(sharedPref.COINS, newtotal);
                     }
-                    sharedPref.write(sharedPref.COINS, newtotal);
+
+                }else{
+
                 }
                 SetDownloadButtonState(chapterTitleTable);
             }
@@ -420,35 +430,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                 Log.i("DOWNLOAD OTHER FILE", "Download id " + downloadId);
             }
         }
+
     };
-
-
-    public void playCycle() {
-        if (mediaPlayer != null) {
-            seekBar.setProgress(mediaPlayer.getCurrentPosition());
-            audio_pos = mediaPlayer.getCurrentPosition();
-            timer = findViewById(R.id.audio_timer);
-            timer.setText(AudioTimer.getTimeStringFromMs(audio_pos));
-
-            //Furqon.ShowNotification(this, suranomi, audio_pos);
-
-            if (mediaPlayer.isPlaying()) {
-                runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        //startTimer();
-                        playCycle();
-                        Log.i("TIMER", "tick");
-                    }
-                };
-                handler.postDelayed(runnable, 1000);
-            }
-        }
-    }
-
-
-
-
     BroadcastReceiver broadcastReceiverAudio = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -481,6 +464,34 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             }
         }
     };
+
+    public void playCycle() {
+        if (mediaPlayer != null) {
+            seekBar.setProgress(mediaPlayer.getCurrentPosition());
+            audio_pos = mediaPlayer.getCurrentPosition();
+            timer = findViewById(R.id.audio_timer);
+            timer.setText(AudioTimer.getTimeStringFromMs(audio_pos));
+
+            //Furqon.ShowNotification(this, suranomi, audio_pos);
+
+            if (mediaPlayer.isPlaying()) {
+                runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        //startTimer();
+                        playCycle();
+                        Log.i("TIMER", "tick");
+                    }
+                };
+                handler.postDelayed(runnable, 1000);
+            }
+        }
+    }
+
+
+
+
+
     private void LoadTheList() {
         titleViewModel.getChapterText(suraNumber).observe(this, new Observer<List<AllTranslations>>() {
             @Override
@@ -708,7 +719,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             downloadButton.setVisibility(View.INVISIBLE);
             progressBar.setVisibility(View.INVISIBLE);
         }else{
-            if(titleTable.status.equals("2")){
+            if(titleTable!=null && titleTable.status.equals("2")){
                 //download allowed. Active within the session only. Forgotten on restart
                 downloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
                 //playButton.setIcon(R.drawable.ic_play_circle);
@@ -919,8 +930,9 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     @Override
     public void MarkAsAwarded(int surah_id) {
         //Log.e("ACTUAL SURAH ID?", surah_id + " " + suraNumber);
+
         int coins = sharedPref.read(sharedPref.COINS, 0);
-        if(coins>0){
+        if(coins>ayah_unlock_cost){
             titleViewModel.updateTitleAsRewarded(suraNumber);
         }else{
             Toast.makeText(this,  R.string.not_enough_coins, Toast.LENGTH_LONG).show();

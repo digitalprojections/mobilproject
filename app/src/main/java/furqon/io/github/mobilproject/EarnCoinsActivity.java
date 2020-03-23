@@ -56,7 +56,7 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
 
         coins_txt = findViewById(R.id.coins_count_txt);
 
-        setCoinValue();
+
         // Create a deep link and display it in the UI
         deepLink = buildDeepLink(Uri.parse(DEEP_LINK_URL), 0);
 
@@ -83,6 +83,7 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
         mAdView = findViewById(R.id.adViewEarnCoins);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+        setCoinValue();
     }
 
     @Override
