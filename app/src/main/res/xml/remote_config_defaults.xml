@@ -2,11 +2,11 @@
 <!-- START xml_defaults -->
 <defaultsMap>
     <entry>
-        <key>loading_phrase</key>
-        <value>Fetching config…</value>
+        <key>share_reward</key>
+        <value>200</value>
     </entry>
     <entry>
-        <key>welcome_message_caps</key>
+        <key>rewardad_multiplier</key>
         <value>false</value>
     </entry>
     <entry>
