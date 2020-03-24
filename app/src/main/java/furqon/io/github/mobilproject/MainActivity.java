@@ -56,6 +56,8 @@ import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -99,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
     private String token;
     private String currentSignature;
     private ArrayList<JSONObject> jsonArrayResponse;
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -137,6 +140,14 @@ public class MainActivity extends AppCompatActivity {
 
         sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
+
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setMinimumFetchIntervalInSeconds(3600)
+                .build();
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+
+        //mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
 
         // Initialize Firebase Auth
         //--------------------------------------------------------
@@ -236,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
         String appLinkAction = appLinkIntent.getAction();
         Uri appLinkData = appLinkIntent.getData();
 
-        CheckInviterThanked();
+
     }
 
     private void open_extraActivities() {
@@ -331,7 +342,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkForDynamicLink() {
-        Log.i(TAG, "LINK CHECKING");
+        Log.i(TAG, "Dynamic LINK CHECKING");
         FirebaseDynamicLinks.getInstance()
                 .getDynamicLink(getIntent())
                 .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
@@ -340,19 +351,30 @@ public class MainActivity extends AppCompatActivity {
                         // Get deep link from result (may be null if no link is found)
                         Uri deepLink = null;
                         if (pendingDynamicLinkData != null) {
+
                             deepLink = pendingDynamicLinkData.getLink();
                             String inviter_id = deepLink.getQueryParameter("user_id");
-                            Log.i(TAG, "LINK FOUND " + inviter_id);
-                            pendingDynamicLinkData = null;
-                            Snackbar.make(findViewById(android.R.id.content),
-                                    R.string.invitation_confirm, Snackbar.LENGTH_LONG).show();
-                            //Send confirmation
-                            if(sharedpref.getInstance().read(sharedpref.getInstance().INVITER, 0)==0)
-                            {
-                                sendConfirmationToServer(inviter_id);
+                            if(!inviter_id.equals(currentUser.getUid())){
+                                Log.i(TAG, "Dynamic LINK FOUND " + inviter_id);
+                                pendingDynamicLinkData = null;
+                                Snackbar.make(findViewById(android.R.id.content),
+                                        R.string.invitation_confirm, Snackbar.LENGTH_LONG).show();
+                                //Send confirmation
+                                if(sharedpref.getInstance().read(sharedpref.getInstance().INVITER, 0)==0)
+                                {
+                                    sendConfirmationToServer(inviter_id);
+                                }else{
+                                    //user is already invited
+                                }
                             }else{
-                                //user is already invited
+                                Log.i(TAG, "Can not use the dlink");
+                                if (sharedPref.isFirstRun()) {
+                                    //set dummy values to disallow false invites
+                                    sharedpref.getInstance().write(sharedpref.getInstance().INVITER, 1);
+                                    sharedpref.getInstance().write(sharedpref.getInstance().INVITER_ID, "");
+                                }
                             }
+
                         }
                         // Handle the deep link. For example, open the linked
                         // content, or apply promotional credit to the user's
@@ -399,7 +421,7 @@ public class MainActivity extends AppCompatActivity {
                         //Log.i("APP SIGNATURE STORED?", response);
                         if (response.contains("confirmation")) {
                             Log.i(  TAG,"Invitation " + response);
-                            sharedPref.AddCoins(getApplicationContext(), 50);
+                            sharedPref.AddCoins(getApplicationContext(), 200);
 
                             sharedPref.getInstance().write(sharedPref.getInstance().INVITER, 1);
 
@@ -542,7 +564,7 @@ public class MainActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i(TAG, "TOKEN That did not work" + error.toString());
+                Log.i(TAG, "UserID and TOKEN failed to send" + error.toString());
             }
         }) {
             protected Map<String, String> getParams() {
@@ -559,7 +581,7 @@ public class MainActivity extends AppCompatActivity {
         if(token!=null && currentUser!=null){
             queue.add(stringRequest);
             //Toast.makeText(this, "Initiation", Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "sending creds " + token + " " + currentUser.getUid());
+            Log.d(TAG, "sending creds");
 
         }else{
             Log.d(TAG, "missing important creds");

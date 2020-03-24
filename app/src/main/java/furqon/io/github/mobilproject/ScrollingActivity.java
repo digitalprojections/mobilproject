@@ -47,7 +47,7 @@ public class ScrollingActivity extends AppCompatActivity {
         View.OnClickListener clickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sharedPref.setFirstRun(false);
+                //sharedPref.setFirstRun(false);
                 //Intent intent = new Intent(getApplicationContext(), AyahOfTheDay.class);
                 //startActivity(intent);
                 ScrollingActivity.super.onBackPressed();

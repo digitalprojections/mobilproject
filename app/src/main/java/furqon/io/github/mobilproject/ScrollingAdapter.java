@@ -34,7 +34,7 @@ public class ScrollingAdapter extends PagerAdapter {
                 this.context.getString(R.string.desc_ayah_of_the_day), this.context.getString(R.string.desc_comments), this.context.getString(R.string.desc_audio_seperate)
         };
         titles = new String[]{
-          context.getString(R.string.app_name),context.getString(R.string.earn_coins), context.getString(R.string.title_daily_ayah), context.getString(R.string.title_color_comments), context.getString(R.string.title_separate_audio)
+          context.getString(R.string.app_name),context.getString(R.string.coins), context.getString(R.string.title_daily_ayah), context.getString(R.string.title_color_comments), context.getString(R.string.title_separate_audio)
         };
         images = new int[]{
                 R.mipmap.ic_launcher2_round, R.mipmap.gold_coin,0,0,0
