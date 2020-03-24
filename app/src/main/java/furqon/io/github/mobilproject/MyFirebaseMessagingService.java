@@ -48,10 +48,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
-            scheduleJob();
-            database = ChapterTitleDatabase.getDatabase(this);
-            database.SaveMessage(remoteMessage.getData());
-
+            //scheduleJob();
+            //database = ChapterTitleDatabase.getDatabase(this);
+            //database.SaveMessage(remoteMessage.getData());
+            handleNow(remoteMessage);
         }
 
 

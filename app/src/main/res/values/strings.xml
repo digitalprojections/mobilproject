@@ -31,7 +31,7 @@
     <string name="action_settings">Settings</string>
     <string name="desc_ayah_of_the_day">Every time a new verse is displayed randomly</string>
     <string name="desc_comments">Commentaries are colored so you can ignore them</string>
-    <string name="desc_audio_seperate">Each chapter has separate audio</string>
+    <string name="desc_audio_seperate">Each chapter has separate downloadable audio</string>
     <string name="title_color_comments">Colored commentaries</string>
     <string name="title_daily_ayah">Random verse</string>
     <string name="title_separate_audio">Audio</string>
@@ -66,7 +66,7 @@
     <string name="next_ayah">next ayah</string>
     <string name="failed_to_load_ayah">Failed to load ayah. Try again</string>
     <string name="failure_generic">An error has occurred, try again later</string>
-    <string name="download_audio_description">Now you can unlock chapter audio download using coins</string>
+    <string name="download_audio_description">There are many ways to earn coins: using daily, sharing to fiends or watching rewarded ads</string>
     <string name="downloadaudio_title">Download Audio</string>
     <string name="messages_button_text">Messages</string>
     <string name="notification_from_author_channel" translatable="false">Muallifdan</string>
@@ -91,7 +91,7 @@
     <string name="use_coins">Use Coins</string>
     <string name="coins">Coins</string>
     <string name="x1_coins">x50 Coins (get instantly)</string>
-    <string name="x10_coins">x100 Coins (available after approval)</string>
+    <string name="x10_coins">x200 Coins (upon confirmation)</string>
     <string name="not_enough_coins">You don`t have enough coins</string>
     <string name="available_coins">Available Coins</string>
     <string name="required_coins">Required</string>

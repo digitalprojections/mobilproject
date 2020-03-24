@@ -27,8 +27,8 @@
     <string name="search_hint">намоз</string>
     <string name="search">Izlash</string>
     <string name="desc_ayah_of_the_day">Қуръон дастури ҳар сафар очганингизда, уни ўқишга ундовчи, тасодифан танланган оят билан бошланади</string>
-    <string name="desc_comments">Матнни изоҳини ўқишни хохламасангиз, марҳамат, рангли матнни ўқимай ўтказиб юборишингиз мумкин</string>
-    <string name="desc_audio_seperate">Ҳар бир сура аудиоси алоҳида</string>
+    <string name="desc_comments">Матнни изоҳини ўқишни хохламасангиз, рангли матнни ўқимай ўтказиб юборишингиз мумкин</string>
+    <string name="desc_audio_seperate">Har bir sura audiosi alohida, telefonga ko`chirib olish mumkin</string>
     <string name="action_settings">Sozlamalar</string>
     <string name="found">Topildi:</string>
     <string name="title_activity_scrolling">Tanishuv</string>
@@ -63,7 +63,7 @@
     <string name="next_ayah">keyingi oyat</string>
     <string name="failed_to_load_ayah">Oyatni yuklab bo\'lmadi. Qayta urinib ko\'ring</string>
     <string name="failure_generic">Xato yuz berdi, keyinroq qayta urinib ko\'ring</string>
-    <string name="download_audio_description">Endi siz tangalar yordamida sura audiosini yuklab olishingiz mumkin</string>
+    <string name="download_audio_description">Tangalarni topishning ko\'plab usullari mavjud: kunlik foydalanish, mukofotlangan reklamalarni ko\'rish yoki ilovani do`stlarga ulashish</string>
     <string name="downloadaudio_title">Ovozni Yuklab Olish</string>
     <string name="messages_button_text">Xabarlar</string>
     <string name="audio_player_title">Mediapleer Furqan</string>
@@ -87,7 +87,7 @@
     <string name="ok">Qulfni ochish</string>
     <string name="coins">Tanga</string>
     <string name="x1_coins">50 Tanga (bir zumda beriladi)</string>
-    <string name="x10_coins">100 Tanga (tasdiqlangach beriladi)</string>
+    <string name="x10_coins">200 Tanga (tasdiqlangach beriladi)</string>
     <string name="not_enough_coins">Tangalar yetishmayapti</string>
     <string name="available_coins">Mavjud Tangalar</string>
     <string name="required_coins">Qiymati</string>

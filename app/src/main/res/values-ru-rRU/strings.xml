@@ -26,7 +26,7 @@
     <string name="search_hint">молитва</string>
     <string name="search">Поиск</string>
     <string name="action_settings">Настройки</string>
-    <string name="desc_audio_seperate">Отдельное аудио для каждой суры</string>
+    <string name="desc_audio_seperate">Отдельное загружаемое аудио для каждой суры</string>
     <string name="desc_ayah_of_the_day">Каждый раз начните с нового аята</string>
     <string name="desc_comments">Комментарии различаются от основного текста и их легче пропускать</string>
     <string name="found">Найдено:</string>
@@ -63,7 +63,7 @@
     <string name="next_ayah">следующий аят</string>
     <string name="failed_to_load_ayah">Не удалось загрузить аят. Попробуйте еще раз</string>
     <string name="failure_generic">Произошла ошибка, попробуйте позже</string>
-    <string name="download_audio_description">Теперь вы можете разблокировать и скачать аудио с помощью монет</string>
+    <string name="download_audio_description">Есть много способов заработать монеты: использовать ежедневно, делиться с друзьями или смотреть вознагражденную рекламу</string>
     <string name="downloadaudio_title">Скачать Аудио</string>
     <string name="messages_button_text">Сообщения</string>
     <string name="audio_player_title">Аудиоплеер Фуркан</string>
@@ -86,7 +86,7 @@
     <string name="cancel">Отмена</string>
     <string name="ok">Разблокировать</string>
     <string name="x1_coins">50 Монет (получить мгновенно)</string>
-    <string name="x10_coins">100 Монет (доступно после утверждения)</string>
+    <string name="x10_coins">200 Монет (доступно после подтверждения)</string>
     <string name="coins">Монеты</string>
     <string name="not_enough_coins">Вам не хватает монет</string>
     <string name="available_coins">Доступные монеты</string>

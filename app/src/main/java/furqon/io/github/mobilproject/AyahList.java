@@ -324,7 +324,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
                     try{
                         //"ID":"31206","VerseID":"7","AyahText":"صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ","DatabaseID":"1","SuraID":"1","OrderNo":"5","SuraType":"Meccan","Note":null
-                        Log.d("JSONOBJECT", i.toString());
+                        //Log.d("JSONOBJECT", i.toString());
                         int verse_id = i.getInt("VerseID");
                         int DatabaseID = i.getInt("DatabaseID");
                         int chapter_id = i.getInt("SuraID");
@@ -1012,14 +1012,21 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             if(notificationManager!=null)
                 notificationManager.cancelAll();
         }
+
+        try{
+            if(broadcastReceiverAudio!=null){
+                unregisterReceiver(broadcastReceiverAudio);
+            }
+        }catch (IllegalArgumentException iax){
+
+        }
+
         try{
             if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O) {
                 if (broadcastReceiverDownload != null) {
                     unregisterReceiver(broadcastReceiverDownload);
                 }
-                if(broadcastReceiverAudio!=null){
-                    unregisterReceiver(broadcastReceiverAudio);
-                }
+
             }
         }catch (IllegalArgumentException iax){
             Crashlytics.log("AYAHLIST " + iax.getMessage() + iax.getStackTrace());
