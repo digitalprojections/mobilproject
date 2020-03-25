@@ -81,8 +81,8 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
         watchAds_btn = findViewById(R.id.WatchAdsImageButton);
         //watchAds_btn.setEnabled(false);
 
-        rewardad_txt.setText(mFirebaseRemoteConfig.getString("ad_reward") + " " + R.string.x1_coins);
-        share_txt.setText(mFirebaseRemoteConfig.getString("share_reward") + " " + R.string.x10_coins);
+        rewardad_txt.setText(mFirebaseRemoteConfig.getString("ad_reward") + " " + getText(R.string.x1_coins));
+        share_txt.setText(mFirebaseRemoteConfig.getString("share_reward") + " " + getText(R.string.x10_coins));
 
         share_btn.setOnClickListener(new View.OnClickListener() {
             @Override
