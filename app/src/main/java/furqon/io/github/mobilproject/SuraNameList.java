@@ -227,7 +227,8 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 //        mDatabase = DatabaseAccess.getInstance(getApplicationContext());
 //        if(!mDatabase.isOpen()) {

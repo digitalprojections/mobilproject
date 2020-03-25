@@ -22,6 +22,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import org.w3c.dom.Text;
 
@@ -32,12 +34,17 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
     private ImageButton share_btn;
     private ImageButton watchAds_btn;
     private TextView coins_txt;
+
+    private TextView rewardad_txt;
+    private TextView share_txt;
+
     private static final String DEEP_LINK_URL = "https://furqon.page.link/ThB2";
     private sharedpref sharedPref;
     Uri deepLink;
     String userid;
     private RewardAd mRewardedVideoAd;
     private AdView mAdView;
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,24 +54,35 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         String title = getString(R.string.earn_coins);
-        Objects.requireNonNull(getSupportActionBar()).setTitle(title);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(title);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
         mRewardedVideoAd = new RewardAd(this);
 
-        coins_txt = findViewById(R.id.coins_count_txt);
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setMinimumFetchIntervalInSeconds(50000)
+                .build();
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+
+        mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
 
 
         // Create a deep link and display it in the UI
         deepLink = buildDeepLink(Uri.parse(DEEP_LINK_URL), 0);
 
 
-
+        coins_txt = findViewById(R.id.coins_count_txt);
+        rewardad_txt = findViewById(R.id.rewardad_description_tv);
+        share_txt = findViewById(R.id.share_description_tv);
         share_btn = findViewById(R.id.ShareImageButton);
         watchAds_btn = findViewById(R.id.WatchAdsImageButton);
         //watchAds_btn.setEnabled(false);
+
+        rewardad_txt.setText(mFirebaseRemoteConfig.getString("ad_reward") + " " + R.string.x1_coins);
+        share_txt.setText(mFirebaseRemoteConfig.getString("share_reward") + " " + R.string.x10_coins);
 
         share_btn.setOnClickListener(new View.OnClickListener() {
             @Override

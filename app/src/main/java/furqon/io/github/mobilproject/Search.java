@@ -51,8 +51,8 @@ public class Search extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         String title = getString(R.string.search);
-        Objects.requireNonNull(getSupportActionBar()).setTitle(title);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(title);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         progressBar = findViewById(R.id.progressBarSearch);
         progressBar.setVisibility(View.INVISIBLE);

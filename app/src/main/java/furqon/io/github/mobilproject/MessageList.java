@@ -34,8 +34,8 @@ public class MessageList extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         String title = getString(R.string.messages_button_text);
-        Objects.requireNonNull(getSupportActionBar()).setTitle(title);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(title);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
         recyclerView = findViewById(R.id.message_list);

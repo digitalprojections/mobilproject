@@ -6,8 +6,12 @@
         <value>200</value>
     </entry>
     <entry>
+        <key>ad_reward</key>
+        <value>50</value>
+    </entry>
+    <entry>
         <key>rewardad_multiplier</key>
-        <value>false</value>
+        <value>10</value>
     </entry>
     <entry>
         <key>welcome_message</key>

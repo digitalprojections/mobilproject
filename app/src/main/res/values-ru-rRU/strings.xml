@@ -85,8 +85,8 @@
     <string name="use_coins">Использовать монету</string>
     <string name="cancel">Отмена</string>
     <string name="ok">Разблокировать</string>
-    <string name="x1_coins">50 Монет (получить мгновенно)</string>
-    <string name="x10_coins">200 Монет (доступно после подтверждения)</string>
+    <string name="x1_coins">Монет (получить мгновенно)</string>
+    <string name="x10_coins">Монет (доступно после подтверждения)</string>
     <string name="coins">Монеты</string>
     <string name="not_enough_coins">Вам не хватает монет</string>
     <string name="available_coins">Доступные монеты</string>

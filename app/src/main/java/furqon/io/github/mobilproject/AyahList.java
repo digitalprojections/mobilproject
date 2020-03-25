@@ -208,7 +208,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
                 Log.i("LOADED SURA", suraNumber + " " + suranomi);
 
-                Objects.requireNonNull(getSupportActionBar()).setTitle(suranomi);
+                getSupportActionBar().setTitle(suranomi);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
                 recyclerView = findViewById(R.id.chapter_scroll);

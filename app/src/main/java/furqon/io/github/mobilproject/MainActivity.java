@@ -54,6 +54,7 @@ import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue;
+import com.google.firebase.remoteconfig.proto.ConfigPersistence;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -135,11 +136,12 @@ public class MainActivity extends AppCompatActivity {
 
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(3600)
+                .setMinimumFetchIntervalInSeconds(50000)
                 .build();
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
 
-        //mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
+        mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
+
 
         // Initialize Firebase Auth
         //--------------------------------------------------------
@@ -242,7 +244,26 @@ public class MainActivity extends AppCompatActivity {
         CheckRC();
     }
     public void CheckRC(){
-        Log.d(TAG, mFirebaseRemoteConfig.getValue("share_reward").toString());
+
+
+        Log.d(TAG, mFirebaseRemoteConfig.getString("rewardad_multiplier") + " reward multiplier");
+        mFirebaseRemoteConfig.fetchAndActivate()
+                .addOnCompleteListener(this, new OnCompleteListener<Boolean>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Boolean> task) {
+                        if (task.isSuccessful()) {
+                            boolean updated = task.getResult();
+                            Log.d(TAG, "Config params updated: " + updated);
+                            Toast.makeText(MainActivity.this, "Fetch and activate succeeded",
+                                    Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            Toast.makeText(MainActivity.this, "Fetch failed",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        CheckRC();
+                    }
+                });
     }
 
     private void open_extraActivities() {
@@ -367,6 +388,7 @@ public class MainActivity extends AppCompatActivity {
                                     //set dummy values to disallow false invites
                                     sharedpref.getInstance().write(sharedpref.getInstance().INVITER, 1);
                                     sharedpref.getInstance().write(sharedpref.getInstance().INVITER_ID, "");
+                                    sharedPref.setFirstRun(false);
                                 }
                             }
 
@@ -385,6 +407,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         //sendConfirmationToServer("b4sGS2mH92RIv8bTJnomGzH9IDp1");
+        //CheckRC();
     }
 
     private void CheckInviterThanked() {
@@ -454,6 +477,7 @@ public class MainActivity extends AppCompatActivity {
         //checkForDynamicLink();
         // Check if user is signed in (non-null) and update UI accordingly.
         updateUI();
+
 
     }
 
