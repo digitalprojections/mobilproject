@@ -35,6 +35,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -51,6 +52,7 @@ import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
+import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue;
@@ -78,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView imageView;
     private Handler handler;
     // Try to use more data here. ANDROID_ID is a single point of attack.
-    InterstitialAd mInterstitialAd;
+    //InterstitialAd mInterstitialAd;
     private LiveData<List<NewMessages>> newMessages;
     private FirebaseAnalytics mFirebaseAnalytics;
     private RequestQueue queue;
@@ -95,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
     private String currentSignature;
     private ArrayList<JSONObject> jsonArrayResponse;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
+    private FirebaseFunctions mFunctions;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -134,9 +137,11 @@ public class MainActivity extends AppCompatActivity {
         sharedPref = sharedpref.getInstance();
         sharedPref.init(getApplicationContext());
 
+        mFunctions = FirebaseFunctions.getInstance();
+
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(50000)
+                .setMinimumFetchIntervalInSeconds(500000)
                 .build();
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
 
@@ -164,9 +169,9 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         MobileAds.initialize(this, getString(R.string.addmob_app_id));
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_fullpage));
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+//        mInterstitialAd = new InterstitialAd(this);
+//        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_fullpage));
+//        mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
         handler = new Handler();
 
@@ -254,9 +259,8 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             boolean updated = task.getResult();
                             Log.d(TAG, "Config params updated: " + updated);
-                            Toast.makeText(MainActivity.this, "Fetch and activate succeeded",
-                                    Toast.LENGTH_SHORT).show();
-
+                            //Toast.makeText(MainActivity.this, "Fetch and activate succeeded", Toast.LENGTH_SHORT).show();
+                            sharedpref.getInstance().write(sharedpref.SHAREWARD, (int) mFirebaseRemoteConfig.getLong("share_reward"));
                         } else {
                             Toast.makeText(MainActivity.this, "Fetch failed",
                                     Toast.LENGTH_SHORT).show();
@@ -334,6 +338,11 @@ public class MainActivity extends AppCompatActivity {
                     .addOnCompleteListener(this, new OnCompleteListener<ShortDynamicLink>() {
                         @Override
                         public void onComplete(@NonNull Task<ShortDynamicLink> task) {
+//                            try{
+//
+//                            }catch (ApiException apix){
+//
+//                            }
                             if (task.isSuccessful()) {
                                 // Short link created
                                 Uri shortLink = task.getResult().getShortLink();
@@ -392,6 +401,13 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
 
+                        }else{
+                            if (sharedPref.isFirstRun()) {
+                                //set dummy values to disallow false invites
+                                sharedpref.getInstance().write(sharedpref.getInstance().INVITER, 1);
+                                sharedpref.getInstance().write(sharedpref.getInstance().INVITER_ID, "");
+                                sharedPref.setFirstRun(false);
+                            }
                         }
                         // Handle the deep link. For example, open the linked
                         // content, or apply promotional credit to the user's
@@ -506,8 +522,11 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInAnonymously:success");
-                            currentUser = mAuth.getCurrentUser();
-                            updateUI();
+
+                                currentUser = mAuth.getCurrentUser();
+                                updateUI();
+
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInAnonymously:failure", task.getException());
@@ -566,7 +585,7 @@ public class MainActivity extends AppCompatActivity {
                                     //Toast.makeText(getApplicationContext(), mes, Toast.LENGTH_LONG).show();
                                 }
                                 else {
-                                    sharedPref.AddCoins(getApplicationContext(), sdate);
+                                    sharedPref.AddCoins(getApplicationContext(), (int) mFirebaseRemoteConfig.getLong("daily_visit_reward"));
                                     //String mes = new StringBuilder().append(getString(R.string.u_received)).append(String.valueOf(sdate)).append(getString(R.string._coins)).toString();
                                     Toast.makeText(getApplicationContext(), "+"+sdate, Toast.LENGTH_LONG).show();
                                 }

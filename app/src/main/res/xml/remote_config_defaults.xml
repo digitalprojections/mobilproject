@@ -3,7 +3,7 @@
 <defaultsMap>
     <entry>
         <key>share_reward</key>
-        <value>200</value>
+        <value>100</value>
     </entry>
     <entry>
         <key>ad_reward</key>
@@ -14,8 +14,8 @@
         <value>10</value>
     </entry>
     <entry>
-        <key>welcome_message</key>
-        <value>Welcome to my awesome app!</value>
+        <key>daily_visit_reward</key>
+        <value>50</value>
     </entry>
 </defaultsMap>
     <!-- END xml_defaults -->

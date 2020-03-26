@@ -23,7 +23,6 @@ import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import org.w3c.dom.Text;
 
@@ -62,11 +61,6 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
         mRewardedVideoAd = new RewardAd(this);
 
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(50000)
-                .build();
-        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
-
         mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
 
 

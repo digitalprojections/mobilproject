@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
@@ -29,6 +30,8 @@ import java.util.List;
 public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahListViewHolder> {
     private static final String TAG = "AYAHLISTADAPTER";
     private final sharedpref sharedPref;
+    private final Animation ayah_close_anim;
+    private final Animation ayah_open_anim;
     private Context mContext;
     //private Cursor mCursor;
     private ArrayList<String> mArrayList;
@@ -77,6 +80,10 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
         ssb = new SpannableStringBuilder();
         ssb.clear();
+
+        ayah_open_anim = AnimationUtils.loadAnimation(mContext, R.anim.fab_open);
+        ayah_close_anim = AnimationUtils.loadAnimation(mContext, R.anim.fab_close);
+
 
     }
 
@@ -167,7 +174,9 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             //arabic_ayah_number.setBackgroundResource(ic_ayahsymbolayahsymbol);
 
             arabic_ayah_number.setGravity(Gravity.CENTER);
-            arabic_text.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                arabic_text.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
+            }
 
             if (arabic_text.getParent() != null) {
                 ((ViewGroup) arabic_text.getParent()).removeView(arabic_text);
@@ -205,7 +214,8 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             actions_lin_layout.addView(share_button);
             actions_lin_layout.addView(book_button);
             actions_lin_layout.addView(fav_button);
-            actions_lin_layout.setVisibility(View.GONE);
+            //actions_lin_layout.setVisibility(View.GONE);
+            actions_lin_layout.setScaleY(0);
         }
 
 
@@ -218,8 +228,12 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             //book_button = view;
             book_button.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
 
-            if (actions_lin_layout.getVisibility() == View.GONE) {
-                actions_lin_layout.setVisibility(View.VISIBLE);
+
+
+            if (actions_lin_layout.getScaleY()==0) {
+                //actions_lin_layout.setVisibility(View.VISIBLE);
+                actions_lin_layout.setScaleY(1);
+                actions_lin_layout.setAnimation(ayah_open_anim);
                 ayah_txt_uz = String.valueOf(ayah_text_uz.getText());
                 ayah_position = sharedPref.read("xatchup" + chaptername, 0);
                 if (ayah_position == Integer.parseInt(verse_number)) {
@@ -231,7 +245,9 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
                 //Log.d("verse number", verse_number + " " + ayah_position);
             } else {
-                actions_lin_layout.setVisibility(View.GONE);
+                actions_lin_layout.setAnimation(ayah_close_anim);
+                //actions_lin_layout.setVisibility(View.GONE);
+                actions_lin_layout.setScaleY(0);
             }
 
         }

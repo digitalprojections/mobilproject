@@ -107,6 +107,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         database = ChapterTitleDatabase.getDatabase(this);
         database.SaveMessage(s);
+
+        if(s.getData().size()>0){
+            if(s.getData().get("title").equals("Thanks for sharing!")){
+                int existingCoins = sharedpref.getInstance().read(sharedpref.getInstance().COINS, 0);
+                int totalCoins = existingCoins + sharedpref.getInstance().read(sharedpref.getInstance().SHAREWARD, 50);
+                sharedpref.getInstance().write(sharedpref.getInstance().COINS, totalCoins);
+            }
+        }
     }
     private void sendNotification(String messageBody) {
 
