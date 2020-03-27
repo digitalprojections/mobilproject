@@ -66,7 +66,6 @@
     <string name="next_ayah">next ayah</string>
     <string name="failed_to_load_ayah">Failed to load ayah. Try again</string>
     <string name="failure_generic">An error has occurred, try again later</string>
-    <string name="download_audio_description">There are many ways to earn coins: using daily, sharing to fiends or watching rewarded ads</string>
     <string name="downloadaudio_title">Download Audio</string>
     <string name="messages_button_text">Messages</string>
     <string name="notification_from_author_channel" translatable="false">Muallifdan</string>
@@ -97,4 +96,8 @@
     <string name="required_coins">Required</string>
     <string name="u_received">"You have received "</string>
     <string name="_coins">" coins"</string>
+    <string name="download_audio_description">There are many ways to earn coins: <br />using daily, <br />sharing to fiends <br />or watching rewarded ads</string>
+    <string name="free_coin_awards">Use actively and get coins</string>
+    <string name="best_user_awards">Best User Awards</string>
+    <string name="chat_btn_title">Chat</string>
 </resources>

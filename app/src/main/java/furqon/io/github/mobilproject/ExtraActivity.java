@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import java.util.List;
 import java.util.Objects;
@@ -35,9 +36,10 @@ public class ExtraActivity extends AppCompatActivity {
     Button youtube_but;
     Button rate_but;
     Button message_but;
+    Button chat_but;
     TextView nbadge;
     private AdView mAdView;
-    InterstitialAd mInterstitialAd;
+
     Button coins_but;
 
     private Animation scaler;
@@ -78,6 +80,8 @@ public class ExtraActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        final FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+
         favourite_but = findViewById(R.id.favouritebut);
         search_but = findViewById(R.id.searchbtn);
         youtube_but = findViewById(R.id.youtubebut);
@@ -100,7 +104,7 @@ public class ExtraActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("https://www.youtube.com/watch?v=Cj7CLGGgRao"));
+                intent.setData(Uri.parse(mFirebaseRemoteConfig.getString("youtube_video")));
                 if (intent.resolveActivity(getPackageManager()) != null) {
                     startActivity(intent);
                 }
@@ -163,12 +167,22 @@ public class ExtraActivity extends AppCompatActivity {
 
         nbadge = findViewById(R.id.numeric_badge_txt);
         nbadge.bringToFront();
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+        chat_but = findViewById(R.id.chat_button);
+        chat_but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                open_chatroom();
+            }
+        });
+
         mAdView = findViewById(R.id.adViewExtra);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+    }
+
+    private void open_chatroom() {
+        Toast.makeText(getApplicationContext(), R.string.coming_soon, Toast.LENGTH_SHORT).show();
     }
 
     private void open_earn_coins() {
@@ -200,6 +214,6 @@ public class ExtraActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mInterstitialAd.show();
+        //mInterstitialAd.show();
     }
 }

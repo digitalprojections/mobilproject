@@ -58,7 +58,8 @@
             android:singleLine="false"
             android:text="TextView"
             android:textColor="#DCE775"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            tools:text="@string/download_audio_description" />
 
     </LinearLayout>
 

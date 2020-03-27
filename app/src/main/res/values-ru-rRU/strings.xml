@@ -93,4 +93,6 @@
     <string name="required_coins">Необходимо</string>
     <string name="u_received">"Вы получили "</string>
     <string name="_coins">" монет"</string>
+    <string name="free_coin_awards">Используй активно и получай монеты</string>
+    <string name="best_user_awards">Награды за лучший пользователь</string>
 </resources>

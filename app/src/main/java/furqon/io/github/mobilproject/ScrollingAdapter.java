@@ -30,14 +30,14 @@ public class ScrollingAdapter extends PagerAdapter {
     ScrollingAdapter(Context context){
         this.context = context;
         descriptionText = new String[]{
-                this.context.getString(R.string.furqan_definition), this.context.getString(R.string.download_audio_description),
+                this.context.getString(R.string.furqan_definition), this.context.getString(R.string.download_audio_description), context.getString(R.string.free_coin_awards),
                 this.context.getString(R.string.desc_ayah_of_the_day), this.context.getString(R.string.desc_comments), this.context.getString(R.string.desc_audio_seperate)
         };
         titles = new String[]{
-          context.getString(R.string.app_name),context.getString(R.string.coins), context.getString(R.string.title_daily_ayah), context.getString(R.string.title_color_comments), context.getString(R.string.title_separate_audio)
+          context.getString(R.string.app_name),context.getString(R.string.coins), context.getString(R.string.best_user_awards), context.getString(R.string.title_daily_ayah), context.getString(R.string.title_color_comments), context.getString(R.string.title_separate_audio)
         };
         images = new int[]{
-                R.mipmap.ic_launcher2_round, R.mipmap.gold_coin,0,0,0
+                R.mipmap.ic_launcher2_round, R.mipmap.gold_coin, R.mipmap.gold_coin, R.mipmap.random,R.mipmap.rangli_comment,R.mipmap.sound_wave
         };
 
 

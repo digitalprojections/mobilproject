@@ -57,7 +57,7 @@ public abstract class ChapterTitleDatabase extends RoomDatabase {
 
     //Message data sent directly to the app by token
     public static void SaveMessage(RemoteMessage s){
-        MessageTable mt;
+        MessageTable mt = null;
         try{
             //String time = DateFormat.getDateTimeInstance().format(new Date(0));
 //            String time;
@@ -65,8 +65,13 @@ public abstract class ChapterTitleDatabase extends RoomDatabase {
 //            Log.e("IN DATABASE", currentTime.toString());
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
             String currentDateandTime = sdf.format(new Date());
-            mt = new MessageTable(s.getNotification().getTitle(), s.getNotification().getBody(), currentDateandTime);
-            new InsertMessageAsyncTask(INSTANCE).execute(mt);
+            if(s.getNotification()!=null)
+                mt = new MessageTable(s.getNotification().getTitle(), s.getNotification().getBody(), currentDateandTime);
+            else if(s.getData()!=null)
+                mt = new MessageTable(s.getData().get("title"), s.getData().get("body"), currentDateandTime);
+
+            if(mt!=null)
+                new InsertMessageAsyncTask(INSTANCE).execute(mt);
         }catch (Exception x){
             mt = new MessageTable(s.getNotification().getTitle(), s.getNotification().getBody(), "");
             new InsertMessageAsyncTask(INSTANCE).execute(mt);

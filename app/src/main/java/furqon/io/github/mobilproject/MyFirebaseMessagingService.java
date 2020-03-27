@@ -95,26 +95,45 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
-        sendRegistrationToServer(token);
+        //sendRegistrationToServer(token);
     }
 
     private void scheduleJob(){
 
     }
     private void handleNow(RemoteMessage s){
-        Log.d(TAG, "text received: " + s);
-        sendNotification(s.getNotification().getBody());
+        Log.d(TAG, "text received: " + s.getData().get("title"));
+        if(s.getNotification()!=null){
+            sendNotification(s.getNotification().getBody());
+            database = ChapterTitleDatabase.getDatabase(this);
+            database.SaveMessage(s);
+        }else if(s.getData()!=null){
+            sendNotification(s.getData().get("body"));
+            if(s.getData().size()>0){
+                try{
+                    if(s.getData().get("title").equals("Thanks for sharing!")){
+                        int existingCoins = sharedpref.getInstance().read(sharedpref.getInstance().COINS, 0);
+                        int totalCoins = existingCoins + sharedpref.getInstance().read(sharedpref.getInstance().SHAREWARD, 50);
+                        sharedpref.getInstance().write(sharedpref.getInstance().COINS, totalCoins);
+                    }
+                    else if(s.getData().get("title").equals("Personal reward")){
+                    int existingCoins = sharedpref.getInstance().read(sharedpref.getInstance().COINS, 0);
+                    int totalCoins = existingCoins + sharedpref.getInstance().read(sharedpref.getInstance().PERSONAL_REWARD, 50);
+                    sharedpref.getInstance().write(sharedpref.getInstance().COINS, totalCoins);
+                    }
+                }catch (Exception x){
+                    Log.d(TAG, "text received: " + s.getData().get("title"));
+                }
 
-        database = ChapterTitleDatabase.getDatabase(this);
-        database.SaveMessage(s);
-
-        if(s.getData().size()>0){
-            if(s.getData().get("title").equals("Thanks for sharing!")){
-                int existingCoins = sharedpref.getInstance().read(sharedpref.getInstance().COINS, 0);
-                int totalCoins = existingCoins + sharedpref.getInstance().read(sharedpref.getInstance().SHAREWARD, 50);
-                sharedpref.getInstance().write(sharedpref.getInstance().COINS, totalCoins);
             }
+            database = ChapterTitleDatabase.getDatabase(this);
+            database.SaveMessage(s);
         }
+
+
+
+
+
     }
     private void sendNotification(String messageBody) {
 
@@ -158,9 +177,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         return Furqon.NOTIFICATION_FROM_AUTHOR;
     }
 
-    private void sendRegistrationToServer(String token){
-
-
-
-    }
+//    private void sendRegistrationToServer(String token){
+//
+//
+//
+//    }
 }

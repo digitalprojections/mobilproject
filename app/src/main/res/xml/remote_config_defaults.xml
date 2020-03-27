@@ -17,5 +17,18 @@
         <key>daily_visit_reward</key>
         <value>50</value>
     </entry>
+    <entry>
+        <key>youtube_video</key>
+        <value>https://youtu.be/ic_T8ynrDXI</value>
+    </entry>
+    <entry>
+        <key>personal_reward</key>
+        <value>500</value>
+    </entry>
+    <entry>
+        <key>author_token</key>
+        <value></value>
+    </entry>
+
 </defaultsMap>
     <!-- END xml_defaults -->

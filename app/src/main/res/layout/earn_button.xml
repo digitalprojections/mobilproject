@@ -27,7 +27,6 @@
         android:background="@drawable/coin"
         android:drawingCacheQuality="high"
         android:elevation="100dp"
-        android:fontFamily="monospace"
         android:gravity="center"
         android:linksClickable="false"
         android:maxLines="1"

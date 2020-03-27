@@ -79,9 +79,9 @@
             android:parentActivityName=".ExtraActivity"/>
         <activity
             android:name=".SuraNameList"
-            android:launchMode="singleTask"
+            android:launchMode="singleInstance"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".MainActivity" android:launchMode="singleTask">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

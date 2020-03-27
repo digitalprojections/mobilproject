@@ -93,4 +93,6 @@
     <string name="required_coins">Qiymati</string>
     <string name="u_received">"Siz "</string>
     <string name="_coins">" tanga oldingiz"</string>
+    <string name="free_coin_awards">Faol foydalaning va tangalarni oling</string>
+    <string name="best_user_awards">Eng yaxshi foydalanuvchi mukofotlari</string>
 </resources>

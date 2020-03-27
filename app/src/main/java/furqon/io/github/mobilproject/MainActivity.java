@@ -32,10 +32,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -55,8 +52,6 @@ import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue;
-import com.google.firebase.remoteconfig.proto.ConfigPersistence;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -91,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_INVITE = 0;
     private static final String DEEP_LINK_URL = "https://furqon.page.link/ThB2";
     Uri deepLink;
-    private sharedpref sharedPref;
+    private sharedpref mSharedPref;
     private boolean randomayahshown;
     private String token;
     private String currentSignature;
@@ -134,8 +129,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
 
-        sharedPref = sharedpref.getInstance();
-        sharedPref.init(getApplicationContext());
+        mSharedPref = sharedpref.getInstance();
+        mSharedPref.init(getApplicationContext());
 
         mFunctions = FirebaseFunctions.getInstance();
 
@@ -156,12 +151,14 @@ public class MainActivity extends AppCompatActivity {
 
         Fabric.with(this, new Crashlytics());
         Crashlytics.log("Activity created");
-        if (!sharedPref.read(sharedPref.TOKEN, "").isEmpty()) {
-            token = sharedPref.read(sharedPref.TOKEN, "");
+        if (!mSharedPref.read(mSharedPref.TOKEN, "").isEmpty()) {
+            token = mSharedPref.read(mSharedPref.TOKEN, "");
             Log.d(TAG, "TOKEN RESTORED:" + token);
 
         } else {
-            token = sharedPref.read(sharedPref.TOKEN, "");
+
+            token = null;
+
             Log.d(TAG, "TOKEN MISSING, RENEW");
 
         }
@@ -207,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if (sharedPref.contains(sharedPref.XATCHUP)) {
+        if (mSharedPref.contains(mSharedPref.XATCHUP)) {
             davomi_but.setVisibility(View.VISIBLE);
         } else {
             davomi_but.setVisibility(View.GONE);
@@ -225,14 +222,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Create a deep link and display it in the UI
-        deepLink = buildDeepLink(Uri.parse(DEEP_LINK_URL), 0);
+        if(deepLink==null){
+            deepLink = buildDeepLink(Uri.parse(DEEP_LINK_URL), 0);
+        }
 
-        if (sharedPref.isFirstRun()) {
+
+        if (mSharedPref.isFirstRun()) {
             Intent intent = new Intent(this, ScrollingActivity.class);
             startActivity(intent);
 
         } else {
-            if (sharedPref.getDefaults("random_ayah_sw") && !randomayahshown) {
+            if (mSharedPref.getDefaults("random_ayah_sw") && !randomayahshown) {
                 ayahOfTheDay();
                 randomayahshown = true;
             }
@@ -246,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
         String appLinkAction = appLinkIntent.getAction();
         Uri appLinkData = appLinkIntent.getData();
 
-        CheckRC();
+
     }
     public void CheckRC(){
 
@@ -261,11 +261,13 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, "Config params updated: " + updated);
                             //Toast.makeText(MainActivity.this, "Fetch and activate succeeded", Toast.LENGTH_SHORT).show();
                             sharedpref.getInstance().write(sharedpref.SHAREWARD, (int) mFirebaseRemoteConfig.getLong("share_reward"));
+                            sharedpref.getInstance().write(sharedpref.PERSONAL_REWARD, (int) mFirebaseRemoteConfig.getLong("personal_reward"));
+
                         } else {
                             Toast.makeText(MainActivity.this, "Fetch failed",
                                     Toast.LENGTH_SHORT).show();
                         }
-                        CheckRC();
+                        //CheckRC();
                     }
                 });
     }
@@ -295,6 +297,12 @@ public class MainActivity extends AppCompatActivity {
         if(currentUser!=null){
             Log.i(TAG, "CURRENT USER ID " + currentUser.getUid());
             //userId=currentUser.getUid()
+            if(!mSharedPref.read(sharedpref.CREDS_ALREADY_SENT, false)){
+                mSharedPref.write(sharedpref.USERID, currentUser.getUid());
+                checkAppSignature(this);            }
+
+        }else{
+            signInAnonymously();
         }
         // Set dynamic link parameters:
         //  * URI prefix (required)
@@ -393,20 +401,20 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }else{
                                 Log.i(TAG, "Can not use the dlink");
-                                if (sharedPref.isFirstRun()) {
+                                if (mSharedPref.isFirstRun()) {
                                     //set dummy values to disallow false invites
                                     sharedpref.getInstance().write(sharedpref.getInstance().INVITER, 1);
                                     sharedpref.getInstance().write(sharedpref.getInstance().INVITER_ID, "");
-                                    sharedPref.setFirstRun(false);
+                                    mSharedPref.setFirstRun(false);
                                 }
                             }
 
                         }else{
-                            if (sharedPref.isFirstRun()) {
+                            if (mSharedPref.isFirstRun()) {
                                 //set dummy values to disallow false invites
                                 sharedpref.getInstance().write(sharedpref.getInstance().INVITER, 1);
                                 sharedpref.getInstance().write(sharedpref.getInstance().INVITER_ID, "");
-                                sharedPref.setFirstRun(false);
+                                mSharedPref.setFirstRun(false);
                             }
                         }
                         // Handle the deep link. For example, open the linked
@@ -429,7 +437,7 @@ public class MainActivity extends AppCompatActivity {
     private void CheckInviterThanked() {
         if(sharedpref.getInstance().read(sharedpref.getInstance().INVITER, 0)==0)
         {
-            String inviter_id = sharedPref.getInstance().read(sharedPref.getInstance().INVITER_ID, "");
+            String inviter_id = mSharedPref.getInstance().read(mSharedPref.getInstance().INVITER_ID, "");
             if(!inviter_id.isEmpty()){
                 sendConfirmationToServer(inviter_id);
             }
@@ -455,14 +463,14 @@ public class MainActivity extends AppCompatActivity {
                         //Log.i("APP SIGNATURE STORED?", response);
                         if (response.contains("confirmation")) {
                             Log.i(  TAG,"Invitation " + response);
-                            sharedPref.AddCoins(getApplicationContext(), 200);
+                            mSharedPref.AddCoins(getApplicationContext(), 200);
 
-                            sharedPref.getInstance().write(sharedPref.getInstance().INVITER, 1);
+                            mSharedPref.getInstance().write(mSharedPref.getInstance().INVITER, 1);
 
                         }else{
                             Log.i(  TAG,"Invitation failed " + response);
                             //failed, save for future
-                            sharedPref.getInstance().write(sharedPref.getInstance().INVITER_ID, inviter_id);
+                            mSharedPref.getInstance().write(mSharedPref.getInstance().INVITER_ID, inviter_id);
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -492,9 +500,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         //checkForDynamicLink();
         // Check if user is signed in (non-null) and update UI accordingly.
-        updateUI();
-
-
+        //updateUI();
     }
 
     private void updateUI() {
@@ -502,10 +508,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Status text
         if (isSignedIn) {
-            Log.i(TAG, "FIREBASE AUTH " + currentUser.getUid());
-            sharedpref.getInstance().write(sharedPref.USERID, currentUser.getUid());
-
-            checkAppSignature(this);
+            Log.i(TAG, "SIGNED IN. FIREBASE AUTH " + currentUser.getUid());
             //sendRegistrationToServer();
         } else {
             signInAnonymously();
@@ -513,6 +516,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
     private void signInAnonymously() {
+        mSharedPref.write(sharedpref.RANDOM_AYAH_SEEN, false);
         //showProgressBar();
         // [START signin_anonymously]
         mAuth.signInAnonymously()
@@ -546,7 +550,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (sharedPref.contains(sharedPref.XATCHUP)) {
+        if (mSharedPref.contains(mSharedPref.XATCHUP)) {
             davomi_but.setVisibility(View.VISIBLE);
         }else{
             davomi_but.setVisibility(View.GONE);
@@ -585,7 +589,7 @@ public class MainActivity extends AppCompatActivity {
                                     //Toast.makeText(getApplicationContext(), mes, Toast.LENGTH_LONG).show();
                                 }
                                 else {
-                                    sharedPref.AddCoins(getApplicationContext(), (int) mFirebaseRemoteConfig.getLong("daily_visit_reward"));
+                                    mSharedPref.AddCoins(getApplicationContext(), (int) mFirebaseRemoteConfig.getLong("daily_visit_reward"));
                                     //String mes = new StringBuilder().append(getString(R.string.u_received)).append(String.valueOf(sdate)).append(getString(R.string._coins)).toString();
                                     Toast.makeText(getApplicationContext(), "+"+sdate, Toast.LENGTH_LONG).show();
                                 }
@@ -597,7 +601,11 @@ public class MainActivity extends AppCompatActivity {
                         catch (IndexOutOfBoundsException iobx){
                             Log.d(TAG, "JSON " + iobx);
                         }
+                        CheckRC();
                         checkForDynamicLink();
+
+                        //successfully saved creds. Mark the app launch to get rid of redundant requests
+                        mSharedPref.write(mSharedPref.CREDS_ALREADY_SENT, true);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -616,7 +624,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         };
-        if(token!=null && currentUser!=null){
+        if(token!=null && currentUser!=null && currentSignature!=null){
             queue.add(stringRequest);
             //Toast.makeText(this, "Initiation", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "sending creds");
@@ -737,8 +745,8 @@ public class MainActivity extends AppCompatActivity {
 
     //TODO ClassCastException fixed???
     private void continueReading() {
-        if (sharedPref.contains(sharedPref.XATCHUP)) {
-            String xatchup = sharedPref.read(sharedPref.XATCHUP, "");
+        if (mSharedPref.contains(mSharedPref.XATCHUP)) {
+            String xatchup = mSharedPref.read(mSharedPref.XATCHUP, "");
             if (xatchup.length() > 0) {
                 Log.i("XATCHUP", xatchup);
                 Intent intent;
@@ -770,8 +778,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void ayahOfTheDay() {
-        Intent intent = new Intent(this, AyahOfTheDay.class);
-        startActivity(intent);
+        if(!mSharedPref.read(sharedpref.RANDOM_AYAH_SEEN, false)){
+            Intent intent = new Intent(this, AyahOfTheDay.class);
+            startActivity(intent);
+
+            mSharedPref.write(sharedpref.RANDOM_AYAH_SEEN, true);
+        }
+
 
     }
 

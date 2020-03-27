@@ -16,6 +16,9 @@ public class sharedpref
     public static final String INVITER = "INVITER";
     public static final String INVITER_ID = "INVITER_ID";
     public static final String SHAREWARD = "SHAREREWARD";
+    public static final String CREDS_ALREADY_SENT = "CREDSENT";
+    public static final String RANDOM_AYAH_SEEN = "SEEN";
+    public static final String PERSONAL_REWARD = "PERSONALREWARD";
     private Context mContext;
     private static final String TRACKS = "TRACKS";
     private static SharedPreferences mSharedPref;

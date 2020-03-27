@@ -58,7 +58,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     private Button revelation_order_btn;
     private String suranomer = "";
     private RecyclerView recyclerView;
-    private InterstitialAd mInterstitialAd;
+    //private InterstitialAd mInterstitialAd;
     private sharedpref sharedPref;
     private ArrayList<String> trackList;
     private TitleViewModel titleViewModel;
@@ -100,7 +100,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sura_name_list);
-
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
 
 
@@ -254,9 +254,9 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         LoadTheList();
 
         MobileAds.initialize(this, getString(R.string.addmob_app_id));
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_fullpage));
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+//        mInterstitialAd = new InterstitialAd(this);
+//        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_fullpage));
+//        mInterstitialAd.loadAd(new AdRequest.Builder().build());
         quranic_order_btn.setClickable(true);
         revelation_order_btn.setClickable(true);
 
@@ -333,7 +333,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     protected void onDestroy() {
         //mRewardedVideoAd.destroy(this);
         super.onDestroy();
-        mInterstitialAd.show();
+        //mInterstitialAd.show();
 //        if(mDatabase!=null) {
 //            mDatabase.close();
 //        }

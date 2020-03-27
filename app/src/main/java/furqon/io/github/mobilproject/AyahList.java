@@ -66,6 +66,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -141,7 +143,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     private int available_coins;
     private int currentStatus;
 
-
+    InterstitialAd mInterstitialAd;
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -152,7 +154,9 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chapter_view);
-
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
         tempbut = findViewById(R.id.buttonReload);
         tempbut.setVisibility(View.INVISIBLE);
@@ -183,7 +187,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
         Toolbar toolbar = findViewById(R.id.audiobar);
         setSupportActionBar(toolbar);
-
+        // Get a support ActionBar corresponding to this toolbar and enable the Up button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
 
@@ -309,8 +314,10 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                     }
                 };
                 queue.add(stringRequest);
+
                 tempbut.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
+                mInterstitialAd.show();
             }
             void populateAyahList(ArrayList<JSONObject> auclist){
 

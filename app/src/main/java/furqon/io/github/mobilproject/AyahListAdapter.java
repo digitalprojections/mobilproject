@@ -30,8 +30,8 @@ import java.util.List;
 public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahListViewHolder> {
     private static final String TAG = "AYAHLISTADAPTER";
     private final sharedpref sharedPref;
-    private final Animation ayah_close_anim;
-    private final Animation ayah_open_anim;
+    //private final Animation ayah_close_anim;
+    //private final Animation ayah_open_anim;
     private Context mContext;
     //private Cursor mCursor;
     private ArrayList<String> mArrayList;
@@ -81,8 +81,8 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         ssb = new SpannableStringBuilder();
         ssb.clear();
 
-        ayah_open_anim = AnimationUtils.loadAnimation(mContext, R.anim.fab_open);
-        ayah_close_anim = AnimationUtils.loadAnimation(mContext, R.anim.fab_close);
+        //ayah_open_anim = AnimationUtils.loadAnimation(mContext, R.anim.fab_open);
+        //ayah_close_anim = AnimationUtils.loadAnimation(mContext, R.anim.fab_close);
 
 
     }
@@ -214,7 +214,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             actions_lin_layout.addView(share_button);
             actions_lin_layout.addView(book_button);
             actions_lin_layout.addView(fav_button);
-            //actions_lin_layout.setVisibility(View.GONE);
+            actions_lin_layout.setVisibility(View.GONE);
             actions_lin_layout.setScaleY(0);
         }
 
@@ -230,10 +230,10 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
 
 
-            if (actions_lin_layout.getScaleY()==0) {
-                //actions_lin_layout.setVisibility(View.VISIBLE);
+            if (actions_lin_layout.getVisibility()==View.GONE) {
+                actions_lin_layout.setVisibility(View.VISIBLE);
                 actions_lin_layout.setScaleY(1);
-                actions_lin_layout.setAnimation(ayah_open_anim);
+                //actions_lin_layout.setAnimation(ayah_open_anim);
                 ayah_txt_uz = String.valueOf(ayah_text_uz.getText());
                 ayah_position = sharedPref.read("xatchup" + chaptername, 0);
                 if (ayah_position == Integer.parseInt(verse_number)) {
@@ -245,8 +245,8 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
                 //Log.d("verse number", verse_number + " " + ayah_position);
             } else {
-                actions_lin_layout.setAnimation(ayah_close_anim);
-                //actions_lin_layout.setVisibility(View.GONE);
+                //actions_lin_layout.setAnimation(ayah_close_anim);
+                actions_lin_layout.setVisibility(View.GONE);
                 actions_lin_layout.setScaleY(0);
             }
 
