@@ -4,13 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.app.usage.NetworkStats;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -18,15 +16,12 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-
-import org.w3c.dom.Text;
-
-import java.util.Objects;
 
 public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins {
 
@@ -38,7 +33,7 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
     private TextView share_txt;
 
     private static final String DEEP_LINK_URL = "https://furqon.page.link/ThB2";
-    private sharedpref sharedPref;
+    private sharedpref mSharedPref;
     Uri deepLink;
     String userid;
     private RewardAd mRewardedVideoAd;
@@ -56,8 +51,8 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
         getSupportActionBar().setTitle(title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        sharedPref = sharedpref.getInstance();
-        sharedPref.init(getApplicationContext());
+        mSharedPref = sharedpref.getInstance();
+        mSharedPref.init(getApplicationContext());
         mRewardedVideoAd = new RewardAd(this);
 
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
@@ -75,8 +70,8 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
         watchAds_btn = findViewById(R.id.WatchAdsImageButton);
         //watchAds_btn.setEnabled(false);
 
-        rewardad_txt.setText(mFirebaseRemoteConfig.getString("ad_reward") + " " + getText(R.string.x1_coins));
-        share_txt.setText(mFirebaseRemoteConfig.getString("share_reward") + " " + getText(R.string.x10_coins));
+        rewardad_txt.setText(mFirebaseRemoteConfig.getString("ad_reward") + " " + getText(R.string.coins));
+        share_txt.setText(mFirebaseRemoteConfig.getString("share_reward") + " " + getText(R.string.coins));
 
         share_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,6 +79,8 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
                 shareDeepLink();
             }
         });
+
+        //Snackbar.make(share_btn, "Earn Coins", BaseTransientBottomBar.LENGTH_INDEFINITE).show();
 
         watchAds_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,13 +112,24 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
             watchAds_btn.setEnabled(true);
         }
         if(coins_txt!=null){
-            String mycoins = String.valueOf(sharedPref.read(sharedPref.COINS, 0));
+            if (!mSharedPref.read(mSharedPref.INITIAL_COINS_USED, false)) {
+                mSharedPref.write(mSharedPref.COINS, mSharedPref.read(mSharedPref.INITIAL_COINS, 0));
+                mSharedPref.write(mSharedPref.INITIAL_COINS_USED, true);
+            }
+            String mycoins = String.valueOf(mSharedPref.read(mSharedPref.COINS, 0));
+
             coins_txt.setText(mycoins);
         }else{
+            if (!mSharedPref.read(mSharedPref.INITIAL_COINS_USED, false)) {
+                mSharedPref.write(mSharedPref.COINS, mSharedPref.read(mSharedPref.INITIAL_COINS, 0));
+                mSharedPref.write(mSharedPref.INITIAL_COINS_USED, true);
+            }
             TextView coins_txt = findViewById(R.id.coins_count_txt);
-            String mycoins = String.valueOf(sharedPref.read(sharedPref.COINS, 0));
+            String mycoins = String.valueOf(mSharedPref.read(mSharedPref.COINS, 0));
             coins_txt.setText(mycoins);
         }
+
+        Log.d("COINS", mSharedPref.read(mSharedPref.INITIAL_COINS_USED, false) + " " + mSharedPref.read(mSharedPref.INITIAL_COINS, 0));
 
     }
 
@@ -145,7 +153,7 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
     public Uri buildDeepLink(Uri dl, int version) {
         String uriPrefix = "furqon.page.link";
 
-        userid = sharedPref.read(sharedPref.USERID, null);
+        userid = mSharedPref.read(mSharedPref.USERID, null);
 
         // Set dynamic link parameters:
         //  * URI prefix (required)

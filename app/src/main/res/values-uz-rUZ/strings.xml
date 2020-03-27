@@ -68,7 +68,7 @@
     <string name="messages_button_text">Xabarlar</string>
     <string name="audio_player_title">Mediapleer Furqan</string>
     <string name="surah_size_issue">Bo\'lim matni xatolar bilan yuklab olindi. Shu sura matnini qayta yuklab oling</string>
-    <string name="youtube_btn_title">Youtube</string>
+    <string name="youtube_btn_title">Qanday ishlatish</string>
     <string name="please_watch_video">Ovoz faylini tinglashdan oldin, avval uni yuklab olishingiz kerak. Ilovani ulashish yoki video reklamalarni tomosha qilish orqali tanga ishlang</string>
     <string name="audio_download">Ovozni yuklab olish tartibi</string>
     <string name="earn_coins">Tangani qo`lga kiritish</string>
@@ -86,8 +86,6 @@
     <string name="cancel">Bekor qilish</string>
     <string name="ok">Qulfni ochish</string>
     <string name="coins">Tanga</string>
-    <string name="x1_coins">Tanga (bir zumda beriladi)</string>
-    <string name="x10_coins">Tanga (tasdiqlangach beriladi)</string>
     <string name="not_enough_coins">Tangalar yetishmayapti</string>
     <string name="available_coins">Mavjud Tangalar</string>
     <string name="required_coins">Qiymati</string>
@@ -95,4 +93,5 @@
     <string name="_coins">" tanga oldingiz"</string>
     <string name="free_coin_awards">Faol foydalaning va tangalarni oling</string>
     <string name="best_user_awards">Eng yaxshi foydalanuvchi mukofotlari</string>
+    <string name="chat_btn_title">Muloqot</string>
 </resources>

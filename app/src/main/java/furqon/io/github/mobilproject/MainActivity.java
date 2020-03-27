@@ -262,7 +262,8 @@ public class MainActivity extends AppCompatActivity {
                             //Toast.makeText(MainActivity.this, "Fetch and activate succeeded", Toast.LENGTH_SHORT).show();
                             sharedpref.getInstance().write(sharedpref.SHAREWARD, (int) mFirebaseRemoteConfig.getLong("share_reward"));
                             sharedpref.getInstance().write(sharedpref.PERSONAL_REWARD, (int) mFirebaseRemoteConfig.getLong("personal_reward"));
-
+                            sharedpref.getInstance().write(sharedpref.INITIAL_COINS, (int) mFirebaseRemoteConfig.getLong("initial_coins"));
+                            Log.d("COINS", mSharedPref.read(mSharedPref.INITIAL_COINS_USED, false) + " " + mSharedPref.read(mSharedPref.INITIAL_COINS, 0));
                         } else {
                             Toast.makeText(MainActivity.this, "Fetch failed",
                                     Toast.LENGTH_SHORT).show();

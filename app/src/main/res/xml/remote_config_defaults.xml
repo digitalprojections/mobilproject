@@ -23,12 +23,17 @@
     </entry>
     <entry>
         <key>personal_reward</key>
-        <value>500</value>
+        <value>200</value>
     </entry>
     <entry>
         <key>author_token</key>
         <value></value>
     </entry>
+    <entry>
+        <key>initial_coins</key>
+        <value>100</value>
+    </entry>
+
 
 </defaultsMap>
     <!-- END xml_defaults -->

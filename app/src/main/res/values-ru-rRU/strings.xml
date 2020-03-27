@@ -68,7 +68,7 @@
     <string name="messages_button_text">Сообщения</string>
     <string name="audio_player_title">Аудиоплеер Фуркан</string>
     <string name="surah_size_issue">Текст главы был загружен с ошибками. Пытаясь исправить</string>
-    <string name="youtube_btn_title">Youtube</string>
+    <string name="youtube_btn_title">Как пользоваться</string>
     <string name="please_watch_video">Прежде чем вы сможете прослушать аудиофайл, вам необходимо сначала загрузить его. Зарабатывайте монеты, поделившись приложением или просмотрев видеообъявления</string>
     <string name="audio_download">Скачать аудио</string>
     <string name="earn_coins">Заработать монеты</string>
@@ -85,8 +85,6 @@
     <string name="use_coins">Использовать монету</string>
     <string name="cancel">Отмена</string>
     <string name="ok">Разблокировать</string>
-    <string name="x1_coins">Монет (получить мгновенно)</string>
-    <string name="x10_coins">Монет (доступно после подтверждения)</string>
     <string name="coins">Монеты</string>
     <string name="not_enough_coins">Вам не хватает монет</string>
     <string name="available_coins">Доступные монеты</string>
@@ -95,4 +93,5 @@
     <string name="_coins">" монет"</string>
     <string name="free_coin_awards">Используй активно и получай монеты</string>
     <string name="best_user_awards">Награды за лучший пользователь</string>
+    <string name="chat_btn_title">связь</string>
 </resources>
