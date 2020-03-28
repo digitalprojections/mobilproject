@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -37,6 +38,15 @@ public class MessageList extends AppCompatActivity {
         getSupportActionBar().setTitle(title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        Intent incoming_intent = getIntent();
+        int reward_coins = incoming_intent.getIntExtra("personalReward", 0);
+
+        if (reward_coins > 0) {
+            int existingCoins = sharedpref.getInstance().read(sharedpref.getInstance().COINS, 0);
+            int totalCoins = existingCoins + sharedpref.getInstance().read(sharedpref.PERSONAL_REWARD, 50);
+            sharedpref.getInstance().write(sharedpref.getInstance().COINS, totalCoins);
+            Toast.makeText(this, R.string.free_coin_awards_received, Toast.LENGTH_SHORT).show();
+        }
 
         recyclerView = findViewById(R.id.message_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -51,7 +61,7 @@ public class MessageList extends AppCompatActivity {
                 Log.e("MESSAGETABLE", messageTables.size() + " long");
                 if(messageTables.size()>0){
                     listAdapter.setItems(messageTables);
-
+                    recyclerView.scheduleLayoutAnimation();
                 }
 
             }

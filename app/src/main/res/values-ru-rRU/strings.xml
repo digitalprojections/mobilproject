@@ -94,4 +94,6 @@
     <string name="free_coin_awards">Используй активно и получай монеты</string>
     <string name="best_user_awards">Награды за лучший пользователь</string>
     <string name="chat_btn_title">связь</string>
+    <string name="free_coin_awards_received">Спасибо за ваши усилия. Вы получили бесплатные монеты!</string>
+    <string name="welcome_title">Добро пожаловать!</string>
 </resources>

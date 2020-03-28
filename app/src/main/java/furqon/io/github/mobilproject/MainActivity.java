@@ -1,16 +1,9 @@
 package furqon.io.github.mobilproject;
-
-
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,52 +16,29 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.LiveData;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.appindexing.Action;
 import com.google.firebase.appindexing.FirebaseUserActions;
 import com.google.firebase.appindexing.builders.Actions;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
-import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
-import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Locale;
 
 import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity {
-    private FirebaseAuth mAuth;
-    FirebaseUser currentUser;
+    Uri deepLink;
     Button suralar_but;
     Button extra_btn;
     Button davomi_but;
@@ -76,24 +46,15 @@ public class MainActivity extends AppCompatActivity {
     private Handler handler;
     // Try to use more data here. ANDROID_ID is a single point of attack.
     //InterstitialAd mInterstitialAd;
-    private LiveData<List<NewMessages>> newMessages;
     private FirebaseAnalytics mFirebaseAnalytics;
-    private RequestQueue queue;
-    private String shash;
-    private static final int VALID = 0;
-    private static final int INVALID = 1;
     private static final String TAG = "MAIN ACTIVITY";
-    private static final int REQUEST_INVITE = 0;
     private static final String DEEP_LINK_URL = "https://furqon.page.link/ThB2";
-    Uri deepLink;
     private sharedpref mSharedPref;
     private boolean randomayahshown;
-    private String token;
-    private String currentSignature;
-    private ArrayList<JSONObject> jsonArrayResponse;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private FirebaseFunctions mFunctions;
-
+    private FirebaseAuth mAuth;
+    FirebaseUser currentUser;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -130,45 +91,19 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mSharedPref = sharedpref.getInstance();
-        mSharedPref.init(getApplicationContext());
+
 
         mFunctions = FirebaseFunctions.getInstance();
-
-        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(500000)
-                .build();
-        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
-
-        mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
-
-
-        // Initialize Firebase Auth
-        //--------------------------------------------------------
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-        //========================================================
 
         Fabric.with(this, new Crashlytics());
         Crashlytics.log("Activity created");
-        if (!mSharedPref.read(mSharedPref.TOKEN, "").isEmpty()) {
-            token = mSharedPref.read(mSharedPref.TOKEN, "");
-            Log.d(TAG, "TOKEN RESTORED:" + token);
 
-        } else {
 
-            token = null;
-
-            Log.d(TAG, "TOKEN MISSING, RENEW");
-
-        }
-        updateUI();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         MobileAds.initialize(this, getString(R.string.addmob_app_id));
-//        mInterstitialAd = new InterstitialAd(this);
-//        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_fullpage));
-//        mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
         handler = new Handler();
 
@@ -220,22 +155,9 @@ public class MainActivity extends AppCompatActivity {
             Crashlytics.log(Log.ERROR, TAG, "NPE caught");
             Crashlytics.logException(e);
         }
-
-        // Create a deep link and display it in the UI
+// Create a deep link and display it in the UI
         if(deepLink==null){
             deepLink = buildDeepLink(Uri.parse(DEEP_LINK_URL), 0);
-        }
-
-
-        if (mSharedPref.isFirstRun()) {
-            Intent intent = new Intent(this, ScrollingActivity.class);
-            startActivity(intent);
-
-        } else {
-            if (mSharedPref.getDefaults("random_ayah_sw") && !randomayahshown) {
-                ayahOfTheDay();
-                randomayahshown = true;
-            }
         }
 
 //        Intent intent = new Intent(getApplicationContext(), AudioPlayerService.class);
@@ -246,32 +168,9 @@ public class MainActivity extends AppCompatActivity {
         String appLinkAction = appLinkIntent.getAction();
         Uri appLinkData = appLinkIntent.getData();
 
-
+        Log.i(TAG, Locale.getDefault().getDisplayLanguage());
     }
-    public void CheckRC(){
 
-
-        Log.d(TAG, mFirebaseRemoteConfig.getString("rewardad_multiplier") + " reward multiplier");
-        mFirebaseRemoteConfig.fetchAndActivate()
-                .addOnCompleteListener(this, new OnCompleteListener<Boolean>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Boolean> task) {
-                        if (task.isSuccessful()) {
-                            boolean updated = task.getResult();
-                            Log.d(TAG, "Config params updated: " + updated);
-                            //Toast.makeText(MainActivity.this, "Fetch and activate succeeded", Toast.LENGTH_SHORT).show();
-                            sharedpref.getInstance().write(sharedpref.SHAREWARD, (int) mFirebaseRemoteConfig.getLong("share_reward"));
-                            sharedpref.getInstance().write(sharedpref.PERSONAL_REWARD, (int) mFirebaseRemoteConfig.getLong("personal_reward"));
-                            sharedpref.getInstance().write(sharedpref.INITIAL_COINS, (int) mFirebaseRemoteConfig.getLong("initial_coins"));
-                            Log.d("COINS", mSharedPref.read(mSharedPref.INITIAL_COINS_USED, false) + " " + mSharedPref.read(mSharedPref.INITIAL_COINS, 0));
-                        } else {
-                            Toast.makeText(MainActivity.this, "Fetch failed",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                        //CheckRC();
-                    }
-                });
-    }
 
     private void open_extraActivities() {
         Intent intent;
@@ -300,11 +199,13 @@ public class MainActivity extends AppCompatActivity {
             //userId=currentUser.getUid()
             if(!mSharedPref.read(sharedpref.CREDS_ALREADY_SENT, false)){
                 mSharedPref.write(sharedpref.USERID, currentUser.getUid());
-                checkAppSignature(this);            }
+                //checkAppSignature(this);
+            }
 
-        }else{
-            signInAnonymously();
         }
+//        else{
+//            signInAnonymously();
+//        }
         // Set dynamic link parameters:
         //  * URI prefix (required)
         //  * Android Parameters (required)
@@ -375,125 +276,6 @@ public class MainActivity extends AppCompatActivity {
         // [END create_short_link]
     }
 
-    private void checkForDynamicLink() {
-        Log.i(TAG, "Dynamic LINK CHECKING");
-        FirebaseDynamicLinks.getInstance()
-                .getDynamicLink(getIntent())
-                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
-                    @Override
-                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
-                        // Get deep link from result (may be null if no link is found)
-                        Uri deepLink = null;
-                        if (pendingDynamicLinkData != null) {
-
-                            deepLink = pendingDynamicLinkData.getLink();
-                            String inviter_id = deepLink.getQueryParameter("user_id");
-                            if(!inviter_id.equals(currentUser.getUid())){
-                                Log.i(TAG, "Dynamic LINK FOUND " + inviter_id);
-                                pendingDynamicLinkData = null;
-                                Snackbar.make(findViewById(android.R.id.content),
-                                        R.string.invitation_confirm, Snackbar.LENGTH_LONG).show();
-                                //Send confirmation
-                                if(sharedpref.getInstance().read(sharedpref.getInstance().INVITER, 0)==0)
-                                {
-                                    sendConfirmationToServer(inviter_id);
-                                }else{
-                                    //user is already invited
-                                }
-                            }else{
-                                Log.i(TAG, "Can not use the dlink");
-                                if (mSharedPref.isFirstRun()) {
-                                    //set dummy values to disallow false invites
-                                    sharedpref.getInstance().write(sharedpref.getInstance().INVITER, 1);
-                                    sharedpref.getInstance().write(sharedpref.getInstance().INVITER_ID, "");
-                                    mSharedPref.setFirstRun(false);
-                                }
-                            }
-
-                        }else{
-                            if (mSharedPref.isFirstRun()) {
-                                //set dummy values to disallow false invites
-                                sharedpref.getInstance().write(sharedpref.getInstance().INVITER, 1);
-                                sharedpref.getInstance().write(sharedpref.getInstance().INVITER_ID, "");
-                                mSharedPref.setFirstRun(false);
-                            }
-                        }
-                        // Handle the deep link. For example, open the linked
-                        // content, or apply promotional credit to the user's
-                        // account.
-                        // ...
-                        // ...
-                    }
-                })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "getDynamicLink:onFailure", e);
-                    }
-                });
-        //sendConfirmationToServer("b4sGS2mH92RIv8bTJnomGzH9IDp1");
-        //CheckRC();
-    }
-
-    private void CheckInviterThanked() {
-        if(sharedpref.getInstance().read(sharedpref.getInstance().INVITER, 0)==0)
-        {
-            String inviter_id = mSharedPref.getInstance().read(mSharedPref.getInstance().INVITER_ID, "");
-            if(!inviter_id.isEmpty()){
-                sendConfirmationToServer(inviter_id);
-            }
-            else{
-                Crashlytics.log( Log.ERROR, TAG, "INVITER ID WAS EMPTY");
-            }
-        }else{
-            //user is already invited
-        }
-    }
-
-    private void sendConfirmationToServer(final String inviter_id) {
-        //TODO send the token to  database.
-        //Add to the user account token, app id, device id
-        Log.i(TAG, "ATTEMPTING confirmation " + inviter_id);
-        queue = Volley.newRequestQueue(this);
-        String url = "https://inventivesolutionste.ipage.com/apijson.php";
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        //Log.i("APP SIGNATURE STORED?", response);
-                        if (response.contains("confirmation")) {
-                            Log.i(  TAG,"Invitation " + response);
-                            mSharedPref.AddCoins(getApplicationContext(), 200);
-
-                            mSharedPref.getInstance().write(mSharedPref.getInstance().INVITER, 1);
-
-                        }else{
-                            Log.i(  TAG,"Invitation failed " + response);
-                            //failed, save for future
-                            mSharedPref.getInstance().write(mSharedPref.getInstance().INVITER_ID, inviter_id);
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i(TAG, "Signature send fail " + error.toString());
-                Crashlytics.log(Log.ERROR, TAG, error.toString());
-            }
-        }) {
-            protected Map<String, String> getParams() {
-                Map<String, String> MyData = new HashMap<>();
-                MyData.put("action", "confirm"); //Add the data you'd like to send to the server.
-                MyData.put("appname", "furqon"); //Add the data you'd like to send to the server.
-                MyData.put("user_id", currentUser.getUid()); //Add the data you'd like to send to the server.
-                MyData.put("inviter_id", inviter_id);
-                return MyData;
-            }
-
-        };
-        queue.add(stringRequest);
-    }
-
 
 
     @Override
@@ -502,50 +284,6 @@ public class MainActivity extends AppCompatActivity {
         //checkForDynamicLink();
         // Check if user is signed in (non-null) and update UI accordingly.
         //updateUI();
-    }
-
-    private void updateUI() {
-        boolean isSignedIn = (currentUser != null);
-
-        // Status text
-        if (isSignedIn) {
-            Log.i(TAG, "SIGNED IN. FIREBASE AUTH " + currentUser.getUid());
-            //sendRegistrationToServer();
-        } else {
-            signInAnonymously();
-        }
-
-    }
-    private void signInAnonymously() {
-        mSharedPref.write(sharedpref.RANDOM_AYAH_SEEN, false);
-        //showProgressBar();
-        // [START signin_anonymously]
-        mAuth.signInAnonymously()
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInAnonymously:success");
-
-                                currentUser = mAuth.getCurrentUser();
-                                updateUI();
-
-
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInAnonymously:failure", task.getException());
-
-                            Crashlytics.log(Log.ERROR, TAG, task.getException().toString());
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            currentUser = null;
-                        }
-
-                    }
-                });
-        // [END signin_anonymously]
-        Log.e(TAG, "Signin ATTEMPT: " + mAuth);
     }
 
     @Override
@@ -558,132 +296,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void sendRegistrationToServer() {
-        //TODO send the token to  database.
-        //Add to the user account token, app id, device id
-        //Log.i("ATTEMPTING TOKEN SEND", token);
-
-        queue = Volley.newRequestQueue(this);
-        String url = "https://inventivesolutionste.ipage.com/apijson.php";
-        //String url = "http://127.0.0.1:1234/apijson/localhost_test.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        //progressBar.setVisibility(View.INVISIBLE);
-                        //textView.setText(response);
-                        //handle response. ["{\"last_visit\":null,\"fcm_token\":null,\"id\":\"1\"}"]
-                        Log.d(TAG, "JSON raw " + response);
-                        jsonArrayResponse = new ArrayList<>();
-                        try {
-                            JSONArray jsonArray = new JSONArray(response);
-                            for (int i=0; i<jsonArray.length();i++)
-                            {
-                                JSONObject object = new JSONObject(jsonArray.getString(i));
-                                jsonArrayResponse.add(object);
-                            }
-                                int sdate = jsonArrayResponse.get(0).getInt("last_visit");
-                                Log.d(TAG, "JSON " + sdate);
-                                if (sdate==0) {
-                                    //too early or too late
-                                    //String mes = new StringBuilder().append(getString(R.string.u_received)).append(String.valueOf(sdate)).append(getString(R.string._coins)).toString();
-                                    //Toast.makeText(getApplicationContext(), mes, Toast.LENGTH_LONG).show();
-                                }
-                                else {
-                                    mSharedPref.AddCoins(getApplicationContext(), (int) mFirebaseRemoteConfig.getLong("daily_visit_reward"));
-                                    //String mes = new StringBuilder().append(getString(R.string.u_received)).append(String.valueOf(sdate)).append(getString(R.string._coins)).toString();
-                                    Toast.makeText(getApplicationContext(), "+"+sdate, Toast.LENGTH_LONG).show();
-                                }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            //Log.i("error json", "tttttttttttttttt");
-                            Crashlytics.log(Log.ERROR, TAG, e.getStackTrace().toString());
-                        }
-                        catch (IndexOutOfBoundsException iobx){
-                            Log.d(TAG, "JSON " + iobx);
-                        }
-                        CheckRC();
-                        checkForDynamicLink();
-
-                        //successfully saved creds. Mark the app launch to get rid of redundant requests
-                        mSharedPref.write(mSharedPref.CREDS_ALREADY_SENT, true);
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i(TAG, "UserID and TOKEN failed to send" + error.toString());
-            }
-        }) {
-            protected Map<String, String> getParams() {
-                Map<String, String> MyData = new HashMap<>();
-                MyData.put("action", "store_token"); //Add the data you'd like to send to the server.
-                MyData.put("appname", "furqon"); //Add the data you'd like to send to the server.
-                MyData.put("token", token); //Add the data you'd like to send to the server.
-                MyData.put("user_id", currentUser.getUid());
-                MyData.put("app_id", currentSignature);
-                return MyData;
-            }
-
-        };
-        if(token!=null && currentUser!=null && currentSignature!=null){
-            queue.add(stringRequest);
-            //Toast.makeText(this, "Initiation", Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "sending creds");
-
-        }else{
-            Log.d(TAG, "missing important creds");
-            Toast.makeText(this, "You are missing important credentials. Try to restart the app!", Toast.LENGTH_LONG).show();
-        }
 
 
 
-    }
 
-
-
-    private int checkAppSignature(Context context) {
-        try {
-
-            PackageInfo packageInfo;
-            packageInfo = context.getPackageManager()
-
-                    .getPackageInfo(context.getPackageName(),
-
-                            PackageManager.GET_SIGNATURES);
-
-
-            for (Signature signature : packageInfo.signatures) {
-
-                byte[] signatureBytes = signature.toByteArray();
-
-                MessageDigest md = MessageDigest.getInstance("SHA");
-
-                md.update(signature.toByteArray());
-
-
-                currentSignature = Base64.encodeToString(md.digest(), Base64.DEFAULT);
-                String model = Build.MODEL;
-                String manufacturer = Build.MANUFACTURER;
-                String bootloader = Build.BOOTLOADER;
-
-
-                //checkSignatureOnServer(currentSignature);
-                //Log.d("REMOVE_ME", "Include this string as a value for SIGNATURE:" + currentSignature + model + manufacturer + bootloader);
-
-                //compare signatures
-
-            }
-
-        } catch (Exception e) {
-            Crashlytics.log(Log.ERROR, TAG, e.getStackTrace().toString());
-
-//assumes an issue in checking signature., but we let the caller decide on what to do.
-
-        }
-        sendRegistrationToServer();
-        return INVALID;
-
-    }
 //
 //    private void sendSignatureToServer(final String sign) {
 //        //TODO send the token to  database.

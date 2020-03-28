@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-
     package="furqon.io.github.mobilproject">
 
     <uses-permission android:name="com.android.vending.CHECK_LICENSE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".Furqon"
@@ -19,9 +18,34 @@
         android:roundIcon="@mipmap/ic_launcher2_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".LoginActivity"
+            android:excludeFromRecents="true"
+            android:label="@string/welcome_title"
+            android:taskAffinity=""
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
 
-        <activity android:name=".EarnCoinsActivity" android:parentActivityName=".ExtraActivity"/>
-        <activity android:name=".ExtraActivity" android:parentActivityName=".MainActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="quran-kareem.web.app"
+                    android:pathPattern="*"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".EarnCoinsActivity"
+            android:parentActivityName=".ExtraActivity" />
+        <activity
+            android:name=".ExtraActivity"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".MessageView"
             android:parentActivityName=".MessageList" />
@@ -36,11 +60,11 @@
             android:taskAffinity=""
             android:theme="@style/AppTheme.NoActionBar" />
 
+        <service android:name=".AudioService" />
         <service
             android:name=".MyFirebaseMessagingService"
             android:enabled="true"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -69,36 +93,23 @@
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/notification_from_author_channel" />
 
-        <activity android:name=".Settings"
-            android:parentActivityName=".MainActivity"
-            />
-        <activity android:name=".AyahList"
+        <activity
+            android:name=".Settings"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".AyahList"
             android:launchMode="standard"
             android:parentActivityName=".SuraNameList" />
-        <activity android:name=".Favourites"
-            android:parentActivityName=".ExtraActivity"/>
+        <activity
+            android:name=".Favourites"
+            android:parentActivityName=".ExtraActivity" />
         <activity
             android:name=".SuraNameList"
             android:launchMode="singleInstance"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
 
 
-                <data
-                    android:host="quran-kareem.web.app"
-                    android:pathPattern="*"
-                    android:scheme="https"/>
-            </intent-filter>
         </activity>
         <activity
             android:name=".Search"

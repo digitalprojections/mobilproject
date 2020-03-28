@@ -92,6 +92,7 @@ public class Favourites extends AppCompatActivity implements ManageSpecials {
             public void onChanged(@Nullable List<FavouriteAyah> favouriteAyahs) {
                 Log.e("FAVOURITES", favouriteAyahs.size() + " ");
                 mAdapter.setText(favouriteAyahs);
+                recyclerView.scheduleLayoutAnimation();
             }
         });
         loadFavourites();

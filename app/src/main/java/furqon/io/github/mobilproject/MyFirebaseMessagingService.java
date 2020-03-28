@@ -109,23 +109,23 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             database.SaveMessage(s);
         }else if(s.getData()!=null){
             sendNotification(s.getData().get("body"));
-            if(s.getData().size()>0){
-                try{
-                    if(s.getData().get("title").equals("Thanks for sharing!")){
-                        int existingCoins = sharedpref.getInstance().read(sharedpref.getInstance().COINS, 0);
-                        int totalCoins = existingCoins + sharedpref.getInstance().read(sharedpref.getInstance().SHAREWARD, 50);
-                        sharedpref.getInstance().write(sharedpref.getInstance().COINS, totalCoins);
-                    }
-                    else if(s.getData().get("title").equals("Personal reward")){
-                    int existingCoins = sharedpref.getInstance().read(sharedpref.getInstance().COINS, 0);
-                    int totalCoins = existingCoins + sharedpref.getInstance().read(sharedpref.getInstance().PERSONAL_REWARD, 50);
-                    sharedpref.getInstance().write(sharedpref.getInstance().COINS, totalCoins);
-                    }
-                }catch (Exception x){
-                    Log.d(TAG, "text received: " + s.getData().get("title"));
-                }
-
-            }
+//            if(s.getData().size()>0){
+//                try{
+//                    if(s.getData().get("title").equals("Thanks for sharing!")){
+//                        int existingCoins = sharedpref.getInstance().read(sharedpref.getInstance().COINS, 0);
+//                        int totalCoins = existingCoins + sharedpref.getInstance().read(sharedpref.getInstance().SHAREWARD, 50);
+//                        sharedpref.getInstance().write(sharedpref.getInstance().COINS, totalCoins);
+//                    }
+//                    else if(s.getData().get("title").equals("Personal reward")){
+//                    int existingCoins = sharedpref.getInstance().read(sharedpref.getInstance().COINS, 0);
+//                    int totalCoins = existingCoins + sharedpref.getInstance().read(sharedpref.getInstance().PERSONAL_REWARD, 50);
+//                    sharedpref.getInstance().write(sharedpref.getInstance().COINS, totalCoins);
+//                    }
+//                }catch (Exception x){
+//                    Log.d(TAG, "text received: " + s.getData().get("title"));
+//                }
+//
+//            }
             database = ChapterTitleDatabase.getDatabase(this);
             database.SaveMessage(s);
         }
@@ -140,6 +140,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 
         Intent intent = new Intent(this, MessageList.class);
+        intent.putExtra("personalReward", sharedpref.getInstance().read(sharedpref.getInstance().PERSONAL_REWARD, 50));
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,

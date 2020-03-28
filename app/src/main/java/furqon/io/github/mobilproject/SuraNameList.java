@@ -270,6 +270,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
                 quranic_order_btn.setBackgroundColor(getResources().getColor(R.color.gold));
                 revelation_order_btn.setBackgroundColor(0);
                 mAdapter.notifyDataSetChanged();
+
                 LoadTheList();
             }
         });
@@ -282,6 +283,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
                 revelation_order_btn.setBackgroundColor(getResources().getColor(R.color.gold));
                 quranic_order_btn.setBackgroundColor(0);
                 mAdapter.notifyDataSetChanged();
+
                 LoadTheList();
             }
         });
@@ -295,6 +297,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
             revelation_order_btn.setBackgroundColor(getResources().getColor(R.color.gold));
             quranic_order_btn.setBackgroundColor(0);
         }
+        recyclerView.scheduleLayoutAnimation();
     }
 
     private void LoadTheList() {
@@ -309,6 +312,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
                     //titleViewModel.deleteAll();
                 }else{
                     tempbut.setVisibility(View.GONE);
+
                 }
                 mAdapter.setTitles(surahTitles);
                 SetButtonStates();

@@ -96,7 +96,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     long downloadId;
     private TitleViewModel titleViewModel;
     private AyahListAdapter mAdapter;
-    MediaPlayer mediaPlayer;
+    //MediaPlayer mediaPlayer;
 
     boolean isPlaying;
 
@@ -234,9 +234,9 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean input) {
                         if (input) {
-                            if (mediaPlayer != null) {
-                                mediaPlayer.seekTo(progress);
-                            }
+//                            if (mediaPlayer != null) {
+//                                mediaPlayer.seekTo(progress);
+//                            }
 
                         }
 
@@ -474,26 +474,26 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     };
 
     public void playCycle() {
-        if (mediaPlayer != null) {
-            seekBar.setProgress(mediaPlayer.getCurrentPosition());
-            audio_pos = mediaPlayer.getCurrentPosition();
-            timer = findViewById(R.id.audio_timer);
-            timer.setText(AudioTimer.getTimeStringFromMs(audio_pos));
-
-            //Furqon.ShowNotification(this, suranomi, audio_pos);
-
-            if (mediaPlayer.isPlaying()) {
-                runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        //startTimer();
-                        playCycle();
-                        Log.i("TIMER", "tick");
-                    }
-                };
-                handler.postDelayed(runnable, 1000);
-            }
-        }
+//        if (mediaPlayer != null) {
+//            seekBar.setProgress(mediaPlayer.getCurrentPosition());
+//            audio_pos = mediaPlayer.getCurrentPosition();
+//            timer = findViewById(R.id.audio_timer);
+//            timer.setText(AudioTimer.getTimeStringFromMs(audio_pos));
+//
+//            //Furqon.ShowNotification(this, suranomi, audio_pos);
+//
+//            if (mediaPlayer.isPlaying()) {
+//                runnable = new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        //startTimer();
+//                        playCycle();
+//                        Log.i("TIMER", "tick");
+//                    }
+//                };
+//                handler.postDelayed(runnable, 1000);
+//            }
+//        }
     }
 
 
@@ -585,17 +585,12 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             case R.id.play:
                 if(isPlaying){
                     OnTrackPause();
-                    playButton.setIcon(R.drawable.ic_play_circle);
+                    //playButton.setIcon(R.drawable.ic_play_circle);
                 }else{
                     OnTrackPlay();
+                    playButton.setIcon(R.drawable.ic_pause_circle);
                 }
                 return true;
-//            case R.id.stop:
-//                if (mediaPlayer != null) {
-//                    pause();
-//                     playButton.setIcon(R.drawable.ic_play_arrow_black_24dp);
-//                }
-//                return true;
             case R.id.menu_bookmark_button:
                 recyclerView.scrollToPosition(ayah_position-1);
                 return true;
@@ -635,44 +630,57 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
         if(!url.isEmpty()){
             Log.i("PLAY", url);
-            if (mediaPlayer == null) {
+            isPlaying = true;
+            Intent intent = new Intent(this, AudioService.class);
+            intent.putExtra("filepath", url);
 
-                mediaPlayer = new MediaPlayer();
-                mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    @Override
-                    public void onPrepared(MediaPlayer mediaPlayer) {
-                        Furqon.ShowNotification(AyahList.this, R.drawable.ic_pause_circle, suranomi, audio_pos);
-                        seekBar.setMax(mediaPlayer.getDuration());
-                        progressBar.setVisibility(View.INVISIBLE);
-                        resume();
-                        isPlaying = true;
-                    }
-                });
-                //mediaPlayer.setAudioStreamType(AudioManager.USE_DEFAULT_STREAM_TYPE);
-                try{
-                    mediaPlayer.setDataSource(url);
-                }catch (IOException iox){
-                    Log.e("ERROR", iox.getMessage());
-                }
-
-
-
-                progressBar.setVisibility(View.VISIBLE);
-                mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
-
-                playButton.setIcon(R.drawable.ic_pause_circle);
-
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(intent);
             } else {
-                if(isPlaying){
-                    pause();
-                }else{
-                    mediaPlayer.release();
-                    mediaPlayer = null;
-                    play();
-                }
-
-
+                startService(intent);
             }
+
+            //resume();
+            Furqon.ShowNotification(AyahList.this, R.drawable.ic_pause_circle, suranomi, audio_pos);
+
+//            if (mediaPlayer == null) {
+//
+//                mediaPlayer = new MediaPlayer();
+//                mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+//                    @Override
+//                    public void onPrepared(MediaPlayer mediaPlayer) {
+//                        Furqon.ShowNotification(AyahList.this, R.drawable.ic_pause_circle, suranomi, audio_pos);
+//                        seekBar.setMax(mediaPlayer.getDuration());
+//                        progressBar.setVisibility(View.INVISIBLE);
+//                        resume();
+//                        isPlaying = true;
+//                    }
+//                });
+//
+//                try{
+//                    mediaPlayer.setDataSource(url);
+//                }catch (IOException iox){
+//                    Log.e("ERROR", iox.getMessage());
+//                }
+//
+//
+//
+//                progressBar.setVisibility(View.VISIBLE);
+//                mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
+//
+//                playButton.setIcon(R.drawable.ic_pause_circle);
+//
+//            } else {
+//                if(isPlaying){
+//                    pause();
+//                }else{
+//                    mediaPlayer.release();
+//                    mediaPlayer = null;
+//                    play();
+//                }
+//
+//
+//            }
             trackDownload = true;
         }else{
             final PopupWindow popupWindow = new PopupWindow(this);
@@ -777,6 +785,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                 }
             });
             progressBarDownload.setVisibility(View.GONE);
+        recyclerView.scheduleLayoutAnimation();
     }
 
 
@@ -965,44 +974,43 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     }
 
     public void stop() {
-        Log.i("STOP", "stop");
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-            mediaPlayer = null;
-            progressBar.setVisibility(View.INVISIBLE);
-        }
+//        Log.i("STOP", "stop");
+//        if (mediaPlayer != null) {
+//            mediaPlayer.release();
+//            mediaPlayer = null;
+//            progressBar.setVisibility(View.INVISIBLE);
+//        }
     }
 
     public void pause() {
-        if (mediaPlayer != null) {
-            storeAudioPosition();
+        if (isPlaying) {
+            //storeAudioPosition();
             isPlaying = false;
-
+            Intent intent = new Intent(this, AudioService.class);
+            stopService(intent);
         }
     }
-
-    private void storeAudioPosition() {
-        if (mediaPlayer != null) {
-            if (mediaPlayer.isPlaying()) {
-
-                sharedPref.write(suranomi, mediaPlayer.getCurrentPosition());
-                Toast.makeText(getBaseContext(), audiostore, Toast.LENGTH_SHORT).show();
-                mediaPlayer.pause();
-            }
-        }
-    }
+//
+//    private void storeAudioPosition() {
+//
+//
+//                //sharedPref.write(suranomi, mediaPlayer.getCurrentPosition());
+//
+//        Toast.makeText(getBaseContext(), audiostore, Toast.LENGTH_SHORT).show();
+//
+//    }
 
     public void resume() {
         audio_pos = sharedPref.read(suranomi, 0);
 
-        if (mediaPlayer != null) {
+        //if (mediaPlayer != null) {
 
             //seekBar.setProgress(pos);
-            mediaPlayer.seekTo(audio_pos);
-            mediaPlayer.start();
+        //   mediaPlayer.seekTo(audio_pos);
+        //   mediaPlayer.start();
             Toast.makeText(getBaseContext(), audiorestore, Toast.LENGTH_SHORT).show();
             playCycle();
-        }
+        // }
     }
 
 
@@ -1011,10 +1019,10 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     protected void onDestroy() {
         super.onDestroy();
         pause();
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-            handler.removeCallbacks(runnable);
-        }
+//        if (mediaPlayer != null) {
+//            mediaPlayer.release();
+//            handler.removeCallbacks(runnable);
+//        }
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
             if(notificationManager!=null)
                 notificationManager.cancelAll();
