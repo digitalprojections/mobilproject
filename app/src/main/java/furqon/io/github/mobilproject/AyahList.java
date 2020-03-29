@@ -631,21 +631,17 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         if(!url.isEmpty()){
             Log.i("PLAY", url);
 
-            Intent intent = new Intent(this, AudioService.class);
+            Intent intent = new Intent(this, AudioIntentService.class);
             intent.putExtra("filepath", url);
+            intent.setAction("PLAY");
+            intent.putExtra("suranomi", suranomi);
+            intent.putExtra("suranomer", suraNumber);
 
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                startForegroundService(intent);
-//                Furqon.ShowNotification(AyahList.this, R.drawable.ic_pause_circle, suranomi, audio_pos);
-//            } else {
-            if(!isPlaying)
-            {
-                startService(intent);
-                Furqon.ShowNotification(AyahList.this, R.drawable.ic_pause_circle, suranomi, audio_pos);
-                isPlaying = true;
-            }
 
-            //}
+            ContextCompat.startForegroundService(this, intent);
+            //Furqon.ShowNotification(AyahList.this, R.drawable.ic_pause_circle, suranomi, audio_pos);
+
+
 
             //resume();
 
@@ -1082,8 +1078,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
     @Override
     public void OnTrackPause() {
-        Furqon.ShowNotification(AyahList.this, R.drawable.ic_play_circle, suranomi, audio_pos);
-
+        //Furqon.ShowNotification(AyahList.this, R.drawable.ic_play_circle, suranomi, audio_pos);
+        //TODO just pause?
         pause();
     }
 

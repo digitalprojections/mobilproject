@@ -18,6 +18,10 @@
         android:roundIcon="@mipmap/ic_launcher2_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <service
+            android:name=".AudioIntentService"
+            android:exported="true"></service>
+
         <activity
             android:name=".LoginActivity"
             android:excludeFromRecents="true"
@@ -26,6 +30,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter android:autoVerify="true">
@@ -60,7 +65,7 @@
             android:taskAffinity=""
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <service android:name=".AudioService" />
+
         <service
             android:name=".MyFirebaseMessagingService"
             android:enabled="true"
@@ -107,10 +112,7 @@
             android:name=".SuraNameList"
             android:launchMode="singleInstance"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".MainActivity">
-
-
-        </activity>
+        <activity android:name=".MainActivity"></activity>
         <activity
             android:name=".Search"
             android:parentActivityName=".ExtraActivity" />

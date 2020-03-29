@@ -26,11 +26,6 @@ public class Furqon extends Application {
     public static final String ACTION_NEXT = "actionnext";
     public static final String ACTION_FAV = "actionfav";
 
-    static PendingIntent pendingIntentPrev;
-    static PendingIntent pendingIntentPlay;
-    static PendingIntent pendingIntentNext;
-    static PendingIntent pendingIntentFav;
-
 
     @Override
     public void onCreate() {
@@ -61,80 +56,7 @@ public class Furqon extends Application {
         }
 
     }
-    public static void ShowNotification(Context context, int playbutton, String suranomi, int pos) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
-            MediaSessionCompat mediaSessionCompat = new MediaSessionCompat(context, "tag");
 
-//            pendingIntentPrev = PendingIntent.getBroadcast(this, 0, intentPrev, PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//            //PLAY
-//            Intent intentPlay;
-//            intentPlay = new Intent(this, NotificationActionService.class).setAction(Furqon.ACTION_PLAY);
-//
-//            pendingIntentPlay = PendingIntent.getBroadcast(this, 0, intentPrev, PendingIntent.FLAG_UPDATE_CURRENT);
-//            //NEXT
-//            Intent intentNext;
-//            intentNext = new Intent(this, NotificationActionService.class).setAction(Furqon.ACTION_NEXT);
-//
-//            pendingIntentNext = PendingIntent.getBroadcast(this, 0, intentPrev, PendingIntent.FLAG_UPDATE_CURRENT);
-//            //FAV
-//            Intent intentFav;
-//            intentFav = new Intent(this, NotificationActionService.class).setAction(Furqon.ACTION_FAV);
-//
-//
-//            pendingIntentFav = PendingIntent.getBroadcast(this, 0, intentPrev, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            int drw_previous;
-            if (pos == 0) {
-                pendingIntentPrev = null;
-                drw_previous = 0;
-            } else {
-                Intent intentPrevious = new Intent(context, NotificationActionService.class)
-                        .setAction(Furqon.ACTION_PREV);
-
-                pendingIntentPrev = PendingIntent.getBroadcast(context, 0, intentPrevious, PendingIntent.FLAG_UPDATE_CURRENT);
-            }
-
-            Intent intentPlay = new Intent(context, NotificationActionService.class)
-                    .setAction(Furqon.ACTION_PLAY);
-            pendingIntentPlay = PendingIntent.getBroadcast(context, 0, intentPlay, PendingIntent.FLAG_UPDATE_CURRENT);
-
-
-            int drw_next;
-            if (pos == 0) {
-                pendingIntentNext = null;
-                drw_next = 0;
-            } else {
-                Intent intentNext = new Intent(context, NotificationActionService.class)
-                        .setAction(Furqon.ACTION_NEXT);
-
-                pendingIntentNext = PendingIntent.getBroadcast(context, 0, intentNext, PendingIntent.FLAG_UPDATE_CURRENT);
-            }
-
-
-            Bitmap audio_player_icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.nightsky);
-
-            Notification notification;
-            notification = new NotificationCompat.Builder(context, AUDIO_PLAYING_NOTIFICATION_CHANNEL)
-                    .setSmallIcon(R.drawable.ic_surah_audio_24dp)
-                    .setLargeIcon(audio_player_icon)
-                    .setContentTitle("Furqon Audio Player")
-                    .setContentText(suranomi)
-                    .addAction(R.drawable.ic_previous, context.getString(R.string.fast_rewind), pendingIntentPrev)
-                    .addAction(playbutton, context.getString(R.string.play), pendingIntentPlay)
-                    .addAction(R.drawable.ic_next, context.getString(R.string.fast_forward), pendingIntentNext)
-                    //.addAction(R.drawable.ic_favorite_border_black_24dp, context.getString(R.string.favorites), pendingIntentFav)
-                    .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
-                            .setShowActionsInCompactView(1)
-                            .setMediaSession(mediaSessionCompat.getSessionToken()))
-                    .setPriority(NotificationCompat.PRIORITY_LOW)
-                    .setAutoCancel(false)
-                    .setOnlyAlertOnce(true)
-                    .build();
-            notificationManagerCompat.notify(1, notification);
-        }
-    }
 
 
 }
