@@ -112,24 +112,24 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
             watchAds_btn.setEnabled(true);
         }
         if(coins_txt!=null){
-            if (!mSharedPref.read(mSharedPref.INITIAL_COINS_USED, false)) {
-                mSharedPref.write(mSharedPref.COINS, mSharedPref.read(mSharedPref.INITIAL_COINS, 0));
-                mSharedPref.write(mSharedPref.INITIAL_COINS_USED, true);
-            }
+//            if (!mSharedPref.read(mSharedPref.INITIAL_COINS_USED, false)) {
+//                mSharedPref.write(mSharedPref.COINS, mSharedPref.read(mSharedPref.INITIAL_COINS, 0));
+//                mSharedPref.write(mSharedPref.INITIAL_COINS_USED, true);
+//            }
             String mycoins = String.valueOf(mSharedPref.read(mSharedPref.COINS, 0));
 
             coins_txt.setText(mycoins);
         }else{
-            if (!mSharedPref.read(mSharedPref.INITIAL_COINS_USED, false)) {
-                mSharedPref.write(mSharedPref.COINS, mSharedPref.read(mSharedPref.INITIAL_COINS, 0));
-                mSharedPref.write(mSharedPref.INITIAL_COINS_USED, true);
-            }
+//            if (!mSharedPref.read(mSharedPref.INITIAL_COINS_USED, false)) {
+//                mSharedPref.write(mSharedPref.COINS, mSharedPref.read(mSharedPref.INITIAL_COINS, 0));
+//                mSharedPref.write(mSharedPref.INITIAL_COINS_USED, true);
+//            }
             TextView coins_txt = findViewById(R.id.coins_count_txt);
             String mycoins = String.valueOf(mSharedPref.read(mSharedPref.COINS, 0));
             coins_txt.setText(mycoins);
         }
 
-        Log.d("COINS", mSharedPref.read(mSharedPref.INITIAL_COINS_USED, false) + " " + mSharedPref.read(mSharedPref.INITIAL_COINS, 0));
+        //Log.d("COINS", mSharedPref.read(mSharedPref.INITIAL_COINS_USED, false) + " " + mSharedPref.read(mSharedPref.INITIAL_COINS, 0));
 
     }
 

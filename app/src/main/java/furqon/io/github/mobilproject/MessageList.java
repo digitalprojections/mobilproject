@@ -61,7 +61,7 @@ public class MessageList extends AppCompatActivity {
                 Log.e("MESSAGETABLE", messageTables.size() + " long");
                 if(messageTables.size()>0){
                     listAdapter.setItems(messageTables);
-                    recyclerView.scheduleLayoutAnimation();
+                    //recyclerView.scheduleLayoutAnimation();
                 }
 
             }

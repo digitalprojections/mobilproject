@@ -47,6 +47,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.fabric.sdk.android.Fabric;
+
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LOGIN ACTIVITY";
@@ -72,16 +74,16 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
+        Fabric.with(this, new Crashlytics());
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+
+
+        mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
+
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
                 .setMinimumFetchIntervalInSeconds(500000)
                 .build();
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
-
-        mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
-
-
         // Initialize Firebase Auth
         //--------------------------------------------------------
         mAuth = FirebaseAuth.getInstance();
@@ -108,9 +110,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
 
         } else {
-            if (mSharedPref.getDefaults("random_ayah_sw")) {
-                ayahOfTheDay();
-            }
+
             CheckInviterThanked();
         }
         //UI
@@ -122,8 +122,13 @@ public class LoginActivity extends AppCompatActivity {
         start_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                startActivity(intent);
+                if (mSharedPref.getDefaults("random_ayah_sw")) {
+                    ayahOfTheDay();
+                }else{
+                    Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                    startActivity(intent);
+                }
+
             }
         });
     }
@@ -140,8 +145,8 @@ public class LoginActivity extends AppCompatActivity {
                             //Toast.makeText(MainActivity.this, "Fetch and activate succeeded", Toast.LENGTH_SHORT).show();
                             sharedpref.getInstance().write(sharedpref.SHAREWARD, (int) mFirebaseRemoteConfig.getLong("share_reward"));
                             sharedpref.getInstance().write(sharedpref.PERSONAL_REWARD, (int) mFirebaseRemoteConfig.getLong("personal_reward"));
-                            sharedpref.getInstance().write(sharedpref.INITIAL_COINS, (int) mFirebaseRemoteConfig.getLong("initial_coins"));
-                            Log.d("COINS", mSharedPref.read(mSharedPref.INITIAL_COINS_USED, false) + " " + mSharedPref.read(mSharedPref.INITIAL_COINS, 0));
+                            //sharedpref.getInstance().write(sharedpref.INITIAL_COINS, (int) mFirebaseRemoteConfig.getLong("initial_coins"));
+                            //Log.d("COINS", mSharedPref.read(mSharedPref.INITIAL_COINS_USED, false) + " " + mSharedPref.read(mSharedPref.INITIAL_COINS, 0));
                         } else {
                             Toast.makeText(LoginActivity.this, "Fetch failed",
                                     Toast.LENGTH_SHORT).show();
@@ -227,9 +232,9 @@ public class LoginActivity extends AppCompatActivity {
                                 //String mes = new StringBuilder().append(getString(R.string.u_received)).append(String.valueOf(sdate)).append(getString(R.string._coins)).toString();
                                 //Toast.makeText(getApplicationContext(), mes, Toast.LENGTH_LONG).show();
                             } else {
-                                mSharedPref.AddCoins(getApplicationContext(), (int) mFirebaseRemoteConfig.getLong("daily_visit_reward"));
+                                mSharedPref.AddCoins(getApplicationContext(), (int) mFirebaseRemoteConfig.getLong("first_visit_reward"));
                                 //String mes = new StringBuilder().append(getString(R.string.u_received)).append(String.valueOf(sdate)).append(getString(R.string._coins)).toString();
-                                Toast.makeText(getApplicationContext(), "+" + sdate, Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getApplicationContext(), "+" + sdate, Toast.LENGTH_LONG).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -300,12 +305,7 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                             } else {
                                 Log.i(TAG, "Can not use the dlink");
-                                if (mSharedPref.isFirstRun()) {
-                                    //set dummy values to disallow false invites
-                                    sharedpref.getInstance().write(sharedpref.getInstance().INVITER, 1);
-                                    sharedpref.getInstance().write(sharedpref.getInstance().INVITER_ID, "");
-                                    mSharedPref.setFirstRun(false);
-                                }
+
                             }
 
                         } else {
@@ -399,7 +399,6 @@ public class LoginActivity extends AppCompatActivity {
                         if (response.contains("confirmation")) {
                             Log.i(TAG, "Invitation " + response);
                             mSharedPref.AddCoins(getApplicationContext(), 200);
-
                             mSharedPref.getInstance().write(mSharedPref.getInstance().INVITER, 1);
 
                         } else {

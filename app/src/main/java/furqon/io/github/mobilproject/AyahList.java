@@ -533,24 +533,24 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         return sl;
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //mediaPlayer.start();
-
-    }
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//
+//    }
+//
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        //mediaPlayer.start();
+//
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -585,7 +585,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             case R.id.play:
                 if(isPlaying){
                     OnTrackPause();
-                    //playButton.setIcon(R.drawable.ic_play_circle);
+                    playButton.setIcon(R.drawable.ic_play_circle);
                 }else{
                     OnTrackPlay();
                     playButton.setIcon(R.drawable.ic_pause_circle);
@@ -630,18 +630,25 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
         if(!url.isEmpty()){
             Log.i("PLAY", url);
-            isPlaying = true;
+
             Intent intent = new Intent(this, AudioService.class);
             intent.putExtra("filepath", url);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(intent);
-            } else {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                startForegroundService(intent);
+//                Furqon.ShowNotification(AyahList.this, R.drawable.ic_pause_circle, suranomi, audio_pos);
+//            } else {
+            if(!isPlaying)
+            {
                 startService(intent);
+                Furqon.ShowNotification(AyahList.this, R.drawable.ic_pause_circle, suranomi, audio_pos);
+                isPlaying = true;
             }
 
+            //}
+
             //resume();
-            Furqon.ShowNotification(AyahList.this, R.drawable.ic_pause_circle, suranomi, audio_pos);
+
 
 //            if (mediaPlayer == null) {
 //
@@ -1009,7 +1016,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         //   mediaPlayer.seekTo(audio_pos);
         //   mediaPlayer.start();
             Toast.makeText(getBaseContext(), audiorestore, Toast.LENGTH_SHORT).show();
-            playCycle();
+            //playCycle();
         // }
     }
 
@@ -1018,7 +1025,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        pause();
+        //pause();
 //        if (mediaPlayer != null) {
 //            mediaPlayer.release();
 //            handler.removeCallbacks(runnable);
@@ -1064,6 +1071,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
     @Override
     public void OnTrackPlay() {
+        //resume();
         play();
     }
 
@@ -1075,7 +1083,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     @Override
     public void OnTrackPause() {
         Furqon.ShowNotification(AyahList.this, R.drawable.ic_play_circle, suranomi, audio_pos);
-        isPlaying = false;
+
         pause();
     }
 

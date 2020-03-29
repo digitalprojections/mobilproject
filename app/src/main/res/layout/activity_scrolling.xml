@@ -30,6 +30,15 @@
 
         </androidx.viewpager.widget.ViewPager>
 
+        <CheckBox
+            android:id="@+id/dontshowagain_checkBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="false"
+            android:gravity="center"
+            android:text="@string/do_not_show_again" />
+
         <Button
             android:id="@+id/button_Done"
             style="@android:style/Widget.Button"

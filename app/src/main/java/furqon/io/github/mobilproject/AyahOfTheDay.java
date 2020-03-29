@@ -207,7 +207,9 @@ public class AyahOfTheDay extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 home_btn.startAnimation(scaler);
-                AyahOfTheDay.super.onBackPressed();
+                //AyahOfTheDay.super.onBackPressed();
+                Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                startActivity(intent);
             }
         });
         //

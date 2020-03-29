@@ -100,4 +100,5 @@
     <string name="chat_btn_title">Communication</string>
     <string name="welcome_title">Welcome</string>
     <string name="free_coin_awards_received">Thank you for your effort. You have received free coins!</string>
+    <string name="do_not_show_again">Do not show again</string>
 </resources>

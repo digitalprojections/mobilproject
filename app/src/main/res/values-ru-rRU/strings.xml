@@ -96,4 +96,5 @@
     <string name="chat_btn_title">связь</string>
     <string name="free_coin_awards_received">Спасибо за ваши усилия. Вы получили бесплатные монеты!</string>
     <string name="welcome_title">Добро пожаловать!</string>
+    <string name="do_not_show_again">Не показывать снова</string>
 </resources>
