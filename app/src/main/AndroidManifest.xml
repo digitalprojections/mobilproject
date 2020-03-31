@@ -18,9 +18,11 @@
         android:roundIcon="@mipmap/ic_launcher2_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".MediaActivity"></activity>
+
         <service
             android:name=".AudioIntentService"
-            android:exported="true"></service>
+            android:exported="true" />
 
         <activity
             android:name=".LoginActivity"
@@ -64,7 +66,6 @@
             android:launchMode="singleTask"
             android:taskAffinity=""
             android:theme="@style/AppTheme.NoActionBar" />
-
 
         <service
             android:name=".MyFirebaseMessagingService"
@@ -112,7 +113,7 @@
             android:name=".SuraNameList"
             android:launchMode="singleInstance"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity" />
         <activity
             android:name=".Search"
             android:parentActivityName=".ExtraActivity" />
