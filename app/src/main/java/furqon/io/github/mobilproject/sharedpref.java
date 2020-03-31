@@ -149,12 +149,20 @@ public class sharedpref
     Integer read(String key, int defValue) {
         return mSharedPref.getInt(key, defValue);
     }
+
+    long read(String key, long defValue) {
+        return mSharedPref.getLong(key, defValue);
+    }
     void write(String key, boolean value) {
         prefsEditor.putBoolean(key, value);
         prefsEditor.apply();
     }
     void write(String key, Integer value) {
         prefsEditor.putInt(key, value).apply();
+    }
+
+    void write(String key, long value) {
+        prefsEditor.putLong(key, value).apply();
     }
     void write(String key, String value) {
         prefsEditor.putString(key, value);
