@@ -12,14 +12,14 @@
     <string name="audio_load_fail">Failed to load! Check your network</string>
     <string name="save">Save</string>
     <string name="shareayah">Share this and get coins</string>
-    <string name="bookmark_it">Bookmark the ayah</string>
+    <string name="bookmark_it">Bookmark the aayah</string>
     <string name="favourite_it">Add to Favourites</string>
     <string name="banner_ad" translatable="false">ca-app-pub-3838820812386239/6533462802</string>
     <string name="russian">Russian</string>
     <string name="english">English</string>
     <string name="app_shuts_down_now">If the app does not shut down in 3 seconds, please, make sure to clear all its data to refresh and start using the new database</string>
     <string name="surah">"Surah: "</string>
-    <string name="ayah">", ayah: "</string>
+    <string name="ayah">", aayah: "</string>
     <string name="language_selected">Language Selected</string>
     <string name="no_bookmarks">No bookmarks found</string>
     <string name="invite_i">Invite</string>
@@ -53,7 +53,7 @@
     <string name="surahAudioUnlockAd" translatable="false">ca-app-pub-3838820812386239/1790049383</string>
     <string name="unlock_the_download">Unlock the download button by watching a video</string>
     <string name="surah_audio_available">Chapter audio is available</string>
-    <string name="reload">Reload</string>
+    <string name="reload">Load</string>
     <string name="quranic_order">Quranic order</string>
     <string name="revelation_order">Revelation order</string>
     <string name="order_description_revelation">order according to the order of revelation</string>
@@ -62,9 +62,9 @@
     <string name="interstitial_fullpage" translatable="false">ca-app-pub-3838820812386239/2551267023</string>
     <string name="bookmark_found">Bookmark found</string>
     <string name="chapters_not_available">Database empty. Please load some chapters first.</string>
-    <string name="previous_ayah">previous ayah</string>
-    <string name="next_ayah">next ayah</string>
-    <string name="failed_to_load_ayah">Failed to load ayah. Try again</string>
+    <string name="previous_ayah">previous aayah</string>
+    <string name="next_ayah">next aayah</string>
+    <string name="failed_to_load_ayah">Failed to load aayah. Try again</string>
     <string name="failure_generic">An error has occurred, try again later</string>
     <string name="downloadaudio_title">Download Audio</string>
     <string name="messages_button_text">Messages</string>
