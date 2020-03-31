@@ -2,6 +2,7 @@ package furqon.io.github.mobilproject;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ public class RewardAd{
 
     private static RewardedVideoAd mRewardedVideoAd;
     int currentSurahNumber;
+    boolean titleListCall;
     private Context mContext;
     FirebaseRemoteConfig mFireBaseConfig;
 
@@ -47,7 +49,12 @@ public class RewardAd{
             mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
                 @Override
                 public void onRewardedVideoAdLoaded() {
-                    Toast.makeText(mContext,"Ad loaded.", Toast.LENGTH_SHORT).show();
+                    if (BuildConfig.BUILD_TYPE == "debug") {
+                        Toast.makeText(mContext, "TEST " + mContext.getString(R.string.ad_loaded_toast), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(mContext, R.string.ad_loaded_toast, Toast.LENGTH_SHORT).show();
+                    }
+
                     ManageCoins manageCoins;
                     if(mContext instanceof ManageCoins){
                         manageCoins = (ManageCoins) mContext;
@@ -67,20 +74,32 @@ public class RewardAd{
 
                 @Override
                 public void onRewardedVideoAdClosed() {
-                    //Toast.makeText(mContext,                            "Ad closed.", Toast.LENGTH_SHORT).show();
-                    //mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917", new AdRequest.Builder().build()); //TEST
-                    mRewardedVideoAd.loadAd(mContext.getString(R.string.surahAudioUnlockAd), new AdRequest.Builder().build());
+
+                    if (BuildConfig.BUILD_TYPE == "debug") {
+                        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917", new AdRequest.Builder().build()); //TEST
+                        //Toast.makeText(mContext,"TEST AD.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        mRewardedVideoAd.loadAd(mContext.getString(R.string.surahAudioUnlockAd), new AdRequest.Builder().build());
+                    }
                 }
 
                 @Override
                 public void onRewarded(RewardItem rewardItem) {
+                    if (titleListCall) {
+                        MyListener myListener;
+                        if (mContext instanceof MyListener) {
 
-                    int coins = (int) (rewardItem.getAmount()*mFireBaseConfig.getLong("rewardad_multiplier"));
-                    sharedpref.AddCoins(mContext, coins);
-                    ManageCoins manageCoins;
-                    manageCoins = (ManageCoins) mContext;
-                    manageCoins.SetCoinValues();
-
+                        }
+                        myListener = (MyListener) mContext;
+                        myListener.MarkAsAwarded(currentSurahNumber);
+                        titleListCall = false;
+                    } else {
+                        int coins = (int) (rewardItem.getAmount() * mFireBaseConfig.getLong("rewardad_multiplier"));
+                        sharedpref.AddCoins(mContext, coins);
+                        ManageCoins manageCoins;
+                        manageCoins = (ManageCoins) mContext;
+                        manageCoins.SetCoinValues();
+                    }
                 }
 
                 @Override
@@ -103,13 +122,26 @@ public class RewardAd{
 
                 }
             });
-        //mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917", new AdRequest.Builder().build()); //TEST
-        mRewardedVideoAd.loadAd(mContext.getString(R.string.surahAudioUnlockAd), new AdRequest.Builder().build());
+        if (BuildConfig.BUILD_TYPE == "debug") {
+            mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917", new AdRequest.Builder().build()); //TEST
+            //Toast.makeText(mContext,"TEST AD.", Toast.LENGTH_SHORT).show();
+        } else {
+            mRewardedVideoAd.loadAd(mContext.getString(R.string.surahAudioUnlockAd), new AdRequest.Builder().build());
+        }
+
     }
 
 
     public void SHOW() {
         //currentSurahNumber = Integer.parseInt(s);
+        if (mRewardedVideoAd.isLoaded()) {
+            mRewardedVideoAd.show();
+        }
+    }
+
+    public void SHOW(String s) {
+        titleListCall = true;
+        currentSurahNumber = Integer.parseInt(s);
         if (mRewardedVideoAd.isLoaded()) {
             mRewardedVideoAd.show();
         }

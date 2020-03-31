@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,8 +34,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 
 import org.json.JSONArray;
@@ -41,17 +41,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class SuraNameList extends AppCompatActivity implements MyListener {
+    private static final String TAG = "SURANAMELIST";
+    private static final int MY_PERMISSIONS_WRITE_TO_DISK = 0;
     private TitleListAdapter mAdapter;
     private Context context;
     private ArrayList<JSONObject> jsonArrayResponse;
+    long downloadId;
+//    CardView download_container;
+//    ImageView downloadButton;
+//    ProgressBar progressBarDownload;
 
     private Button tempbut;
     private Button quranic_order_btn;
@@ -62,6 +66,8 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     private sharedpref sharedPref;
     private ArrayList<String> trackList;
     private TitleViewModel titleViewModel;
+    DownloadManager downloadManager;
+    DownloadManager.Query query;
 
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -69,10 +75,10 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.settings_i:
                 open_settings();
                 return true;
@@ -86,16 +92,18 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
     }
 
-    private void open_settings(){
+    private void open_settings() {
         Intent intent;
         intent = new Intent(this, furqon.io.github.mobilproject.Settings.class);
         startActivity(intent);
     }
+
     private void open_favourites() {
         Intent intent;
         intent = new Intent(this, furqon.io.github.mobilproject.Favourites.class);
         startActivity(intent);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,6 +118,13 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         revelation_order_btn = findViewById(R.id.revelation_order);
 
 
+        registerReceiver(broadcastReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+//        download_container = findViewById(R.id.download_cont);
+//        progressBarDownload = findViewById(R.id.progressBar_download);
+//        downloadButton = findViewById(R.id.button_download);
+
+        downloadManager = (DownloadManager) this.getSystemService(this.DOWNLOAD_SERVICE);
+        query = new DownloadManager.Query();
 
         trackList = new ArrayList<String>();
         PopulateTrackList();
@@ -120,10 +135,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         tempbut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("CLICK", "clicking");
-                //ChapterTitle chapterTitle = new ChapterTitle(1, 2, 5, "uxtext", "arabic", "Makkah");
-                //titleViewModel.insert(chapterTitle);
-                //requestHandler.httpRequest();
+                Log.i(TAG, "CLICK");
 
                 RequestQueue queue = Volley.newRequestQueue(context);
                 String url = "https://inventivesolutionste.ipage.com/ajax_quran.php";
@@ -138,8 +150,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
                                 try {
                                     JSONArray jsonArray = new JSONArray(response);
-                                    for (int i=0; i<jsonArray.length();i++)
-                                    {
+                                    for (int i = 0; i < jsonArray.length(); i++) {
                                         JSONObject object = new JSONObject(jsonArray.getString(i));
                                         jsonArrayResponse.add(object);
                                     }
@@ -177,18 +188,19 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
                 queue.add(stringRequest);
                 //progressBar.setVisibility(View.VISIBLE);
             }
-            void populateAuctionList(ArrayList<JSONObject> auclist){
+
+            void populateAuctionList(ArrayList<JSONObject> auclist) {
 
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(, android.R.layout.simple_spinner_item, auclist);
 //        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 //spinner.setAdapter(adapter);
                 ChapterTitleTable title;
 
-                for (JSONObject i:auclist
+                for (JSONObject i : auclist
                 ) {
 
-                    try{
-                        Log.d("JSONOBJECT", i.getString("arabic"));
+                    try {
+                        //Log.d(TAG, "JSONOBJECT "+ i.getString("arabic"));
                         //int language_no = i.getInt("language_no");
                         int order_no = i.getInt("order_no");
                         int chapter_id = i.getInt("chapter_id");
@@ -200,19 +212,14 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
                         titleViewModel.insert(title);
 
 
-                    }catch (Exception sx){
+                    } catch (Exception sx) {
                         Log.e("EXCEPTION", sx.getMessage());
                     }
                 }
 
 
-
-
             }
         });
-
-
-
 
 
         //https://inventivesolutionste.ipage.com/ajax_quran.php
@@ -227,28 +234,19 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-//        mDatabase = DatabaseAccess.getInstance(getApplicationContext());
-//        if(!mDatabase.isOpen()) {
-//            mDatabase.open();
-//        }
 
         recyclerView = findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
-
         //suralist = mDatabase.getSuraTitles();
-
-
 
 
         //mAdapter = new SuraNameListAdapter(this, suralist, trackList, enabledList);
         mAdapter = new TitleListAdapter(this, trackList);
         recyclerView.setAdapter(mAdapter);
-
 
 
         LoadTheList();
@@ -290,10 +288,10 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     }
 
     private void SetButtonStates() {
-        if(sharedPref.read(sharedPref.displayOrder, 0)==0){
+        if (sharedPref.read(sharedPref.displayOrder, 0) == 0) {
             quranic_order_btn.setBackgroundColor(getResources().getColor(R.color.gold));
             revelation_order_btn.setBackgroundColor(0);
-        }else{
+        } else {
             revelation_order_btn.setBackgroundColor(getResources().getColor(R.color.gold));
             quranic_order_btn.setBackgroundColor(0);
         }
@@ -307,10 +305,10 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
             @Override
             public void onChanged(@Nullable List<ChapterTitleTable> surahTitles) {
                 //Toast.makeText(SuraNameList.this, "LOADING TITLES " + surahTitles.size(), Toast.LENGTH_LONG).show();
-                if(surahTitles.size()!=114){
+                if (surahTitles.size() != 114) {
                     tempbut.setVisibility(View.VISIBLE);
                     //titleViewModel.deleteAll();
-                }else{
+                } else {
                     tempbut.setVisibility(View.GONE);
 
                 }
@@ -337,12 +335,9 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     protected void onDestroy() {
         //mRewardedVideoAd.destroy(this);
         super.onDestroy();
-        //mInterstitialAd.show();
-//        if(mDatabase!=null) {
-//            mDatabase.close();
-//        }
-
-
+        if (broadcastReceiver != null) {
+            unregisterReceiver(broadcastReceiver);
+        }
     }
 //
 //    @Override
@@ -353,10 +348,6 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 //    }
 //
 
-    @Override
-    public void DownloadThis(String suraNumber) {
-
-    }
 
     @Override
     public void LoadTitlesFromServer() {
@@ -364,45 +355,44 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     }
 
     @Override
-    public void insertTitle(ChapterTitleTable title){
-        Log.d("TITLE insert", title.uzbek);
+    public void insertTitle(ChapterTitleTable title) {
+        //Log.d(TAG, "TITLE insert " + title.uzbek);
         titleViewModel.insert(title);
     }
 
     @Override
     public void MarkAsAwarded(int surah_id) {
-//        int actual_position = surah_id;
-//        for(int i=0;i<mAdapter.getItemCount();i++){
-//            if(mAdapter.getTitleAt(i).chapter_id==surah_id){
-//                actual_position = i;
-//            }
-//        }
-//        Log.e("ACTUAL SURAH ID?", surah_id + " " + actual_position);
-//        ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
-//        ctitle.status = "2";
-//        titleViewModel.update(ctitle);
+        int actual_position = surah_id;
+        for (int i = 0; i < mAdapter.getItemCount(); i++) {
+            if (mAdapter.getTitleAt(i).chapter_id == surah_id) {
+                actual_position = i;
+            }
+        }
+        Log.e(TAG, "ACTUAL SURAH ID?" + surah_id + " " + actual_position);
+        ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
+        ctitle.status = "2";
+        titleViewModel.update(ctitle);
     }
 
     @Override
     public void MarkAsDownloaded(int surah_id) {
-//        if(mAdapter!=null){
-//            int actual_position = surah_id;
-//            for(int i=0;i<mAdapter.getItemCount();i++){
-//                try{
-//                    if(mAdapter.getTitleAt(i).chapter_id==surah_id){
-//                        actual_position = i;
-//                    }
-//                }catch (IndexOutOfBoundsException iobx){
-//                    Log.e("CANNOT GET POSITION", iobx.getMessage());
-//                }
-//            }
-//            ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
-//            if(!ctitle.status.equals("3"))
-//            {
-//                ctitle.status = "3";
-//                titleViewModel.update(ctitle);
-//            }
-//        }
+        if (mAdapter != null) {
+            int actual_position = surah_id;
+            for (int i = 0; i < mAdapter.getItemCount(); i++) {
+                try {
+                    if (mAdapter.getTitleAt(i).chapter_id == surah_id) {
+                        actual_position = i;
+                    }
+                } catch (IndexOutOfBoundsException iobx) {
+                    Log.e("CANNOT GET POSITION", iobx.getMessage());
+                }
+            }
+            ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
+            if (!ctitle.status.equals("3")) {
+                ctitle.status = "3";
+                titleViewModel.update(ctitle);
+            }
+        }
     }
 
     @Override
@@ -413,53 +403,204 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         //titleViewModel.update(ctitle);
     }
 
+    @Override
+    public void DownloadThis(String suraNumber) {
+        suranomer = suraNumber;
+        if (WritePermission()) {
+            String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suraNumber + ".mp3"; // your URL here
+            File file = new File(getExternalFilesDir(null), suraNumber + ".mp3");
+            DownloadManager.Request request;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                request = new DownloadManager.Request(Uri.parse(url))
+                        .setTitle(suraNumber)
+                        .setDescription("Downloading")
+                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+                        .setDestinationUri(Uri.fromFile(file))
+                        .setRequiresCharging(false)
+                        .setAllowedOverMetered(true)
+                        .setAllowedOverRoaming(true);
+            } else {
+                request = new DownloadManager.Request(Uri.parse(url))
+                        .setTitle(suraNumber)
+                        .setDescription("Downloading")
+                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+                        .setDestinationUri(Uri.fromFile(file))
+                        .setAllowedOverMetered(true)
+                        .setAllowedOverRoaming(true);
+            }
+
+            Log.i(TAG, "PERMISSION OK, Download start " + url);
 
 
+            downloadId = downloadManager.enqueue(request);
+            sharedPref.write("download_" + downloadId, suranomer); //storing the download id under the right sura reference. We can use the id later to check for download status
+/*
+            query.setFilterById(DownloadManager.STATUS_FAILED|DownloadManager.STATUS_PENDING|DownloadManager.STATUS_RUNNING|DownloadManager.STATUS_SUCCESSFUL);
+            Cursor cursor = downloadManager.query(query);
+            if(cursor!=null){
+                for(int i=0;i<cursor.getCount();i++){
+                    Log.i(TAG, cursor.getInt(i) + " download " + cursor.);
+                    cursor.moveToNext();
+                }
+            }
+*/
+        }
+    }
 
 
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+            /*
+            if (id == downloadId) {
+                Log.i(TAG, "DOWNLOAD COMPLETE, Download id " + downloadId);
+                sharedPref.write("download_"+suranomer, 0);
+                //MoveFiles();
+                PopulateTrackList();
+            } else {
+                Log.i(TAG, "DOWNLOAD FAILED, Download id " + downloadId);
+            }*/
+            query.setFilterById(id);
+            Cursor cursor = downloadManager.query(query);
+            if (cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
+                int status = cursor.getInt(columnIndex);
+                int columnReason = cursor.getColumnIndex(DownloadManager.COLUMN_REASON);
+                int reason = cursor.getInt(columnReason);
 
+                if (status == DownloadManager.STATUS_SUCCESSFUL) {
+                    Log.i(TAG, "DOWNLOAD COMPLETE, Download id " + id);
+                    //Retrieve the saved download id
+                    int suraid = sharedPref.read("download_" + id, 0);
+                    if (suraid > 0) {
+                        sharedPref.write("download_" + id, 0);
+                        PopulateTrackList();
+                    }
+                } else if (status == DownloadManager.STATUS_FAILED) {
+                    Toast.makeText(SuraNameList.this,
+                            "FAILED!\n" + "reason of " + reason,
+                            Toast.LENGTH_LONG).show();
+                } else if (status == DownloadManager.STATUS_PAUSED) {
+                    Toast.makeText(SuraNameList.this,
+                            "PAUSED!\n" + "reason of " + reason,
+                            Toast.LENGTH_LONG).show();
+                } else if (status == DownloadManager.STATUS_PENDING) {
+                    Toast.makeText(SuraNameList.this,
+                            "PENDING!",
+                            Toast.LENGTH_LONG).show();
+                } else if (status == DownloadManager.STATUS_RUNNING) {
+                    Toast.makeText(SuraNameList.this,
+                            "RUNNING!",
+                            Toast.LENGTH_LONG).show();
+                }
+            } else {
 
+            }
+        }
+    };
+
+    /*private boolean itemDownloading(long did){
+        query.setFilterById(did);
+        Cursor cursor = downloadManager.query(query);
+        if(cursor.moveToFirst()){
+            int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
+            int status = cursor.getInt(columnIndex);
+            int columnReason = cursor.getColumnIndex(DownloadManager.COLUMN_REASON);
+            int reason = cursor.getInt(columnReason);
+            Log.i(TAG, status + " cursor status");
+            return true;
+        }
+        return false;
+    }*/
 
     private void PopulateTrackList() {
+
+
         //TODO clean up wrong files
         String path = getExternalFilesDir(null).getAbsolutePath();
-        Log.d("Files", "Path: " + path);
+        Log.d(TAG, "Files: Path: " + path);
         File directory = new File(path);
         File[] files = directory.listFiles();
-        if(files!=null){
+        if (files != null) {
             //Log.d("FILES", "Size: "+ files.length);
 
-            for (int i = 0; i < files.length; i++)
-            {
+            for (int i = 0; i < files.length; i++) {
                 //Log.d("Files", "FileName:" + files[i].getName());
                 String trackname = files[i].getName().toString();
-                if(trackname.contains(".")){
+                if (trackname.contains(".")) {
                     trackname = trackname.substring(0, trackname.lastIndexOf("."));
-                    try{
+                    try {
                         int tt = Integer.parseInt(trackname);
                         trackList.add(trackname);
                         MarkAsDownloaded(tt);
-                    }catch (NumberFormatException nfx){
-                        Log.e("TRACKNAME ERROR", trackname);
+                    } catch (NumberFormatException nfx) {
+                        Log.e(TAG, "TRACKNAME ERROR " + trackname);
                         DeleteTheFile(files[i]);
                         //TODO delete the file with x-y.mp3 naming format (dual download)
                     }
                     //Log.i("TRACKNAME", trackname);
                 }
             }
-        }else{
-            Log.d("NULL ARRAY", "no files found");
+        } else {
+            Log.d(TAG, "NULL ARRAY no files found");
+        }
+    }
+
+    private boolean WritePermission() {
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+
+            // No explanation needed; request the permission
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_WRITE_TO_DISK);
+
+            // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+            // app-defined int constant. The callback method gets the
+            // result of the request.
+            Log.i(TAG, "MY PERMISSION TO WRITE granted?");
+
+            return false;
+        } else {
+            // Permission has already been granted
+            return true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_WRITE_TO_DISK: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    DownloadThis(suranomer);
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    LoadTheList();
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
         }
     }
 
     private void DeleteTheFile(File file) {
-        try{
+        try {
             file.delete();
-        }catch (SecurityException sx){
-            Log.e("FAILED to DELETE", sx.getMessage());
+        } catch (SecurityException sx) {
+            Log.e(TAG, "FAILED to DELETE " + sx.getMessage());
         }
     }
-
-
-
 }

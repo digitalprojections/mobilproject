@@ -169,6 +169,8 @@ public class MainActivity extends AppCompatActivity {
         Uri appLinkData = appLinkIntent.getData();
 
         Log.i(TAG, Locale.getDefault().getDisplayLanguage());
+        Log.i(TAG, BuildConfig.BUILD_TYPE);
+
     }
 
 
