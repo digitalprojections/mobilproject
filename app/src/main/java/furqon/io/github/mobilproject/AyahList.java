@@ -479,7 +479,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         if(TrackDownloaded(suraNumber)){
             url = filePath;
         }else{
-
+            Toast.makeText(this, "Online audio!", Toast.LENGTH_SHORT).show();
             url = new StringBuilder().append("https://mobilproject.github.io/furqon_web_express/by_sura/").append(suraNumber).append(".mp3").toString();
         }
 

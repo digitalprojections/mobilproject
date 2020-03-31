@@ -40,7 +40,7 @@ public class TitleViewModel extends AndroidViewModel {
     }
 
     LiveData<List<ChapterTitleTable>> getAllTitles(){
-        if(sharedPref.read(sharedPref.displayOrder, 0)==0){
+        if((int) sharedPref.read(sharedPref.displayOrder, 0)==0){
             mAllTitles = titleRepository.getAllTitlesByQuranicOrder();
         }else{
             mAllTitles = titleRepository.getAllTitlesByRevelationOrder();

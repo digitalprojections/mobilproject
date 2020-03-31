@@ -292,8 +292,8 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
             quranic_order_btn.setBackgroundColor(getResources().getColor(R.color.gold));
             revelation_order_btn.setBackgroundColor(0);
         } else {
-            revelation_order_btn.setBackgroundColor(getResources().getColor(R.color.gold));
             quranic_order_btn.setBackgroundColor(0);
+            revelation_order_btn.setBackgroundColor(getResources().getColor(R.color.gold));
         }
         recyclerView.scheduleLayoutAnimation();
     }
@@ -323,6 +323,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     protected void onResume() {
         //mRewardedVideoAd.resume(this);
         super.onResume();
+        SetButtonStates();
     }
 
     @Override
@@ -434,7 +435,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
             downloadId = downloadManager.enqueue(request);
             sharedPref.write("download_" + downloadId, suranomer); //storing the download id under the right sura reference. We can use the id later to check for download status
-            sharedPref.write("downloading_surah_" + suranomer, downloadId);
+            sharedPref.write("downloading_surah_" + suranomer, (int) downloadId);
 /*
             query.setFilterById(DownloadManager.STATUS_FAILED|DownloadManager.STATUS_PENDING|DownloadManager.STATUS_RUNNING|DownloadManager.STATUS_SUCCESSFUL);
             Cursor cursor = downloadManager.query(query);
@@ -473,9 +474,9 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
                 if (status == DownloadManager.STATUS_SUCCESSFUL) {
                     Log.i(TAG, "DOWNLOAD COMPLETE, Download id " + id);
                     //Retrieve the saved download id
-                    int suraid = sharedPref.read("download_" + id, 0);
-                    if (suraid > 0) {
-                        sharedPref.write("download_" + id, 0);
+                    String suraid = sharedPref.read("download_" + id, "0");
+                    if (Integer.parseInt(suraid) > 0) {
+                        sharedPref.write("download_" + id, "0");
                         PopulateTrackList();
                     }
                 } else if (status == DownloadManager.STATUS_FAILED) {
@@ -501,19 +502,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         }
     };
 
-    /*private boolean itemDownloading(long did){
-        query.setFilterById(did);
-        Cursor cursor = downloadManager.query(query);
-        if(cursor.moveToFirst()){
-            int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
-            int status = cursor.getInt(columnIndex);
-            int columnReason = cursor.getColumnIndex(DownloadManager.COLUMN_REASON);
-            int reason = cursor.getInt(columnReason);
-            Log.i(TAG, status + " cursor status");
-            return true;
-        }
-        return false;
-    }*/
+
 
     private void PopulateTrackList() {
 

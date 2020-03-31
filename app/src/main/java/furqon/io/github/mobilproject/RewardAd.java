@@ -144,6 +144,21 @@ public class RewardAd{
         currentSurahNumber = Integer.parseInt(s);
         if (mRewardedVideoAd.isLoaded()) {
             mRewardedVideoAd.show();
+        }else{
+            /*
+             * If user has coins, simply allow download
+             * */
+            int xcoins = sharedpref.getInstance().read(sharedpref.getInstance().COINS, 0);
+            int newtotal;
+            if(xcoins>=100){
+                newtotal = xcoins-100;
+                sharedpref.getInstance().write(sharedpref.getInstance().COINS, newtotal);
+                MyListener myListener;
+                myListener = (MyListener) mContext;
+                myListener.MarkAsAwarded(currentSurahNumber);
+            }else{
+                Toast.makeText(mContext, mContext.getString(R.string.you_need) + (100 - xcoins) + " " + mContext.getString(R.string._coins) + mContext.getString(R.string.uz_kam), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

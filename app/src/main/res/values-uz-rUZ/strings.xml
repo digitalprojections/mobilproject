@@ -98,4 +98,6 @@
     <string name="welcome_title">Xush kelibsiz!</string>
     <string name="do_not_show_again">Boshqa ko\'rsatma</string>
     <string name="ad_loaded_toast">Reklama tayyor</string>
+    <string name="you_need">"Yana "</string>
+    <string name="uz_kam">" kam"</string>
 </resources>

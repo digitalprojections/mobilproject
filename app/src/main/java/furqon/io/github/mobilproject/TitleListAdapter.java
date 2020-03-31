@@ -1,7 +1,9 @@
 package furqon.io.github.mobilproject;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -103,11 +105,15 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
         }
 
         private void ShowRewardAdForThisItem(View view) {
-            int position = this.getAdapterPosition();
-            String suranomer = suraNumber.getText().toString();
-            //String suranomi = suraName.getText().toString();
-            mRewardedVideoAd.SHOW(suranomer);
+
+                int position = this.getAdapterPosition();
+                String suranomer = suraNumber.getText().toString();
+                //String suranomi = suraName.getText().toString();
+                mRewardedVideoAd.SHOW(suranomer);
+
         }
+
+
         private void StartDownload(View view) {
             MyListener myListener;
             String snumber = suraNumber.getText().toString();
@@ -137,7 +143,7 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
 
         ChapterTitleTable current = mTitles.get(position);
 
-        Log.i("TITLES", "ddddddddddddddd " + current.status + " " + current.chapter_id);
+        ///Log.i("TITLES", "ddddddddddddddd " + current.status + " " + current.chapter_id);
 
         String name = current.uzbek;
         String arname = current.arabic;
@@ -156,16 +162,17 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
         we can mark missing files as regular LOCK icon or DOWNLOAD icon respectively
         */
 
-        Log.i(TAG, sharedpref.getInstance().read("download_" + current.chapter_id, 0).toString() + " download ID for " + current.chapter_id);
+        //Log.i(TAG, sharedpref.getInstance().read("download_" + current.chapter_id, 0).toString() + " download ID for " + current.chapter_id);
 
         if (TrackDownloaded(current.chapter_id + "")) {
             //set by the actually available audio files
             holder.downloadButton.setImageResource(R.drawable.ic_file_available);
-            Log.i("TITLES", " TRUE " + current.status + " " + current.chapter_id + " " + current.uzbek);
+            Log.i(TAG, " DOWNLOADED, " + current.chapter_id + " " + current.uzbek);
             holder.downloadButton.setFocusable(false);
             //holder.down_cont.setVisibility(View.INVISIBLE);
             holder.downloadButton.setTag(3);
             holder.progressBar.setVisibility(View.INVISIBLE);
+
         } else {
             if (current.status.equals("2")) {
                 //download allowed. Active within the session only. Forgotten on restart
@@ -178,7 +185,15 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
                 holder.downloadButton.setFocusable(false);
                 holder.downloadButton.setTag(4);
                 holder.progressBar.setVisibility(View.VISIBLE);
-            } else {
+            }
+            /*else if(itemDownloading(current.chapter_id)){
+                //downloading
+                Log.i(TAG, " DOWNLOADING, " + current.chapter_id + " " + current.uzbek);
+                holder.downloadButton.setTag(5);
+                holder.progressBar.setVisibility(View.VISIBLE);
+                holder.downloadButton.setVisibility(View.GONE);
+            }*/
+            else {
                 holder.downloadButton.setImageResource(R.drawable.ic_unlock);
                 holder.downloadButton.setFocusable(true);
                 holder.downloadButton.setTag(1);
@@ -186,7 +201,23 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
             }
         }
     }
-
+    private boolean itemDownloading(int sid){
+        DownloadManager downloadManager = (DownloadManager) mContext.getSystemService(mContext.DOWNLOAD_SERVICE);
+        DownloadManager.Query query = new DownloadManager.Query();
+        long did = (long) sharedpref.getInstance().read("downloading_surah_"+sid, 0);
+        //query.setFilterById(did);
+            Cursor cursor = downloadManager.query(query);
+            Log.i(TAG, cursor.getCount() + " cursor count " + did);
+            if(cursor.moveToFirst()){
+                int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
+                int status = cursor.getInt(columnIndex);
+                Log.i(TAG, status + " cursor status");
+                if(status == DownloadManager.STATUS_SUCCESSFUL){
+                    return true;
+                }
+            }
+            return false;
+        }
     void setTitles(List<ChapterTitleTable> titles){
         mTitles = titles;
         notifyDataSetChanged();

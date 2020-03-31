@@ -102,4 +102,6 @@
     <string name="free_coin_awards_received">Thank you for your effort. You have received free coins!</string>
     <string name="do_not_show_again">Do not show again</string>
     <string name="ad_loaded_toast">Ad is ready</string>
+    <string name="you_need">"You need "</string>
+    <string name="uz_kam"></string>
 </resources>
