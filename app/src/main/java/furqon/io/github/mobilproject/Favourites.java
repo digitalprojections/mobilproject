@@ -68,6 +68,7 @@ public class Favourites extends AppCompatActivity implements ManageSpecials {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
+
         progressBar = findViewById(R.id.progressBar2);
         recyclerView = findViewById(R.id.recyclerfavs);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -100,7 +101,8 @@ public class Favourites extends AppCompatActivity implements ManageSpecials {
 
 
     }
-    public boolean onCreateOptionsMenu(Menu menu) {
+
+    /*public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options_menu, menu);
         return true;
@@ -120,7 +122,7 @@ public class Favourites extends AppCompatActivity implements ManageSpecials {
         }
 
     }
-
+*/
     @Override
     protected void onResume() {
         super.onResume();

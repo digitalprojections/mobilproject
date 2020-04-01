@@ -75,7 +75,7 @@
 
             <ImageButton
                 android:id="@+id/f_sharebut"
-                style="@android:style/Widget.Holo.ImageButton"
+                style="@android:style/Widget.ImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -95,7 +95,7 @@
 
             <ImageButton
                 android:id="@+id/f_bookmarkbut"
-                style="@android:style/Widget.Holo.ImageButton"
+                style="@android:style/Widget.ImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -113,7 +113,7 @@
 
             <ImageButton
                 android:id="@+id/favouritebut"
-                style="@android:style/Widget.Holo.ImageButton"
+                style="@android:style/Widget.ImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
