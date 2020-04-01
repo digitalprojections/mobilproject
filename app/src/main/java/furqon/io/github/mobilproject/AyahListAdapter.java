@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewPropertyAnimator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -80,6 +81,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
         ssb = new SpannableStringBuilder();
         ssb.clear();
+
 
         //ayah_open_anim = AnimationUtils.loadAnimation(mContext, R.anim.fab_open);
         //ayah_close_anim = AnimationUtils.loadAnimation(mContext, R.anim.fab_close);

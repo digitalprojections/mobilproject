@@ -399,9 +399,23 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     @Override
     public void MarkAsDownloading(int surah_id) {
         //TODO if quit while downloading, the progressbar is left permanently on
-        //ChapterTitleTable ctitle = mAdapter.getTitleAt(surah_id);
-        //ctitle.status = "4";
-        //titleViewModel.update(ctitle);
+        if (mAdapter != null) {
+            int actual_position = surah_id;
+            for (int i = 0; i < mAdapter.getItemCount(); i++) {
+                try {
+                    if (mAdapter.getTitleAt(i).chapter_id == surah_id) {
+                        actual_position = i;
+                    }
+                } catch (IndexOutOfBoundsException iobx) {
+                    Log.e("CANNOT GET POSITION", iobx.getMessage());
+                }
+            }
+            ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
+            if (!ctitle.status.equals("4")) {
+                ctitle.status = "4";
+                titleViewModel.update(ctitle);
+            }
+        }
     }
 
     @Override
@@ -436,6 +450,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
             downloadId = downloadManager.enqueue(request);
             sharedPref.write("download_" + downloadId, suranomer); //storing the download id under the right sura reference. We can use the id later to check for download status
             sharedPref.write("downloading_surah_" + suranomer, (int) downloadId);
+            //MarkAsDownloading(Integer.parseInt(suranomer));
 /*
             query.setFilterById(DownloadManager.STATUS_FAILED|DownloadManager.STATUS_PENDING|DownloadManager.STATUS_RUNNING|DownloadManager.STATUS_SUCCESSFUL);
             Cursor cursor = downloadManager.query(query);
@@ -496,8 +511,6 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
                             "RUNNING!",
                             Toast.LENGTH_LONG).show();
                 }
-            } else {
-
             }
         }
     };

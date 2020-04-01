@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
@@ -105,21 +106,19 @@ public class RewardAd{
                 @Override
                 public void onRewardedVideoAdLeftApplication() {
                     //Toast.makeText(mContext,                            "Ad left application.", Toast.LENGTH_SHORT).show();
+                    Crashlytics.log("rewardAd left application");
                 }
 
                 @Override
                 public void onRewardedVideoAdFailedToLoad(int i) {
-                    //Toast.makeText(mContext,                            "Ad failed to load.", Toast.LENGTH_SHORT).show();
-                    //enable direct access
-                    //
+                    //Toast.makeText(mContext,"Ad failed to load.", Toast.LENGTH_SHORT).show();
+                    //enable direct access?
+                    Crashlytics.log("rewardAd failed to load");
                 }
 
                 @Override
                 public void onRewardedVideoCompleted() {
                     //Toast.makeText(mContext,                            "onRewardedVideoCompleted.", Toast.LENGTH_SHORT).show();
-
-
-
                 }
             });
         if (BuildConfig.BUILD_TYPE == "debug") {
@@ -157,7 +156,8 @@ public class RewardAd{
                 myListener = (MyListener) mContext;
                 myListener.MarkAsAwarded(currentSurahNumber);
             }else{
-                Toast.makeText(mContext, mContext.getString(R.string.you_need) + (100 - xcoins) + " " + mContext.getString(R.string._coins) + mContext.getString(R.string.uz_kam), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext, mContext.getString(R.string.you_need) + (100 - xcoins) + " " + mContext.getString(R.string._coins) + mContext.getString(R.string.uz_kam), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, mContext.getString(R.string.tryagain), Toast.LENGTH_SHORT).show();
             }
         }
     }

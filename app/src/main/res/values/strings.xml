@@ -104,4 +104,5 @@
     <string name="ad_loaded_toast">Ad is ready</string>
     <string name="you_need">"You need "</string>
     <string name="uz_kam"></string>
+    <string name="favourites_button_description">add to favourites</string>
 </resources>

@@ -146,22 +146,21 @@ public class sharedpref
     boolean read(String key, boolean defValue) {
         return mSharedPref.getBoolean(key, defValue);
     }
+
     Integer read(String key, int defValue) {
         return mSharedPref.getInt(key, defValue);
     }
 
     void write(String key, boolean value) {
-        prefsEditor.putBoolean(key, value);
-        prefsEditor.apply();
+        prefsEditor.putBoolean(key, value).apply();
     }
+
     void write(String key, Integer value) {
         prefsEditor.putInt(key, value).apply();
     }
 
-
     void write(String key, String value) {
-        prefsEditor.putString(key, value);
-        prefsEditor.apply();
+        prefsEditor.putString(key, value).apply();
     }
 
     boolean isFirstRun() {

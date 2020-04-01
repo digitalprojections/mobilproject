@@ -456,13 +456,12 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         PopulateTrackList();
 
         if (TrackDownloaded(suraNumber)) {
-
             //set by the actually available audio files
             //playButton.setIcon(R.drawable.ic_play_circle);
             //Log.i("TITLES", " TRUE ");
             //downloadButton.setFocusable(false);
             download_container.setVisibility(View.INVISIBLE);
-            downloadText.setText(R.string.play_local);
+            //downloadText.setText(R.string.play_local);
             downloadText.setVisibility(View.VISIBLE);
             downloadButton.setVisibility(View.INVISIBLE);
             progressBar.setVisibility(View.INVISIBLE);
@@ -470,17 +469,30 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             if (titleTable != null && titleTable.status.equals("2")) {
                 //download allowed. Active within the session only. Forgotten on restart
                 downloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
+
                 //playButton.setIcon(R.drawable.ic_play_circle);
                 downloadButton.setFocusable(true);
                 downloadButton.setTag(2);
+                downloadButton.setVisibility(View.VISIBLE);
                 progressBarDownload.setVisibility(View.INVISIBLE);
-                downloadText.setText(R.string.down_or_play);
+                //downloadText.setText(R.string.down_or_play);
+            } else if (titleTable != null && titleTable.status.equals("4")) {
+                //download allowed. Active within the session only. Forgotten on restart
+                //downloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
+                //playButton.setIcon(R.drawable.ic_play_circle);
+                //downloadButton.setFocusable(true);
+                downloadButton.setTag(4);
+                progressBarDownload.setVisibility(View.VISIBLE);
+                //downloadText.setText(R.string.down_or_play);
             } else {
+                //Lock state
+
                 downloadButton.setImageResource(R.drawable.ic_unlock);
                 downloadButton.setFocusable(true);
                 downloadButton.setTag(1);
+                downloadButton.setVisibility(View.VISIBLE);
                 progressBarDownload.setVisibility(View.INVISIBLE);
-                downloadText.setText(R.string.unlock_or_play);
+                //downloadText.setText(R.string.unlock_or_play);
             }
         }
 

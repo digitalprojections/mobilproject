@@ -5,5 +5,9 @@
         <item>@string/earn_coins</item>
         <item>@string/cancel</item>
     </array>
-
+    <string-array name="available_languages">
+        <item>@string/arabic</item>
+        <item>@string/english</item>
+        <item>@string/russian</item>
+    </string-array>
 </resources>
