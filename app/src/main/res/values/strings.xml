@@ -105,4 +105,7 @@
     <string name="you_need">"You need "</string>
     <string name="uz_kam"></string>
     <string name="favourites_button_description">add to favourites</string>
+    <string name="audio">Audio</string>
+    <string name="your_message_to_the_author">Your message to the author</string>
+    <string name="send">Send</string>
 </resources>

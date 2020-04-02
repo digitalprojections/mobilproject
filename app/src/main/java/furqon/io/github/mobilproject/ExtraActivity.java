@@ -30,17 +30,22 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import java.util.List;
 import java.util.Objects;
 
-public class ExtraActivity extends AppCompatActivity {
+public class ExtraActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final String TAG = "EAXTRAACTIVITY";
     Button favourite_but;
     Button search_but;
     Button youtube_but;
     Button rate_but;
+    Button coins_but;
     Button message_but;
     Button chat_but;
+    Button audio_but;
+
+
     TextView nbadge;
     private AdView mAdView;
+    FirebaseRemoteConfig mFirebaseRemoteConfig;
 
-    Button coins_but;
 
     private Animation scaler;
 //    @Override
@@ -80,48 +85,29 @@ public class ExtraActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        final FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
 
         favourite_but = findViewById(R.id.favouritebut);
         search_but = findViewById(R.id.searchbtn);
         youtube_but = findViewById(R.id.youtubebut);
         rate_but = findViewById(R.id.ratebtn);
         coins_but = findViewById(R.id.earn_coins_button);
+        message_but = findViewById(R.id.messageButton);
+        nbadge = findViewById(R.id.numeric_badge_txt);
+        nbadge.bringToFront();
+        chat_but = findViewById(R.id.chat_button);
+        audio_but = findViewById(R.id.mediabutton);
 
-        favourite_but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                open_favourites();
-            }
-        });
-        search_but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                open_search();
-            }
-        });
-        youtube_but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(mFirebaseRemoteConfig.getString("youtube_video")));
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(intent);
-                }
-            }
-        });
-        rate_but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Rateus();
-            }
-        });
-        coins_but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                open_earn_coins();
-            }
-        });
+        favourite_but.setOnClickListener(this);
+        search_but.setOnClickListener(this);
+        youtube_but.setOnClickListener(this);
+        rate_but.setOnClickListener(this);
+        coins_but.setOnClickListener(this);
+        message_but.setOnClickListener(this);
+        chat_but.setOnClickListener(this);
+        audio_but.setOnClickListener(this);
+
 
 
         AppRate.with(this)
@@ -157,28 +143,18 @@ public class ExtraActivity extends AppCompatActivity {
                 }
             }
         });
-        message_but = findViewById(R.id.messageButton);
-        message_but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                open_messages();
-            }
-        });
-
-        nbadge = findViewById(R.id.numeric_badge_txt);
-        nbadge.bringToFront();
-
-        chat_but = findViewById(R.id.chat_button);
-        chat_but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                open_chatroom();
-            }
-        });
 
         mAdView = findViewById(R.id.adViewExtra);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+    }
+
+    private void open_youtube() {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(mFirebaseRemoteConfig.getString("youtube_video")));
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 
     private void open_chatroom() {
@@ -215,5 +191,44 @@ public class ExtraActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         //mInterstitialAd.show();
+    }
+
+    @Override
+    public void onClick(View v) {
+        Log.i(TAG, String.valueOf(v.getId()));
+        switch (v.getId()) {
+            case R.id.favouritebut:
+                open_favourites();
+                break;
+            case R.id.searchbtn:
+                open_search();
+                break;
+            case R.id.ratebtn:
+                Rateus();
+                break;
+            case R.id.youtubebut:
+                open_youtube();
+                break;
+            case R.id.earn_coins_button:
+                open_earn_coins();
+                break;
+            case R.id.messageButton:
+                open_messages();
+                break;
+            case R.id.chat_button:
+                open_chatroom();
+                break;
+            case R.id.mediabutton:
+                open_media_page();
+                break;
+
+        }
+    }
+
+    private void open_media_page() {
+        Intent intent = new Intent(this, MediaActivity.class);
+        //intent.setData(Uri.parse(mFirebaseRemoteConfig.getString("youtube_video")));
+        startActivity(intent);
+
     }
 }

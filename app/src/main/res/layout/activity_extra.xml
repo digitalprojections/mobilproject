@@ -27,6 +27,8 @@
         <include layout="@layout/messages_button"/>
         <include layout="@layout/chat_button"/>
 
+        <include layout="@layout/media_button" />
+
 
     </LinearLayout>
     <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
