@@ -18,7 +18,7 @@
         android:inputType="textMultiLine" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/send_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/send" />

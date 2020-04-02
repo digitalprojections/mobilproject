@@ -46,88 +46,7 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
 
 
 
-    public class SuraListViewHolder extends RecyclerView.ViewHolder implements OnClickListener{
-        TextView suraName;
-        TextView arabic_name;
-        TextView suraNumber;
-        ImageView downloadButton;
-        ProgressBar progressBar;
-        CardView down_cont;
 
-        SuraListViewHolder(@NonNull View itemView) {
-            super(itemView);
-            itemView.setOnClickListener(this);
-            suraName = itemView.findViewById(R.id.sura_name_item);
-            arabic_name = itemView.findViewById(R.id.arabic);
-            suraNumber = itemView.findViewById(R.id.sura_number_item);
-            downloadButton = itemView.findViewById(R.id.button_download);
-            progressBar = itemView.findViewById(R.id.progressBar_download);
-            down_cont = itemView.findViewById(R.id.download_cont);
-
-            Log.i("DOWNLOAD BUTTON", " " + downloadButton.getTag());
-
-            downloadButton.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //Toast.makeText(mContext,"Download surah number " + suraNumber.getText().toString(), Toast.LENGTH_SHORT).show();
-                    //String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suranomer + ".mp3"; // your URL here
-                    switch (downloadButton.getTag().toString()) {
-                        case "1"://red arrow
-                            ShowRewardAdForThisItem(view);
-                            break;
-                        case "2"://blue arrow
-                            StartDownload(view);
-                            break;
-                    }
-
-                }
-            });
-            progressBar.setVisibility(View.GONE);
-
-        }
-
-
-        @Override
-        public void onClick(View view) {
-
-            int position=this.getAdapterPosition();
-            String suranomer = suraNumber.getText().toString();
-            String suranomi = suraName.getText().toString();
-
-            Log.d("CLICK", suranomer + " " + position);
-            Intent intent;
-            intent = new Intent(mContext, AyahList.class);
-            intent.putExtra("SURANAME",suranomi+":"+suranomer);
-            mContext.startActivity(intent);
-
-
-
-        }
-
-        private void ShowRewardAdForThisItem(View view) {
-
-                int position = this.getAdapterPosition();
-                String suranomer = suraNumber.getText().toString();
-                //String suranomi = suraName.getText().toString();
-                mRewardedVideoAd.SHOW(suranomer);
-
-        }
-
-
-        private void StartDownload(View view) {
-            MyListener myListener;
-            String snumber = suraNumber.getText().toString();
-            if(mContext instanceof MyListener){
-                myListener = (MyListener) mContext;
-                myListener.DownloadThis(snumber);
-                myListener.MarkAsDownloading(Integer.parseInt(snumber));
-                //getTitleAt(Integer.parseInt(snumber)-1).;
-                progressBar.setVisibility(View.VISIBLE);
-                downloadButton.setVisibility(View.GONE);
-            }
-
-        }
-    }
 
     @NonNull
     @Override
@@ -283,5 +202,87 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
             c = mTitles.size();
         }
         return c;
+    }
+
+    public class SuraListViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
+        TextView suraName;
+        TextView arabic_name;
+        TextView suraNumber;
+        ImageView downloadButton;
+        ProgressBar progressBar;
+        CardView down_cont;
+
+        SuraListViewHolder(@NonNull View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(this);
+            suraName = itemView.findViewById(R.id.sura_name_item);
+            arabic_name = itemView.findViewById(R.id.arabic);
+            suraNumber = itemView.findViewById(R.id.sura_number_item);
+            downloadButton = itemView.findViewById(R.id.button_download);
+            progressBar = itemView.findViewById(R.id.progressBar_download);
+            down_cont = itemView.findViewById(R.id.download_cont);
+
+            Log.i("DOWNLOAD BUTTON", " " + downloadButton.getTag());
+
+            downloadButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //Toast.makeText(mContext,"Download surah number " + suraNumber.getText().toString(), Toast.LENGTH_SHORT).show();
+                    //String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suranomer + ".mp3"; // your URL here
+                    switch (downloadButton.getTag().toString()) {
+                        case "1"://red arrow
+                            ShowRewardAdForThisItem(view);
+                            break;
+                        case "2"://blue arrow
+                            StartDownload(view);
+                            break;
+                    }
+
+                }
+            });
+            progressBar.setVisibility(View.GONE);
+
+        }
+
+
+        @Override
+        public void onClick(View view) {
+
+            int position = this.getAdapterPosition();
+            String suranomer = suraNumber.getText().toString();
+            String suranomi = suraName.getText().toString();
+
+            Log.d("CLICK", suranomer + " " + position);
+            Intent intent;
+            intent = new Intent(mContext, AyahList.class);
+            intent.putExtra("SURANAME", suranomi + ":" + suranomer);
+            mContext.startActivity(intent);
+
+
+        }
+
+        private void ShowRewardAdForThisItem(View view) {
+
+            int position = this.getAdapterPosition();
+            String suranomer = suraNumber.getText().toString();
+            //String suranomi = suraName.getText().toString();
+            mRewardedVideoAd.SHOW(suranomer);
+
+        }
+
+
+        private void StartDownload(View view) {
+            MyListener myListener;
+            String snumber = suraNumber.getText().toString();
+            if (mContext instanceof MyListener) {
+                myListener = (MyListener) mContext;
+                myListener.DownloadThis(snumber);
+                myListener.MarkAsDownloading(Integer.parseInt(snumber));
+                //getTitleAt(Integer.parseInt(snumber)-1).;
+                progressBar.setVisibility(View.VISIBLE);
+                downloadButton.setVisibility(View.GONE);
+            }
+
+        }
     }
 }

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.DownloadManager;
@@ -42,6 +43,11 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     private static final int MY_WRITE_EXTERNAL_STORAGE = 101;
     private ArrayList<String> trackList;
     private TitleViewModel titleViewModel;
+    private MediaActivityAdapter mAdapter;
+    private RecyclerView recyclerView;
+
+    private Context context;
+
     long downloadId;
     CardView download_container;
     ImageView downloadButton;
@@ -54,7 +60,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
     Integer audio_pos;
     Integer ayah_position;
-    private Context context;
+
     String audiorestore;
     String audiostore;
     String loadfailed;
@@ -80,6 +86,11 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+        recyclerView = findViewById(R.id.mp_recyclerView);
+        mAdapter = new MediaActivityAdapter(this, trackList);
+        recyclerView.setAdapter(mAdapter);
+
 //
 //        download_container = findViewById(R.id.download_cont);
 //        progressBarDownload = findViewById(R.id.progressBar_download);
