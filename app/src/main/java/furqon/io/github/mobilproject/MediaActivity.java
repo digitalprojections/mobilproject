@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
@@ -14,6 +15,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -34,14 +36,18 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.Semaphore;
 
 import furqon.io.github.mobilproject.Services.OnClearFromService;
 
 public class MediaActivity extends AppCompatActivity implements MyListener, ManageCoins, Playable {
     private static final int MY_WRITE_EXTERNAL_STORAGE = 101;
-    private ArrayList<String> trackList;
+    private static final String TAG = "MediaActivity";
+    private ArrayList<Track> trackList;
     private TitleViewModel titleViewModel;
     private MediaActivityAdapter mAdapter;
     private RecyclerView recyclerView;
@@ -78,6 +84,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     private sharedpref sharedPref;
     ProgressBar progressBar;
     private Runnable runnable;
+    MediaMetadataRetriever metadataRetriever = new MediaMetadataRetriever();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,9 +95,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
-        recyclerView = findViewById(R.id.mp_recyclerView);
-        mAdapter = new MediaActivityAdapter(this, trackList);
-        recyclerView.setAdapter(mAdapter);
+
+        //recyclerView.setAdapter(mAdapter);
 
 //
 //        download_container = findViewById(R.id.download_cont);
@@ -103,6 +110,13 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             startService(new Intent(getBaseContext(), OnClearFromService.class));
         }
 
+        trackList = new ArrayList<Track>();
+
+        recyclerView = findViewById(R.id.mp_recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new MediaActivityAdapter(this);
+
+        PopulateTrackList();
     }
 
     private BroadcastReceiver broadcastReceiverDownload = new BroadcastReceiver() {
@@ -110,7 +124,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         public void onReceive(Context context, Intent intent) {
             long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
             if (id == downloadId) {
-                Log.i("DOWNLOAD COMPLETE", "Download id " + downloadId);
+                Log.i(TAG, "DOWNLOAD COMPLETE Download id " + downloadId);
                 //MoveFiles();
 
                 PopulateTrackList();
@@ -118,7 +132,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
 
             } else {
-                Log.i("DOWNLOAD OTHER FILE", "Download id " + downloadId);
+                Log.i(TAG, "DOWNLOAD OTHER FILE Download id " + downloadId);
             }
         }
 
@@ -126,26 +140,35 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
     private void PopulateTrackList() {
         String path = getExternalFilesDir(null).getAbsolutePath();
-        Log.d("Files", "Path: " + path);
+        Log.d(TAG, "Files Path: " + path);
         File directory = new File(path);
         File[] files = directory.listFiles();
         if (files != null) {
             Log.d("FILES", "Size: " + files.length);
 
             for (int i = 0; i < files.length; i++) {
-                Log.d("Files", suraNumber + " FileName:" + files[i].getName());
-                String trackname = files[i].getName().toString();
-                if (trackname.contains(".")) {
-                    trackname = trackname.substring(0, trackname.lastIndexOf("."));
-                    if (!TrackDownloaded(trackname)) {
-                        trackList.add(trackname);
+                //Log.d(TAG, "Files " + suraNumber + " FileName:" + files[i].getName());
+
+                if (files[i].getName().contains(".")) {
+                    String trackname = files[i].getName().substring(0, files[i].getName().lastIndexOf("."));
+                    if (!TrackDownloaded(files[i].getName())) {
+                        String filePath = new StringBuilder().append(path).append("/").append(files[i].getName()).toString();
+                        metadataRetriever.setDataSource(filePath);
+
+                        //Date date = new Date();
+                        Track track = new Track(AudioTimer.getTimeStringFromMs(Integer.parseInt(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION))), trackname, filePath);
+                        trackList.add(track);
                     }
-                    Log.i("TRACKNAME", "number " + trackname + " track is available");
+                    //Log.i(TAG, "number " + trackname + " track is available");
                 }
             }
+            mAdapter.setTitles(trackList);
+            recyclerView.setAdapter(mAdapter);
         } else {
-            Log.d("NULL ARRAY", "no files found");
+            Log.d(TAG, "NULL ARRAY no files found");
         }
+
+
     }
 
     BroadcastReceiver broadcastReceiverAudio = new BroadcastReceiver() {
@@ -188,11 +211,11 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
     private boolean TrackDownloaded(String v) {
         boolean retval = false;
-        for (String i : trackList
+        for (Track i : trackList
         ) {
-            if (i.equals(v)) {
+            if (i.getName().equals(v)) {
                 //match found
-                Log.i("TRACK DOWNLOADED?", String.valueOf(v) + " " + i + " " + (i.equals(v)));
+                //Log.i("TRACK DOWNLOADED?", String.valueOf(v) + " " + i + " " + (i.equals(v)));
                 retval = true;
             }
 

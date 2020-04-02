@@ -237,14 +237,15 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        recyclerView = findViewById(R.id.recyclerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
 
 
         //suralist = mDatabase.getSuraTitles();
 
 
         //mAdapter = new SuraNameListAdapter(this, suralist, trackList, enabledList);
+        recyclerView = findViewById(R.id.recyclerview);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new TitleListAdapter(this, trackList);
         recyclerView.setAdapter(mAdapter);
 

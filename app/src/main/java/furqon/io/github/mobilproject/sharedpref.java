@@ -130,7 +130,7 @@ public class sharedpref
     Boolean contains(String s){
         boolean rv = false;
 
-        if(mSharedPref.contains(s)){
+        if (mSharedPref != null && mSharedPref.contains(s)) {
             rv = true;
         }
 
