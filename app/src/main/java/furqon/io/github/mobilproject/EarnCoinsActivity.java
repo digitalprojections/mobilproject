@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -39,6 +40,7 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
     private RewardAd mRewardedVideoAd;
     private AdView mAdView;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
+    InterstitialAd mInterstitialAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +95,9 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
         setCoinValue();
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
 
     @Override
@@ -231,5 +236,11 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
     @Override
     public void EarnCoins() {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mInterstitialAd.show();
     }
 }

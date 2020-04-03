@@ -28,7 +28,7 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
     private ArrayList<String> trackList;
     //private ArrayList<String> enabledList = new ArrayList<String>();
     //private List<ChapterTitle> mTitleList = new ArrayList<>();
-    private RewardAd mRewardedVideoAd;
+    //private RewardAd mRewardedVideoAd;
     private Context mContext;
 
     private final LayoutInflater mInflater;
@@ -37,7 +37,7 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
 
 
     TitleListAdapter(Context context, ArrayList<String> trackLst){
-        mRewardedVideoAd = new RewardAd(context);
+        //mRewardedVideoAd = new RewardAd(context);
         mInflater = LayoutInflater.from(context);
         mContext = context;
         this.trackList = trackLst;
@@ -271,7 +271,7 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
             int position = this.getAdapterPosition();
             String suranomer = suraNumber.getText().toString();
             //String suranomi = suraName.getText().toString();
-            mRewardedVideoAd.SHOW(suranomer);
+            //mRewardedVideoAd.SHOW(suranomer);
 
         }
 

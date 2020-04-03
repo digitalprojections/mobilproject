@@ -31,6 +31,7 @@ import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import java.io.File;
 import java.util.Locale;
@@ -39,6 +40,7 @@ import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity {
     Uri deepLink;
+    Button youtube_but;
     Button suralar_but;
     Button extra_btn;
     Button davomi_but;
@@ -92,7 +94,11 @@ public class MainActivity extends AppCompatActivity {
 
         mSharedPref = sharedpref.getInstance();
 
-
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setMinimumFetchIntervalInSeconds(3600)
+                .build();
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
         mFunctions = FirebaseFunctions.getInstance();
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
@@ -110,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         suralar_but = findViewById(R.id.suralar);
         extra_btn = findViewById(R.id.extra_button);
         davomi_but = findViewById(R.id.davomi);
-
+        youtube_but = findViewById(R.id.youtubebut);
         imageView = findViewById(R.id.imageView);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,7 +124,16 @@ public class MainActivity extends AppCompatActivity {
                 ayahOfTheDay();
             }
         });
-
+        youtube_but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(mFirebaseRemoteConfig.getString("youtube_video")));
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                }
+            }
+        });
         //day_but = findViewById(R.id.ayahoftheday);
         suralar_but.setOnClickListener(new View.OnClickListener() {
             @Override

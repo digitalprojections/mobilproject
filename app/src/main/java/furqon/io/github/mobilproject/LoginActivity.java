@@ -81,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
         mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
 
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(500000)
+                .setMinimumFetchIntervalInSeconds(3600)
                 .build();
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
         // Initialize Firebase Auth

@@ -34,13 +34,13 @@ public class ExtraActivity extends AppCompatActivity implements View.OnClickList
     private static final String TAG = "EAXTRAACTIVITY";
     Button favourite_but;
     Button search_but;
-    Button youtube_but;
+    //Button youtube_but;
     Button rate_but;
     Button coins_but;
     Button message_but;
     Button chat_but;
     Button audio_but;
-
+    InterstitialAd mInterstitialAd;
 
     TextView nbadge;
     private AdView mAdView;
@@ -74,6 +74,8 @@ public class ExtraActivity extends AppCompatActivity implements View.OnClickList
 //        }
 //
 //    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,7 +92,7 @@ public class ExtraActivity extends AppCompatActivity implements View.OnClickList
 
         favourite_but = findViewById(R.id.favouritebut);
         search_but = findViewById(R.id.searchbtn);
-        youtube_but = findViewById(R.id.youtubebut);
+        //youtube_but = findViewById(R.id.youtubebut);
         rate_but = findViewById(R.id.ratebtn);
         coins_but = findViewById(R.id.earn_coins_button);
         message_but = findViewById(R.id.messageButton);
@@ -101,7 +103,7 @@ public class ExtraActivity extends AppCompatActivity implements View.OnClickList
 
         favourite_but.setOnClickListener(this);
         search_but.setOnClickListener(this);
-        youtube_but.setOnClickListener(this);
+        //youtube_but.setOnClickListener(this);
         rate_but.setOnClickListener(this);
         coins_but.setOnClickListener(this);
         message_but.setOnClickListener(this);
@@ -147,6 +149,9 @@ public class ExtraActivity extends AppCompatActivity implements View.OnClickList
         mAdView = findViewById(R.id.adViewExtra);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
 
     private void open_youtube() {
@@ -190,7 +195,7 @@ public class ExtraActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //mInterstitialAd.show();
+        mInterstitialAd.show();
     }
 
     @Override
@@ -236,4 +241,6 @@ public class ExtraActivity extends AppCompatActivity implements View.OnClickList
         startActivity(intent);
 
     }
+
+
 }

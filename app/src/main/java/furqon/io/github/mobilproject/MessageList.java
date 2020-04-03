@@ -16,12 +16,13 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 
 import java.util.List;
 import java.util.Objects;
 
 public class MessageList extends AppCompatActivity {
-
+    InterstitialAd mInterstitialAd;
     private RecyclerView recyclerView;
     private MessageListAdapter listAdapter;
     private TitleViewModel messageViewModel;
@@ -83,11 +84,15 @@ public class MessageList extends AppCompatActivity {
         mAdView = findViewById(R.id.adViewMessageList);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         messageViewModel.markAllAsRead();
+        mInterstitialAd.show();
     }
 }

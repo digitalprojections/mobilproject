@@ -8,8 +8,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class CommunicationActivity extends AppCompatActivity {
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 
+public class CommunicationActivity extends AppCompatActivity {
+    InterstitialAd mInterstitialAd;
     TextView message_txt;
     Button send;
     RecyclerView message_rv;
@@ -31,5 +34,14 @@ public class CommunicationActivity extends AppCompatActivity {
 
             }
         });
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mInterstitialAd.show();
     }
 }

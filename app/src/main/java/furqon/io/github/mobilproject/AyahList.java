@@ -35,6 +35,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -79,7 +81,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     private Context context;
     private boolean httpresponse;
     RecyclerView recyclerView;
-
+    InterstitialAd mInterstitialAd;
     LinearLayout cl;
 
     private MenuItem playButton;
@@ -132,8 +134,9 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-
-
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
 
 
@@ -602,6 +605,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             mediaPlayer.release();
             handler.removeCallbacks(runnable);
         }
+        mInterstitialAd.show();
     }
 
 

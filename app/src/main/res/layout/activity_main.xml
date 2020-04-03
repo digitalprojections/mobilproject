@@ -49,6 +49,8 @@
 
         <include layout="@layout/suralar_button"/>
         <include layout="@layout/continue_button"/>
+
+        <include layout="@layout/youtube_button" />
         <include layout="@layout/extra_button"/>
 
     </LinearLayout>

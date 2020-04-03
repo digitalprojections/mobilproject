@@ -603,7 +603,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         } catch (IllegalArgumentException iax) {
             Crashlytics.log("AYAHLIST " + iax.getMessage() + iax.getStackTrace());
         }
-
+        mInterstitialAd.show();
     }
 
     @Override

@@ -29,8 +29,11 @@
             android:contentDescription="@string/app_logo_description"
             app:srcCompat="@drawable/icon" />
 
-        <include layout="@layout/suralar_button"></include>
-        <include layout="@layout/continue_button"></include>
+        <include layout="@layout/suralar_button" />
+
+        <include layout="@layout/continue_button" />
+
+        <include layout="@layout/youtube_button" />
         <include layout="@layout/extra_button"/>
     </LinearLayout>
 
