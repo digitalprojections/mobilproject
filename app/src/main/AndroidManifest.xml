@@ -29,7 +29,6 @@
             android:name=".LoginActivity"
             android:excludeFromRecents="true"
             android:label="@string/welcome_title"
-            android:taskAffinity=""
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

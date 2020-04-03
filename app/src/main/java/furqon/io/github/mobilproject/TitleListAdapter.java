@@ -114,11 +114,16 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
                 holder.downloadButton.setVisibility(View.GONE);
             }*/
             else {
-                holder.downloadButton.setImageResource(R.drawable.ic_unlock);
+                holder.downloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
                 holder.downloadButton.setFocusable(true);
-                holder.downloadButton.setTag(1);
-                holder.downloadButton.setVisibility(View.VISIBLE);
+                holder.downloadButton.setTag(2);
                 holder.progressBar.setVisibility(View.INVISIBLE);
+                holder.downloadButton.setVisibility(View.VISIBLE);
+//                holder.downloadButton.setImageResource(R.drawable.ic_unlock);
+//                holder.downloadButton.setFocusable(true);
+//                holder.downloadButton.setTag(1);
+//                holder.downloadButton.setVisibility(View.VISIBLE);
+//                holder.progressBar.setVisibility(View.INVISIBLE);
             }
         }
     }

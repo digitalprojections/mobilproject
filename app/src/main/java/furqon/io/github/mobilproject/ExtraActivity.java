@@ -219,7 +219,12 @@ public class ExtraActivity extends AppCompatActivity implements View.OnClickList
                 open_chatroom();
                 break;
             case R.id.mediabutton:
-                open_media_page();
+                if (BuildConfig.BUILD_TYPE == "debug") {
+                    open_media_page();
+                } else {
+                    open_chatroom();
+                }
+
                 break;
 
         }

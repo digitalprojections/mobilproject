@@ -34,6 +34,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 
 import org.json.JSONArray;
@@ -62,7 +64,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     private Button revelation_order_btn;
     private String suranomer = "";
     private RecyclerView recyclerView;
-    //private InterstitialAd mInterstitialAd;
+    private InterstitialAd mInterstitialAd;
     private sharedpref sharedPref;
     private ArrayList<String> trackList;
     private TitleViewModel titleViewModel;
@@ -253,9 +255,9 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         LoadTheList();
 
         MobileAds.initialize(this, getString(R.string.addmob_app_id));
-//        mInterstitialAd = new InterstitialAd(this);
-//        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_fullpage));
-//        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_fullpage));
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
         quranic_order_btn.setClickable(true);
         revelation_order_btn.setClickable(true);
 
@@ -336,6 +338,8 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     @Override
     protected void onDestroy() {
         //mRewardedVideoAd.destroy(this);
+
+        mInterstitialAd.show();
         super.onDestroy();
         if (broadcastReceiver != null) {
             unregisterReceiver(broadcastReceiver);
@@ -399,6 +403,8 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
     @Override
     public void MarkAsDownloading(int surah_id) {
+
+        mInterstitialAd.show();
         //TODO if quit while downloading, the progressbar is left permanently on
         if (mAdapter != null) {
             int actual_position = surah_id;
