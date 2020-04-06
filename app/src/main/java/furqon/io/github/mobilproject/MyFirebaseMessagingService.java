@@ -140,7 +140,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 
         Intent intent = new Intent(this, MessageList.class);
-        intent.putExtra("personalReward", sharedpref.getInstance().read(sharedpref.getInstance().PERSONAL_REWARD, 50));
+        int pr = sharedPref.read(sharedPref.PERSONAL_REWARD, 50);
+        intent.putExtra("personalReward", pr);
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,

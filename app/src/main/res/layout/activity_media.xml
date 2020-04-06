@@ -13,10 +13,16 @@
         android:id="@+id/mp_title_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/audio_player_title"
+        android:text="@string/language_selected"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="#FFEB3B"
         android:textColorHint="#FFEB3B" />
+
+    <Spinner
+        android:id="@+id/mp_language_spinner"
+        style="@android:style/Widget.Holo.Spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/mp_suraname_tv"

@@ -9,5 +9,6 @@
         <item>@string/arabic</item>
         <item>@string/english</item>
         <item>@string/russian</item>
+        <item>@string/uzbek</item>
     </string-array>
 </resources>

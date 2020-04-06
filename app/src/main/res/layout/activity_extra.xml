@@ -23,11 +23,12 @@
         <include layout="@layout/favourite_button"/>
         <include layout="@layout/rate_button"/>
 
-        <include layout="@layout/earn_button"/>
+
         <include layout="@layout/messages_button"/>
-        <include layout="@layout/chat_button"/>
 
         <include layout="@layout/media_button" />
+        <!--<include layout="@layout/earn_button"/>-->
+        <!--<include layout="@layout/chat_button"/>-->
 
 
     </LinearLayout>

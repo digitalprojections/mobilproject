@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -36,14 +37,24 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import java.io.File;
 import java.util.Locale;
 
+import hotchemi.android.rate.AppRate;
 import io.fabric.sdk.android.Fabric;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Uri deepLink;
-    Button youtube_but;
+
     Button suralar_but;
-    Button extra_btn;
     Button davomi_but;
+    Button youtube_but;
+    Button favourite_but;
+    Button search_but;
+    Button rate_but;
+    //Button coins_but;
+    Button message_but;
+    //Button chat_but;
+    Button audio_but;
+
+    TextView nbadge;
     ImageView imageView;
     private Handler handler;
     // Try to use more data here. ANDROID_ID is a single point of attack.
@@ -112,47 +123,32 @@ public class MainActivity extends AppCompatActivity {
         MobileAds.initialize(this, getString(R.string.addmob_app_id));
 
         handler = new Handler();
+        favourite_but = findViewById(R.id.favouritebut);
+        search_but = findViewById(R.id.searchbtn);
+        rate_but = findViewById(R.id.ratebtn);
+        //coins_but = findViewById(R.id.earn_coins_button);
+        message_but = findViewById(R.id.messageButton);
+        nbadge = findViewById(R.id.numeric_badge_txt);
+        nbadge.bringToFront();
+        //chat_but = findViewById(R.id.chat_button);
+        audio_but = findViewById(R.id.mediabutton);
 
         suralar_but = findViewById(R.id.suralar);
-        extra_btn = findViewById(R.id.extra_button);
         davomi_but = findViewById(R.id.davomi);
         youtube_but = findViewById(R.id.youtubebut);
         imageView = findViewById(R.id.imageView);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ayahOfTheDay();
-            }
-        });
-        youtube_but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(mFirebaseRemoteConfig.getString("youtube_video")));
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(intent);
-                }
-            }
-        });
-        //day_but = findViewById(R.id.ayahoftheday);
-        suralar_but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openSuraNames(view);
-            }
-        });
-        extra_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                open_extraActivities();
-            }
-        });
-        davomi_but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                continueReading();
-            }
-        });
+
+        imageView.setOnClickListener(this);
+        youtube_but.setOnClickListener(this);
+        suralar_but.setOnClickListener(this);
+        davomi_but.setOnClickListener(this);
+        favourite_but.setOnClickListener(this);
+        search_but.setOnClickListener(this);
+        rate_but.setOnClickListener(this);
+        message_but.setOnClickListener(this);
+        audio_but.setOnClickListener(this);
+        //coins_but.setOnClickListener(this);
+        //chat_but.setOnClickListener(this);
 
         if (mSharedPref.contains(mSharedPref.XATCHUP)) {
             davomi_but.setVisibility(View.VISIBLE);
@@ -203,32 +199,19 @@ public class MainActivity extends AppCompatActivity {
     private void shareDeepLink() {
         createShortLink();
     }
-    private void open_favourites() {
-        Intent intent;
-        intent = new Intent(this, Favourites.class);
-        startActivity(intent);
-    }
+
     public Uri buildDeepLink(Uri dl, int version) {
         String uriPrefix = "furqon.page.link";
 
         if(currentUser!=null){
             Log.i(TAG, "CURRENT USER ID " + currentUser.getUid());
             //userId=currentUser.getUid()
-            if(!mSharedPref.read(sharedpref.CREDS_ALREADY_SENT, false)){
+            if (mSharedPref != null && !mSharedPref.read(sharedpref.CREDS_ALREADY_SENT, false)) {
                 mSharedPref.write(sharedpref.USERID, currentUser.getUid());
                 //checkAppSignature(this);
             }
 
         }
-//        else{
-//            signInAnonymously();
-//        }
-        // Set dynamic link parameters:
-        //  * URI prefix (required)
-        //  * Android Parameters (required)
-        //  * Deep link
-        // [START build_dynamic_link]
-
 
         DynamicLink.Builder builder = FirebaseDynamicLinks.getInstance()
                 .createDynamicLink()
@@ -313,47 +296,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
-
-
-//
-//    private void sendSignatureToServer(final String sign) {
-//        //TODO send the token to  database.
-//        //Add to the user account token, app id, device id
-//        Log.i(TAG, "ATTEMPTING SIGNATURE " + sign);
-//        queue = Volley.newRequestQueue(this);
-//        String url = "https://inventivesolutionste.ipage.com/apijson.php";
-//        //String url = "http://localhost/apijson/apijson.php";
-//
-//        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        Log.i("APP SIGNATURE STORED?", response);
-//                        if (response.contains("app signature recorded")) {
-//                            Log.i("APP SIGNATURE STORED", response);
-//                            sharedPref.write("appsignature", sign);
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.i("Signature send fail ", error.toString());
-//            }
-//        }) {
-//            protected Map<String, String> getParams() {
-//                Map<String, String> MyData = new HashMap<>();
-//                MyData.put("action", "set_shash"); //Add the data you'd like to send to the server.
-//                MyData.put("appname", "furqon"); //Add the data you'd like to send to the server.
-//                MyData.put("shash", sign); //Add the data you'd like to send to the server.
-//                return MyData;
-//            }
-//
-//        };
-//        queue.add(stringRequest);
-//    }
-
     public static boolean deleteDir(File dir) {
         if (dir != null && dir.isDirectory()) {
             String[] children = dir.list();
@@ -397,7 +339,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void openSuraNames(View view) {
+    public void open_suraNames() {
 
         Intent intent = new Intent(this, SuraNameList.class);
         startActivity(intent);
@@ -422,8 +364,53 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void open_youtube() {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(mFirebaseRemoteConfig.getString("youtube_video")));
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
 
+    private void open_chatroom() {
+        Toast.makeText(getApplicationContext(), R.string.coming_soon, Toast.LENGTH_SHORT).show();
+    }
 
+    private void open_earn_coins() {
+        //Toast.makeText(getApplicationContext(), R.string.coming_soon, Toast.LENGTH_SHORT).show();
+        Intent intent;
+        intent = new Intent(this, EarnCoinsActivity.class);
+        startActivity(intent);
+    }
+
+    private void Rateus() {
+        AppRate.with(this).showRateDialog(this);
+    }
+
+    private void open_favourites() {
+        Intent intent;
+        intent = new Intent(this, Favourites.class);
+        startActivity(intent);
+    }
+
+    private void open_search() {
+        Intent intent;
+        intent = new Intent(this, Search.class);
+        startActivity(intent);
+    }
+
+    private void open_messages() {
+        Intent intent;
+        intent = new Intent(this, MessageList.class);
+        startActivity(intent);
+    }
+
+    private void open_media_page() {
+        Intent intent = new Intent(this, MediaActivity.class);
+        //intent.setData(Uri.parse(mFirebaseRemoteConfig.getString("youtube_video")));
+        startActivity(intent);
+
+    }
     private void displayResult(final String result) {
         handler.post(new Runnable() {
             public void run() {
@@ -461,5 +448,48 @@ public class MainActivity extends AppCompatActivity {
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         FirebaseUserActions.getInstance().end(getIndexApiAction());
         super.onStop();
+    }
+
+    @Override
+    public void onClick(View v) {
+        Log.i(TAG, String.valueOf(v.getId()));
+        switch (v.getId()) {
+            case R.id.imageView:
+                ayahOfTheDay();
+                break;
+            case R.id.suralar:
+                open_suraNames();
+                break;
+            case R.id.youtubebut:
+                open_youtube();
+                break;
+            case R.id.favouritebut:
+                open_favourites();
+                break;
+            case R.id.searchbtn:
+                open_search();
+                break;
+            case R.id.ratebtn:
+                Rateus();
+                break;
+            case R.id.earn_coins_button:
+                open_earn_coins();
+                break;
+            case R.id.messageButton:
+                open_messages();
+                break;
+            case R.id.chat_button:
+                open_chatroom();
+                break;
+            case R.id.mediabutton:
+                if (BuildConfig.BUILD_TYPE == "debug") {
+                    open_media_page();
+                } else {
+                    open_chatroom();
+                }
+
+                break;
+
+        }
     }
 }

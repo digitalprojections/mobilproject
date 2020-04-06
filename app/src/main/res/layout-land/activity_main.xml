@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <include
         android:id="@+id/tool_bar"
-        layout="@layout/toolbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        layout="@layout/toolbar" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,38 +17,51 @@
 
         android:gravity="center"
         android:orientation="horizontal"
-        android:padding="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:padding="10dp">
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="48dp"
-            android:layout_weight="1"
-            android:contentDescription="@string/app_logo_description"
-            app:srcCompat="@drawable/icon" />
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="400dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="2dp"
-            android:layout_weight="0"
-            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
 
-            <include layout="@layout/suralar_button" />
+                android:gravity="center"
+                android:orientation="vertical">
 
-            <include layout="@layout/continue_button" />
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/app_logo_description"
 
-            <include layout="@layout/youtube_button" />
+                    app:srcCompat="@drawable/ic_asset_32furqon_logo" />
 
-            <include layout="@layout/extra_button" />
-        </LinearLayout>
+                <include layout="@layout/suralar_button" />
+
+                <include layout="@layout/continue_button" />
+
+                <include layout="@layout/youtube_button" />
+
+                <include layout="@layout/search_button" />
+
+                <include layout="@layout/favourite_button" />
+
+                <include layout="@layout/rate_button" />
+
+
+                <include layout="@layout/messages_button" />
+
+                <include layout="@layout/media_button" />
+
+
+            </LinearLayout>
+        </ScrollView>
 
     </LinearLayout>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
