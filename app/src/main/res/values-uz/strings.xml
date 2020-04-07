@@ -100,4 +100,9 @@
     <string name="ad_loaded_toast">Reklama tayyor</string>
     <string name="you_need">"Yana "</string>
     <string name="uz_kam">" kam"</string>
+    <string name="favourites_button_description">tanlanganlarga qo`shish</string>
+    <string name="audio">Audio</string>
+    <string name="your_message_to_the_author">Muallifga xabar</string>
+    <string name="send">yuborish</string>
+    <string name="about_text">"Qadrli foydalanuvchi. \n\n Meni ismim Ahmad va men ushbu ilovaning muallifi, dasturchisi (programmist) hamda homiysi bo`laman. \n\n Ilovalar ichida aynan menikini tanlaganingiz uchun, sizga cheksiz minnatdorchiligimni bildiraman. “Furqon”dan muntazam ravishda foydalanishingiz, men uchun ko`p narsani bildiradi. Olloh barchamizdan rozi bo`lsin! \n\n Avvalam bor, ushbu dasturni yaratilishidan maqsad, insonlarga o`z ona tillarida, imkon qadar foydalanishga oson qilib, mavjud manbalarni jamlagan holda yetkazib bersh va shu bilan bir vaqtda uzluksizlik, tartib va to`liqlikni ta`minlashdir. Ilova har tomonlama bo`lishi va turli talablarni qondira olishini ham maqsad qilingan. Albatta bu o`ziga yarasha murakkab muammolarni hal etish va resusrslarni talab etadi. InshaAlloh, har bir ko`zlangan maqsadga erishaman. \n\n Yana shuni eslab o`tish zarurki, ilovadagi reklama orqali tushum resusrslarini ta`minlash va rivojlantirishga oz bo`lsada yordam beradi. Reklama asosan, ozmi-ko`pmi kutish zarur bo`lgan joylardagina chiqadigan qilib ishlanganligiga qaramasdan, ba`zan, bir necha sekund vaqtingizni zoe ketdi deb hisoblamaysiz degan umiddaman. Foydalanuvchilardan, agar chin dildan qiziqmasangiz, reklamani bosmaslikni so'rayman. \n\n Ilovadagi kamchilik haqida xabar bering: bztronik@gmail.com \n\n Hurmat bilan, Ahmad "</string>
 </resources>

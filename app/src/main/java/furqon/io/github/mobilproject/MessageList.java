@@ -19,7 +19,6 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 
 import java.util.List;
-import java.util.Objects;
 
 public class MessageList extends AppCompatActivity {
     InterstitialAd mInterstitialAd;
@@ -27,6 +26,8 @@ public class MessageList extends AppCompatActivity {
     private MessageListAdapter listAdapter;
     private TitleViewModel messageViewModel;
     private AdView mAdView;
+    private SharedPreferences mSharedPref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,11 +42,12 @@ public class MessageList extends AppCompatActivity {
 
         Intent incoming_intent = getIntent();
         int reward_coins = incoming_intent.getIntExtra("personalReward", 0);
-
+        mSharedPref = SharedPreferences.getInstance();
+        mSharedPref.init(getApplicationContext());
         if (reward_coins > 0) {
-            int existingCoins = sharedpref.getInstance().read(sharedpref.getInstance().COINS, 0);
-            int totalCoins = existingCoins + sharedpref.getInstance().read(sharedpref.PERSONAL_REWARD, 50);
-            sharedpref.getInstance().write(sharedpref.getInstance().COINS, totalCoins);
+            int existingCoins = mSharedPref.read(mSharedPref.COINS, 0);
+            int totalCoins = existingCoins + mSharedPref.read(SharedPreferences.PERSONAL_REWARD, 50);
+            mSharedPref.write(mSharedPref.COINS, totalCoins);
             Toast.makeText(this, R.string.free_coin_awards_received, Toast.LENGTH_SHORT).show();
         }
 

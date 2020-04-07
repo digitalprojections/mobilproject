@@ -52,10 +52,10 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
     private ViewGroup.LayoutParams lpartxt; // Height of TextView
     private ViewGroup.LayoutParams toplayout; // Height of TextView
     private Animation scaler;
-    private sharedpref sharedPref;
+    private SharedPreferences sharedPref;
 
     FavouriteListAdapter(Context context) {
-        sharedPref = sharedpref.getInstance();
+        sharedPref = SharedPreferences.getInstance();
 
         mContext = context;
         scaler = AnimationUtils.loadAnimation(mContext, R.anim.bounce);

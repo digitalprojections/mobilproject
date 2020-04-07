@@ -34,7 +34,8 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false //TODO check if this fixes the issue java.lang.ClassNotFoundException
+            minifyEnabled false
+            //TODO check if this fixes the issue java.lang.ClassNotFoundException
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
         }

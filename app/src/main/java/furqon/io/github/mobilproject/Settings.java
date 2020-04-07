@@ -17,7 +17,7 @@ import com.google.android.gms.ads.MobileAds;
 public class Settings extends AppCompatActivity {
 
     private AdView mAdView;
-    private sharedpref sharedPref;
+    private SharedPreferences sharedPref;
     InterstitialAd mInterstitialAd;
 
 
@@ -33,7 +33,7 @@ public class Settings extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        sharedPref = sharedpref.getInstance();
+        sharedPref = SharedPreferences.getInstance();
         sharedPref.init(getApplicationContext());
         sw_ar = findViewById(R.id.arabic_sw);
         sw_uz = findViewById(R.id.uzbek_sw);

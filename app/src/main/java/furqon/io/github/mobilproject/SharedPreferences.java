@@ -1,27 +1,22 @@
 package furqon.io.github.mobilproject;
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.regex.PatternSyntaxException;
-
-public class sharedpref
+public class SharedPreferences
 {
-    public static final String USERID = "USERID";
-    public static final String INVITER = "INVITER";
-    public static final String INVITER_ID = "INVITER_ID";
-    public static final String SHAREWARD = "SHAREREWARD";
-    public static final String CREDS_ALREADY_SENT = "CREDSENT";
-    public static final String RANDOM_AYAH_SEEN = "SEEN";
-    public static final String PERSONAL_REWARD = "PERSONALREWARD";
-    private Context mContext;
+    static final String USERID = "USERID";
+    static final String INVITER = "INVITER";
+    static final String INVITER_ID = "INVITER_ID";
+    static final String SHAREWARD = "SHAREREWARD";
+    static final String CREDS_ALREADY_SENT = "CREDSENT";
+    static final String RANDOM_AYAH_SEEN = "SEEN";
+    static final String PERSONAL_REWARD = "PERSONALREWARD";
+    static final String AUDIO_LANGUAGE = "AUDIO_LANGUAGE";
+    static final String SELECTED_AUDIO_LANGUAGE = "SELECTED_AUDIO";
     private static final String TRACKS = "TRACKS";
-    private static SharedPreferences mSharedPref;
+    private static android.content.SharedPreferences mSharedPref;
     final String COINS = "COINS";
     final String TOKEN = "TOKEN";
     final String UZSW = "UZSW";
@@ -39,21 +34,21 @@ public class sharedpref
     private static boolean rusw;
     private static boolean ensw;
     private static boolean random_ayah_sw;
-    private static sharedpref singleton_sharedpref = null;
-    private static SharedPreferences.Editor prefsEditor;
+    private static SharedPreferences singleton_sharedpref = null;
+    private static android.content.SharedPreferences.Editor prefsEditor;
 
-    public static sharedpref getInstance(){
+    public static SharedPreferences getInstance(){
         if(singleton_sharedpref==null){
-            singleton_sharedpref = new sharedpref();
+            singleton_sharedpref = new SharedPreferences();
         }
         return singleton_sharedpref;
     }
 
-    private sharedpref(){
+    private SharedPreferences(){
 
     }
 
-    public static void AddCoins(Context mContext, int coins) {
+    static void AddCoins(Context mContext, int coins) {
         int existingCoins = getInstance().read(getInstance().COINS, 0);
         int totalCoins = existingCoins + coins;
         getInstance().write(getInstance().COINS, totalCoins);
@@ -63,7 +58,6 @@ public class sharedpref
 
     public void init(Context context)
     {
-        mContext = context;
         if(mSharedPref == null) {
 
             mSharedPref = context.getSharedPreferences(context.getPackageName(), Activity.MODE_PRIVATE);
@@ -137,28 +131,20 @@ public class sharedpref
         return rv;
     }
 
-
-
-
-    String read(String key, String defValue) {
-        return mSharedPref.getString(key, defValue);
-    }
     boolean read(String key, boolean defValue) {
         return mSharedPref.getBoolean(key, defValue);
     }
-
+    String read(String key, String defValue) {
+        return mSharedPref.getString(key, defValue);
+    }
     Integer read(String key, int defValue) {
         return mSharedPref.getInt(key, defValue);
     }
 
-    void write(String key, boolean value) {
+    void write(String key, boolean value){
         prefsEditor.putBoolean(key, value).apply();
     }
-
-    void write(String key, Integer value) {
-        prefsEditor.putInt(key, value).apply();
-    }
-
+    void write(String key, Integer value) {prefsEditor.putInt(key, value).apply();}
     void write(String key, String value) {
         prefsEditor.putString(key, value).apply();
     }
@@ -166,7 +152,6 @@ public class sharedpref
     boolean isFirstRun() {
         return read(FIRSTRUN, true);
     }
-
     void setFirstRun(boolean firstRun) {
         write(FIRSTRUN, firstRun);
     }

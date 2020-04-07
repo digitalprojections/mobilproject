@@ -7,16 +7,13 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewPropertyAnimator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,7 +27,7 @@ import java.util.List;
 
 public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahListViewHolder> {
     private static final String TAG = "AYAHLISTADAPTER";
-    private final sharedpref sharedPref;
+    private final SharedPreferences sharedPref;
     //private final Animation ayah_close_anim;
     //private final Animation ayah_open_anim;
     private Context mContext;
@@ -72,7 +69,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     }
 
     AyahListAdapter(Context context, String suraname, String chapter) {
-        sharedPref = sharedpref.getInstance();
+        sharedPref = SharedPreferences.getInstance();
 
         chapter_number = chapter;
         chaptername = suraname;

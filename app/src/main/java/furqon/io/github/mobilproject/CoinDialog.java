@@ -2,21 +2,18 @@ package furqon.io.github.mobilproject;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 public class CoinDialog extends AppCompatDialogFragment {
 
-    sharedpref sharedPref;
+    SharedPreferences sharedPref;
 
     TextView cost_txt;
     TextView coins_txt;
@@ -33,7 +30,7 @@ public class CoinDialog extends AppCompatDialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
 
-        sharedPref = sharedpref.getInstance();
+        sharedPref = SharedPreferences.getInstance();
 
         final androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(getActivity());
         builder.setTitle("Use coins to unlock");

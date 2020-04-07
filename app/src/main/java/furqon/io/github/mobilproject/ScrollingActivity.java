@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
@@ -13,7 +12,7 @@ import com.google.android.material.tabs.TabLayout;
 
 public class ScrollingActivity extends AppCompatActivity {
     ScrollingAdapter scrollingAdapter;
-    sharedpref sharedPref;
+    SharedPreferences sharedPref;
     ViewPager viewPager;
     TabLayout tabLayout;
     private TabLayout.Tab tabItem;
@@ -22,7 +21,7 @@ public class ScrollingActivity extends AppCompatActivity {
 
 
     public ScrollingActivity() {
-        sharedPref = sharedpref.getInstance();
+        sharedPref = SharedPreferences.getInstance();
     }
 
     @Override

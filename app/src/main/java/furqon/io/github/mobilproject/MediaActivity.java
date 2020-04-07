@@ -40,11 +40,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 
 import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.concurrent.Semaphore;
 
 import furqon.io.github.mobilproject.Services.OnClearFromService;
 
@@ -89,7 +85,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     private MediaPlayer mediaPlayer;
     boolean isPlaying;
 
-    private sharedpref sharedPref;
+    private SharedPreferences mSharedPref;
     ProgressBar progressBar;
     private Runnable runnable;
     MediaMetadataRetriever metadataRetriever = new MediaMetadataRetriever();
@@ -103,7 +99,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
-
+        mSharedPref = SharedPreferences.getInstance();
+        mSharedPref.init(getApplicationContext());
         //recyclerView.setAdapter(mAdapter);
 
 //
@@ -131,13 +128,16 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         // Apply the adapter to the spinner
         spinner = findViewById(R.id.mp_language_spinner);
         spinner.setAdapter(adapter);
+        if(mSharedPref.contains(mSharedPref.AUDIO_LANGUAGE)){
+            spinner.setSelection(mSharedPref.read(mSharedPref.SELECTED_AUDIO_LANGUAGE, 0));
+        }
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 ((TextView) view).setTextColor(getResources().getColor(R.color.colorPrimary));
-
-                Log.d(TAG, adapter.getItem(position).toString());
+                //Log.d(TAG, adapter.getItem(position).toString());
+                mSharedPref.write(mSharedPref.SELECTED_AUDIO_LANGUAGE, position);
             }
 
             @Override
@@ -268,7 +268,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             else
                 ayah_unlock_cost = 0; //no need
         }
-        available_coins = sharedPref.read(sharedPref.COINS, 0);
+        available_coins = mSharedPref.read(mSharedPref.COINS, 0);
     }
 
     private boolean WritePermission() {
@@ -396,7 +396,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     public void MarkAsAwarded(int surah_id) {
         //Log.e("ACTUAL SURAH ID?", surah_id + " " + suraNumber);
 
-        int coins = sharedPref.read(sharedPref.COINS, 0);
+        int coins = mSharedPref.read(mSharedPref.COINS, 0);
         if (coins > ayah_unlock_cost) {
             titleViewModel.updateTitleAsRewarded(suraNumber);
         } else {
@@ -431,7 +431,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     }
 
     public void resume() {
-        audio_pos = sharedPref.read(suranomi, 0);
+        audio_pos = mSharedPref.read(suranomi, 0);
 
         //if (mediaPlayer != null) {
 
@@ -448,7 +448,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         Log.d("AYAHLIST:", "setcoinsvalue");
 
 
-        available_coins = sharedPref.read(sharedPref.COINS, 0);
+        available_coins = mSharedPref.read(mSharedPref.COINS, 0);
 
 
         //int unlock_cost = Integer.parseInt();
@@ -481,7 +481,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     private void ShowCoinAlert() {
         //SetCoinValues();
         //setAyahCost();
-        available_coins = sharedPref.read(sharedPref.COINS, 0);
+        available_coins = mSharedPref.read(mSharedPref.COINS, 0);
         CoinDialog coinDialog = new CoinDialog(ayah_unlock_cost, available_coins);
         coinDialog.show(getSupportFragmentManager(), "TAG");
 
@@ -596,7 +596,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
     public void pause() {
         if (isPlaying) {
-            sharedpref.getInstance().write(suranomi, mediaPlayer.getCurrentPosition());
+            SharedPreferences.getInstance().write(suranomi, mediaPlayer.getCurrentPosition());
             isPlaying = false;
             Intent intent = new Intent(this, AudioService.class);
         }

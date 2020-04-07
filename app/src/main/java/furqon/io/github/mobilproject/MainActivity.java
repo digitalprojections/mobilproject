@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button message_but;
     //Button chat_but;
     Button audio_but;
+    Button about_but;
 
     TextView nbadge;
     ImageView imageView;
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FirebaseAnalytics mFirebaseAnalytics;
     private static final String TAG = "MAIN ACTIVITY";
     private static final String DEEP_LINK_URL = "https://furqon.page.link/ThB2";
-    private sharedpref mSharedPref;
+    private SharedPreferences mSharedPref;
     private boolean randomayahshown;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private FirebaseFunctions mFunctions;
@@ -103,7 +104,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
 
-        mSharedPref = sharedpref.getInstance();
+        mSharedPref = SharedPreferences.getInstance();
+        mSharedPref.init(getApplicationContext());
 
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
@@ -132,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         nbadge.bringToFront();
         //chat_but = findViewById(R.id.chat_button);
         audio_but = findViewById(R.id.mediabutton);
+        about_but = findViewById(R.id.about_button);
 
         suralar_but = findViewById(R.id.suralar);
         davomi_but = findViewById(R.id.davomi);
@@ -147,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rate_but.setOnClickListener(this);
         message_but.setOnClickListener(this);
         audio_but.setOnClickListener(this);
+        about_but.setOnClickListener(this);
         //coins_but.setOnClickListener(this);
         //chat_but.setOnClickListener(this);
 
@@ -206,8 +210,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(currentUser!=null){
             Log.i(TAG, "CURRENT USER ID " + currentUser.getUid());
             //userId=currentUser.getUid()
-            if (mSharedPref != null && !mSharedPref.read(sharedpref.CREDS_ALREADY_SENT, false)) {
-                mSharedPref.write(sharedpref.USERID, currentUser.getUid());
+            if (mSharedPref != null && !mSharedPref.read(mSharedPref.CREDS_ALREADY_SENT, false)) {
+                mSharedPref.write(mSharedPref.USERID, currentUser.getUid());
                 //checkAppSignature(this);
             }
 
@@ -354,11 +358,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void ayahOfTheDay() {
-        if(!mSharedPref.read(sharedpref.RANDOM_AYAH_SEEN, false)){
+        if(!mSharedPref.read(mSharedPref.RANDOM_AYAH_SEEN, false)){
             Intent intent = new Intent(this, AyahOfTheDay.class);
             startActivity(intent);
 
-            mSharedPref.write(sharedpref.RANDOM_AYAH_SEEN, true);
+            mSharedPref.write(mSharedPref.RANDOM_AYAH_SEEN, true);
         }
 
 
@@ -410,6 +414,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //intent.setData(Uri.parse(mFirebaseRemoteConfig.getString("youtube_video")));
         startActivity(intent);
 
+    }
+    private void open_about() {
+        Intent intent = new Intent(this, AboutActivity.class);
+        //intent.setData(Uri.parse(mFirebaseRemoteConfig.getString("youtube_video")));
+        startActivity(intent);
     }
     private void displayResult(final String result) {
         handler.post(new Runnable() {
@@ -489,7 +498,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 break;
-
+            case R.id.about_button:
+                open_about();
+                break;
         }
     }
+
+
 }

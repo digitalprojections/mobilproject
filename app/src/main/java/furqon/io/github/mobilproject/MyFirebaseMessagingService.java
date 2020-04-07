@@ -1,7 +1,5 @@
 package furqon.io.github.mobilproject;
 
-import android.app.Application;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,27 +9,22 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
-import androidx.lifecycle.ViewModelProviders;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-
-import java.util.Map;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private ChapterTitleDatabase database;
 
     private static final String TAG = "FIREBASE Messages";
-    private sharedpref sharedPref;
+    private SharedPreferences sharedPref;
 
     public MyFirebaseMessagingService() {
-        sharedPref = sharedpref.getInstance();
+        sharedPref = SharedPreferences.getInstance();
         //Log.e("MyFirebaseMessage", "initiated");
 
     }

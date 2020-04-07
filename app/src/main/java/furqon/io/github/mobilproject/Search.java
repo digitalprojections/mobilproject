@@ -2,7 +2,6 @@ package furqon.io.github.mobilproject;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -24,8 +23,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 
-import java.util.Objects;
-
 public class Search extends AppCompatActivity {
     private static final String TAG = "SEARCH";
     private SearchListAdapter mAdapter;
@@ -37,7 +34,7 @@ public class Search extends AppCompatActivity {
     EditText search_txt;
     ImageButton ib_search;
     TextView result_count;
-    private sharedpref sharedPref;
+    private SharedPreferences sharedPref;
     InterstitialAd mInterstitialAd;
     private AdView mAdView;
 
@@ -45,7 +42,7 @@ public class Search extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        sharedPref = sharedpref.getInstance();
+        sharedPref = SharedPreferences.getInstance();
         sharedPref.init(getApplicationContext());
 
         Toolbar toolbar = findViewById(R.id.tool_bar);

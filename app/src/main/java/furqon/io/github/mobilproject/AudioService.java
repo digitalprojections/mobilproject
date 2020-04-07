@@ -1,6 +1,5 @@
 package furqon.io.github.mobilproject;
 
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -97,11 +96,11 @@ public class AudioService extends Service {
             //super.run();
             player = MediaPlayer.create(getBaseContext(), Uri.parse(filepath));
 
-            int audio_pos = sharedpref.getInstance().read(suranomi, 0);
+            int audio_pos = SharedPreferences.getInstance().read(suranomi, 0);
             if (audio_pos > 0 && audio_pos != player.getDuration()) {
                 player.seekTo(audio_pos);
             } else {
-                sharedpref.getInstance().write(suranomi, 1);
+                SharedPreferences.getInstance().write(suranomi, 1);
                 player.seekTo(1);
             }
 
@@ -126,14 +125,14 @@ public class AudioService extends Service {
 
             if (currentPosition == progressMax) {
                 this.timer.cancel();
-                sharedpref.getInstance().write(suranomi, 1);
+                SharedPreferences.getInstance().write(suranomi, 1);
                 stopSelf();
             }
         }
 
         public void stop_play() {
             this.timer.cancel();
-            sharedpref.getInstance().write(suranomi, player.getCurrentPosition());
+            SharedPreferences.getInstance().write(suranomi, player.getCurrentPosition());
             Toast.makeText(getBaseContext(), getString(R.string.audiopos_stored), Toast.LENGTH_SHORT).show();
             player.getCurrentPosition();
             player.stop();
@@ -175,7 +174,7 @@ public class AudioService extends Service {
 
             int drw_previous;
 
-            int audio_pos = sharedpref.getInstance().read(suranomi, 0);
+            int audio_pos = SharedPreferences.getInstance().read(suranomi, 0);
             if (audio_pos == 0) {
                 pendingIntentPrev = null;
                 drw_previous = 0;

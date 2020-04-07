@@ -1,20 +1,14 @@
 package furqon.io.github.mobilproject;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,7 +20,6 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 
 import java.util.List;
-import java.util.Objects;
 
 
 public class Favourites extends AppCompatActivity implements ManageSpecials {
@@ -44,7 +37,7 @@ public class Favourites extends AppCompatActivity implements ManageSpecials {
     private static final String TAG = "FAVOURITES ACTIVITY";
     private static final int REQUEST_INVITE = 0;
     private InterstitialAd mInterstitialAd;
-    sharedpref sharedPref;
+    SharedPreferences sharedPref;
 
 
 
@@ -59,7 +52,7 @@ public class Favourites extends AppCompatActivity implements ManageSpecials {
 
 
 
-        sharedPref = sharedpref.getInstance();
+        sharedPref = SharedPreferences.getInstance();
         sharedPref.init(getApplicationContext());
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);

@@ -17,8 +17,6 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
@@ -34,7 +32,7 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
     private TextView share_txt;
 
     private static final String DEEP_LINK_URL = "https://furqon.page.link/ThB2";
-    private sharedpref mSharedPref;
+    private SharedPreferences mSharedPref;
     Uri deepLink;
     String userid;
     private RewardAd mRewardedVideoAd;
@@ -53,7 +51,7 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
         getSupportActionBar().setTitle(title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mSharedPref = sharedpref.getInstance();
+        mSharedPref = SharedPreferences.getInstance();
         mSharedPref.init(getApplicationContext());
         mRewardedVideoAd = new RewardAd(this);
 

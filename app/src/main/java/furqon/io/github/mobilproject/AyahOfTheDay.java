@@ -54,10 +54,10 @@ public class AyahOfTheDay extends AppCompatActivity {
     TextView entxt;
     boolean isOpen = false;
     Animation fabopen, fabclose, scaler;
-    private sharedpref sharedPref;
+    private SharedPreferences sharedPref;
 
     public AyahOfTheDay() {
-        sharedPref = sharedpref.getInstance();
+        sharedPref = SharedPreferences.getInstance();
     }
 
 

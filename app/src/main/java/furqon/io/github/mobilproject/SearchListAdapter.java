@@ -15,13 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.SearchListViewHolder> {
     private Cursor mCursor;
     private Context mContext;
-    private sharedpref sharedPref;
+    private SharedPreferences sharedPref;
     private Search search;
 
     SearchListAdapter(Context context, Cursor cursor) {
         mContext = context;
         mCursor = cursor;
-        sharedPref = sharedpref.getInstance();
+        sharedPref = SharedPreferences.getInstance();
         sharedPref.init(context);
         search = new Search();
     }

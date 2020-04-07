@@ -65,7 +65,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     private String suranomer = "";
     private RecyclerView recyclerView;
     private InterstitialAd mInterstitialAd;
-    private sharedpref sharedPref;
+    private SharedPreferences sharedPref;
     private ArrayList<String> trackList;
     private TitleViewModel titleViewModel;
     DownloadManager downloadManager;
@@ -229,7 +229,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         //action:names_as_objects
         //language_id:1
 
-        sharedPref = sharedpref.getInstance();
+        sharedPref = SharedPreferences.getInstance();
         sharedPref.init(getApplicationContext());
         //getSupportActionBar().setTitle("Suralar");
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);

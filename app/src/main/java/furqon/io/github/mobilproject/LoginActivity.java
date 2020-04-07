@@ -3,15 +3,9 @@ package furqon.io.github.mobilproject;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -42,7 +36,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
     private ArrayList<JSONObject> jsonArrayResponse;
     private RequestQueue queue;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
-    private sharedpref mSharedPref;
+    private SharedPreferences mSharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         //========================================================
-        mSharedPref = sharedpref.getInstance();
+        mSharedPref = SharedPreferences.getInstance();
         mSharedPref.init(getApplicationContext());
         if (!mSharedPref.read(mSharedPref.TOKEN, "").isEmpty()) {
             token = mSharedPref.read(mSharedPref.TOKEN, "");
@@ -143,8 +136,8 @@ public class LoginActivity extends AppCompatActivity {
                             boolean updated = task.getResult();
                             Log.d(TAG, "Config params updated: " + updated);
                             //Toast.makeText(MainActivity.this, "Fetch and activate succeeded", Toast.LENGTH_SHORT).show();
-                            sharedpref.getInstance().write(sharedpref.SHAREWARD, (int) mFirebaseRemoteConfig.getLong("share_reward"));
-                            sharedpref.getInstance().write(sharedpref.PERSONAL_REWARD, (int) mFirebaseRemoteConfig.getLong("personal_reward"));
+                            mSharedPref.write(mSharedPref.SHAREWARD, (int) mFirebaseRemoteConfig.getLong("share_reward"));
+                            mSharedPref.write(mSharedPref.PERSONAL_REWARD, (int) mFirebaseRemoteConfig.getLong("personal_reward"));
                             //sharedpref.getInstance().write(sharedpref.INITIAL_COINS, (int) mFirebaseRemoteConfig.getLong("initial_coins"));
                             //Log.d("COINS", mSharedPref.read(mSharedPref.INITIAL_COINS_USED, false) + " " + mSharedPref.read(mSharedPref.INITIAL_COINS, 0));
                         } else {
@@ -157,7 +150,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void signInAnonymously() {
-        mSharedPref.write(sharedpref.RANDOM_AYAH_SEEN, false);
+        mSharedPref.write(mSharedPref.RANDOM_AYAH_SEEN, false);
         //showProgressBar();
         // [START signin_anonymously]
         mAuth.signInAnonymously()
@@ -298,7 +291,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Snackbar.make(findViewById(android.R.id.content),
                                         R.string.invitation_confirm, Snackbar.LENGTH_LONG).show();
                                 //Send confirmation
-                                if (sharedpref.getInstance().read(sharedpref.getInstance().INVITER, 0) == 0) {
+                                if (mSharedPref.read(mSharedPref.INVITER, 0) == 0) {
                                     sendConfirmationToServer(inviter_id);
                                 } else {
                                     //user is already invited
@@ -329,8 +322,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void CheckInviterThanked() {
-        if (sharedpref.getInstance().read(sharedpref.getInstance().INVITER, 0) == 0) {
-            String inviter_id = mSharedPref.getInstance().read(mSharedPref.getInstance().INVITER_ID, "");
+        if (mSharedPref.read(mSharedPref.INVITER, 0) == 0) {
+            String inviter_id = mSharedPref.read(mSharedPref.INVITER_ID, "");
             if (!inviter_id.isEmpty()) {
                 sendConfirmationToServer(inviter_id);
             } else {
@@ -399,12 +392,12 @@ public class LoginActivity extends AppCompatActivity {
                         if (response.contains("confirmation")) {
                             Log.i(TAG, "Invitation " + response);
                             mSharedPref.AddCoins(getApplicationContext(), 200);
-                            mSharedPref.getInstance().write(mSharedPref.getInstance().INVITER, 1);
+                            mSharedPref.write(mSharedPref.INVITER, 1);
 
                         } else {
                             Log.i(TAG, "Invitation failed " + response);
                             //failed, save for future
-                            mSharedPref.getInstance().write(mSharedPref.getInstance().INVITER_ID, inviter_id);
+                            mSharedPref.write(mSharedPref.INVITER_ID, inviter_id);
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -431,7 +424,7 @@ public class LoginActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, AyahOfTheDay.class);
         startActivity(intent);
-        mSharedPref.write(sharedpref.RANDOM_AYAH_SEEN, true);
+        mSharedPref.write(mSharedPref.RANDOM_AYAH_SEEN, true);
 
     }
 }

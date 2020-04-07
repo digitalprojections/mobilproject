@@ -18,11 +18,11 @@ public class TitleViewModel extends AndroidViewModel {
     private LiveData<List<MessageTable>> liveMessages;
     private LiveData<List<NewMessages>> liveUnreadMessages;
 
-    private sharedpref sharedPref;
+    private SharedPreferences sharedPref;
 
     public TitleViewModel(@NonNull Application application) {
         super(application);
-        sharedPref = sharedpref.getInstance();
+        sharedPref = SharedPreferences.getInstance();
         titleRepository = new TitleRepository(application);
     }
     LiveData<List<NewMessages>> getUnreadCount(){

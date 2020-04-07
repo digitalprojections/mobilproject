@@ -130,7 +130,7 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
     private boolean itemDownloading(int sid){
         DownloadManager downloadManager = (DownloadManager) mContext.getSystemService(mContext.DOWNLOAD_SERVICE);
         DownloadManager.Query query = new DownloadManager.Query();
-        long did = (long) sharedpref.getInstance().read("downloading_surah_"+sid, 0);
+        long did = (long) SharedPreferences.getInstance().read("downloading_surah_"+sid, 0);
         //query.setFilterById(did);
             Cursor cursor = downloadManager.query(query);
             Log.i(TAG, cursor.getCount() + " cursor count " + did);

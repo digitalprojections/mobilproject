@@ -1,22 +1,15 @@
 package furqon.io.github.mobilproject;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
-import com.google.android.gms.ads.reward.AdMetadataListener;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-
-import io.reactivex.internal.schedulers.NewThreadWorker;
 
 public class RewardAd{
 
@@ -96,7 +89,7 @@ public class RewardAd{
                         titleListCall = false;
                     } else {
                         int coins = (int) (rewardItem.getAmount() * mFireBaseConfig.getLong("rewardad_multiplier"));
-                        sharedpref.AddCoins(mContext, coins);
+                        SharedPreferences.AddCoins(mContext, coins);
                         ManageCoins manageCoins;
                         manageCoins = (ManageCoins) mContext;
                         manageCoins.SetCoinValues();
@@ -147,11 +140,11 @@ public class RewardAd{
             /*
              * If user has coins, simply allow download
              * */
-            int xcoins = sharedpref.getInstance().read(sharedpref.getInstance().COINS, 0);
+            int xcoins = SharedPreferences.getInstance().read(SharedPreferences.getInstance().COINS, 0);
             int newtotal;
             if(xcoins>=100){
                 newtotal = xcoins-100;
-                sharedpref.getInstance().write(sharedpref.getInstance().COINS, newtotal);
+                SharedPreferences.getInstance().write(SharedPreferences.getInstance().COINS, newtotal);
                 MyListener myListener;
                 myListener = (MyListener) mContext;
                 myListener.MarkAsAwarded(currentSurahNumber);

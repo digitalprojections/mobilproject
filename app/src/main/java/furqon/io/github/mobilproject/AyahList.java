@@ -1,7 +1,6 @@
 package furqon.io.github.mobilproject;
 
 import android.content.Context;
-import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,7 +22,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -76,7 +74,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     SeekBar seekBar;
     Handler handler;
     Runnable runnable;
-    private sharedpref sharedPref;
+    private SharedPreferences sharedPref;
     private Button tempbut;
     private Context context;
     private boolean httpresponse;
@@ -114,7 +112,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         trackList = new ArrayList<String>();
         PopulateTrackList();
 
-        sharedPref = sharedpref.getInstance();
+        sharedPref = SharedPreferences.getInstance();
         sharedPref.init(getApplicationContext());
 
         cl = findViewById(R.id.linearLayout4);
@@ -571,7 +569,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
     public void pause() {
         if (isPlaying) {
-            sharedpref.getInstance().write(suranomi, mediaPlayer.getCurrentPosition());
+            SharedPreferences.getInstance().write(suranomi, mediaPlayer.getCurrentPosition());
             isPlaying = false;
             stop();
         }
@@ -581,11 +579,11 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     public void resume() {
 
         if (mediaPlayer != null) {
-            int audio_pos = sharedpref.getInstance().read(suranomi, 0);
+            int audio_pos = SharedPreferences.getInstance().read(suranomi, 0);
             if (audio_pos > 0 && audio_pos != mediaPlayer.getDuration()) {
                 mediaPlayer.seekTo(audio_pos);
             } else {
-                sharedpref.getInstance().write(suranomi, 1);
+                SharedPreferences.getInstance().write(suranomi, 1);
                 mediaPlayer.seekTo(1);
                 Toast.makeText(getBaseContext(), audiorestore, Toast.LENGTH_SHORT).show();
             }
