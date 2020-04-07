@@ -57,6 +57,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     private TitleViewModel titleViewModel;
     private AyahListAdapter mAdapter;
     MediaPlayer mediaPlayer;
+    boolean download_attempted;
 
     boolean isPlaying;
 
@@ -199,9 +200,48 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
 
 
-        tempbut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        tempbut.setOnClickListener(LoadSurah());
+//        titleViewModel.getTitle(suraNumber).observe(this, new Observer<ChapterTitleTable>() {
+//            @Override
+//            public void onChanged(ChapterTitleTable chapterTitleTable) {
+//
+//                if(chapterTitleTable!=null){
+//                    currentStatus = Integer.parseInt(chapterTitleTable.status);
+//                    if(status==0){
+//                        //just created
+//                        //Toast.makeText(getApplicationContext(), status + " FIRST SHOW " + chapterTitleTable.status, Toast.LENGTH_SHORT).show();
+//                        status = currentStatus;
+//                    }else if(status==currentStatus){
+//                        //second or more tries
+//                        //Toast.makeText(getApplicationContext(), status + " FAILED TO UPDATE " + chapterTitleTable.status, Toast.LENGTH_SHORT).show();
+//                    }else if(status<currentStatus){
+//                        //Toast.makeText(getApplicationContext(), status + " TITLE UPDATED " + chapterTitleTable.status, Toast.LENGTH_SHORT).show();
+//                        int xcoins = sharedPref.read(sharedPref.COINS, 0);
+//                        int newtotal;
+//                        if(xcoins>=ayah_unlock_cost){
+//                            newtotal = xcoins-ayah_unlock_cost;
+//                        }else {
+//                            newtotal = 0;
+//                        }
+//                        sharedPref.write(sharedPref.COINS, newtotal);
+//                    }
+//
+//                }else{
+//
+//                }
+//                SetDownloadButtonState(chapterTitleTable);
+//            }
+//        });
+//        setAyahCost();
+
+        if(!download_attempted){
+            LoadSurah();
+            download_attempted = true;
+        }
+    }
+
+    private View.OnClickListener LoadSurah() {
+
                 Log.i("CLICK", "clicking");
                 RequestQueue queue = Volley.newRequestQueue(context);
                 String url = "https://inventivesolutionste.ipage.com/ajax_quran.php";
@@ -236,6 +276,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                         Log.i("ERROR RESPONSE", "enable reload button");
                         progressBar.setVisibility(View.INVISIBLE);
                         tempbut.setVisibility(View.VISIBLE);
+
                     }
                 }) {
                     protected Map<String, String> getParams() {
@@ -255,8 +296,10 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                 tempbut.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
                 //mInterstitialAd.show();
-            }
-            void populateAyahList(ArrayList<JSONObject> auclist){
+        return null;
+    }
+
+    void populateAyahList(ArrayList<JSONObject> auclist){
 
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(, android.R.layout.simple_spinner_item, auclist);
 //        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -282,46 +325,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                         Log.e("EXCEPTION", sx.getMessage());
                     }
                 }
-
-
-
-
-            }
-        });
-//        titleViewModel.getTitle(suraNumber).observe(this, new Observer<ChapterTitleTable>() {
-//            @Override
-//            public void onChanged(ChapterTitleTable chapterTitleTable) {
-//
-//                if(chapterTitleTable!=null){
-//                    currentStatus = Integer.parseInt(chapterTitleTable.status);
-//                    if(status==0){
-//                        //just created
-//                        //Toast.makeText(getApplicationContext(), status + " FIRST SHOW " + chapterTitleTable.status, Toast.LENGTH_SHORT).show();
-//                        status = currentStatus;
-//                    }else if(status==currentStatus){
-//                        //second or more tries
-//                        //Toast.makeText(getApplicationContext(), status + " FAILED TO UPDATE " + chapterTitleTable.status, Toast.LENGTH_SHORT).show();
-//                    }else if(status<currentStatus){
-//                        //Toast.makeText(getApplicationContext(), status + " TITLE UPDATED " + chapterTitleTable.status, Toast.LENGTH_SHORT).show();
-//                        int xcoins = sharedPref.read(sharedPref.COINS, 0);
-//                        int newtotal;
-//                        if(xcoins>=ayah_unlock_cost){
-//                            newtotal = xcoins-ayah_unlock_cost;
-//                        }else {
-//                            newtotal = 0;
-//                        }
-//                        sharedPref.write(sharedPref.COINS, newtotal);
-//                    }
-//
-//                }else{
-//
-//                }
-//                SetDownloadButtonState(chapterTitleTable);
-//            }
-//        });
-//        setAyahCost();
     }
-
 
 
     private void PopulateTrackList() {

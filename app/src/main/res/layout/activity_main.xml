@@ -32,14 +32,38 @@
                 android:contentDescription="@string/app_logo_description"
                 app:srcCompat="@drawable/ic_asset_32furqon_logo" />
 
-            <include layout="@layout/suralar_button" />
-            <include layout="@layout/continue_button" />
-            <include layout="@layout/youtube_button" />
-            <include layout="@layout/search_button" />
-            <include layout="@layout/favourite_button" />
-            <include layout="@layout/rate_button" />
-            <include layout="@layout/messages_button" />
+            <include
+                layout="@layout/suralar_button"
+                android:layout_weight="1" />
+
+            <include
+                layout="@layout/continue_button"
+                android:layout_weight="1" />
+
+            <include
+                layout="@layout/youtube_button"
+                android:layout_width="match_parent"
+                android:layout_weight="1" />
+
+            <include
+                layout="@layout/favourite_button"
+                android:layout_weight="1" />
+
+            <include
+                layout="@layout/rate_button"
+                android:layout_weight="1" />
+
+            <include
+                layout="@layout/search_button"
+                android:layout_width="match_parent"
+                android:layout_weight="1" />
+
+            <include
+                layout="@layout/messages_button"
+                android:visibility="gone" />
+
             <include layout="@layout/media_button" />
+
             <include layout="@layout/about_button" />
 
         </LinearLayout>

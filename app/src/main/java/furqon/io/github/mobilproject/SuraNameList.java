@@ -526,6 +526,8 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
 
     private void PopulateTrackList() {
 
+        //TODO Any file that is added here is from the old version
+        //new version supports multiple languages and uses structured folders to sort out
 
         //TODO clean up wrong files
         String path = getExternalFilesDir(null).getAbsolutePath();

@@ -105,4 +105,6 @@
     <string name="audio">Audio</string>
     <string name="your_message_to_the_author">Muallifga xabar</string>
     <string name="send">yuborish</string>
+    <string name="about">Ilova haqida</string>
+    <string name="thankyou">Tashakkurnoma</string>
 </resources>

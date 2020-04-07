@@ -89,6 +89,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.favourites_i:
                 open_favourites();
                 return true;
+            case R.id.messages_i:
+                open_messages();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -358,13 +361,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void ayahOfTheDay() {
-        if(!mSharedPref.read(mSharedPref.RANDOM_AYAH_SEEN, false)){
             Intent intent = new Intent(this, AyahOfTheDay.class);
             startActivity(intent);
 
-            mSharedPref.write(mSharedPref.RANDOM_AYAH_SEEN, true);
-        }
-
+            //mSharedPref.write(mSharedPref.RANDOM_AYAH_SEEN, true);
 
     }
 
@@ -468,6 +468,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.suralar:
                 open_suraNames();
+                break;
+            case R.id.davomi:
+                continueReading();
                 break;
             case R.id.youtubebut:
                 open_youtube();
