@@ -137,7 +137,6 @@ ProgressBar progressBar;
         tempbut = findViewById(R.id.button);
         progressBar = findViewById(R.id.tl_progressBar);
 
-        tempbut.setOnClickListener(LoadTitles());
 
 
         //https://inventivesolutionste.ipage.com/ajax_quran.php
@@ -201,15 +200,19 @@ ProgressBar progressBar;
                 LoadTheList();
             }
         });
+        tempbut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LoadTitles();
+            }
+        });
+
     }
 
-    private View.OnClickListener LoadTitles() {
-
-        Log.i(TAG, "CLICK");
-
+    private void LoadTitles() {
+        Log.i(TAG, "CLICK THE TEMP BUTTON");
         RequestQueue queue = Volley.newRequestQueue(context);
         String url = "https://inventivesolutionste.ipage.com/ajax_quran.php";
-
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -253,12 +256,9 @@ ProgressBar progressBar;
                 //language_id:1
                 return MyData;
             }
-
         };
-
         queue.add(stringRequest);
         progressBar.setVisibility(View.VISIBLE);
-        return null;
     }
 
     void populateAuctionList(ArrayList<JSONObject> auclist) {
@@ -299,7 +299,7 @@ ProgressBar progressBar;
             quranic_order_btn.setBackgroundColor(0);
             revelation_order_btn.setBackgroundColor(getResources().getColor(R.color.gold));
         }
-        recyclerView.scheduleLayoutAnimation();
+        //recyclerView.scheduleLayoutAnimation();
     }
 
     private void LoadTheList() {
@@ -310,14 +310,18 @@ ProgressBar progressBar;
             public void onChanged(@Nullable List<ChapterTitleTable> surahTitles) {
                 //Toast.makeText(SuraNameList.this, "LOADING TITLES " + surahTitles.size(), Toast.LENGTH_LONG).show();
                 if (surahTitles.size() != 114) {
-
+                    //tempbut.setVisibility(View.VISIBLE);
                     if (!download_attempted) {
-                        tempbut.setVisibility(View.GONE);
+                        Log.e(TAG, "LOADING LIST");
+                        download_attempted = true;
                         LoadTitles();
+                        tempbut.setVisibility(View.GONE);
                     }
+
                     //titleViewModel.deleteAll();
                 } else {
                     tempbut.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
 
                 }
                 mAdapter.setTitles(surahTitles);

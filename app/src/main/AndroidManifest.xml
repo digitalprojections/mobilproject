@@ -114,6 +114,7 @@
             android:parentActivityName=".ExtraActivity" />
         <activity
             android:name=".SuraNameList"
+            android:launchMode="singleTask"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity" />
         <activity

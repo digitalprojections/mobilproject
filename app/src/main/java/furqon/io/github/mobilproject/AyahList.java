@@ -198,7 +198,12 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
         }
 
-        tempbut.setOnClickListener(LoadSurah());
+        tempbut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LoadSurah();
+            }
+        });
 
 
 //        titleViewModel.getTitle(suraNumber).observe(this, new Observer<ChapterTitleTable>() {
@@ -237,7 +242,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
     }
 
-    private View.OnClickListener LoadSurah() {
+    private void LoadSurah() {
 
         Log.i(TAG, "CLICK clicking");
                 RequestQueue queue = Volley.newRequestQueue(context);
@@ -247,6 +252,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
+                                contentloading.setVisibility(View.GONE);
                                 //progressBar.setVisibility(View.INVISIBLE);
                                 // Convert String to json object
                                 httpresponse = true;
@@ -291,10 +297,6 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         tempbut.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
         queue.add(stringRequest);
-
-
-
-        return null;
     }
 
     void populateAyahList(ArrayList<JSONObject> auclist){
