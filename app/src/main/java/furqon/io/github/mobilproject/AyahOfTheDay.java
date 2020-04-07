@@ -355,6 +355,9 @@ public class AyahOfTheDay extends AppCompatActivity {
         if(random_surah==0){
             //database is empty. quit
             ayah_text.setText(R.string.chapters_not_available);
+
+            Intent intent = new Intent(getBaseContext(), MainActivity.class);
+            startActivity(intent);
             return;
         }else{
             random_ayah = (int) Math.floor(Math.random() * QuranMap.GetSurahLength(random_surah-1))+1;

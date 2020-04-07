@@ -108,14 +108,12 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".AyahList"
-            android:launchMode="standard"
             android:parentActivityName=".SuraNameList" />
         <activity
             android:name=".Favourites"
             android:parentActivityName=".ExtraActivity" />
         <activity
             android:name=".SuraNameList"
-            android:launchMode="singleInstance"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity" />
         <activity

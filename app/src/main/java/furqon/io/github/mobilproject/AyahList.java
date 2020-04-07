@@ -58,7 +58,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     private AyahListAdapter mAdapter;
     MediaPlayer mediaPlayer;
     boolean download_attempted;
-
+    final Handler delayHandler = new Handler();
+    TextView contentloading;
     boolean isPlaying;
 
     Integer audio_pos;
@@ -124,8 +125,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
         progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
-
-
+        contentloading = findViewById(R.id.al_textView);
+        contentloading.setVisibility(View.GONE);
 
         Toolbar toolbar = findViewById(R.id.audiobar);
         setSupportActionBar(toolbar);
@@ -149,7 +150,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                 suranomi = extratext.substring(0, extratext.indexOf(":"));
                 suraNumber = extratext.substring(extratext.indexOf(":") + 1);
 
-                Log.i("LOADED SURA", suraNumber + " " + suranomi);
+                Log.i(TAG, "LOADED SURA " + suraNumber + " " + suranomi);
 
                 getSupportActionBar().setTitle(suranomi);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -197,10 +198,9 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
         }
 
-
-
-
         tempbut.setOnClickListener(LoadSurah());
+
+
 //        titleViewModel.getTitle(suraNumber).observe(this, new Observer<ChapterTitleTable>() {
 //            @Override
 //            public void onChanged(ChapterTitleTable chapterTitleTable) {
@@ -234,15 +234,12 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 //        });
 //        setAyahCost();
 
-        if(!download_attempted){
-            LoadSurah();
-            download_attempted = true;
-        }
+
     }
 
     private View.OnClickListener LoadSurah() {
 
-                Log.i("CLICK", "clicking");
+        Log.i(TAG, "CLICK clicking");
                 RequestQueue queue = Volley.newRequestQueue(context);
                 String url = "https://inventivesolutionste.ipage.com/ajax_quran.php";
 
@@ -267,13 +264,13 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                                     populateAyahList(jsonArrayResponse);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
-                                    Log.i("error json", "tttttttttttttttt");
+                                    Log.i(TAG, "error json ttttttttttttttttt");
                                 }
                             }
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.i("ERROR RESPONSE", "enable reload button");
+                        Log.i(TAG, "ERROR RESPONSE enable reload button");
                         progressBar.setVisibility(View.INVISIBLE);
                         tempbut.setVisibility(View.VISIBLE);
 
@@ -291,11 +288,12 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                         return MyData;
                     }
                 };
-                queue.add(stringRequest);
+        tempbut.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+        queue.add(stringRequest);
 
-                tempbut.setVisibility(View.GONE);
-                progressBar.setVisibility(View.VISIBLE);
-                //mInterstitialAd.show();
+
+
         return null;
     }
 
@@ -322,7 +320,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                         text = new ChapterTextTable(chapter_id, verse_id,0, DatabaseID, OrderNo, AyahText, "", surah_type);
                         titleViewModel.insertText(text);
                     }catch (Exception sx){
-                        Log.e("EXCEPTION", sx.getMessage());
+                        Log.e(TAG, "EXCEPTION " + sx.getMessage());
                     }
                 }
     }
@@ -330,26 +328,26 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
     private void PopulateTrackList() {
         String path = getExternalFilesDir(null).getAbsolutePath();
-        Log.d("Files", "Path: " + path);
+        Log.d(TAG, "Files Path: " + path);
         File directory = new File(path);
         File[] files = directory.listFiles();
         if(files!=null){
-            Log.d("FILES", "Size: "+ files.length);
+            Log.d(TAG, "FILES Size: " + files.length);
 
             for (int i = 0; i < files.length; i++)
             {
-                Log.d("Files",  suraNumber + " FileName:" + files[i].getName());
+                Log.d(TAG, "Files " + suraNumber + " FileName:" + files[i].getName());
                 String trackname = files[i].getName().toString();
                 if(trackname.contains(".")){
                     trackname = trackname.substring(0, trackname.lastIndexOf("."));
                     if(!TrackDownloaded(trackname)){
                         trackList.add(trackname);
                     }
-                    Log.i("TRACKNAME",  "number " + trackname + " track is available");
+                    Log.i(TAG, "TRACKNAME number " + trackname + " track is available");
                 }
             }
         }else{
-            Log.d("NULL ARRAY", "no files found");
+            Log.d(TAG, "NULL ARRAY no files found");
         }
     }
 
@@ -367,7 +365,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                     public void run() {
                         //startTimer();
                         playCycle();
-                        Log.i("TIMER", "tick");
+                        Log.i(TAG, "TIMER tick");
                     }
                 };
                 handler.postDelayed(runnable, 1000);
@@ -392,8 +390,23 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                             titleViewModel.deleteSurah(Integer.parseInt(suraNumber));
                             Toast.makeText(getApplicationContext(), R.string.surah_size_issue, Toast.LENGTH_LONG).show();
                         }
-                        tempbut.setVisibility(View.VISIBLE);
-                        progressBar.setVisibility(View.INVISIBLE);
+                        if (!download_attempted) {
+                            tempbut.setVisibility(View.GONE);
+                            progressBar.setVisibility(View.VISIBLE);
+
+                            contentloading.setVisibility(View.VISIBLE);
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // Do something after 5s = 5000ms
+                                    contentloading.setVisibility(View.GONE);
+                                    mInterstitialAd.show();
+                                }
+                            }, 2000);
+
+                            LoadSurah();
+                            download_attempted = true;
+                        }
                     }
                 }else{
                     tempbut.setVisibility(View.GONE);
@@ -607,7 +620,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
             mediaPlayer.release();
             handler.removeCallbacks(runnable);
         }
-        mInterstitialAd.show();
+        //mInterstitialAd.show();
     }
 
 

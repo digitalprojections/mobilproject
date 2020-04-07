@@ -67,16 +67,31 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
 
-            android:layoutAnimation="@anim/layout_animation"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-
             android:layout_weight="1"
+            android:layoutAnimation="@anim/layout_animation"
+
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:listitem="@layout/ayat">
 
         </androidx.recyclerview.widget.RecyclerView>
 
+
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/al_textView"
+        android:layout_width="293dp"
+        android:layout_height="206dp"
+        android:layout_marginTop="80dp"
+        android:background="#60FFFFFF"
+        android:gravity="center"
+        android:singleLine="false"
+        android:text="@string/text_loading"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout4"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout4"
+        app:layout_constraintTop_toTopOf="@+id/linearLayout4" />
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"

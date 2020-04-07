@@ -107,4 +107,5 @@
     <string name="send">yuborish</string>
     <string name="about">Ilova haqida</string>
     <string name="thankyou">Tashakkurnoma</string>
+    <string name="text_loading">Tarkib yuklanmoqda. \nBu orada reklamani tomosha qilib turing...</string>
 </resources>

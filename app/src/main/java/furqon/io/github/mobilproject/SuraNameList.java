@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -57,8 +58,9 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     long downloadId;
 //    CardView download_container;
 //    ImageView downloadButton;
-//    ProgressBar progressBarDownload;
+ProgressBar progressBar;
 
+    boolean download_attempted;
     private Button tempbut;
     private Button quranic_order_btn;
     private Button revelation_order_btn;
@@ -133,95 +135,9 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         //requestHandler = new HTTPRequestHandler(context, titleViewModel);
 
         tempbut = findViewById(R.id.button);
+        progressBar = findViewById(R.id.tl_progressBar);
 
-        tempbut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "CLICK");
-
-                RequestQueue queue = Volley.newRequestQueue(context);
-                String url = "https://inventivesolutionste.ipage.com/ajax_quran.php";
-
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                //progressBar.setVisibility(View.INVISIBLE);
-                                // Convert String to json object
-                                jsonArrayResponse = new ArrayList<JSONObject>();
-
-                                try {
-                                    JSONArray jsonArray = new JSONArray(response);
-                                    for (int i = 0; i < jsonArray.length(); i++) {
-                                        JSONObject object = new JSONObject(jsonArray.getString(i));
-                                        jsonArrayResponse.add(object);
-                                    }
-
-                                    //PASS to SPINNER
-                                    //load auction names and available lot/bid count
-                                    populateAuctionList(jsonArrayResponse);
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    //Log.i("error json", "tttttttttttttttt");
-                                }
-
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-
-                        //progressBar.setVisibility(View.INVISIBLE);
-                    }
-                }) {
-                    protected Map<String, String> getParams() {
-                        Map<String, String> MyData = new HashMap<String, String>();
-                        MyData.put("action", "names_as_objects"); //Add the data you'd like to send to the server.
-                        MyData.put("language_id", "1");
-                        //https://inventivesolutionste.ipage.com/ajax_quran.php
-                        //POST
-                        //action:names_as_objects
-                        //language_id:1
-                        return MyData;
-                    }
-
-                };
-
-                queue.add(stringRequest);
-                //progressBar.setVisibility(View.VISIBLE);
-            }
-
-            void populateAuctionList(ArrayList<JSONObject> auclist) {
-
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(, android.R.layout.simple_spinner_item, auclist);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                //spinner.setAdapter(adapter);
-                ChapterTitleTable title;
-
-                for (JSONObject i : auclist
-                ) {
-
-                    try {
-                        //Log.d(TAG, "JSONOBJECT "+ i.getString("arabic"));
-                        //int language_no = i.getInt("language_no");
-                        int order_no = i.getInt("order_no");
-                        int chapter_id = i.getInt("chapter_id");
-                        String surah_type = i.getString("surah_type");
-                        String uzbek = i.getString("uzbek");
-                        String arabic = i.getString("arabic");
-
-                        title = new ChapterTitleTable(1, order_no, chapter_id, uzbek, arabic, surah_type);
-                        titleViewModel.insert(title);
-
-
-                    } catch (Exception sx) {
-                        Log.e("EXCEPTION", sx.getMessage());
-                    }
-                }
-
-
-            }
-        });
+        tempbut.setOnClickListener(LoadTitles());
 
 
         //https://inventivesolutionste.ipage.com/ajax_quran.php
@@ -237,9 +153,6 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
-
 
 
         //suralist = mDatabase.getSuraTitles();
@@ -290,6 +203,94 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
         });
     }
 
+    private View.OnClickListener LoadTitles() {
+
+        Log.i(TAG, "CLICK");
+
+        RequestQueue queue = Volley.newRequestQueue(context);
+        String url = "https://inventivesolutionste.ipage.com/ajax_quran.php";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //progressBar.setVisibility(View.INVISIBLE);
+                        // Convert String to json object
+                        jsonArrayResponse = new ArrayList<JSONObject>();
+
+                        try {
+                            JSONArray jsonArray = new JSONArray(response);
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject object = new JSONObject(jsonArray.getString(i));
+                                jsonArrayResponse.add(object);
+                            }
+
+                            //PASS to SPINNER
+                            //load auction names and available lot/bid count
+                            populateAuctionList(jsonArrayResponse);
+                            progressBar.setVisibility(View.GONE);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            //Log.i("error json", "tttttttttttttttt");
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                //progressBar.setVisibility(View.INVISIBLE);
+            }
+        }) {
+            protected Map<String, String> getParams() {
+                Map<String, String> MyData = new HashMap<String, String>();
+                MyData.put("action", "names_as_objects"); //Add the data you'd like to send to the server.
+                MyData.put("language_id", "1");
+                //https://inventivesolutionste.ipage.com/ajax_quran.php
+                //POST
+                //action:names_as_objects
+                //language_id:1
+                return MyData;
+            }
+
+        };
+
+        queue.add(stringRequest);
+        progressBar.setVisibility(View.VISIBLE);
+        return null;
+    }
+
+    void populateAuctionList(ArrayList<JSONObject> auclist) {
+
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(, android.R.layout.simple_spinner_item, auclist);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //spinner.setAdapter(adapter);
+        ChapterTitleTable title;
+
+        for (JSONObject i : auclist
+        ) {
+
+            try {
+                //Log.d(TAG, "JSONOBJECT "+ i.getString("arabic"));
+                //int language_no = i.getInt("language_no");
+                int order_no = i.getInt("order_no");
+                int chapter_id = i.getInt("chapter_id");
+                String surah_type = i.getString("surah_type");
+                String uzbek = i.getString("uzbek");
+                String arabic = i.getString("arabic");
+
+                title = new ChapterTitleTable(1, order_no, chapter_id, uzbek, arabic, surah_type);
+                titleViewModel.insert(title);
+
+
+            } catch (Exception sx) {
+                Log.e("EXCEPTION", sx.getMessage());
+            }
+        }
+    }
+
+
     private void SetButtonStates() {
         if (sharedPref.read(sharedPref.displayOrder, 0) == 0) {
             quranic_order_btn.setBackgroundColor(getResources().getColor(R.color.gold));
@@ -309,7 +310,11 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
             public void onChanged(@Nullable List<ChapterTitleTable> surahTitles) {
                 //Toast.makeText(SuraNameList.this, "LOADING TITLES " + surahTitles.size(), Toast.LENGTH_LONG).show();
                 if (surahTitles.size() != 114) {
-                    tempbut.setVisibility(View.VISIBLE);
+
+                    if (!download_attempted) {
+                        tempbut.setVisibility(View.GONE);
+                        LoadTitles();
+                    }
                     //titleViewModel.deleteAll();
                 } else {
                     tempbut.setVisibility(View.GONE);
@@ -339,7 +344,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     protected void onDestroy() {
         //mRewardedVideoAd.destroy(this);
 
-        mInterstitialAd.show();
+        //mInterstitialAd.show();
         super.onDestroy();
         if (broadcastReceiver != null) {
             unregisterReceiver(broadcastReceiver);
@@ -404,7 +409,7 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     @Override
     public void MarkAsDownloading(int surah_id) {
 
-        mInterstitialAd.show();
+        //mInterstitialAd.show();
         //TODO if quit while downloading, the progressbar is left permanently on
         if (mAdapter != null) {
             int actual_position = surah_id;
