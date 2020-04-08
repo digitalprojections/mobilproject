@@ -28,8 +28,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
@@ -45,7 +47,7 @@ import java.util.Objects;
 
 import furqon.io.github.mobilproject.Services.OnClearFromService;
 
-public class MediaActivity extends AppCompatActivity implements MyListener, ManageCoins, Playable, AdapterView.OnItemSelectedListener {
+public class MediaActivity extends AppCompatActivity implements MyListener, ManageCoins, Playable, AdapterView.OnItemSelectedListener, View.OnClickListener {
     private static final int MY_WRITE_EXTERNAL_STORAGE = 101;
     private static final String TAG = "MediaActivity";
     private ArrayList<Track> trackList;
@@ -68,6 +70,14 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     CardView download_container;
     ImageView downloadButton;
     ProgressBar progressBarDownload;
+    ImageButton dl_view_btn;
+    ImageButton pl_view_btn;
+
+    //TODO create LL vars
+    View special_actions_ll;
+    View media_player_ll;
+    SeekBar mp_seekBar;
+
     //TextView downloadText;
     String suraNumber;
     public String suranomi;
@@ -112,6 +122,14 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         }
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
+        dl_view_btn = findViewById(R.id.mp_imageButton_dl);
+        pl_view_btn = findViewById(R.id.mp_imageButton_pl);
+        dl_view_btn.setOnClickListener(this);
+        pl_view_btn.setOnClickListener(this);
+
+        media_player_ll = findViewById(R.id.mp_player_ll);
+        special_actions_ll = findViewById(R.id.mp_actions_ll);
+        mp_seekBar = findViewById(R.id.mp_seekBar);
 
         mSharedPref = SharedPreferences.getInstance();
         mSharedPref.init(getApplicationContext());
@@ -738,5 +756,23 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.mp_imageButton_dl:
+                //download  view
+                special_actions_ll.setVisibility(View.GONE);
+                media_player_ll.setVisibility(View.GONE);
+                mp_seekBar.setVisibility(View.GONE);
+                break;
+            case R.id.mp_imageButton_pl:
+                //playlist view
+                special_actions_ll.setVisibility(View.VISIBLE);
+                media_player_ll.setVisibility(View.VISIBLE);
+                mp_seekBar.setVisibility(View.VISIBLE);
+                break;
+        }
     }
 }

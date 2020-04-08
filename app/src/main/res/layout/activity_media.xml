@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/nightsky"
     android:orientation="vertical"
-    android:padding="8dp"
     tools:context=".MediaActivity">
 
     <TextView
@@ -16,7 +15,8 @@
         android:text="Select audio options"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="#FFEB3B"
-        android:textColorHint="#FFEB3B" />
+        android:textColorHint="#FFEB3B"
+        android:visibility="gone" />
 
     <Spinner
         android:id="@+id/mp_language_spinner"
@@ -140,11 +140,13 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
         android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/mp_imageButton_dl"
+            style="@android:style/Widget.Holo.Light.ImageButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -152,6 +154,7 @@
 
         <ImageButton
             android:id="@+id/mp_imageButton_pl"
+            style="@android:style/Widget.Holo.Light.ImageButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"

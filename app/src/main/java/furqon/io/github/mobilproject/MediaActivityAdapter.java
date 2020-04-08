@@ -46,7 +46,7 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
 
         holder.pl_title.setText(file.getName());
         holder.pl_time.setText(file.getDuration());
-        holder.pl_description.setText(QuranMap.SURAHNAMES[position]);
+        holder.pl_description.setText(QuranMap.SURAHNAMES[Integer.parseInt(file.getName()) - 1]);
 
     }
 
