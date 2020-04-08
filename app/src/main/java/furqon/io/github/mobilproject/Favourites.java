@@ -72,7 +72,11 @@ public class Favourites extends AppCompatActivity implements ManageSpecials {
 
         MobileAds.initialize(this, getString(R.string.addmob_app_id));
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_fullpage));
+        if (BuildConfig.BUILD_TYPE == "debug") {
+            mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        } else {
+            mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+        }
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
         Log.i("FAVOURITES","loaded");

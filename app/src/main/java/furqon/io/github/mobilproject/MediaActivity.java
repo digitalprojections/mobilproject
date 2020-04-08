@@ -41,18 +41,24 @@ import com.google.android.gms.ads.InterstitialAd;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import furqon.io.github.mobilproject.Services.OnClearFromService;
 
-public class MediaActivity extends AppCompatActivity implements MyListener, ManageCoins, Playable {
+public class MediaActivity extends AppCompatActivity implements MyListener, ManageCoins, Playable, AdapterView.OnItemSelectedListener {
     private static final int MY_WRITE_EXTERNAL_STORAGE = 101;
     private static final String TAG = "MediaActivity";
     private ArrayList<Track> trackList;
     private TitleViewModel titleViewModel;
     private MediaActivityAdapter mAdapter;
     private RecyclerView recyclerView;
-    private Spinner spinner;
+    private Spinner language_spinner;
+    private Spinner recitationstyle_spinner;
+    private Spinner reciter_spinner;
     private SpinnerAdapter spinnerAdapter;
+    private ArrayAdapter<CharSequence> language_adapter;
+    private ArrayAdapter<CharSequence> recitationstyle_adapter;
+    private ArrayAdapter<CharSequence> reciter_adapter;
 
 
 
@@ -62,12 +68,15 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     CardView download_container;
     ImageView downloadButton;
     ProgressBar progressBarDownload;
-    TextView downloadText;
+    //TextView downloadText;
     String suraNumber;
     public String suranomi;
     TextView cost_txt;
     TextView coins_txt;
-
+    //audio
+    String language;
+    String recitation_style;
+    String reciter;
     Integer audio_pos;
     Integer ayah_position;
 
@@ -96,8 +105,13 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media);
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+        if (BuildConfig.BUILD_TYPE == "debug") {
+            mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        } else {
+            mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+        }
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
 
         mSharedPref = SharedPreferences.getInstance();
         mSharedPref.init(getApplicationContext());
@@ -108,7 +122,9 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 //        progressBarDownload = findViewById(R.id.progressBar_download);
 //        downloadButton = findViewById(R.id.button_download);
 //        downloadText = findViewById(R.id.download_text);
-        registerReceiver(broadcastReceiverAudio, new IntentFilter("TRACKS_TRACKS"));
+
+
+        //registerReceiver(broadcastReceiverAudio, new IntentFilter("TRACKS_TRACKS"));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             registerReceiver(broadcastReceiverDownload, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
@@ -122,29 +138,28 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         mAdapter = new MediaActivityAdapter(this);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
-        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.available_languages, android.R.layout.simple_spinner_item);
+        language_adapter = ArrayAdapter.createFromResource(this, R.array.available_languages, android.R.layout.simple_spinner_item);
+
+        recitationstyle_adapter = ArrayAdapter.createFromResource(this, R.array.recitation_styles_arabic, android.R.layout.simple_spinner_item);
+        reciter_adapter = ArrayAdapter.createFromResource(this, R.array.arabic_murattal, android.R.layout.simple_spinner_item);
+
         // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(R.layout.mp_spinner_item);
+        language_adapter.setDropDownViewResource(R.layout.mp_spinner_item);
+        recitationstyle_adapter.setDropDownViewResource(R.layout.mp_spinner_item);
+        reciter_adapter.setDropDownViewResource(R.layout.mp_spinner_item);
         // Apply the adapter to the spinner
-        spinner = findViewById(R.id.mp_language_spinner);
-        spinner.setAdapter(adapter);
+        language_spinner = findViewById(R.id.mp_language_spinner);
+        recitationstyle_spinner = findViewById(R.id.mp_recitationstyle_spinner);
+        reciter_spinner = findViewById(R.id.mp_reciter_spinner);
+        //set the adapter
+        language_spinner.setAdapter(language_adapter);
+
         if(mSharedPref.contains(mSharedPref.AUDIO_LANGUAGE)){
-            spinner.setSelection(mSharedPref.read(mSharedPref.SELECTED_AUDIO_LANGUAGE, 0));
+            language_spinner.setSelection(mSharedPref.read(mSharedPref.SELECTED_AUDIO_LANGUAGE, 0));
         }
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ((TextView) view).setTextColor(getResources().getColor(R.color.colorPrimary));
-                //Log.d(TAG, adapter.getItem(position).toString());
-                mSharedPref.write(mSharedPref.SELECTED_AUDIO_LANGUAGE, position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+        language_spinner.setOnItemSelectedListener(this);
+        recitationstyle_spinner.setOnItemSelectedListener(this);
+        reciter_spinner.setOnItemSelectedListener(this);
 
         PopulateTrackList();
     }
@@ -156,11 +171,10 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             if (id == downloadId) {
                 Log.i(TAG, "DOWNLOAD COMPLETE Download id " + downloadId);
                 //MoveFiles();
-
-                PopulateTrackList();
-                MarkAsDownloaded(Integer.parseInt(suraNumber));
-
-
+                if (language != null && recitation_style != null && reciter != null) {
+                    PopulateTrackList();
+                    MarkAsDownloaded(Integer.parseInt(suraNumber));
+                }
             } else {
                 Log.i(TAG, "DOWNLOAD OTHER FILE Download id " + downloadId);
             }
@@ -171,6 +185,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     private void PopulateTrackList() {
         String path = getExternalFilesDir(null).getAbsolutePath();
         Log.d(TAG, "Files Path: " + path);
+        //TODO adding new folder structure
+        String newpath = path + "/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter;
         File directory = new File(path);
         File[] files = directory.listFiles();
         if (files != null) {
@@ -200,6 +216,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
 
     }
+/*
 
     BroadcastReceiver broadcastReceiverAudio = new BroadcastReceiver() {
         @Override
@@ -233,6 +250,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             }
         }
     };
+*/
 
     private void StartDownload() {
         DownloadThis(suraNumber);
@@ -388,8 +406,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     public void MarkAsDownloading(int surah_id) {
         download_container.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.VISIBLE);
-        playButton.setVisible(false);
-        downloadText.setText(R.string.downloading);
+        //playButton.setVisible(false);
+        //downloadText.setText(R.string.downloading);
     }
 
     @Override
@@ -402,15 +420,15 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         } else {
             Toast.makeText(this, R.string.not_enough_coins, Toast.LENGTH_LONG).show();
         }
-        downloadText.setText(R.string.down_or_play);
-        playButton.setVisible(true);
+        //downloadText.setText(R.string.down_or_play);
+        //playButton.setVisible(true);
 
     }
 
     @Override
     public void MarkAsDownloaded(int surah_id) {
-        downloadText.setText(R.string.play_local);
-        playButton.setVisible(true);
+        //downloadText.setText(R.string.play_local);
+        //playButton.setVisible(true);
         titleViewModel.updateTitleAsDownloaded(suraNumber);
     }
 
@@ -526,7 +544,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             //downloadButton.setFocusable(false);
             download_container.setVisibility(View.INVISIBLE);
             //downloadText.setText(R.string.play_local);
-            downloadText.setVisibility(View.VISIBLE);
+            //downloadText.setVisibility(View.VISIBLE);
             downloadButton.setVisibility(View.INVISIBLE);
             progressBar.setVisibility(View.INVISIBLE);
         } else {
@@ -616,9 +634,9 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         }
 
         try {
-            if (broadcastReceiverAudio != null) {
-                unregisterReceiver(broadcastReceiverAudio);
-            }
+//            if (broadcastReceiverAudio != null) {
+//                unregisterReceiver(broadcastReceiverAudio);
+//            }
         } catch (IllegalArgumentException iax) {
 
         }
@@ -653,6 +671,72 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
     @Override
     public void OnTrackPause() {
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        ((TextView) view).setTextColor(getResources().getColor(R.color.colorPrimary));
+        Log.d(TAG, String.valueOf(parent.getId()) + " " + R.id.mp_language_spinner);
+
+        switch (parent.getId()) {
+            case R.id.mp_language_spinner:
+                mSharedPref.write(mSharedPref.SELECTED_AUDIO_LANGUAGE, position);
+                language = language_adapter.getItem(position).toString();
+                switch (position) {
+                    case 0:
+                        //TODO set index from shared pref, if previously set
+                        recitationstyle_adapter = ArrayAdapter.createFromResource(this, R.array.recitation_styles_arabic, android.R.layout.simple_spinner_item);
+                        break;
+                    default:
+                        recitationstyle_adapter = ArrayAdapter.createFromResource(this, R.array.recitation_style, android.R.layout.simple_spinner_item);
+                        break;
+                }
+                recitationstyle_spinner.setVisibility(View.VISIBLE);
+                recitationstyle_spinner.setAdapter(recitationstyle_adapter);
+                recitationstyle_adapter.setDropDownViewResource(R.layout.mp_spinner_item);
+
+                break;
+            case R.id.mp_recitationstyle_spinner:
+                recitation_style = Objects.requireNonNull(recitationstyle_adapter.getItem(position)).toString();
+                switch (recitationstyle_adapter.getItem(position).toString()) {
+                    //TODO set index from shared pref, if previously set
+                    case "murattal":
+                        reciter_adapter = ArrayAdapter.createFromResource(this, R.array.arabic_murattal, android.R.layout.simple_spinner_item);
+                        break;
+                    case "mujawwad":
+                        reciter_adapter = ArrayAdapter.createFromResource(this, R.array.arabic_mujawwad, android.R.layout.simple_spinner_item);
+                        break;
+                    case "fl":
+                        switch (language) {
+                            case "english":
+                                reciter_adapter = ArrayAdapter.createFromResource(this, R.array.english_fl, android.R.layout.simple_spinner_item);
+                                break;
+                            case "russian":
+                                reciter_adapter = ArrayAdapter.createFromResource(this, R.array.russian_fl, android.R.layout.simple_spinner_item);
+                                break;
+                            case "uzbek":
+                                reciter_adapter = ArrayAdapter.createFromResource(this, R.array.uzbek_fl, android.R.layout.simple_spinner_item);
+                                break;
+                        }
+                        break;
+                }
+                reciter_spinner.setVisibility(View.VISIBLE);
+                reciter_spinner.setAdapter(reciter_adapter);
+                reciter_adapter.setDropDownViewResource(R.layout.mp_spinner_item);
+                break;
+            case R.id.mp_reciter_spinner:
+                reciter = String.valueOf(position + 1);
+                break;
+
+
+        }
+
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
 
     }
 }

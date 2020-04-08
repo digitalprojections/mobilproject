@@ -87,7 +87,11 @@ public class MessageList extends AppCompatActivity {
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+        if (BuildConfig.BUILD_TYPE == "debug") {
+            mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        } else {
+            mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+        }
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
 

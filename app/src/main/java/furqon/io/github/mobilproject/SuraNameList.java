@@ -168,7 +168,11 @@ ProgressBar progressBar;
 
         MobileAds.initialize(this, getString(R.string.addmob_app_id));
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_fullpage));
+        if (BuildConfig.BUILD_TYPE == "debug") {
+            mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        } else {
+            mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+        }
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
         quranic_order_btn.setClickable(true);
         revelation_order_btn.setClickable(true);

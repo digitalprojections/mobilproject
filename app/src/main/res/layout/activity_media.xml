@@ -13,7 +13,7 @@
         android:id="@+id/mp_title_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Audio language"
+        android:text="Select audio options"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="#FFEB3B"
         android:textColorHint="#FFEB3B" />
@@ -23,6 +23,20 @@
         style="@android:style/Widget.Holo.Spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <Spinner
+        android:id="@+id/mp_reciter_spinner"
+        style="@android:style/Widget.Holo.Spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible" />
+
+    <Spinner
+        android:id="@+id/mp_recitationstyle_spinner"
+        style="@android:style/Widget.Holo.Spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible" />
 
     <Space
         android:layout_width="match_parent"
@@ -121,7 +135,27 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/mp_recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/playlist_item" />
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/mp_imageButton_dl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/ic_file_download_done" />
+
+        <ImageButton
+            android:id="@+id/mp_imageButton_pl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/ic_playlist_24dp" />
+    </LinearLayout>
 
 </LinearLayout>

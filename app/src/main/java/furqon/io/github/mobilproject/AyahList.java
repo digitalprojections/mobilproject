@@ -33,8 +33,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.measurement.module.Analytics;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -86,7 +89,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
     private MenuItem playButton;
     private MenuItem menu_bookmark_btn;
-
+    private FirebaseAnalytics mFirebaseAnalytics;
 
 
     private String suraNumber;
@@ -133,11 +136,34 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         // Get a support ActionBar corresponding to this toolbar and enable the Up button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
+// Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+        if (BuildConfig.BUILD_TYPE == "debug") {
+            mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        } else {
+            mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+        }
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
 
+            @Override
+            public void onAdFailedToLoad(int i) {
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+
+            @Override
+            public void onAdClicked() {
+                Bundle params = new Bundle();
+                params.putString("activity_name", "AyahList");
+                params.putString("full_text", "ad clicked");
+                mFirebaseAnalytics.logEvent("share_image", params);
+            }
+        });
 
 
 
@@ -402,7 +428,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                                 public void run() {
                                     // Do something after 5s = 5000ms
                                     contentloading.setVisibility(View.GONE);
-                                    mInterstitialAd.show();
+                                    if (mInterstitialAd.isLoaded())
+                                        mInterstitialAd.show();
                                 }
                             }, 2000);
 

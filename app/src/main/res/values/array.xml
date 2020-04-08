@@ -6,9 +6,31 @@
         <item>@string/cancel</item>
     </array>
     <string-array name="available_languages">
-        <item>@string/arabic</item>
-        <item>@string/english</item>
-        <item>@string/russian</item>
-        <item>@string/uzbek</item>
+        <item>arabic</item>
+        <item>english</item>
+        <item>russian</item>
+        <item>uzbek</item>
+    </string-array>
+    <string-array name="recitation_styles_arabic">
+        <item>murattal</item>
+        <item>mujawwad</item>
+    </string-array>
+    <string-array name="recitation_style">
+        <item>fl</item>
+    </string-array>
+    <string-array name="arabic_murattal">
+        <item>AbdulBasit AbdulSamad</item>
+    </string-array>
+    <string-array name="arabic_mujawwad">
+        <item>None</item>
+    </string-array>
+    <string-array name="english_fl">
+        <item>Marmaduke Pickthall</item>
+    </string-array>
+    <string-array name="russian_fl">
+        <item>Эльмир Кулиев</item>
+    </string-array>
+    <string-array name="uzbek_fl">
+        <item>Abdulaziz Mansur</item>
     </string-array>
 </resources>
