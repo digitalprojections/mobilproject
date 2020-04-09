@@ -5,10 +5,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -21,11 +25,12 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
     private ArrayList<Track> trackList;
     private List<ChapterTitleTable> mTitles = new ArrayList<>(); // Cached copy of titles
     private boolean download_view;
+    Context mContext;
 
 
     MediaActivityAdapter(Context mediaActivity) {
         //LayoutInflater mInflater = LayoutInflater.from(mediaActivity);
-
+        mContext = mediaActivity;
     }
 
     @NonNull
@@ -40,21 +45,72 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
     public void onBindViewHolder(@NonNull PlayListViewHolder holder, int position) {
 
         if(download_view){
+            holder.download_view = true;
             ChapterTitleTable current = mTitles.get(position);
             String name = current.uzbek;
             //String arname = current.arabic;
             int numb = current.chapter_id;
             holder.pl_description.setText(name);
-            holder.pl_time.setVisibility(View.INVISIBLE);
+            holder.pl_time.setVisibility(View.GONE);
             holder.pl_title.setText(String.valueOf(numb));
+            holder.down_cont.setVisibility(View.VISIBLE);
+
+            if (TrackDownloaded(current.chapter_id + "")) {
+                //set by the actually available audio files
+                holder.downloadButton.setImageResource(R.drawable.ic_file_available);
+                Log.i(TAG, " DOWNLOADED, " + current.chapter_id + " " + current.uzbek);
+                holder.downloadButton.setFocusable(false);
+                holder.downloadButton.setTag(3);
+                holder.progressBar.setVisibility(View.INVISIBLE);
+                holder.downloadButton.setVisibility(View.VISIBLE);
+
+            } else {
+                if (current.status.equals("2")) {
+                    //download allowed. Active within the session only. Forgotten on restart
+                    holder.downloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
+                    holder.downloadButton.setFocusable(true);
+                    holder.downloadButton.setTag(2);
+                    holder.progressBar.setVisibility(View.INVISIBLE);
+                    holder.downloadButton.setVisibility(View.VISIBLE);
+                } else if (current.status.equals("4")) {
+                    holder.downloadButton.setVisibility(View.GONE);
+                    holder.downloadButton.setFocusable(false);
+                    holder.downloadButton.setTag(4);
+                    holder.progressBar.setVisibility(View.VISIBLE);
+                }
+            /*else if(itemDownloading(current.chapter_id)){
+                //downloading
+                Log.i(TAG, " DOWNLOADING, " + current.chapter_id + " " + current.uzbek);
+                holder.downloadButton.setTag(5);
+                holder.progressBar.setVisibility(View.VISIBLE);
+                holder.downloadButton.setVisibility(View.GONE);
+            }*/
+                else {
+                    holder.downloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
+                    holder.downloadButton.setFocusable(true);
+                    holder.downloadButton.setTag(2);
+                    holder.progressBar.setVisibility(View.INVISIBLE);
+                    holder.downloadButton.setVisibility(View.VISIBLE);
+//                holder.downloadButton.setImageResource(R.drawable.ic_unlock);
+//                holder.downloadButton.setFocusable(true);
+//                holder.downloadButton.setTag(1);
+//                holder.downloadButton.setVisibility(View.VISIBLE);
+//                holder.progressBar.setVisibility(View.INVISIBLE);
+                }
+            }
+
         }else{
+            holder.download_view = false;
             Track file = trackList.get(position);
             Log.i(TAG, file.getName());
-            holder.pl_time.setVisibility(View.VISIBLE);
             holder.pl_title.setText(file.getName());
             holder.pl_time.setText(file.getDuration());
             holder.pl_description.setText(QuranMap.SURAHNAMES[Integer.parseInt(file.getName()) - 1]);
-    }
+            holder.pl_time.setVisibility(View.VISIBLE);
+            holder.downloadButton.setVisibility(View.GONE);
+            holder.progressBar.setVisibility(View.GONE);
+            holder.down_cont.setVisibility(View.GONE);
+        }
     }
     void setTitles(List<ChapterTitleTable> titles){
         mTitles = titles;
@@ -72,7 +128,7 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
         boolean retval = false;
         for (Track i : trackList
         ) {
-            if (i.equals(v)) {
+            if (i.getName().equals(v)) {
                 //match found
                 Log.i("TRACK DOWNLOADED?", String.valueOf(v) + " " + i + " " + (i.equals(v)));
                 retval = true;
@@ -101,25 +157,57 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
         this.download_view = download_view;
     }
 
-    static class PlayListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class PlayListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        boolean download_view;
         private TextView pl_title;
         private TextView pl_time;
         private TextView pl_description;
-
+        ImageView downloadButton;
+        ProgressBar progressBar;
+        CardView down_cont;
+        LinearLayout container;
 
         PlayListViewHolder(@NonNull View playlistItem) {
             super(playlistItem);
             pl_title = playlistItem.findViewById(R.id.pl_title);
             pl_time = playlistItem.findViewById(R.id.pl_time);
             pl_description = playlistItem.findViewById(R.id.pl_description);
-            LinearLayout container = playlistItem.findViewById(R.id.pl_container);
+            container = playlistItem.findViewById(R.id.pl_container);
+            downloadButton = playlistItem.findViewById(R.id.button_download);
+            progressBar = playlistItem.findViewById(R.id.progressBar_download);
+            down_cont = playlistItem.findViewById(R.id.download_cont);
 
             container.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
+            if (download_view) {
+                switch (downloadButton.getTag().toString()) {
+                    case "2"://green arrow
+                        StartDownload(v, pl_title.getText().toString());
+                        break;
+                }
 
+            } else {
+                //TODO play track
+            }
+        }
+
+        private void StartDownload(View view, String title) {
+
+            String snumber = title;
+            if (!TrackDownloaded(title)) {
+                MyListener myListener;
+                myListener = (MyListener) mContext;
+                myListener.DownloadThis(snumber);
+                myListener.MarkAsDownloading(Integer.parseInt(snumber));
+                //getTitleAt(Integer.parseInt(snumber)-1).;
+                progressBar.setVisibility(View.VISIBLE);
+                downloadButton.setVisibility(View.GONE);
+            } else {
+                Log.e(TAG, "track already downloaded");
+            }
         }
     }
 
@@ -128,5 +216,6 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
         this.trackList = trackList;
         notifyDataSetChanged();
     }
+
 }
 

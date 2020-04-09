@@ -69,11 +69,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
 
     private Context context;
-
+    String newpath;
     long downloadId;
-    CardView download_container;
-    ImageView downloadButton;
-    ProgressBar progressBarDownload;
     ImageButton dl_view_btn;
     ImageButton pl_view_btn;
 
@@ -194,11 +191,12 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         public void onReceive(Context context, Intent intent) {
             long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
             if (id == downloadId) {
-                Log.i(TAG, "DOWNLOAD COMPLETE Download id " + downloadId);
+                Log.i(TAG, "DOWNLOAD COMPLETE Download id " + downloadId + " surahid:" + suraNumber);
                 //MoveFiles();
                 if (language != null && recitation_style != null && reciter != null) {
                     PopulateTrackList();
-                    MarkAsDownloaded(Integer.parseInt(suraNumber));
+                    int sn = Integer.parseInt(suraNumber);
+                    MarkAsDownloaded(sn);
                 }
             } else {
                 Log.i(TAG, "DOWNLOAD OTHER FILE Download id " + downloadId);
@@ -211,7 +209,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         String path = getExternalFilesDir(null).getAbsolutePath();
         Log.d(TAG, "Files Path: " + path);
         //TODO adding new folder structure
-        String newpath = path + "/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter;
+
+        newpath = path + "/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter;
         File directory = new File(path);
         File[] files = directory.listFiles();
         if (files != null) {
@@ -238,8 +237,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         } else {
             Log.d(TAG, "NULL ARRAY no files found");
         }
-
-
     }
     private void LoadTheList() {
 
@@ -254,6 +251,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                     //progressBar.setVisibility(View.GONE);
                 }
                 mAdapter.setTitles(surahTitles);
+                mAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -400,6 +398,14 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     public void DownloadThis(String suraNumber) {
 
         if (WritePermission()) {
+
+            //TODO new path:
+            /*
+            newpath = "https://inventivesolutionste.ipage.com/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter;
+            */
+            newpath = "https://inventivesolutionste.ipage.com/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter;
+            Log.e(TAG, newpath);
+
             String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suraNumber + ".mp3"; // your URL here
             File file = new File(getExternalFilesDir(null), suraNumber + ".mp3");
             DownloadManager.Request request;
@@ -458,11 +464,11 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                     Log.e("CANNOT GET POSITION", iobx.getMessage());
                 }
             }
-            ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
-            if (!ctitle.status.equals("4")) {
-                ctitle.status = "4";
-                titleViewModel.update(ctitle);
-            }
+//            ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
+//            if (!ctitle.status.equals("4")) {
+//                ctitle.status = "4";
+//                titleViewModel.update(ctitle);
+//            }
         }
     }
 
@@ -494,11 +500,11 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                     Log.e("CANNOT GET POSITION", iobx.getMessage());
                 }
             }
-            ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
-            if (!ctitle.status.equals("3")) {
-                ctitle.status = "3";
-                titleViewModel.update(ctitle);
-            }
+//            ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
+//            if (!ctitle.status.equals("3")) {
+//                ctitle.status = "3";
+//                titleViewModel.update(ctitle);
+//            }
         }
     }
 
@@ -820,6 +826,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 media_player_ll.setVisibility(View.GONE);
                 mp_seekBar.setVisibility(View.GONE);
                 LoadTheList();
+
                 break;
             case R.id.mp_imageButton_pl:
                 //playlist view
@@ -827,8 +834,9 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 special_actions_ll.setVisibility(View.VISIBLE);
                 media_player_ll.setVisibility(View.VISIBLE);
                 mp_seekBar.setVisibility(View.VISIBLE);
-
+                mAdapter.notifyDataSetChanged();
                 break;
         }
+
     }
 }
