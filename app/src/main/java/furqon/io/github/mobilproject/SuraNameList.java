@@ -58,7 +58,8 @@ public class SuraNameList extends AppCompatActivity implements MyListener {
     long downloadId;
 //    CardView download_container;
 //    ImageView downloadButton;
-ProgressBar progressBar;
+
+    ProgressBar progressBar;
 
     boolean download_attempted;
     private Button tempbut;

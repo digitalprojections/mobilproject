@@ -1,9 +1,12 @@
 package furqon.io.github.mobilproject;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -43,6 +46,7 @@ import com.google.android.gms.ads.InterstitialAd;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import furqon.io.github.mobilproject.Services.OnClearFromService;
@@ -105,7 +109,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     boolean isPlaying;
 
     private SharedPreferences mSharedPref;
-    ProgressBar progressBar;
+    //ProgressBar progressBar;
     private Runnable runnable;
     MediaMetadataRetriever metadataRetriever = new MediaMetadataRetriever();
 
@@ -114,6 +118,9 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media);
+
+        titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
+
         mInterstitialAd = new InterstitialAd(this);
         if (BuildConfig.BUILD_TYPE == "debug") {
             mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
@@ -233,6 +240,22 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         }
 
 
+    }
+    private void LoadTheList() {
+
+
+        titleViewModel.getAllTitles().observe(this, new Observer<List<ChapterTitleTable>>() {
+            @Override
+            public void onChanged(@Nullable List<ChapterTitleTable> surahTitles) {
+                //Toast.makeText(SuraNameList.this, "LOADING TITLES " + surahTitles.size(), Toast.LENGTH_LONG).show();
+                if (surahTitles.size() != 114) {
+
+                } else {
+                    //progressBar.setVisibility(View.GONE);
+                }
+                mAdapter.setTitles(surahTitles);
+            }
+        });
     }
 /*
 
@@ -422,10 +445,25 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
     @Override
     public void MarkAsDownloading(int surah_id) {
-        download_container.setVisibility(View.INVISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
-        //playButton.setVisible(false);
-        //downloadText.setText(R.string.downloading);
+        //mInterstitialAd.show();
+        //TODO if quit while downloading, the progressbar is left permanently on
+        if (mAdapter != null) {
+            int actual_position = surah_id;
+            for (int i = 0; i < mAdapter.getItemCount(); i++) {
+                try {
+                    if (mAdapter.getTitleAt(i).chapter_id == surah_id) {
+                        actual_position = i;
+                    }
+                } catch (IndexOutOfBoundsException iobx) {
+                    Log.e("CANNOT GET POSITION", iobx.getMessage());
+                }
+            }
+            ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
+            if (!ctitle.status.equals("4")) {
+                ctitle.status = "4";
+                titleViewModel.update(ctitle);
+            }
+        }
     }
 
     @Override
@@ -445,9 +483,23 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
     @Override
     public void MarkAsDownloaded(int surah_id) {
-        //downloadText.setText(R.string.play_local);
-        //playButton.setVisible(true);
-        titleViewModel.updateTitleAsDownloaded(suraNumber);
+        if (mAdapter != null) {
+            int actual_position = surah_id;
+            for (int i = 0; i < mAdapter.getItemCount(); i++) {
+                try {
+                    if (mAdapter.getTitleAt(i).chapter_id == surah_id) {
+                        actual_position = i;
+                    }
+                } catch (IndexOutOfBoundsException iobx) {
+                    Log.e("CANNOT GET POSITION", iobx.getMessage());
+                }
+            }
+            ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
+            if (!ctitle.status.equals("3")) {
+                ctitle.status = "3";
+                titleViewModel.update(ctitle);
+            }
+        }
     }
 
     private boolean isNetworkAvailable() {
@@ -549,7 +601,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 //            }
 //        });
     }
-
+/*
     private void SetDownloadButtonState(ChapterTitleTable titleTable) {
 
 
@@ -587,9 +639,9 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             } else {
                 //Lock state
 
-                downloadButton.setImageResource(R.drawable.ic_unlock);
+                downloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
                 downloadButton.setFocusable(true);
-                downloadButton.setTag(1);
+                downloadButton.setTag(2);
                 downloadButton.setVisibility(View.VISIBLE);
                 progressBarDownload.setVisibility(View.INVISIBLE);
                 //downloadText.setText(R.string.unlock_or_play);
@@ -628,7 +680,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         });
         progressBarDownload.setVisibility(View.GONE);
         //recyclerView.scheduleLayoutAnimation();
-    }
+    }*/
 
     public void pause() {
         if (isPlaying) {
@@ -695,11 +747,11 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         ((TextView) view).setTextColor(getResources().getColor(R.color.colorPrimary));
-        Log.d(TAG, String.valueOf(parent.getId()) + " " + R.id.mp_language_spinner);
+        Log.d(TAG, parent.getId() + " " + R.id.mp_language_spinner);
 
         switch (parent.getId()) {
             case R.id.mp_language_spinner:
-                mSharedPref.write(mSharedPref.SELECTED_AUDIO_LANGUAGE, position);
+                mSharedPref.write(SharedPreferences.SELECTED_AUDIO_LANGUAGE, position);
                 language = language_adapter.getItem(position).toString();
                 switch (position) {
                     case 0:
@@ -717,7 +769,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 break;
             case R.id.mp_recitationstyle_spinner:
                 recitation_style = Objects.requireNonNull(recitationstyle_adapter.getItem(position)).toString();
-                switch (recitationstyle_adapter.getItem(position).toString()) {
+                switch (Objects.requireNonNull(recitationstyle_adapter.getItem(position)).toString()) {
                     //TODO set index from shared pref, if previously set
                     case "murattal":
                         reciter_adapter = ArrayAdapter.createFromResource(this, R.array.arabic_murattal, android.R.layout.simple_spinner_item);
@@ -763,15 +815,19 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         switch (v.getId()) {
             case R.id.mp_imageButton_dl:
                 //download  view
+                mAdapter.setDownload_view(true);
                 special_actions_ll.setVisibility(View.GONE);
                 media_player_ll.setVisibility(View.GONE);
                 mp_seekBar.setVisibility(View.GONE);
+                LoadTheList();
                 break;
             case R.id.mp_imageButton_pl:
                 //playlist view
+                mAdapter.setDownload_view(false);
                 special_actions_ll.setVisibility(View.VISIBLE);
                 media_player_ll.setVisibility(View.VISIBLE);
                 mp_seekBar.setVisibility(View.VISIBLE);
+
                 break;
         }
     }
