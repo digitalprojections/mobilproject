@@ -48,6 +48,7 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
             holder.download_view = true;
             ChapterTitleTable current = mTitles.get(position);
             String name = current.uzbek;
+            Log.i(TAG, name);
             //String arname = current.arabic;
             int numb = current.chapter_id;
             holder.pl_description.setText(name);
@@ -124,32 +125,54 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
         }
 
     }
-    private boolean TrackDownloaded(String v) {
-        boolean retval = false;
-        for (Track i : trackList
-        ) {
-            if (i.getName().equals(v)) {
-                //match found
-                Log.i("TRACK DOWNLOADED?", String.valueOf(v) + " " + i + " " + (i.equals(v)));
-                retval = true;
-            }
 
+    private String prependZero(String s) {
+        String retval = s;
+        switch (s.length()) {
+            case 1:
+                retval = "00" + s;
+                break;
+            case 2:
+                retval = "0" + s;
+                break;
+            case 3:
+                retval = s;
+                break;
+        }
+        return retval;
+    }
+    private boolean TrackDownloaded(String v) {
+        v = prependZero(v);
+        boolean retval = false;
+        if (trackList != null) {
+            for (Track i : trackList
+            ) {
+                if (i.getName().equals(v)) {
+                    //match found
+                    Log.i("TRACK DOWNLOADED?", String.valueOf(v) + " " + i + " " + (i.equals(v)));
+                    retval = true;
+                }
+
+            }
         }
         return retval;
     }
     @Override
     public int getItemCount() {
 
-        Log.i(TAG, "tracklist size " + trackList.size());
-        int c=0;
-        if(download_view){
-            if(mTitles!=null)
-            {
+        //Log.i(TAG, "tracklist size " + trackList.size());
+        int c = 0;
+        if (download_view) {
+            if (mTitles != null) {
                 c = mTitles.size();
             }
-        }else{
-            c = trackList.size();
+        } else {
+            if (trackList != null) {
+                c = trackList.size();
+            }
         }
+
+
         return c;
     }
 
@@ -157,6 +180,9 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
         this.download_view = download_view;
     }
 
+    public boolean getDownload_view() {
+        return download_view;
+    }
     class PlayListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         boolean download_view;
         private TextView pl_title;
@@ -191,6 +217,7 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
 
             } else {
                 //TODO play track
+
             }
         }
 
@@ -201,7 +228,7 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
                 MyListener myListener;
                 myListener = (MyListener) mContext;
                 myListener.DownloadThis(snumber);
-                myListener.MarkAsDownloading(Integer.parseInt(snumber));
+                //myListener.MarkAsDownloading(Integer.parseInt(snumber));
                 //getTitleAt(Integer.parseInt(snumber)-1).;
                 progressBar.setVisibility(View.VISIBLE);
                 downloadButton.setVisibility(View.GONE);

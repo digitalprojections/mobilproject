@@ -20,7 +20,7 @@ public class TitleRepository {
     private LiveData<List<NewMessages>> liveUnreadMessages;
     private Context context;
 
-    MyListener myListener = (MyListener) new SuraNameList();
+    //MyListener myListener = (MyListener) new SuraNameList();
     TitleRepository(Application application){
         ChapterTitleDatabase titleDatabase = ChapterTitleDatabase.getDatabase(application);
         mTitleDao = titleDatabase.titleDAO();
@@ -240,7 +240,7 @@ public class TitleRepository {
 
             int rows = mAsyncTitleDAO.getCount();
             if(rows!=114){
-                myListener.LoadTitlesFromServer();
+                //myListener.LoadTitlesFromServer();
             }
             return null;
         }

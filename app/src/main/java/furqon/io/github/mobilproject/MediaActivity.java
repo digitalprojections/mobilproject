@@ -33,6 +33,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -45,6 +46,11 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -65,6 +71,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     private ArrayAdapter<CharSequence> language_adapter;
     private ArrayAdapter<CharSequence> recitationstyle_adapter;
     private ArrayAdapter<CharSequence> reciter_adapter;
+    private MediaPlayer mediaPlayer;
 
 
 
@@ -102,7 +109,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     InterstitialAd mInterstitialAd;
     Handler handler;
     private NotificationManager notificationManager;
-    private MediaPlayer mediaPlayer;
     boolean isPlaying;
 
     private SharedPreferences mSharedPref;
@@ -137,13 +143,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
         mSharedPref = SharedPreferences.getInstance();
         mSharedPref.init(getApplicationContext());
-        //recyclerView.setAdapter(mAdapter);
-
-//
-//        download_container = findViewById(R.id.download_cont);
-//        progressBarDownload = findViewById(R.id.progressBar_download);
-//        downloadButton = findViewById(R.id.button_download);
-//        downloadText = findViewById(R.id.download_text);
 
 
         //registerReceiver(broadcastReceiverAudio, new IntentFilter("TRACKS_TRACKS"));
@@ -183,59 +182,172 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         recitationstyle_spinner.setOnItemSelectedListener(this);
         reciter_spinner.setOnItemSelectedListener(this);
 
-        PopulateTrackList();
-    }
+        //PopulateTrackList();
 
-    private BroadcastReceiver broadcastReceiverDownload = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-            if (id == downloadId) {
-                Log.i(TAG, "DOWNLOAD COMPLETE Download id " + downloadId + " surahid:" + suraNumber);
-                //MoveFiles();
-                if (language != null && recitation_style != null && reciter != null) {
-                    PopulateTrackList();
-                    int sn = Integer.parseInt(suraNumber);
-                    MarkAsDownloaded(sn);
-                }
-            } else {
-                Log.i(TAG, "DOWNLOAD OTHER FILE Download id " + downloadId);
+        Bundle intent = getIntent().getExtras();
+        String play_item_number;
+        if (intent != null) {
+            try {
+                play_item_number = intent.getString("suranumber");
+                playTheFileIfExists(play_item_number);
+            } catch (NullPointerException npx) {
+
             }
         }
+    }
 
-    };
+    private void playTheFileIfExists(String play_item_number) {
+        suraNumber = play_item_number;
+        play();
+    }
 
-    private void PopulateTrackList() {
+    void play() {
+
+        String url;
+        String filePath = "";
+
         String path = getExternalFilesDir(null).getAbsolutePath();
-        Log.d(TAG, "Files Path: " + path);
-        //TODO adding new folder structure
-
         newpath = path + "/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter;
-        File directory = new File(path);
+        File directory = new File(newpath);
         File[] files = directory.listFiles();
+
         if (files != null) {
-            Log.d("FILES", "Size: " + files.length);
-
             for (int i = 0; i < files.length; i++) {
-                //Log.d(TAG, "Files " + suraNumber + " FileName:" + files[i].getName());
-
-                if (files[i].getName().contains(".")) {
-                    String trackname = files[i].getName().substring(0, files[i].getName().lastIndexOf("."));
-                    if (!TrackDownloaded(files[i].getName())) {
-                        String filePath = new StringBuilder().append(path).append("/").append(files[i].getName()).toString();
-                        metadataRetriever.setDataSource(filePath);
-
-                        //Date date = new Date();
-                        Track track = new Track(AudioTimer.getTimeStringFromMs(Integer.parseInt(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION))), trackname, filePath);
-                        trackList.add(track);
+                String trackname = files[i].getName();
+                if (trackname.contains(".")) {
+                    trackname = trackname.substring(0, trackname.lastIndexOf("."));
+                    if (trackname.equals(prependZero(suraNumber))) {
+                        filePath = new StringBuilder().append(newpath).append("/").append(prependZero(trackname)).append(".mp3").toString();
                     }
-                    //Log.i(TAG, "number " + trackname + " track is available");
                 }
             }
-            mAdapter.setTitles(trackList);
-            recyclerView.setAdapter(mAdapter);
         } else {
-            Log.d(TAG, "NULL ARRAY no files found");
+            //This surah is not available
+        }
+
+        if (TrackDownloaded(suraNumber)) {
+            url = filePath;
+        } else {
+            Toast.makeText(this, "Online audio!", Toast.LENGTH_SHORT).show();
+            //url = new StringBuilder().append("https://mobilproject.github.io/furqon_web_express/by_sura/").append(suraNumber).append(".mp3").toString();
+            url = new StringBuilder().append("https://inventivesolutionste.ipage.com/quran_audio/").append(suraNumber).append(".mp3").toString();
+
+        }
+
+        if (!url.isEmpty()) {
+            Log.i("PLAY", url);
+
+
+            //resume();
+
+
+            if (mediaPlayer == null) {
+
+                mediaPlayer = new MediaPlayer();
+                mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mediaPlayer) {
+                        //Furqon.ShowNotification(AyahList.this, R.drawable.ic_pause_circle, suranomi, audio_pos);
+                        mp_seekBar.setMax(mediaPlayer.getDuration());
+                        //progressBar.setVisibility(View.INVISIBLE);
+                        play();
+
+                    }
+                });
+
+                try {
+                    mediaPlayer.setDataSource(url);
+                } catch (IOException iox) {
+                    Log.e("ERROR", iox.getMessage());
+                }
+                //progressBar.setVisibility(View.VISIBLE);
+                mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
+
+
+            }
+//            else {
+//                Log.i(TAG, "Playing");
+//                if(isPlaying){
+//                    pause();
+//                }else{
+//                    mediaPlayer.release();
+//                    mediaPlayer = null;
+//                    //mediaPlayer.start();
+//                    //isPlaying = true;
+//                    //resume();
+//                }
+//            }
+            //trackDownload = true;
+        } else {
+            final PopupWindow popupWindow = new PopupWindow(this);
+            View view = getLayoutInflater().inflate(R.layout.popup_hint, null);
+            popupWindow.setContentView(view);
+            //popupWindow.showAtLocation(cl, 0, 0,0);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    popupWindow.dismiss();
+                }
+            });
+            //trackDownload = false;
+        }
+    }
+
+    private void PopulateTrackList() {
+        trackList = new ArrayList<Track>();
+        if (language != null && recitation_style != null && reciter != null) {
+            String path = getExternalFilesDir(null).getAbsolutePath();
+            //Log.d(TAG, "Files Path: " + path);
+            //TODO adding new folder structure
+            newpath = path + "/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter;
+            Log.d(TAG, "Files Path: " + newpath);
+//            File directory = new File(path);
+//            File[] files = directory.listFiles();
+//            if (files != null) {
+//                Log.d(TAG, "MOVE FILES count: " + files.length);
+//                MoveFiles(files);
+//            }
+            File directory = new File(newpath);
+            File[] files = directory.listFiles();
+            if (files != null) {
+                Log.e(TAG, "Files were moved successfully");
+                for (int i = 0; i < files.length; i++) {
+                    //Log.d(TAG, "Files " + suraNumber + " FileName:" + files[i].getName());
+                    if (files[i].getName().contains(".")) {
+                        String trackname = files[i].getName().substring(0, files[i].getName().lastIndexOf("."));
+                        if (!TrackDownloaded(files[i].getName())) {
+                            String filePath = new StringBuilder().append(newpath).append("/").append(files[i].getName()).toString();
+                            metadataRetriever.setDataSource(filePath);
+
+                            //Date date = new Date();
+                            Track track = new Track(AudioTimer.getTimeStringFromMs(Integer.parseInt(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION))), trackname, filePath);
+                            trackList.add(track);
+                        }
+                        //Log.i(TAG, "number " + trackname + " track is available");
+                    }
+                }
+                mAdapter.setTitles(trackList);
+                recyclerView.setAdapter(mAdapter);
+            } else {
+                Log.d(TAG, "NULL ARRAY no files found");
+                mAdapter.setTitles(trackList);
+                recyclerView.setAdapter(mAdapter);
+            }
+        }
+    }
+
+    private void MoveFiles(File[] files) {
+        //TODO only uzbek files exist in old location
+        for (int i = 0; i < files.length; i++) {
+            Path source = Paths.get(files[i].getPath());
+            Path target = Paths.get(getExternalFilesDir(null).getAbsolutePath() + "/quran_audio/uzbek/by_surah/fl/1");
+            Log.i(TAG, "file moved from" + source);
+            Log.i(TAG, "file moved to " + target);
+            try {
+                Files.move(source, target.resolve(source.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException iox) {
+                Crashlytics.log(iox.getMessage());
+            }
         }
     }
     private void LoadTheList() {
@@ -251,6 +363,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                     //progressBar.setVisibility(View.GONE);
                 }
                 mAdapter.setTitles(surahTitles);
+                recyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
             }
         });
@@ -292,7 +405,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 */
 
     private void StartDownload() {
-        DownloadThis(suraNumber);
+        //DownloadThis(suraNumber);
 
     }
 
@@ -394,44 +507,67 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         }
     }
 
+    private String prependZero(String s) {
+        String retval = s;
+        switch (s.length()) {
+            case 1:
+                retval = "00" + s;
+                break;
+            case 2:
+                retval = "0" + s;
+                break;
+            case 3:
+                retval = s;
+                break;
+        }
+        return retval;
+    }
+
     @Override
     public void DownloadThis(String suraNumber) {
 
         if (WritePermission()) {
 
-            //TODO new path:
+            if (language != null && recitation_style != null && reciter != null) {
+                String middle_path = language + "/by_surah/" + recitation_style + "/" + reciter;
+                //TODO new path:
             /*
             newpath = "https://inventivesolutionste.ipage.com/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter;
             */
-            newpath = "https://inventivesolutionste.ipage.com/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter;
-            Log.e(TAG, newpath);
 
-            String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suraNumber + ".mp3"; // your URL here
-            File file = new File(getExternalFilesDir(null), suraNumber + ".mp3");
-            DownloadManager.Request request;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                request = new DownloadManager.Request(Uri.parse(url))
-                        .setTitle(suraNumber)
-                        .setDescription("Downloading " + suranomi)
-                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-                        .setDestinationUri(Uri.fromFile(file))
-                        .setRequiresCharging(false)
-                        .setAllowedOverMetered(true)
-                        .setAllowedOverRoaming(true);
+                String url = "https://inventivesolutionste.ipage.com/quran_audio/" + middle_path + "/" + prependZero(suraNumber) + ".mp3";
+                Log.e(TAG, newpath);
+
+                //String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suraNumber + ".mp3"; // your URL here
+                newpath = getExternalFilesDir(null) + "/quran_audio/" + middle_path;
+                File file = new File(newpath, prependZero(suraNumber) + ".mp3");
+                DownloadManager.Request request;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    request = new DownloadManager.Request(Uri.parse(url))
+                            .setTitle(suraNumber)
+                            .setDescription("Downloading " + suranomi)
+                            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+                            .setDestinationUri(Uri.fromFile(file))
+                            .setRequiresCharging(false)
+                            .setAllowedOverMetered(true)
+                            .setAllowedOverRoaming(true);
+                } else {
+                    request = new DownloadManager.Request(Uri.parse(url))
+                            .setTitle(suraNumber)
+                            .setDescription("Downloading " + suranomi)
+                            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+                            .setDestinationUri(Uri.fromFile(file))
+                            .setAllowedOverMetered(true)
+                            .setAllowedOverRoaming(true);
+                }
+
+                Log.i("PERMISSION OK", "Download start " + url);
+                DownloadManager downloadManager = (DownloadManager) this.getSystemService(this.DOWNLOAD_SERVICE);
+                downloadId = downloadManager.enqueue(request);
+                //MarkAsDownloading(Integer.parseInt(suraNumber));
             } else {
-                request = new DownloadManager.Request(Uri.parse(url))
-                        .setTitle(suraNumber)
-                        .setDescription("Downloading " + suranomi)
-                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-                        .setDestinationUri(Uri.fromFile(file))
-                        .setAllowedOverMetered(true)
-                        .setAllowedOverRoaming(true);
+                //path is incomplete
             }
-
-            Log.i("PERMISSION OK", "Download start " + url);
-            DownloadManager downloadManager = (DownloadManager) this.getSystemService(this.DOWNLOAD_SERVICE);
-            downloadId = downloadManager.enqueue(request);
-            MarkAsDownloading(0);
         } else {
             Log.i("PERMISSION NG", "Download fail");
         }
@@ -439,6 +575,31 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
     }
 
+    private BroadcastReceiver broadcastReceiverDownload = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+
+            int d_status = intent.getIntExtra(DownloadManager.COLUMN_STATUS, -1);
+
+
+            if (id == downloadId) {
+                Log.i(TAG, "DOWNLOAD COMPLETE Download id " + downloadId + " " + d_status);
+                //MoveFiles();
+                if (language != null && recitation_style != null && reciter != null) {
+                    PopulateTrackList();
+                    if (suraNumber != null) {
+                        int sn = Integer.parseInt(suraNumber);
+                        MarkAsDownloaded(sn);
+                    }
+
+                }
+            } else {
+                Log.i(TAG, "DOWNLOAD OTHER FILE Download id " + downloadId);
+            }
+        }
+
+    };
     @Override
     public void LoadTitlesFromServer() {
 
@@ -725,7 +886,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
             }
         } catch (IllegalArgumentException iax) {
-            Crashlytics.log("AYAHLIST " + iax.getMessage() + iax.getStackTrace());
+            Crashlytics.log("MEDIAACTIVITY " + iax.getMessage() + iax.getStackTrace());
         }
         mInterstitialAd.show();
     }
@@ -807,7 +968,12 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
 
         }
+        PopulateTrackList();
+        if (!mAdapter.getDownload_view()) {
 
+        } else {
+
+        }
 
     }
 

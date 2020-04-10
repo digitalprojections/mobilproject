@@ -83,49 +83,49 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
 
         //Log.i(TAG, sharedpref.getInstance().read("download_" + current.chapter_id, 0).toString() + " download ID for " + current.chapter_id);
 
-        if (TrackDownloaded(current.chapter_id + "")) {
-            //set by the actually available audio files
-            holder.downloadButton.setImageResource(R.drawable.ic_file_available);
-            Log.i(TAG, " DOWNLOADED, " + current.chapter_id + " " + current.uzbek);
-            holder.downloadButton.setFocusable(false);
-            //holder.down_cont.setVisibility(View.INVISIBLE);
-            holder.downloadButton.setTag(3);
-            holder.progressBar.setVisibility(View.INVISIBLE);
-
-        } else {
-            if (current.status.equals("2")) {
-                //download allowed. Active within the session only. Forgotten on restart
-                holder.downloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
-                holder.downloadButton.setFocusable(true);
-                holder.downloadButton.setTag(2);
-                holder.progressBar.setVisibility(View.INVISIBLE);
-                holder.downloadButton.setVisibility(View.VISIBLE);
-            } else if (current.status.equals("4")) {
-                holder.downloadButton.setVisibility(View.GONE);
-                holder.downloadButton.setFocusable(false);
-                holder.downloadButton.setTag(4);
-                holder.progressBar.setVisibility(View.VISIBLE);
-            }
-            /*else if(itemDownloading(current.chapter_id)){
-                //downloading
-                Log.i(TAG, " DOWNLOADING, " + current.chapter_id + " " + current.uzbek);
-                holder.downloadButton.setTag(5);
-                holder.progressBar.setVisibility(View.VISIBLE);
-                holder.downloadButton.setVisibility(View.GONE);
-            }*/
-            else {
-                holder.downloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
-                holder.downloadButton.setFocusable(true);
-                holder.downloadButton.setTag(2);
-                holder.progressBar.setVisibility(View.INVISIBLE);
-                holder.downloadButton.setVisibility(View.VISIBLE);
-//                holder.downloadButton.setImageResource(R.drawable.ic_unlock);
+//        if (TrackDownloaded(current.chapter_id + "")) {
+//            //set by the actually available audio files
+//            holder.downloadButton.setImageResource(R.drawable.ic_file_available);
+//            Log.i(TAG, " DOWNLOADED, " + current.chapter_id + " " + current.uzbek);
+//            holder.downloadButton.setFocusable(false);
+//            //holder.down_cont.setVisibility(View.INVISIBLE);
+//            holder.downloadButton.setTag(3);
+//            holder.progressBar.setVisibility(View.INVISIBLE);
+//
+//        } else {
+//            if (current.status.equals("2")) {
+//                //download allowed. Active within the session only. Forgotten on restart
+//                holder.downloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
 //                holder.downloadButton.setFocusable(true);
-//                holder.downloadButton.setTag(1);
-//                holder.downloadButton.setVisibility(View.VISIBLE);
+//                holder.downloadButton.setTag(2);
 //                holder.progressBar.setVisibility(View.INVISIBLE);
-            }
-        }
+//                holder.downloadButton.setVisibility(View.VISIBLE);
+//            } else if (current.status.equals("4")) {
+//                holder.downloadButton.setVisibility(View.GONE);
+//                holder.downloadButton.setFocusable(false);
+//                holder.downloadButton.setTag(4);
+//                holder.progressBar.setVisibility(View.VISIBLE);
+//            }
+//            /*else if(itemDownloading(current.chapter_id)){
+//                //downloading
+//                Log.i(TAG, " DOWNLOADING, " + current.chapter_id + " " + current.uzbek);
+//                holder.downloadButton.setTag(5);
+//                holder.progressBar.setVisibility(View.VISIBLE);
+//                holder.downloadButton.setVisibility(View.GONE);
+//            }*/
+//            else {
+//                holder.downloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
+//                holder.downloadButton.setFocusable(true);
+//                holder.downloadButton.setTag(2);
+//                holder.progressBar.setVisibility(View.INVISIBLE);
+//                holder.downloadButton.setVisibility(View.VISIBLE);
+////                holder.downloadButton.setImageResource(R.drawable.ic_unlock);
+////                holder.downloadButton.setFocusable(true);
+////                holder.downloadButton.setTag(1);
+////                holder.downloadButton.setVisibility(View.VISIBLE);
+////                holder.progressBar.setVisibility(View.INVISIBLE);
+//            }
+//        }
     }
     private boolean itemDownloading(int sid){
         DownloadManager downloadManager = (DownloadManager) mContext.getSystemService(mContext.DOWNLOAD_SERVICE);
@@ -213,9 +213,9 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
         TextView suraName;
         TextView arabic_name;
         TextView suraNumber;
-        ImageView downloadButton;
-        ProgressBar progressBar;
-        CardView down_cont;
+        //ImageView downloadButton;
+        //ProgressBar progressBar;
+        //CardView down_cont;
 
         SuraListViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -223,29 +223,29 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
             suraName = itemView.findViewById(R.id.sura_name_item);
             arabic_name = itemView.findViewById(R.id.arabic);
             suraNumber = itemView.findViewById(R.id.sura_number_item);
-            downloadButton = itemView.findViewById(R.id.button_download);
-            progressBar = itemView.findViewById(R.id.progressBar_download);
-            down_cont = itemView.findViewById(R.id.download_cont);
+//            downloadButton = itemView.findViewById(R.id.button_download);
+//            progressBar = itemView.findViewById(R.id.progressBar_download);
+//            down_cont = itemView.findViewById(R.id.download_cont);
 
-            Log.i("DOWNLOAD BUTTON", " " + downloadButton.getTag());
+//            Log.i("DOWNLOAD BUTTON", " " + downloadButton.getTag());
 
-            downloadButton.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //Toast.makeText(mContext,"Download surah number " + suraNumber.getText().toString(), Toast.LENGTH_SHORT).show();
-                    //String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suranomer + ".mp3"; // your URL here
-                    switch (downloadButton.getTag().toString()) {
-                        case "1"://red arrow
-                            ShowRewardAdForThisItem(view);
-                            break;
-                        case "2"://blue arrow
-                            StartDownload(view);
-                            break;
-                    }
-
-                }
-            });
-            progressBar.setVisibility(View.GONE);
+//            downloadButton.setOnClickListener(new OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    //Toast.makeText(mContext,"Download surah number " + suraNumber.getText().toString(), Toast.LENGTH_SHORT).show();
+//                    //String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suranomer + ".mp3"; // your URL here
+//                    switch (downloadButton.getTag().toString()) {
+//                        case "1"://red arrow
+//                            ShowRewardAdForThisItem(view);
+//                            break;
+//                        case "2"://blue arrow
+//                            StartDownload(view);
+//                            break;
+//                    }
+//
+//                }
+//            });
+//            progressBar.setVisibility(View.GONE);
 
         }
 
@@ -276,18 +276,18 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
         }
 
 
-        private void StartDownload(View view) {
-            MyListener myListener;
-            String snumber = suraNumber.getText().toString();
-            if (mContext instanceof MyListener) {
-                myListener = (MyListener) mContext;
-                myListener.DownloadThis(snumber);
-                myListener.MarkAsDownloading(Integer.parseInt(snumber));
-                //getTitleAt(Integer.parseInt(snumber)-1).;
-                progressBar.setVisibility(View.VISIBLE);
-                downloadButton.setVisibility(View.GONE);
-            }
-
-        }
+//        private void StartDownload(View view) {
+//            MyListener myListener;
+//            String snumber = suraNumber.getText().toString();
+//            if (mContext instanceof MyListener) {
+//                myListener = (MyListener) mContext;
+//                myListener.DownloadThis(snumber);
+//                myListener.MarkAsDownloading(Integer.parseInt(snumber));
+//                //getTitleAt(Integer.parseInt(snumber)-1).;
+////                progressBar.setVisibility(View.VISIBLE);
+////                downloadButton.setVisibility(View.GONE);
+//            }
+//
+//        }
     }
 }

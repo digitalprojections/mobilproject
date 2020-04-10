@@ -1,6 +1,7 @@
 package furqon.io.github.mobilproject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -485,13 +486,16 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.play:
-                if(isPlaying){
-                    OnTrackPause();
-                    playButton.setIcon(R.drawable.ic_play_circle);
-                }else{
-                    OnTrackPlay();
-                    playButton.setIcon(R.drawable.ic_pause_circle);
-                }
+                Intent intent = new Intent(context, MediaActivity.class);
+                intent.putExtra("suranumber", suraNumber);
+                startActivity(intent);
+//                if(isPlaying){
+//                    OnTrackPause();
+//                    playButton.setIcon(R.drawable.ic_play_circle);
+//                }else{
+//                    OnTrackPlay();
+//                    playButton.setIcon(R.drawable.ic_pause_circle);
+//                }
                 return true;
             case R.id.menu_bookmark_button:
                 recyclerView.scrollToPosition(ayah_position-1);
