@@ -103,7 +103,7 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
         }else{
             holder.download_view = false;
             Track file = trackList.get(position);
-            Log.i(TAG, file.getName());
+            Log.i(TAG, file.getUri());
             holder.pl_title.setText(file.getName());
             holder.pl_time.setText(file.getDuration());
             holder.pl_description.setText(QuranMap.SURAHNAMES[Integer.parseInt(file.getName()) - 1]);

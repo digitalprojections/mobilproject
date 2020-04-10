@@ -505,11 +505,27 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         }
     }
 
+    private String prependZero(String s) {
+        String retval = s;
+        switch (s.length()) {
+            case 1:
+                retval = "00" + s;
+                break;
+            case 2:
+                retval = "0" + s;
+                break;
+            case 3:
+                retval = s;
+                break;
+        }
+        return retval;
+    }
     public void play() {
 
         String filePath = "";
 
         String path = getExternalFilesDir(null).getAbsolutePath();
+        String newpath = path + "/quran_audio/arabic/by_surah/murattal/1";
         File directory = new File(path);
         File[] files = directory.listFiles();
         if(files!=null){
@@ -519,20 +535,22 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                 if(trackname.contains(".")){
                     trackname = trackname.substring(0, trackname.lastIndexOf("."));
                     if(trackname.equals(suraNumber)){
-                        filePath = new StringBuilder().append(path).append("/").append(trackname).append(".mp3").toString();
+                        //filePath = new StringBuilder().append(path).append("/").append(trackname).append(".mp3").toString();
+                        filePath = newpath + "/" + prependZero(suraNumber) + ".mp3";
                     }
                 }
             }
         }else{
             //This surah is not available
         }
-
-        if(TrackDownloaded(suraNumber)){
-            url = filePath;
-        }else{
-            Toast.makeText(this, "Online audio!", Toast.LENGTH_SHORT).show();
-            url = new StringBuilder().append("https://mobilproject.github.io/furqon_web_express/by_sura/").append(suraNumber).append(".mp3").toString();
-        }
+        filePath = newpath + "/" + prependZero(suraNumber) + ".mp3";
+        url = filePath;
+//        if(TrackDownloaded(suraNumber)){
+//            url = filePath;
+//        }else{
+//            Toast.makeText(this, "Online audio!", Toast.LENGTH_SHORT).show();
+//            url = new StringBuilder().append("https://mobilproject.github.io/furqon_web_express/by_sura/").append(suraNumber).append(".mp3").toString();
+//        }
 
         if(!url.isEmpty()){
             Log.i("PLAY", url);
@@ -594,15 +612,29 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     }
 
     private boolean TrackDownloaded(String v) {
+//        boolean retval = false;
+//        for (String i:trackList
+//        ) {
+//            if(i.equals(v)){
+//                //match found
+//                Log.i("TRACK DOWNLOADED?", String.valueOf(v) + " " + i + " " + (i.equals(v)));
+//                retval = true;
+//            }
+//
+//        }
+//        return retval;
+        v = prependZero(v);
         boolean retval = false;
-        for (String i:trackList
-        ) {
-            if(i.equals(v)){
-                //match found
-                Log.i("TRACK DOWNLOADED?", String.valueOf(v) + " " + i + " " + (i.equals(v)));
-                retval = true;
-            }
+        if (trackList != null) {
+            for (String i : trackList
+            ) {
+                if (i.equals(v)) {
+                    //match found
+                    Log.i("TRACK DOWNLOADED?", String.valueOf(v) + " " + i + " " + (i.equals(v)));
+                    retval = true;
+                }
 
+            }
         }
         return retval;
     }
