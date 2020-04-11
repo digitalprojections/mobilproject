@@ -108,4 +108,6 @@
     <string name="about">Ilova haqida</string>
     <string name="thankyou">Tashakkurnoma</string>
     <string name="text_loading">Tarkib yuklanmoqda. \nBu orada reklamani tomosha qilib turing...</string>
+    <string name="want_to_delete">O`chirmoqchimisiz?</string>
+    <string name="yes">Ha</string>
 </resources>

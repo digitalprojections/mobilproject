@@ -1,5 +1,6 @@
 package furqon.io.github.mobilproject;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -7,6 +8,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,6 +21,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
@@ -35,6 +38,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
@@ -46,6 +50,7 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,6 +70,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     private ArrayList<Track> trackList;
     private TitleViewModel titleViewModel;
     private MediaActivityAdapter mAdapter;
+    private LinearLayout coordinatorLayout;
     private RecyclerView recyclerView;
     private Spinner language_spinner;
     private Spinner recitationstyle_spinner;
@@ -139,6 +145,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         }
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
+        coordinatorLayout = findViewById(R.id.mp_main_linear_layout);
+
         audiorestore = getString(R.string.audiopos_restored);
         audiostore = getString(R.string.audiopos_stored);
         loadfailed = getString(R.string.audio_load_fail);
@@ -207,6 +215,10 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         recitationstyle_spinner.setOnItemSelectedListener(this);
         reciter_spinner.setOnItemSelectedListener(this);
 
+        setSwipeControls();
+
+
+
         //PopulateTrackList();
         handler = new Handler();
         mp_seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -232,6 +244,58 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         });
 
     }
+
+    private void setSwipeControls() {
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                //Toast.makeText(MediaActivity.this, "Track has been deleted", Toast.LENGTH_SHORT).show();
+                final int position = viewHolder.getAdapterPosition();
+                if (mAdapter.getDownload_view()) {
+                    //download view no deleting allowed
+                    mAdapter.notifyDataSetChanged();
+                } else {
+                    //allow delete, if not cancelled
+                    //mAdapter.removeItem(position);
+
+
+                    Snackbar snackbar = Snackbar
+                            .make(coordinatorLayout, R.string.want_to_delete, Snackbar.LENGTH_LONG);
+                    snackbar.setAction(R.string.yes, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            DeleteTheTrack(prependZero(trackList.get(position).getName()));
+                            PopulateTrackList();
+                            mAdapter.notifyDataSetChanged();
+                            //recyclerView.scrollToPosition(position);
+                        }
+
+
+                    });
+                    snackbar.addCallback(new Snackbar.Callback() {
+                        @Override
+                        public void onDismissed(Snackbar transientBottomBar, int event) {
+                            //super.onDismissed(transientBottomBar, event);
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    });
+                    snackbar.setActionTextColor(Color.YELLOW);
+                    snackbar.show();
+                }
+            }
+        });
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+
+    }
+
+
 
     private void playTheFileIfExists(String play_item_number) {
         suraNumber = play_item_number;
@@ -446,6 +510,31 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 Log.e(TAG, isx.getMessage() + "TIMER STOPPED on error???");
             }
 
+        }
+    }
+
+    private void DeleteTheTrack(String tracktodelete) {
+        if (tripletNotNull()) {
+            String path = getExternalFilesDir(null).getAbsolutePath();
+            newpath = path + "/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter;
+            File directory = new File(newpath);
+            File[] files = directory.listFiles();
+            if (files != null) {
+                for (int i = 0; i < files.length; i++) {
+                    if (files[i].getName().contains(".")) {
+                        String trackname = files[i].getName().substring(0, files[i].getName().lastIndexOf("."));
+                        if (trackname.equals(tracktodelete)) {
+                            files[i].delete();
+                        }
+                    }
+                }
+                mAdapter.setTitles(trackList);
+                recyclerView.setAdapter(mAdapter);
+            } else {
+                Log.d(TAG, "NULL ARRAY no files found");
+                mAdapter.setTitles(trackList);
+                recyclerView.setAdapter(mAdapter);
+            }
         }
     }
     private void PopulateTrackList() {
@@ -772,9 +861,9 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                     }
                 } else if (status == DownloadManager.STATUS_FAILED) {
                     Toast.makeText(MediaActivity.this,
-                            "FAILED!\n" + "reason of " + reason,
+                            "error " + reason,
                             Toast.LENGTH_LONG).show();
-
+                    mAdapter.notifyDataSetChanged();
                 } else if (status == DownloadManager.STATUS_PAUSED) {
                     Toast.makeText(MediaActivity.this,
                             "PAUSED!\n" + "reason of " + reason,

@@ -108,4 +108,6 @@
     <string name="about">О приложении</string>
     <string name="thankyou">Спасибо</string>
     <string name="text_loading">Контент загружается. \nСмотрите рекламу, а мы позаботимся об остальном</string>
+    <string name="want_to_delete">Вы хотите удалить?</string>
+    <string name="yes">Да</string>
 </resources>
