@@ -6,6 +6,8 @@ import android.widget.Toast;
 
 public class SharedPreferences
 {
+    public static final String RECITATIONSTYLE = "RECITATIONSTYLE";
+    public static final String RECITER = "RECITER";
     static final String USERID = "USERID";
     static final String INVITER = "INVITER";
     static final String INVITER_ID = "INVITER_ID";

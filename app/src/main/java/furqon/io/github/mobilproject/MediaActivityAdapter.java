@@ -48,7 +48,7 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
             holder.download_view = true;
             ChapterTitleTable current = mTitles.get(position);
             String name = current.uzbek;
-            Log.i(TAG, name);
+            //Log.i(TAG, name);
             //String arname = current.arabic;
             int numb = current.chapter_id;
             holder.pl_description.setText(name);
@@ -59,7 +59,7 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
             if (TrackDownloaded(current.chapter_id + "")) {
                 //set by the actually available audio files
                 holder.downloadButton.setImageResource(R.drawable.ic_file_available);
-                Log.i(TAG, " DOWNLOADED, " + current.chapter_id + " " + current.uzbek);
+                //Log.i(TAG, " DOWNLOADED, " + current.chapter_id + " " + current.uzbek);
                 holder.downloadButton.setFocusable(false);
                 holder.downloadButton.setTag(3);
                 holder.progressBar.setVisibility(View.INVISIBLE);
@@ -103,7 +103,7 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
         }else{
             holder.download_view = false;
             Track file = trackList.get(position);
-            Log.i(TAG, file.getUri());
+            //Log.i(TAG, file.getUri());
             holder.pl_title.setText(file.getName());
             holder.pl_time.setText(file.getDuration());
             holder.pl_description.setText(QuranMap.SURAHNAMES[Integer.parseInt(file.getName()) - 1]);
@@ -149,7 +149,7 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
             ) {
                 if (i.getName().equals(v)) {
                     //match found
-                    Log.i("TRACK DOWNLOADED?", String.valueOf(v) + " " + i + " " + (i.equals(v)));
+                    //Log.i("TRACK DOWNLOADED?", String.valueOf(v) + " " + i + " " + (i.equals(v)));
                     retval = true;
                 }
 
@@ -217,7 +217,13 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
 
             } else {
                 //TODO play track
+                SetSuraNumber myListener;
+                myListener = (SetSuraNumber) mContext;
+                myListener.SetSurahNumber(pl_title.getText().toString());
 
+                Playable playable;
+                playable = (Playable) mContext;
+                playable.OnTrackPlay();
             }
         }
 

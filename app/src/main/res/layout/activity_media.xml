@@ -38,14 +38,13 @@
         android:layout_height="wrap_content"
         android:visibility="visible" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="10dp" />
-
     <LinearLayout
         android:id="@+id/mp_actions_ll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
+        android:layout_weight="0"
+        android:clickable="false"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <Space
@@ -56,9 +55,13 @@
         <ImageView
             android:id="@+id/mp_favourite_btn"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            android:background="@drawable/custom_ripple"
+            android:clickable="true"
             android:contentDescription="@string/favourite_it"
+            android:focusable="auto"
+            android:padding="5dp"
             app:srcCompat="@drawable/ic_favorite_border_black_24dp" />
 
         <Space
@@ -71,10 +74,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
     </LinearLayout>
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="10dp" />
 
     <LinearLayout
         android:id="@+id/mp_player_ll"
@@ -94,6 +93,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0"
+            android:background="@drawable/custom_ripple"
+            android:clickable="true"
+            android:focusable="auto"
             app:srcCompat="@drawable/ic_fast_rewind_black_32dp" />
 
         <Space
@@ -106,6 +108,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
+            android:background="@drawable/custom_ripple"
+            android:clickable="true"
+            android:focusable="auto"
             app:srcCompat="@drawable/ic_play_circle_48dp" />
 
         <Space
@@ -118,13 +123,28 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0"
+            android:background="@drawable/custom_ripple"
+            android:clickable="true"
+            android:focusable="auto"
             app:srcCompat="@drawable/ic_fast_forward_black_32dp" />
 
         <Space
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
+
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/mp_current_title_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:fontFamily="monospace"
+        android:gravity="center_horizontal"
+        android:singleLine="true"
+        android:text="@string/app_name"
+        android:textColor="#FF8A65" />
 
     <SeekBar
         android:id="@+id/mp_seekBar"
