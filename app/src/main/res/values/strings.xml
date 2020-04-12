@@ -114,4 +114,6 @@
     <string name="text_loading">Content is loading. \n Watch the ad, while we take care of the rest</string>
     <string name="want_to_delete">Do you want to delete?</string>
     <string name="yes">Yes</string>
+    <string name="basmala" translatable="false">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</string>
+    <string name="choose_font">Choose Quran font</string>
 </resources>

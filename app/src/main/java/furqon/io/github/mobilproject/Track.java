@@ -8,7 +8,7 @@ public class Track implements Comparable {
     private String duration;
 
     //to be used by audio player
-    public Track(String duration, String name, String url) {
+    Track(String duration, String name, String url) {
         //this.number = no;
         this.duration = duration;
         this.name = name;
@@ -20,7 +20,7 @@ public class Track implements Comparable {
         return number;
     }
 
-    public String getDuration() {
+    String getDuration() {
         return duration;
     }
 
@@ -34,7 +34,17 @@ public class Track implements Comparable {
 
     @Override
     public int compareTo(Object o) {
+        int rv = 0;
+        try {
+            rv = Integer.parseInt(this.getName()) - Integer.parseInt(((Track) o).getName());
+        } catch (NumberFormatException ignored) {
 
-        return Integer.parseInt(this.getName())-Integer.parseInt(((Track)o).getName());
+        } catch (NullPointerException ignored) {
+
+        } catch (ClassCastException ignored) {
+
+        }
+
+        return rv;
     }
 }

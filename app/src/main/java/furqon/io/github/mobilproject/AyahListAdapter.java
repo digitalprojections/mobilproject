@@ -37,23 +37,14 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
     private List<AllTranslations> mText = new ArrayList<>();
 
-    //DONE create share/boomark/favourite and add programmatically
-    ImageButton share_button;
-    ImageButton fav_button;
-    ImageButton book_button;
+    private ImageButton fav_button;
+    private ImageButton book_button;
 
     private String chaptername;//Sura nomi
     private String chapter_number;
     private String verse_number;//oyat nomeri
     private String ayah_txt_uz;//oyat matni uzbek
 
-
-    SpannableStringBuilder ssb;
-
-    int ayah_position;
-
-
-    Typeface madina;
 
     private ViewGroup.LayoutParams lp; // Height of TextView
     private ViewGroup.LayoutParams lpmar; // Height of TextView
@@ -76,7 +67,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         mContext = context;
         scaler = AnimationUtils.loadAnimation(mContext, R.anim.bounce);
 
-        ssb = new SpannableStringBuilder();
+        SpannableStringBuilder ssb = new SpannableStringBuilder();
         ssb.clear();
 
 
@@ -110,7 +101,8 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             ruen_text_lin_layout = itemView.findViewById(R.id.landscaper);
             actions_lin_layout = itemView.findViewById(R.id.actions);
 
-            share_button = itemView.findViewById(R.id.f_sharebut);
+            //DONE create share/boomark/favourite and add programmatically
+            ImageButton share_button = itemView.findViewById(R.id.f_sharebut);
             fav_button = itemView.findViewById(R.id.favouritebut);
             book_button = itemView.findViewById(R.id.f_bookmarkbut);
 
@@ -147,7 +139,25 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             arabic_text = itemView.findViewById(R.id.arab_txt);
             arabic_ayah_number = itemView.findViewById(R.id.arab_num);
 
-            madina = ResourcesCompat.getFont(mContext, R.font.maddina);
+            Typeface madina;
+            if (sharedPref.contains(sharedPref.FONT)) {
+                switch (sharedPref.read(sharedPref.FONT, "")) {
+                    case "madina":
+                        madina = ResourcesCompat.getFont(mContext, R.font.maddina);
+                        break;
+                    case "usmani":
+                        madina = ResourcesCompat.getFont(mContext, R.font.al_uthmani);
+                        break;
+                    case "qalam":
+                        madina = ResourcesCompat.getFont(mContext, R.font.al_qalam);
+                        break;
+                    default:
+                        madina = ResourcesCompat.getFont(mContext, R.font.al_qalam);
+                        break;
+                }
+            } else {
+                madina = ResourcesCompat.getFont(mContext, R.font.al_qalam);
+            }
 
             ((LinearLayout.LayoutParams) lpmar).setMargins(5, 5, 5, 5);
             ((LinearLayout.LayoutParams) lp).setMargins(0, 0, 1, 1);
@@ -163,6 +173,10 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             arabic_text.setVisibility(View.GONE);
             arabic_text.setLayoutParams(lpartxt);
             arabic_text.setTextSize(30);
+            if (sharedPref.contains(sharedPref.FONTSIZE)) {
+                float fs = (float) sharedPref.read(sharedPref.FONTSIZE, 0);
+                arabic_text.setTextSize(fs);
+            }
             arabic_text.setGravity(Gravity.END);
             arabic_text.setTextColor(Color.BLACK);
             //arabic_text.setShadowLayer(1.5f, 0, 0, Color.BLACK);
@@ -234,7 +248,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
                 actions_lin_layout.setScaleY(1);
                 //actions_lin_layout.setAnimation(ayah_open_anim);
                 ayah_txt_uz = String.valueOf(ayah_text_uz.getText());
-                ayah_position = sharedPref.read("xatchup" + chaptername, 0);
+                int ayah_position = sharedPref.read("xatchup" + chaptername, 0);
                 if (ayah_position == Integer.parseInt(verse_number)) {
                     //book_button = ((ViewGroup) view.getParent().getParent()).findViewById(R.id.actions).findViewById(R.id.f_bookmarkbut);
                     //book_button = (ImageButton) view;

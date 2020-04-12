@@ -6,8 +6,10 @@ import android.widget.Toast;
 
 public class SharedPreferences
 {
-    public static final String RECITATIONSTYLE = "RECITATIONSTYLE";
-    public static final String RECITER = "RECITER";
+    static final String FONTSIZE = "FONTSIZE";
+    static final String RECITATIONSTYLE = "RECITATIONSTYLE";
+    static final String RECITER = "RECITER";
+    static final String FONT = "FONT";
     static final String USERID = "USERID";
     static final String INVITER = "INVITER";
     static final String INVITER_ID = "INVITER_ID";
@@ -15,7 +17,6 @@ public class SharedPreferences
     static final String CREDS_ALREADY_SENT = "CREDSENT";
     static final String RANDOM_AYAH_SEEN = "SEEN";
     static final String PERSONAL_REWARD = "PERSONALREWARD";
-    static final String AUDIO_LANGUAGE = "AUDIO_LANGUAGE";
     static final String SELECTED_AUDIO_LANGUAGE = "SELECTED_AUDIO";
     private static final String TRACKS = "TRACKS";
     private static android.content.SharedPreferences mSharedPref;
@@ -55,7 +56,7 @@ public class SharedPreferences
         int totalCoins = existingCoins + coins;
         getInstance().write(getInstance().COINS, totalCoins);
         String mes = R.string.u_received + String.valueOf(totalCoins) + R.string._coins;
-        Toast.makeText(mContext,  "+" + String.valueOf(coins), Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext, "+" + coins, Toast.LENGTH_LONG).show();
     }
 
     public void init(Context context)

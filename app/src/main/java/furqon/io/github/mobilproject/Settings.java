@@ -1,13 +1,20 @@
 package furqon.io.github.mobilproject;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -26,8 +33,19 @@ public class Settings extends AppCompatActivity {
     private Switch sw_ru;
     private Switch sw_en;
 
+    private RadioButton madina_font;
+    private RadioButton usmani_font;
+    private RadioButton qalam_font;
+
+    private ImageButton font_up;
+    private ImageButton font_down;
+
+    private TextView sampletext;
+    private Typeface font;
+
     private Switch sw_random_ayah;
     private Button ok_but;
+    private String TAG = "SETTINGS";
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -41,6 +59,78 @@ public class Settings extends AppCompatActivity {
         sw_en = findViewById(R.id.en_sw);
         sw_random_ayah = findViewById(R.id.random_ayah_switch);
         ok_but = findViewById(R.id.ok_button);
+
+        font_up = findViewById(R.id.fontsize_up);
+        font_down = findViewById(R.id.fontsize_down);
+
+        font_up.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO
+                float fs = sampletext.getTextSize();
+                int fsout = Math.round(fs);
+                fsout++;
+                sampletext.setTextSize(fsout);
+                //sharedPref.write(SharedPreferences.FONTSIZE, fsout);
+                ok_but.setEnabled(true);
+            }
+        });
+        font_down.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float fs = sampletext.getTextSize();
+                Log.e(TAG, fs + " ");
+                int fsout = Math.round(fs);
+                fsout--;
+                Log.e(TAG, fsout + " ");
+                sampletext.setTextSize(fsout);
+                //sharedPref.write(SharedPreferences.FONTSIZE, fsout);
+                ok_but.setEnabled(true);
+            }
+        });
+
+        sampletext = findViewById(R.id.st_sample_text);
+        madina_font = findViewById(R.id.madina_rb);
+        usmani_font = findViewById(R.id.usmani_rb);
+        qalam_font = findViewById(R.id.qalam_rb);
+
+        madina_font.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    sharedPref.write(sharedPref.FONT, "madina");
+                    font = ResourcesCompat.getFont(Settings.this, R.font.maddina);
+                    sampletext.setTypeface(font);
+                    ok_but.setEnabled(true);
+                }
+            }
+        });
+        usmani_font.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    sharedPref.write(SharedPreferences.FONT, "usmani");
+                    font = ResourcesCompat.getFont(Settings.this, R.font.al_uthmani);
+                    sampletext.setTypeface(font);
+                    ok_but.setEnabled(true);
+                }
+
+            }
+        });
+        qalam_font.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    sharedPref.write(SharedPreferences.FONT, "qalam");
+                    font = ResourcesCompat.getFont(Settings.this, R.font.al_qalam);
+                    sampletext.setTypeface(font);
+                    ok_but.setEnabled(true);
+                }
+            }
+        });
+
+
+        sampletext.setText(R.string.basmala);
 
         sw_ar.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -85,6 +175,10 @@ public class Settings extends AppCompatActivity {
                 Settings.super.onBackPressed();
                 Toast.makeText(view.getContext(), getString(R.string.settings_saved), Toast.LENGTH_SHORT).show();
                 sharedPref.init(getApplicationContext());
+                //set font size
+                float fs = sampletext.getTextSize();
+                int fsout = Math.round(fs);
+                sharedPref.write(SharedPreferences.FONTSIZE, fsout);
             }
         });
 
@@ -98,6 +192,7 @@ public class Settings extends AppCompatActivity {
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
         updateView();
+
 
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -113,6 +208,29 @@ public class Settings extends AppCompatActivity {
         sw_ru.setChecked(sharedPref.read(sharedPref.RUSW, false));
         sw_en.setChecked(sharedPref.read(sharedPref.ENSW, false));
         sw_random_ayah.setChecked(sharedPref.read(sharedPref.RANDOMAYAHSW, true));
+        if (sharedPref.contains(sharedPref.FONT)) {
+            switch (sharedPref.read(sharedPref.FONT, "")) {
+                case "madina":
+                    madina_font.setChecked(true);
+                    break;
+                case "usmani":
+                    usmani_font.setChecked(true);
+                    break;
+                case "qalam":
+                    qalam_font.setChecked(true);
+                    break;
+                default:
+                    qalam_font.setChecked(true);
+                    break;
+            }
+        } else {
+            qalam_font.setChecked(true);
+        }
+
+        if (sharedPref.contains(sharedPref.FONTSIZE)) {
+            float fs = (float) sharedPref.read(sharedPref.FONTSIZE, 0);
+            sampletext.setTextSize(fs);
+        }
     }
 
     @Override

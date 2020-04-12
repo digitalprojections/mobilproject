@@ -32,9 +32,9 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
     //private DatabaseAccess mDatabase;
 
     //DONE create share/boomark/favourite and add programmatically
-    ImageButton sharebut;
-    ImageButton fav_button;
-    ImageButton bookbut;
+    private ImageButton sharebut;
+    private ImageButton fav_button;
+    private ImageButton bookbut;
 
     private int position;
     private List<FavouriteAyah> mText = new ArrayList<>();
@@ -42,10 +42,10 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
     private String chapternumber;
     private String versenumber;//oyat nomeri
     private String ayahtext;//oyat matni
-    int ayah_position;
+    private int ayah_position;
 
 
-    Typeface madina;
+    private Typeface madina;
 
     private ViewGroup.LayoutParams lp; // Height of TextView
     private ViewGroup.LayoutParams lpmar; // Height of TextView
@@ -129,7 +129,25 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
             arabictext = itemView.findViewById(R.id.arab_txt);
             arabic_ayahnumber = itemView.findViewById(R.id.arab_num);
 
-            madina = ResourcesCompat.getFont(mContext, R.font.maddina);
+            if (sharedPref.contains(sharedPref.FONT)) {
+                switch (sharedPref.read(sharedPref.FONT, "")) {
+                    case "madina":
+                        madina = ResourcesCompat.getFont(mContext, R.font.maddina);
+                        break;
+                    case "usmani":
+                        madina = ResourcesCompat.getFont(mContext, R.font.al_uthmani);
+                        break;
+                    case "qalam":
+                        madina = ResourcesCompat.getFont(mContext, R.font.al_qalam);
+                        break;
+                    default:
+                        madina = ResourcesCompat.getFont(mContext, R.font.al_qalam);
+                        break;
+                }
+            } else {
+                madina = ResourcesCompat.getFont(mContext, R.font.al_qalam);
+            }
+
 
 
             ((LinearLayout.LayoutParams) lpmar).setMargins(1, -5, 1, 1);
@@ -157,9 +175,13 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
             ayah_text_en.setVisibility(View.GONE);
             arabictext.setLayoutParams(lpartxt);
             arabictext.setTextSize(30);
+            if (sharedPref.contains(sharedPref.FONTSIZE)) {
+                float fs = (float) sharedPref.read(sharedPref.FONTSIZE, 0);
+                arabictext.setTextSize(fs);
+            }
             arabictext.setGravity(Gravity.END);
             arabictext.setTextColor(Color.BLACK);
-            arabictext.setShadowLayer(1.5f, 0, 0, Color.BLACK);
+            //arabictext.setShadowLayer(1.5f, 0, 0, Color.BLACK);
             arabictext.setVisibility(View.GONE);
             arabictext.setTypeface(madina);
             bookbut.setTag("unselected");
@@ -388,7 +410,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
             holder.arabic_ayahnumber.setVisibility(View.VISIBLE);
             holder.arabictext.setVisibility(View.VISIBLE);
             holder.arabictext.setText(artext);
-            holder.arabic_ayahnumber.setText(String.valueOf(numb));
+            holder.arabic_ayahnumber.setText(numb);
             holder.arabictext.setGravity(Gravity.END);
             holder.ayahnumber.setVisibility(View.GONE);
         }else{
@@ -400,7 +422,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
             //
             holder.ayatext.setVisibility(View.VISIBLE);
             holder.ayatext.setText(Html.fromHtml(collapseBraces(ttext)));
-            holder.ayahnumber.setText(String.valueOf(numb));
+            holder.ayahnumber.setText(numb);
 
             holder.ayahnumber.setTag(chapternumber);
         }else{
@@ -409,7 +431,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         if (sharedPref.getDefaults("ru")) {
             holder.ayah_text_ru.setVisibility(View.VISIBLE);
             holder.ayah_text_ru.setText(Html.fromHtml(collapseBraces(rtext)));
-            holder.ayahnumber.setText(String.valueOf(numb));
+            holder.ayahnumber.setText(numb);
             holder.ayahnumber.setTag(chapternumber);
         }else{
             holder.ayah_text_ru.setVisibility(View.GONE);
@@ -417,7 +439,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         if (sharedPref.getDefaults("en")) {
             holder.ayah_text_en.setVisibility(View.VISIBLE);
             holder.ayah_text_en.setText(Html.fromHtml(collapseBraces(etext)));
-            holder.ayahnumber.setText(String.valueOf(numb));
+            holder.ayahnumber.setText(numb);
             holder.ayahnumber.setTag(chapternumber);
         }else{
             holder.ayah_text_en.setVisibility(View.GONE);
@@ -449,7 +471,8 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         }
         return c;
     }
-    public FavouriteAyah getTextAt(int position){
+
+    private FavouriteAyah getTextAt(int position) {
 
 
         return mText.get(position);

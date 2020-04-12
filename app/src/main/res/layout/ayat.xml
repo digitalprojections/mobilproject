@@ -41,7 +41,7 @@
             android:id="@+id/arab_txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="end"
+
             android:layoutDirection="ltr"
 
             android:padding="5dp"

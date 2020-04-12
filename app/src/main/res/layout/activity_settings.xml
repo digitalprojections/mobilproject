@@ -25,7 +25,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="end"
             android:orientation="vertical"
             android:scrollbars="vertical">
@@ -50,7 +50,6 @@
                 tools:text="@string/settings" />
 
             <ImageView
-                android:contentDescription="@string/app_logo_description"
                 android:id="@+id/imageView2"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
@@ -60,6 +59,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
+                android:contentDescription="@string/app_logo_description"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView"
@@ -67,7 +67,7 @@
 
             <Switch
                 android:id="@+id/arabic_sw"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
                 android:layout_marginEnd="8dp"
@@ -78,7 +78,7 @@
 
             <Switch
                 android:id="@+id/uzbek_sw"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
@@ -89,7 +89,7 @@
 
             <Switch
                 android:id="@+id/ru_sw"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
@@ -100,7 +100,7 @@
 
             <Switch
                 android:id="@+id/en_sw"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
@@ -119,17 +119,96 @@
                 android:gravity="center"
                 android:text="@string/more_coming"
                 android:textColor="@color/colorPrimary"
+                android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/en_sw" />
 
             <Switch
                 android:id="@+id/random_ayah_switch"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:checked="false"
                 android:text="@string/show_a_randomly_selected_ayah_on_launch" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:background="@color/colorPrimary"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/st_choose_font_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/choose_font" />
+
+            <RadioGroup
+                android:id="@+id/radio_group_font_select"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <RadioButton
+                    android:id="@+id/madina_rb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Madina" />
+
+                <RadioButton
+                    android:id="@+id/usmani_rb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Usmani" />
+
+                <RadioButton
+                    android:id="@+id/qalam_rb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Qalam" />
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/st_font_size_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Font size" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/fontsize_down"
+                    style="@android:style/Widget.Holo.Light.ImageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ic_down_black_24dp" />
+
+                <ImageButton
+                    android:id="@+id/fontsize_up"
+                    style="@android:style/Widget.Holo.Light.ImageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ic_up_black_24dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/st_sample_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:textColor="#000000"
+                android:textDirection="rtl"
+                android:textSize="24sp"
+                tools:text="@string/basmala" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
 
             <Button
                 android:id="@+id/ok_button"
@@ -137,6 +216,10 @@
                 android:layout_height="wrap_content"
                 android:enabled="false"
                 android:text="@android:string/ok" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="100dp" />
 
         </LinearLayout>
     </ScrollView>
@@ -155,4 +238,5 @@
         ads:layout_constraintBottom_toBottomOf="parent"
         ads:layout_constraintEnd_toEndOf="parent"
         ads:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

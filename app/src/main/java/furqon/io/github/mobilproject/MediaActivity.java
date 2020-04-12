@@ -45,11 +45,11 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
@@ -377,7 +377,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             if (TrackDownloaded(suraNumber)) {
                 url = filePath;
             } else {
-                Toast.makeText(this, "Online audio!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Online audio!", Toast.LENGTH_SHORT).show();
                 //url = new StringBuilder().append("https://mobilproject.github.io/furqon_web_express/by_sura/").append(suraNumber).append(".mp3").toString();
                 //url = "https://inventivesolutionste.ipage.com/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter  + "/" + prependZero(suraNumber) + ".mp3";
                 // /storage/emulated/0/Android/data/furqon.io.github.mobilproject/files/quran_audio/arabic/by_surah/murattal/1/001.mp3
@@ -415,7 +415,9 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                     mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
                 } catch (IOException iox) {
                     Log.e(TAG, "ERROR " + iox.getMessage());
+
                     mediaPlayer.release();
+
                     mediaPlayer = null;
                 }
                 //progressBar.setVisibility(View.VISIBLE);
@@ -464,7 +466,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             } else {
                 SharedPreferences.getInstance().write(suranomi, 1);
                 mediaPlayer.seekTo(1);
-                Toast.makeText(getBaseContext(), audiorestore, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getBaseContext(), audiorestore, Toast.LENGTH_SHORT).show();
+                Snackbar.make(coordinatorLayout, audiorestore, Snackbar.LENGTH_SHORT).show();
             }
             mediaPlayer.start();
             play_btn.setImageResource(R.drawable.ic_pause_circle_60dp);
@@ -558,19 +561,27 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 Log.e(TAG, "Files were moved successfully");
                 for (int i = 0; i < files.length; i++) {
                     if (files[i].getName().contains(".")) {
-                        String trackname = files[i].getName().substring(0, files[i].getName().lastIndexOf("."));
-                        if (!TrackDownloaded(files[i].getName())) {
-                            String filePath = new StringBuilder().append(newpath).append("/").append(files[i].getName()).toString();
-                            metadataRetriever.setDataSource(filePath);
-
-                            //Date date = new Date();
-                            Track track = new Track(AudioTimer.getTimeStringFromMs(Integer.parseInt(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION))), trackname, filePath);
-                            trackList.add(track);
+                        //String trackname = files[i].getName().substring(0, files[i].getName().lastIndexOf("."));
+                        String trackname = files[i].getName();
+                        trackname = trackname.substring(0, trackname.lastIndexOf("."));
+                        try {
+                            int tt = Integer.parseInt(trackname);
+                            if (!TrackDownloaded(files[i].getName())) {
+                                String filePath = new StringBuilder().append(newpath).append("/").append(files[i].getName()).toString();
+                                metadataRetriever.setDataSource(filePath);
+                                //Date date = new Date();
+                                Track track = new Track(AudioTimer.getTimeStringFromMs(Integer.parseInt(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION))), trackname, filePath);
+                                trackList.add(track);
+                            }
+                        } catch (NumberFormatException nfx) {
+                            Log.e(TAG, "TRACKNAME ERROR " + trackname);
+                            DeleteTheFile(files[i]);
+                            //TODO delete the file with x-y.mp3 naming format (dual download)
                         }
-                        //Log.i(TAG, "number " + trackname + " track is available");
                     }
                 }
-                Collections.sort(trackList);
+                if (trackList.size() > 1)
+                    Collections.sort(trackList);
                 mAdapter.setTitles(trackList);
                 recyclerView.setAdapter(mAdapter);
             } else {
@@ -581,6 +592,13 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         }
     }
 
+    private void DeleteTheFile(File file) {
+        try {
+            file.delete();
+        } catch (SecurityException sx) {
+            Log.e(TAG, "FAILED to DELETE " + sx.getMessage());
+        }
+    }
     private void MoveFiles(File[] files) {
         //TODO only uzbek files exist in old location
         for (int i = 0; i < files.length; i++) {
@@ -862,23 +880,23 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
                     }
                 } else if (status == DownloadManager.STATUS_FAILED) {
-                    Toast.makeText(MediaActivity.this,
+                    Snackbar.make(coordinatorLayout,
                             "error " + reason,
-                            Toast.LENGTH_LONG).show();
+                            Snackbar.LENGTH_LONG).show();
                     Crashlytics.log("download error - " + reason + "->" + language + "/" + recitation_style + "/" + suraNumber);
                     mAdapter.notifyDataSetChanged();
                 } else if (status == DownloadManager.STATUS_PAUSED) {
-                    Toast.makeText(MediaActivity.this,
+                    Snackbar.make(coordinatorLayout,
                             "PAUSED!\n" + "reason of " + reason,
-                            Toast.LENGTH_LONG).show();
+                            Snackbar.LENGTH_LONG).show();
                 } else if (status == DownloadManager.STATUS_PENDING) {
-                    Toast.makeText(MediaActivity.this,
+                    Snackbar.make(coordinatorLayout,
                             "PENDING!",
-                            Toast.LENGTH_LONG).show();
+                            Snackbar.LENGTH_LONG).show();
                 } else if (status == DownloadManager.STATUS_RUNNING) {
-                    Toast.makeText(MediaActivity.this,
+                    Snackbar.make(coordinatorLayout,
                             "RUNNING!",
-                            Toast.LENGTH_LONG).show();
+                            Snackbar.LENGTH_LONG).show();
                 }
             }
         }
@@ -925,7 +943,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         if (coins > ayah_unlock_cost) {
             titleViewModel.updateTitleAsRewarded(suraNumber);
         } else {
-            Toast.makeText(this, R.string.not_enough_coins, Toast.LENGTH_LONG).show();
+            Snackbar.make(coordinatorLayout, R.string.not_enough_coins, Snackbar.LENGTH_LONG).show();
         }
         //downloadText.setText(R.string.down_or_play);
         //playButton.setVisible(true);
@@ -965,7 +983,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
         //sharedPref.write(suranomi, mediaPlayer.getCurrentPosition());
 
-        Toast.makeText(getBaseContext(), audiostore, Toast.LENGTH_SHORT).show();
+        Snackbar.make(coordinatorLayout, audiostore, Snackbar.LENGTH_SHORT).show();
 
     }
 
