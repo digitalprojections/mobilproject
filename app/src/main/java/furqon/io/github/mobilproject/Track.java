@@ -1,6 +1,6 @@
 package furqon.io.github.mobilproject;
 
-public class Track {
+public class Track implements Comparable {
 
     private String number;
     private String name;
@@ -30,5 +30,11 @@ public class Track {
 
     public String getUri() {
         return uri;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+
+        return Integer.parseInt(this.getName())-Integer.parseInt(((Track)o).getName());
     }
 }

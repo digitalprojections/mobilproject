@@ -142,7 +142,7 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
         return retval;
     }
     private boolean TrackDownloaded(String v) {
-        v = prependZero(v);
+        //v = prependZero(v);
         boolean retval = false;
         if (trackList != null) {
             for (Track i : trackList

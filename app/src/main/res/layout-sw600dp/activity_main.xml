@@ -39,14 +39,10 @@
 
             <include layout="@layout/search_button" />
 
-            <include layout="@layout/favourite_button" />
-
             <include layout="@layout/rate_button" />
 
-
             <include
-                layout="@layout/messages_button"
-                android:visibility="gone" />
+                layout="@layout/messages_button"/>
 
             <include layout="@layout/media_button" />
 

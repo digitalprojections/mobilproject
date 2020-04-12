@@ -9,6 +9,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,6 +19,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,6 +40,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import java.io.File;
+import java.util.List;
 import java.util.Locale;
 
 import hotchemi.android.rate.AppRate;
@@ -46,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button suralar_but;
     Button davomi_but;
     Button youtube_but;
-    Button favourite_but;
+    //Button favourite_but;
     Button search_but;
     Button rate_but;
     //Button coins_but;
@@ -54,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //Button chat_but;
     Button audio_but;
     Button about_but;
-
+    private Animation scaler;
     TextView nbadge;
     ImageView imageView;
     private Handler handler;
@@ -89,9 +95,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.favourites_i:
                 open_favourites();
                 return true;
-            case R.id.messages_i:
-                open_messages();
-                return true;
+//            case R.id.messages_i:
+//                open_messages();
+//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -128,13 +134,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         MobileAds.initialize(this, getString(R.string.addmob_app_id));
 
         handler = new Handler();
-        favourite_but = findViewById(R.id.favouritebut);
+        //favourite_but = findViewById(R.id.favouritebut);
         search_but = findViewById(R.id.searchbtn);
         rate_but = findViewById(R.id.ratebtn);
         //coins_but = findViewById(R.id.earn_coins_button);
         message_but = findViewById(R.id.messageButton);
         nbadge = findViewById(R.id.numeric_badge_txt);
         nbadge.bringToFront();
+        TitleViewModel titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
+
+        scaler = AnimationUtils.loadAnimation(this, R.anim.bounce);
+        titleViewModel.getUnreadCount().observe(this, new Observer<List<NewMessages>>() {
+            @Override
+            public void onChanged(List<NewMessages> newMessages) {
+                if (newMessages.size() > 0) {
+                    nbadge.setVisibility(View.VISIBLE);
+                    nbadge.setText(String.valueOf(newMessages.size()));
+                    nbadge.startAnimation(scaler);
+                } else {
+                    nbadge.setVisibility(View.INVISIBLE);
+                    nbadge.setText("0");
+                }
+            }
+        });
         //chat_but = findViewById(R.id.chat_button);
         audio_but = findViewById(R.id.mediabutton);
         about_but = findViewById(R.id.about_button);
@@ -148,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         youtube_but.setOnClickListener(this);
         suralar_but.setOnClickListener(this);
         davomi_but.setOnClickListener(this);
-        favourite_but.setOnClickListener(this);
+        //favourite_but.setOnClickListener(this);
         search_but.setOnClickListener(this);
         rate_but.setOnClickListener(this);
         message_but.setOnClickListener(this);

@@ -59,6 +59,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -271,7 +272,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                         @Override
                         public void onClick(View view) {
 
-                            DeleteTheTrack(prependZero(trackList.get(position).getName()));
+                            DeleteTheTrack(trackList.get(position).getName());
                             PopulateTrackList();
                             mAdapter.notifyDataSetChanged();
                             //recyclerView.scrollToPosition(position);
@@ -315,7 +316,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         if(suraNumber!=null && trackList.size()>1){
             for(int i=0;i<trackList.size();i++){
                 Log.e(TAG, suraNumber + " " + trackList.get(i).getName());
-                if(trackList.get(i).getName().equals(prependZero(suraNumber))){
+                if(trackList.get(i).getName().equals(suraNumber)){
                     try{
                         suraNumber = String.valueOf(Integer.parseInt(trackList.get(i-1).getName()));
                         break;
@@ -330,7 +331,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         if(suraNumber!=null && trackList.size()>1){
             for(int i=0;i<trackList.size();i++){
 
-                if(trackList.get(i).getName().equals(prependZero(suraNumber))){
+                if(trackList.get(i).getName().equals(suraNumber)){
                     try{
                         suraNumber = String.valueOf(Integer.parseInt(trackList.get(i+1).getName()));
                         Log.e(TAG, suraNumber + " - next suranumber");
@@ -361,9 +362,9 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                     String trackname = files[i].getName();
                     if (trackname.contains(".")) {
                         trackname = trackname.substring(0, trackname.lastIndexOf("."));
-                        if (suraNumber != null && trackname.equals(prependZero(suraNumber))) {
+                        if (suraNumber != null && trackname.equals(suraNumber)) {
                             //filePath = new StringBuilder().append(path).append("/quran_audio/"+language + "/by_surah/" + recitation_style + "/" + reciter+"/").append(prependZero(trackname)).append(".mp3").toString();
-                            filePath = newpath + "/" + prependZero(suraNumber) + ".mp3";
+                            filePath = newpath + "/" + suraNumber + ".mp3";
                             Log.i(TAG, "Trackname " + trackname + " FP:" + filePath);
                         }
                     }
@@ -381,7 +382,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 //url = "https://inventivesolutionste.ipage.com/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter  + "/" + prependZero(suraNumber) + ".mp3";
                 // /storage/emulated/0/Android/data/furqon.io.github.mobilproject/files/quran_audio/arabic/by_surah/murattal/1/001.mp3
                 // /storage/emulated/0/Android/data/furqon.io.github.mobilproject/files/quran_audio/arabic/by_surah/murattal/1
-                url = newpath + "/" + prependZero(suraNumber) + ".mp3";
+                url = newpath + "/" + suraNumber + ".mp3";
 
             }
             //Log.i(TAG, "PLAY " + url);
@@ -569,6 +570,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                         //Log.i(TAG, "number " + trackname + " track is available");
                     }
                 }
+                Collections.sort(trackList);
                 mAdapter.setTitles(trackList);
                 recyclerView.setAdapter(mAdapter);
             } else {
@@ -653,7 +655,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     }
 
     private boolean TrackDownloaded(String v) {
-        v = prependZero(v);
+
         boolean retval = false;
         if (trackList != null) {
             for (Track i : trackList
@@ -784,11 +786,11 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             */
 
                 String url = "https://inventivesolutionste.ipage.com/quran_audio/" + middle_path + "/" + prependZero(suraNumber) + ".mp3";
-                Log.e(TAG, newpath);
-
+                Log.e(TAG, " DOWNLOAD path " + newpath);
+                Log.e(TAG, " DOWNLOAD url " + url);
                 //String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suraNumber + ".mp3"; // your URL here
                 newpath = getExternalFilesDir(null) + "/quran_audio/" + middle_path;
-                File file = new File(newpath, prependZero(suraNumber) + ".mp3");
+                File file = new File(newpath, suraNumber + ".mp3");
                 DownloadManager.Request request;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                     request = new DownloadManager.Request(Uri.parse(url))
@@ -863,6 +865,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                     Toast.makeText(MediaActivity.this,
                             "error " + reason,
                             Toast.LENGTH_LONG).show();
+                    Crashlytics.log("download error - " + reason + "->" + language + "/" + recitation_style + "/" + suraNumber);
                     mAdapter.notifyDataSetChanged();
                 } else if (status == DownloadManager.STATUS_PAUSED) {
                     Toast.makeText(MediaActivity.this,
@@ -1222,9 +1225,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 recitationstyle_spinner.setVisibility(View.VISIBLE);
                 recitationstyle_spinner.setAdapter(recitationstyle_adapter);
                 recitationstyle_adapter.setDropDownViewResource(R.layout.mp_spinner_item);
-                if(mSharedPref.contains(mSharedPref.RECITATIONSTYLE)){
-                    recitationstyle_spinner.setSelection(mSharedPref.read(mSharedPref.RECITATIONSTYLE, 0));
-                }
                 break;
             case R.id.mp_recitationstyle_spinner:
                 mSharedPref.write(SharedPreferences.RECITATIONSTYLE, position);
@@ -1254,9 +1254,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 reciter_spinner.setVisibility(View.VISIBLE);
                 reciter_spinner.setAdapter(reciter_adapter);
                 reciter_adapter.setDropDownViewResource(R.layout.mp_spinner_item);
-                if(mSharedPref.contains(mSharedPref.RECITER)){
-                    reciter_spinner.setSelection(mSharedPref.read(mSharedPref.RECITER, 0));
-                }
+
                 break;
             case R.id.mp_reciter_spinner:
                 mSharedPref.write(SharedPreferences.RECITER, position);

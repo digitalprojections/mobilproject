@@ -46,10 +46,6 @@
                 android:layout_weight="1" />
 
             <include
-                layout="@layout/favourite_button"
-                android:layout_weight="1" />
-
-            <include
                 layout="@layout/rate_button"
                 android:layout_weight="1" />
 
@@ -59,8 +55,7 @@
                 android:layout_weight="1" />
 
             <include
-                layout="@layout/messages_button"
-                android:visibility="gone" />
+                layout="@layout/messages_button"/>
 
             <include layout="@layout/media_button" />
 
