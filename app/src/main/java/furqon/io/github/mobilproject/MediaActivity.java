@@ -60,12 +60,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 import furqon.io.github.mobilproject.Services.OnClearFromService;
 import io.fabric.sdk.android.services.common.Crash;
+
+import static furqon.io.github.mobilproject.BuildConfig.*;
 
 public class MediaActivity extends AppCompatActivity implements MyListener, ManageCoins, Playable, AdapterView.OnItemSelectedListener, View.OnClickListener, SetSuraNumber {
     private static final int MY_WRITE_EXTERNAL_STORAGE = 101;
@@ -141,7 +144,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
 
         mInterstitialAd = new InterstitialAd(this);
-        if (BuildConfig.BUILD_TYPE == "debug") {
+        if (BUILD_TYPE.equals("debug")) {
             mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
         } else {
             mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
@@ -185,10 +188,10 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             startService(new Intent(getBaseContext(), OnClearFromService.class));
         }
 
-        downloadManager = (DownloadManager) this.getSystemService(this.DOWNLOAD_SERVICE);
+        downloadManager = (DownloadManager) this.getSystemService(DOWNLOAD_SERVICE);
         query = new DownloadManager.Query();
 
-        trackList = new ArrayList<Track>();
+        trackList = new ArrayList<>();
 
         recyclerView = findViewById(R.id.mp_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -211,8 +214,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         //set the adapter
         language_spinner.setAdapter(language_adapter);
 
-        if(mSharedPref.contains(mSharedPref.SELECTED_AUDIO_LANGUAGE)){
-            language_spinner.setSelection(mSharedPref.read(mSharedPref.SELECTED_AUDIO_LANGUAGE, 0));
+        if (mSharedPref.contains(SharedPreferences.SELECTED_AUDIO_LANGUAGE)) {
+            language_spinner.setSelection(mSharedPref.read(SharedPreferences.SELECTED_AUDIO_LANGUAGE, 0));
         }
         language_spinner.setOnItemSelectedListener(this);
         recitationstyle_spinner.setOnItemSelectedListener(this);
@@ -324,7 +327,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                         break;
                     }catch (IndexOutOfBoundsException x){
                         suraNumber=null;
-                        Crashlytics.log(x.getMessage() + " - " + x.getStackTrace());
+                        Crashlytics.log(x.getMessage() + " - " + Arrays.toString(x.getStackTrace()));
                     }
                 }
             }
@@ -341,7 +344,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                         break;
                     }catch (IndexOutOfBoundsException x){
                         suraNumber=null;
-                        Crashlytics.log(x.getMessage() + " - " + x.getStackTrace());
+                        Crashlytics.log(x.getMessage() + " - " + Arrays.toString(x.getStackTrace()));
                     }
                 }
             }
@@ -356,7 +359,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             try {
                 tempsn = Integer.parseInt(suraNumber);
             }catch (NumberFormatException x){
-                Crashlytics.log(x.getMessage() + " - " + x.getStackTrace());
+                Crashlytics.log(x.getMessage() + " - " + Arrays.toString(x.getStackTrace()));
             }
 
             if(tempsn>0){
@@ -365,26 +368,25 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 String url;
                 String filePath = "";
 
-                String path = getExternalFilesDir(null).getAbsolutePath();
+                String path = Objects.requireNonNull(getExternalFilesDir(null)).getAbsolutePath();
                 newpath = path + "/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter;
                 File directory = new File(newpath);
                 File[] files = directory.listFiles();
 
                 if (files != null) {
-                    for (int i = 0; i < files.length; i++) {
-                        String trackname = files[i].getName();
+                    for (File file : files) {
+                        String trackname = file.getName();
                         if (trackname.contains(".")) {
                             trackname = trackname.substring(0, trackname.lastIndexOf("."));
-                            if (suraNumber != null && trackname.equals(suraNumber)) {
+                            if (trackname.equals(suraNumber)) {
                                 //filePath = new StringBuilder().append(path).append("/quran_audio/"+language + "/by_surah/" + recitation_style + "/" + reciter+"/").append(prependZero(trackname)).append(".mp3").toString();
                                 filePath = newpath + "/" + suraNumber + ".mp3";
                                 Log.i(TAG, "Trackname " + trackname + " FP:" + filePath);
                             }
                         }
                     }
-                } else {
-                    //This surah is not available
-                }
+                }  //This surah is not available
+
                 Log.i(TAG, suraNumber);
 
                 if (TrackDownloaded(suraNumber)) {
@@ -474,7 +476,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
         if (mediaPlayer != null) {
 
-            int audio_pos = 0;
+            int audio_pos;
 //            if(!language.equals("arabic"))
             audio_pos = SharedPreferences.getInstance().read(suranomi, 0);
             if (audio_pos > 0 && audio_pos != mediaPlayer.getDuration()) {
@@ -535,16 +537,16 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
     private void DeleteTheTrack(String tracktodelete) {
         if (tripletNotNull()) {
-            String path = getExternalFilesDir(null).getAbsolutePath();
+            String path = Objects.requireNonNull(getExternalFilesDir(null)).getAbsolutePath();
             newpath = path + "/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter;
             File directory = new File(newpath);
             File[] files = directory.listFiles();
             if (files != null) {
-                for (int i = 0; i < files.length; i++) {
-                    if (files[i].getName().contains(".")) {
-                        String trackname = files[i].getName().substring(0, files[i].getName().lastIndexOf("."));
+                for (File file : files) {
+                    if (file.getName().contains(".")) {
+                        String trackname = file.getName().substring(0, file.getName().lastIndexOf("."));
                         if (trackname.equals(tracktodelete)) {
-                            files[i].delete();
+                            file.delete();
                         }
                     }
                 }
@@ -558,9 +560,9 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         }
     }
     private void PopulateTrackList() {
-        trackList = new ArrayList<Track>();
+        trackList = new ArrayList<>();
         if (tripletNotNull()) {
-            String path = getExternalFilesDir(null).getAbsolutePath();
+            String path = Objects.requireNonNull(getExternalFilesDir(null)).getAbsolutePath();
             //Log.d(TAG, "Files Path: " + path);
             //TODO adding new folder structure
             newpath = path + "/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter;
@@ -575,33 +577,34 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             File[] files = directory.listFiles();
             if (files != null) {
                 Log.e(TAG, "Files were moved successfully");
-                for (int i = 0; i < files.length; i++) {
-                    if (files[i].getName().contains(".")) {
+                for (File file : files) {
+                    if (file.getName().contains(".")) {
                         //String trackname = files[i].getName().substring(0, files[i].getName().lastIndexOf("."));
-                        String trackname = files[i].getName();
+                        String trackname = file.getName();
                         trackname = trackname.substring(0, trackname.lastIndexOf("."));
                         try {
                             int tt = Integer.parseInt(trackname);
-                            if (!TrackDownloaded(files[i].getName())) {
-                                String filePath = new StringBuilder().append(newpath).append("/").append(files[i].getName()).toString();
+                            if (!TrackDownloaded(file.getName())) {
+                                String filePath = newpath + "/" + file.getName();
                                 try {
                                     metadataRetriever.setDataSource(filePath);
                                     //Date date = new Date();
                                     Track track = new Track(AudioTimer.getTimeStringFromMs(Integer.parseInt(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION))), trackname, filePath);
                                     trackList.add(track);
-                                }catch (RuntimeException x){
-                                    Crashlytics.log(x.getMessage() + "\n" + x.getStackTrace());
+                                } catch (RuntimeException x) {
+                                    Crashlytics.log(x.getMessage() + "\n" + Arrays.toString(x.getStackTrace()));
                                 }
                             }
                         } catch (NumberFormatException nfx) {
                             Log.e(TAG, "TRACKNAME ERROR " + trackname);
-                            DeleteTheFile(files[i]);
+                            DeleteTheFile(file);
                             //TODO delete the file with x-y.mp3 naming format (dual download)
                         }
                     }
                 }
                 if (trackList.size() > 1){
                     Collections.sort(trackList);
+                    current_track_tv.setText("");
                 }else if(trackList.size()==1){
                     current_track_tv.setText("");
                 }
@@ -632,9 +635,9 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     }
     private void MoveFiles(File[] files) {
         //TODO only uzbek files exist in old location
-        for (int i = 0; i < files.length; i++) {
-            Path source = Paths.get(files[i].getPath());
-            Path target = Paths.get(getExternalFilesDir(null).getAbsolutePath() + "/quran_audio/uzbek/by_surah/fl/1");
+        for (File file : files) {
+            Path source = Paths.get(file.getPath());
+            Path target = Paths.get(Objects.requireNonNull(getExternalFilesDir(null)).getAbsolutePath() + "/quran_audio/uzbek/by_surah/fl/1");
             Log.i(TAG, "file moved from" + source);
             Log.i(TAG, "file moved to " + target);
             try {
@@ -651,11 +654,12 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             @Override
             public void onChanged(@Nullable List<ChapterTitleTable> surahTitles) {
                 //Toast.makeText(SuraNameList.this, "LOADING TITLES " + surahTitles.size(), Toast.LENGTH_LONG).show();
-                if (surahTitles.size() != 114) {
-
-                } else {
-                    //progressBar.setVisibility(View.GONE);
-                }
+//                assert surahTitles != null;
+//                if (surahTitles.size() != 114) {
+//
+//                } else {
+//                    //progressBar.setVisibility(View.GONE);
+//                }
                 mAdapter.setTitles(surahTitles);
                 recyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
@@ -711,7 +715,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             ) {
                 if (i.getName().equals(v)) {
                     //match found
-                    Log.i("TRACK DOWNLOADED?", String.valueOf(v) + " " + i + " " + (i.getName().equals(v)));
+                    Log.i("TRACK DOWNLOADED?", v + " " + i + " " + (i.getName().equals(v)));
                     retval = true;
                 }
                 //Log.i("TRACK DOWNLOADED????", String.valueOf(v) + " " + i.getName());
@@ -782,28 +786,21 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case MY_WRITE_EXTERNAL_STORAGE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                    if(suraNumber!=null){
-                        DownloadThis(suraNumber);
+                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
+        // If request is cancelled, the result arrays are empty.
+        // other 'case' lines to check for other
+        // permissions this app might request.
+        if (requestCode == MY_WRITE_EXTERNAL_STORAGE) if (grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // permission was granted, yay! Do the
+            // contacts-related task you need to do.
+            if (suraNumber != null) {
+                DownloadThis(suraNumber);
 
-                    } else {
-                        // permission denied, boo! Disable the
-                        // functionality that depends on this permission.
-                        //LoadTheList();
-                    }
-                    return;
-                }
+            }  // permission denied, boo! Disable the
+            // functionality that depends on this permission.
+            //LoadTheList();
 
-                // other 'case' lines to check for other
-                // permissions this app might request.
-            }
         }
     }
 
@@ -838,7 +835,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                     int tempsn = Integer.parseInt(suraNumber);
                     suranomi = QuranMap.SURAHNAMES[tempsn-1];
 
-                }catch (NumberFormatException x){
+                } catch (NumberFormatException ignored) {
 
                 }
                 String url = "https://inventivesolutionste.ipage.com/quran_audio/" + middle_path + "/" + prependZero(suraNumber) + ".mp3";
@@ -868,12 +865,11 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 }
 
                 Log.i("PERMISSION OK", "Download start " + url);
-                DownloadManager downloadManager = (DownloadManager) this.getSystemService(this.DOWNLOAD_SERVICE);
+                DownloadManager downloadManager = (DownloadManager) this.getSystemService(DOWNLOAD_SERVICE);
                 downloadId = downloadManager.enqueue(request);
                 //MarkAsDownloading(Integer.parseInt(suraNumber));
-            } else {
-                //path is incomplete
-            }
+            }  //path is incomplete
+
         } else {
             Log.i("PERMISSION NG", "Download fail");
         }
@@ -954,23 +950,19 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     public void MarkAsDownloading(int surah_id) {
         //mInterstitialAd.show();
         //TODO if quit while downloading, the progressbar is left permanently on
-        if (mAdapter != null) {
-            int actual_position = surah_id;
-            for (int i = 0; i < mAdapter.getItemCount(); i++) {
-                try {
-                    if (mAdapter.getTitleAt(i).chapter_id == surah_id) {
-                        actual_position = i;
-                    }
-                } catch (IndexOutOfBoundsException x) {
-                    Crashlytics.log("CANNOT GET POSITION "+ x.getMessage());
-                }
-            }
-//            ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
-//            if (!ctitle.status.equals("4")) {
-//                ctitle.status = "4";
-//                titleViewModel.update(ctitle);
-//            }
-        }
+        //            for (int i = 0; i < mAdapter.getItemCount(); i++) {
+        //                try {
+        //                    if (mAdapter.getTitleAt(i).chapter_id == surah_id) {
+        //                    }
+        //                } catch (IndexOutOfBoundsException x) {
+        //                    Crashlytics.log("CANNOT GET POSITION "+ x.getMessage());
+        //                }
+        //            }
+        //            ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
+        //            if (!ctitle.status.equals("4")) {
+        //                ctitle.status = "4";
+        //                titleViewModel.update(ctitle);
+        //            }
     }
 
     @Override
@@ -1217,13 +1209,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 notificationManager.cancelAll();
         }
 
-        try {
-//            if (broadcastReceiverAudio != null) {
-//                unregisterReceiver(broadcastReceiverAudio);
-//            }
-        } catch (IllegalArgumentException iax) {
 
-        }
 
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -1233,7 +1219,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
             }
         } catch (IllegalArgumentException x) {
-            Crashlytics.log(x.getMessage() + " - " + x.getStackTrace());
+            Crashlytics.log(x.getMessage() + " - " + Arrays.toString(x.getStackTrace()));
         }
         mInterstitialAd.show();
     }
@@ -1269,15 +1255,11 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         switch (parent.getId()) {
             case R.id.mp_language_spinner:
                 mSharedPref.write(SharedPreferences.SELECTED_AUDIO_LANGUAGE, position);
-                language = language_adapter.getItem(position).toString();
-                switch (position) {
-                    case 0:
-                        //TODO set index from shared pref, if previously set
-                        recitationstyle_adapter = ArrayAdapter.createFromResource(this, R.array.recitation_styles_arabic, android.R.layout.simple_spinner_item);
-                        break;
-                    default:
-                        recitationstyle_adapter = ArrayAdapter.createFromResource(this, R.array.recitation_style, android.R.layout.simple_spinner_item);
-                        break;
+                language = Objects.requireNonNull(language_adapter.getItem(position)).toString();
+                if (position == 0) {//TODO set index from shared pref, if previously set
+                    recitationstyle_adapter = ArrayAdapter.createFromResource(this, R.array.recitation_styles_arabic, android.R.layout.simple_spinner_item);
+                } else {
+                    recitationstyle_adapter = ArrayAdapter.createFromResource(this, R.array.recitation_style, android.R.layout.simple_spinner_item);
                 }
                 recitationstyle_spinner.setVisibility(View.VISIBLE);
                 recitationstyle_spinner.setAdapter(recitationstyle_adapter);
@@ -1331,23 +1313,17 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                         getIntent().removeExtra("suranumber");
                         playTheFileIfExists(play_item_number);
                     } catch (NullPointerException x) {
-                        Crashlytics.log(x.getMessage() + " - " + x.getStackTrace());
+                        Crashlytics.log(x.getMessage() + " - " + Arrays.toString(x.getStackTrace()));
                     }
                 }
             }
-
-        } else {
 
         }
 
     }
 
     private boolean tripletNotNull() {
-        if(language!=null && recitation_style!=null && reciter!=null){
-            return true;
-        }else{
-            return false;
-        }
+        return language != null && recitation_style != null && reciter != null;
 
     }
 

@@ -9,15 +9,6 @@
     android:orientation="vertical"
     tools:context=".MediaActivity">
 
-    <TextView
-        android:id="@+id/mp_title_tv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Select audio options"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="#FFEB3B"
-        android:textColorHint="#FFEB3B"
-        android:visibility="gone" />
 
     <Spinner
         android:id="@+id/mp_language_spinner"
