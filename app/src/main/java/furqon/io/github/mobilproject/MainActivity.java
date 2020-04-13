@@ -24,6 +24,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -277,28 +278,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .addOnCompleteListener(this, new OnCompleteListener<ShortDynamicLink>() {
                         @Override
                         public void onComplete(@NonNull Task<ShortDynamicLink> task) {
-//                            try{
-//
-//                            }catch (ApiException apix){
-//
-//                            }
-                            if (task.isSuccessful()) {
-                                // Short link created
-                                Uri shortLink = task.getResult().getShortLink();
-                                Uri flowchartLink = task.getResult().getPreviewLink();
-                                Log.i(TAG, "SHORT LINK " + shortLink.getPath());
-                                Intent intent = new Intent(Intent.ACTION_SEND);
-                                intent.setType("text/plain");
-                                intent.putExtra(Intent.EXTRA_SUBJECT, R.string.quran_kareem_title);
-                                intent.putExtra(Intent.EXTRA_TEXT, shortLink.toString());
-                                startActivity(intent);
-                                //Log.i("SHARE", deepLink.getPath());
-                            } else {
-                                // Error
-                                // ...
-                                Log.i(TAG, "LINK ERROR" + task.getResult().toString());
-                                Crashlytics.log(Log.ERROR, TAG, task.getResult().toString());
-                            }
+
+                                if (task.isSuccessful()) {
+                                    // Short link created
+
+                                        Uri shortLink = task.getResult().getShortLink();
+                                    Uri flowchartLink = task.getResult().getPreviewLink();
+                                    Log.i(TAG, "SHORT LINK " + shortLink.getPath());
+                                    Intent intent = new Intent(Intent.ACTION_SEND);
+                                    intent.setType("text/plain");
+                                    intent.putExtra(Intent.EXTRA_SUBJECT, R.string.quran_kareem_title);
+                                    intent.putExtra(Intent.EXTRA_TEXT, shortLink.toString());
+                                    startActivity(intent);
+                                    //Log.i("SHARE", deepLink.getPath());
+
+                                } else {
+                                    // Error
+                                    // ...
+                                    Crashlytics.log(Log.ERROR, TAG, task.getResult().toString());
+                                }
+
+
                         }
                     });
         }

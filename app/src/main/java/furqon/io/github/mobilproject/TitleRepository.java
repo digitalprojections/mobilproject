@@ -27,7 +27,7 @@ public class TitleRepository {
 
         context = application;
 
-        new readAsyncTask(mTitleDao).execute();
+        //new readAsyncTask(mTitleDao).execute();
     }
     LiveData<List<NewMessages>> getUnreadMessages(){
         liveUnreadMessages = mTitleDao.getUnreadMessages();
@@ -232,16 +232,17 @@ public class TitleRepository {
     private class readAsyncTask extends AsyncTask<ChapterTitleTable, Void, Void> {
         private ChapterTitleDAO mAsyncTitleDAO;
         public readAsyncTask(ChapterTitleDAO mTitleDao) {
+
             mAsyncTitleDAO = mTitleDao;
         }
 
         @Override
         protected Void doInBackground(ChapterTitleTable... chapterTitles) {
 
-            int rows = mAsyncTitleDAO.getCount();
-            if(rows!=114){
-                //myListener.LoadTitlesFromServer();
-            }
+//            int rows = mAsyncTitleDAO.getCount();
+//            if(rows!=114){
+//                //myListener.LoadTitlesFromServer();
+//            }
             return null;
         }
     }
