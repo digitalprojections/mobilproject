@@ -116,4 +116,6 @@
     <string name="yes">Yes</string>
     <string name="basmala" translatable="false">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</string>
     <string name="choose_font">Choose Quran font</string>
+    <string name="filenotfound">File not found</string>
+    <string name="tracklist_empty_warning">Download some audio first!</string>
 </resources>

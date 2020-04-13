@@ -162,7 +162,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         next_btn = findViewById(R.id.mp_next);
 
         current_track_tv = findViewById(R.id.mp_current_title_tv);
-        current_track_tv.setText("");
+        //current_track_tv.setText("");
 
         dl_view_btn.setOnClickListener(this);
         pl_view_btn.setOnClickListener(this);
@@ -430,7 +430,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                         Log.e(TAG, "ERROR " + x.getMessage());
                         Crashlytics.log("ERROR " + x.getMessage() + "-> " + language + "/" + recitation_style + "/" + reciter + "/" + suraNumber);
                         current_track_tv.setText("");
-                        Snackbar.make(coordinatorLayout, "File not found", Snackbar.LENGTH_SHORT).show();
+                        Toast.makeText(this, R.string.filenotfound, Toast.LENGTH_SHORT).show();
                         mediaPlayer.release();
 
                         mediaPlayer = null;
@@ -600,15 +600,26 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                         }
                     }
                 }
-                if (trackList.size() > 1)
+                if (trackList.size() > 1){
                     Collections.sort(trackList);
+                }else if(trackList.size()==1){
+                    current_track_tv.setText("");
+                }
+                else{
+                    current_track_tv.setText(R.string.tracklist_empty_warning);
+                }
+
                 mAdapter.setTitles(trackList);
                 recyclerView.setAdapter(mAdapter);
             } else {
+                current_track_tv.setText(R.string.tracklist_empty_warning);
                 Log.d(TAG, "NULL ARRAY no files found");
                 mAdapter.setTitles(trackList);
                 recyclerView.setAdapter(mAdapter);
             }
+        }else {
+            //Wrong path selected
+            current_track_tv.setText(R.string.tracklist_empty_warning);
         }
     }
 
