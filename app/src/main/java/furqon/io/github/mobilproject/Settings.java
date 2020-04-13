@@ -3,6 +3,7 @@ package furqon.io.github.mobilproject;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -20,6 +21,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.material.snackbar.Snackbar;
 
 public class Settings extends AppCompatActivity {
 
@@ -68,9 +70,8 @@ public class Settings extends AppCompatActivity {
             public void onClick(View v) {
                 //TODO
                 float fs = sampletext.getTextSize();
-                int fsout = Math.round(fs);
-                fsout++;
-                sampletext.setTextSize(fsout);
+                fs = fs + 1.0f;
+                sampletext.setTextSize(TypedValue.COMPLEX_UNIT_PX, fs);
                 //sharedPref.write(SharedPreferences.FONTSIZE, fsout);
                 ok_but.setEnabled(true);
             }
@@ -80,10 +81,10 @@ public class Settings extends AppCompatActivity {
             public void onClick(View v) {
                 float fs = sampletext.getTextSize();
                 Log.e(TAG, fs + " ");
-                int fsout = Math.round(fs);
-                fsout--;
-                Log.e(TAG, fsout + " ");
-                sampletext.setTextSize(fsout);
+                fs = fs - 1.0f;
+                Log.e(TAG, fs + " ");
+                sampletext.setTextSize(TypedValue.COMPLEX_UNIT_PX, fs);
+                Log.e(TAG, sampletext.getTextSize() + "");
                 //sharedPref.write(SharedPreferences.FONTSIZE, fsout);
                 ok_but.setEnabled(true);
             }
@@ -173,7 +174,7 @@ public class Settings extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Settings.super.onBackPressed();
-                Toast.makeText(view.getContext(), getString(R.string.settings_saved), Toast.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.linearLayout2), getString(R.string.settings_saved), Snackbar.LENGTH_SHORT).show();
                 sharedPref.init(getApplicationContext());
                 //set font size
                 float fs = sampletext.getTextSize();
@@ -229,7 +230,7 @@ public class Settings extends AppCompatActivity {
 
         if (sharedPref.contains(sharedPref.FONTSIZE)) {
             float fs = (float) sharedPref.read(sharedPref.FONTSIZE, 0);
-            sampletext.setTextSize(fs);
+            sampletext.setTextSize(TypedValue.COMPLEX_UNIT_PX, fs);
         }
     }
 

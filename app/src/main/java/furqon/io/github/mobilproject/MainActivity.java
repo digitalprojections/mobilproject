@@ -379,7 +379,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, id);
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, name);
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "activity");
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
     }
 
     public void ayahOfTheDay() {
@@ -513,14 +513,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 open_messages();
                 break;
             case R.id.chat_button:
-                open_chatroom();
+                //open_chatroom();
                 break;
             case R.id.mediabutton:
-                if (BuildConfig.BUILD_TYPE == "debug") {
-                    open_media_page();
-                } else {
-                    open_chatroom();
-                }
+                open_media_page();
+
+//                if (BuildConfig.BUILD_TYPE == "debug") {
+//                    open_media_page();
+//                } else {
+//                    open_chatroom();
+//                }
 
                 break;
             case R.id.about_button:

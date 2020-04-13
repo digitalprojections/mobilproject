@@ -203,7 +203,7 @@
                 android:padding="5dp"
                 android:textColor="#000000"
                 android:textDirection="rtl"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 tools:text="@string/basmala" />
 
             <Space

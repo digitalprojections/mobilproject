@@ -415,7 +415,9 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                     mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
                 } catch (IOException iox) {
                     Log.e(TAG, "ERROR " + iox.getMessage());
-
+                    Crashlytics.log("ERROR " + iox.getMessage() + "-> " + language + "/" + recitation_style + "/" + reciter + "/" + suraNumber);
+                    current_track_tv.setText("");
+                    Snackbar.make(coordinatorLayout, "File not found", Snackbar.LENGTH_SHORT).show();
                     mediaPlayer.release();
 
                     mediaPlayer = null;
@@ -883,7 +885,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                     Snackbar.make(coordinatorLayout,
                             "error " + reason,
                             Snackbar.LENGTH_LONG).show();
-                    Crashlytics.log("download error - " + reason + "->" + language + "/" + recitation_style + "/" + suraNumber);
+                    Crashlytics.log("download error - " + reason + "->" + language + "/" + recitation_style + "/" + reciter + "/" + suraNumber);
                     mAdapter.notifyDataSetChanged();
                 } else if (status == DownloadManager.STATUS_PAUSED) {
                     Snackbar.make(coordinatorLayout,

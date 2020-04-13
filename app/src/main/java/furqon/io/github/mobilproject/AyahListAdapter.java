@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -175,7 +176,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             arabic_text.setTextSize(30);
             if (sharedPref.contains(sharedPref.FONTSIZE)) {
                 float fs = (float) sharedPref.read(sharedPref.FONTSIZE, 0);
-                arabic_text.setTextSize(fs);
+                arabic_text.setTextSize(TypedValue.COMPLEX_UNIT_PX, fs);
             }
             arabic_text.setGravity(Gravity.END);
             arabic_text.setTextColor(Color.BLACK);

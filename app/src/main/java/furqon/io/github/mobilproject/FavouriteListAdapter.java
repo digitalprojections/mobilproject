@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.Html;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -177,7 +178,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
             arabictext.setTextSize(30);
             if (sharedPref.contains(sharedPref.FONTSIZE)) {
                 float fs = (float) sharedPref.read(sharedPref.FONTSIZE, 0);
-                arabictext.setTextSize(fs);
+                arabictext.setTextSize(TypedValue.COMPLEX_UNIT_PX, fs);
             }
             arabictext.setGravity(Gravity.END);
             arabictext.setTextColor(Color.BLACK);
