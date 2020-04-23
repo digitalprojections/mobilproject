@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -50,17 +51,17 @@ import io.fabric.sdk.android.Fabric;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Uri deepLink;
 
-    Button suralar_but;
-    Button davomi_but;
-    Button youtube_but;
+    CardView suralar_but;
+    CardView davomi_but;
+    CardView youtube_but;
     //Button favourite_but;
-    Button search_but;
-    Button rate_but;
+    CardView search_but;
+    CardView rate_but;
     //Button coins_but;
-    Button message_but;
+    CardView message_but;
     //Button chat_but;
-    Button audio_but;
-    Button about_but;
+    CardView audio_but;
+    CardView about_but;
     private Animation scaler;
     TextView nbadge;
     ImageView imageView;
