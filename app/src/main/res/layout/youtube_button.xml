@@ -38,9 +38,9 @@
 
             <ImageView
                 android:id="@+id/imageViewYoutube"
-                android:layout_width="96dp"
+                android:layout_width="150dp"
                 android:layout_height="150dp"
-                app:srcCompat="@mipmap/youtube_social_squircle_white" />
+                app:srcCompat="@mipmap/youtube" />
 
             <TextView
                 android:id="@+id/textView14"

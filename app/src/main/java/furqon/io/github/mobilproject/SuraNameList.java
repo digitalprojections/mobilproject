@@ -38,6 +38,8 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,7 +62,7 @@ public class SuraNameList extends AppCompatActivity {
 //    ImageView downloadButton;
 
     ProgressBar progressBar;
-
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
     boolean download_attempted;
     private Button tempbut;
     private Button quranic_order_btn;
@@ -122,7 +124,11 @@ public class SuraNameList extends AppCompatActivity {
         quranic_order_btn = findViewById(R.id.quranic_order);
         revelation_order_btn = findViewById(R.id.revelation_order);
 
-
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setMinimumFetchIntervalInSeconds(3600)
+                .build();
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
         //registerReceiver(broadcastReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 //        download_container = findViewById(R.id.download_cont);
 //        progressBarDownload = findViewById(R.id.progressBar_download);
@@ -217,7 +223,7 @@ public class SuraNameList extends AppCompatActivity {
     private void LoadTitles() {
         Log.i(TAG, "CLICK THE TEMP BUTTON");
         RequestQueue queue = Volley.newRequestQueue(context);
-        String url = "https://inventivesolutionste.ipage.com/ajax_quran.php";
+        String url = mFirebaseRemoteConfig.getString("server_link") + "/ajax_quran.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -277,15 +283,15 @@ public class SuraNameList extends AppCompatActivity {
         ) {
 
             try {
-                //Log.d(TAG, "JSONOBJECT "+ i.getString("arabic"));
-                //int language_no = i.getInt("language_no");
+                Log.d(TAG, "JSONOBJECT " + i.getString("language_no") + i.getString("uzbek"));
+                int language_no = i.getInt("language_no");
                 int order_no = i.getInt("order_no");
                 int chapter_id = i.getInt("chapter_id");
                 String surah_type = i.getString("surah_type");
                 String uzbek = i.getString("uzbek");
                 String arabic = i.getString("arabic");
 
-                title = new ChapterTitleTable(1, order_no, chapter_id, uzbek, arabic, surah_type);
+                title = new ChapterTitleTable(language_no, order_no, chapter_id, uzbek, arabic, surah_type);
                 titleViewModel.insert(title);
 
 

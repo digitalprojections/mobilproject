@@ -55,7 +55,7 @@ public class ScrollingAdapter extends PagerAdapter {
                 R.mipmap.gold_coin,
                 R.mipmap.random,
                 R.mipmap.rangli_comment,
-                R.mipmap.sound_wave
+                R.mipmap.audio
         };
 
 

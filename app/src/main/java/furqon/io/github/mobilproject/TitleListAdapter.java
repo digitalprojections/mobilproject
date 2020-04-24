@@ -81,8 +81,8 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
         we can mark missing files as regular LOCK icon or DOWNLOAD icon respectively
         */
 
-        //Log.i(TAG, sharedpref.getInstance().read("download_" + current.chapter_id, 0).toString() + " download ID for " + current.chapter_id);
-
+//        Log.i(TAG, sharedpref.getInstance().read("download_" + current.chapter_id, 0).toString() + " download ID for " + current.chapter_id);
+//
 //        if (TrackDownloaded(current.chapter_id + "")) {
 //            //set by the actually available audio files
 //            holder.downloadButton.setImageResource(R.drawable.ic_file_available);

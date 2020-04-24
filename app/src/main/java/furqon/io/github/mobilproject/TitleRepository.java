@@ -33,6 +33,11 @@ public class TitleRepository {
         liveUnreadMessages = mTitleDao.getUnreadMessages();
         return liveUnreadMessages;
     }
+
+    LiveData<List<ChapterTitleTable>> getAllTitlesByLanguage(String ln) {
+        mAllTitles = mTitleDao.getAllTitlesByLanguage(ln);
+        return mAllTitles;
+    }
     LiveData<List<ChapterTitleTable>> getAllTitlesByQuranicOrder(){
         mAllTitles = mTitleDao.getAllTitlesQuranicOrder();
         return mAllTitles;

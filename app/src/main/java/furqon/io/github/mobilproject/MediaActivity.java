@@ -62,7 +62,10 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import furqon.io.github.mobilproject.Services.OnClearFromService;
@@ -647,10 +650,20 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             }
         }
     }
+
+    private String languageNo(String lan) {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("english", "79");
+        map.put("russian", "59");
+        map.put("arabic", "1");
+        map.put("uzbek", "120");
+
+        return map.get(lan);
+    }
+
     private void LoadTheList() {
-
-
-        titleViewModel.getAllTitles().observe(this, new Observer<List<ChapterTitleTable>>() {
+        //TODO send language number as found in the database
+        titleViewModel.getAllTitlesByLanguage(languageNo(language)).observe(this, new Observer<List<ChapterTitleTable>>() {
             @Override
             public void onChanged(@Nullable List<ChapterTitleTable> surahTitles) {
                 //Toast.makeText(SuraNameList.this, "LOADING TITLES " + surahTitles.size(), Toast.LENGTH_LONG).show();
@@ -865,9 +878,19 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 }
 
                 Log.i("PERMISSION OK", "Download start " + url);
-                DownloadManager downloadManager = (DownloadManager) this.getSystemService(DOWNLOAD_SERVICE);
                 downloadId = downloadManager.enqueue(request);
-                //MarkAsDownloading(Integer.parseInt(suraNumber));
+                mSharedPref.write("download_" + downloadId, suraNumber); //storing the download id under the right sura reference. We can use the id later to check for download status
+                mSharedPref.write("downloading_surah_" + suraNumber, (int) downloadId);
+                //MarkAsDownloading(Integer.parseInt(suranomer));
+
+                query.setFilterById(DownloadManager.STATUS_FAILED | DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING | DownloadManager.STATUS_SUCCESSFUL);
+                Cursor cursor = downloadManager.query(query);
+                if (cursor != null) {
+                    for (int i = 0; i < cursor.getCount(); i++) {
+                        Log.i(TAG, cursor.getInt(i) + " download ");
+                        cursor.moveToNext();
+                    }
+                }
             }  //path is incomplete
 
         } else {
@@ -950,55 +973,58 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     public void MarkAsDownloading(int surah_id) {
         //mInterstitialAd.show();
         //TODO if quit while downloading, the progressbar is left permanently on
-        //            for (int i = 0; i < mAdapter.getItemCount(); i++) {
-        //                try {
-        //                    if (mAdapter.getTitleAt(i).chapter_id == surah_id) {
-        //                    }
-        //                } catch (IndexOutOfBoundsException x) {
-        //                    Crashlytics.log("CANNOT GET POSITION "+ x.getMessage());
-        //                }
-        //            }
-        //            ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
-        //            if (!ctitle.status.equals("4")) {
-        //                ctitle.status = "4";
-        //                titleViewModel.update(ctitle);
-        //            }
+        if (mAdapter != null) {
+            int actual_position = surah_id;
+            for (int i = 0; i < mAdapter.getItemCount(); i++) {
+                try {
+                    if (mAdapter.getTitleAt(i).chapter_id == surah_id) {
+                        actual_position = i;
+                    }
+                } catch (IndexOutOfBoundsException iobx) {
+                    Log.e("CANNOT GET POSITION", iobx.getMessage());
+                }
+            }
+            ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
+            if (!ctitle.status.equals("4")) {
+                ctitle.status = "4";
+                titleViewModel.update(ctitle);
+            }
+        }
     }
 
     @Override
     public void MarkAsAwarded(int surah_id) {
-        //Log.e("ACTUAL SURAH ID?", surah_id + " " + suraNumber);
-
-        int coins = mSharedPref.read(mSharedPref.COINS, 0);
-        if (coins > ayah_unlock_cost) {
-            titleViewModel.updateTitleAsRewarded(suraNumber);
-        } else {
-            Snackbar.make(coordinatorLayout, R.string.not_enough_coins, Snackbar.LENGTH_LONG).show();
+        int actual_position = surah_id;
+        for (int i = 0; i < mAdapter.getItemCount(); i++) {
+            if (mAdapter.getTitleAt(i).chapter_id == surah_id) {
+                actual_position = i;
+            }
         }
-        //downloadText.setText(R.string.down_or_play);
-        //playButton.setVisible(true);
-
+        Log.e(TAG, "ACTUAL SURAH ID?" + surah_id + " " + actual_position);
+        ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
+        ctitle.status = "2";
+        titleViewModel.update(ctitle);
     }
 
     @Override
     public void MarkAsDownloaded(int surah_id) {
-//        if (mAdapter != null) {
-//            int actual_position = surah_id;
-//            for (int i = 0; i < mAdapter.getItemCount(); i++) {
-//                try {
-//                    if (mAdapter.getTitleAt(i).chapter_id == surah_id) {
-//                        actual_position = i;
-//                    }
-//                } catch (IndexOutOfBoundsException x) {
-//                    Crashlytics.log(x.getMessage() + " - " + x.getStackTrace());
-//                }
-//            }
-//            ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
-//            if (!ctitle.status.equals("3")) {
-//                ctitle.status = "3";
-//                titleViewModel.update(ctitle);
-//            }
-//        }
+        if (mAdapter != null) {
+            int actual_position = surah_id;
+            for (int i = 0; i < mAdapter.getItemCount(); i++) {
+                try {
+                    if (mAdapter.getTitleAt(i).chapter_id == surah_id) {
+                        actual_position = i;
+                    }
+                } catch (IndexOutOfBoundsException x) {
+                    Crashlytics.log(x.getMessage() + " - " + x.getStackTrace());
+                }
+            }
+            ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
+            if (!ctitle.status.equals("3")) {
+                ctitle.status = "3";
+                titleViewModel.update(ctitle);
+            }
+        }
     }
 
     private boolean isNetworkAvailable() {

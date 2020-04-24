@@ -1,6 +1,8 @@
 package furqon.io.github.mobilproject;
 
+import android.app.DownloadManager;
 import android.content.Context;
+import android.database.Cursor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,12 +27,15 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
     private ArrayList<Track> trackList;
     private List<ChapterTitleTable> mTitles = new ArrayList<>(); // Cached copy of titles
     private boolean download_view;
+    private RewardAd mRewardedVideoAd;
+    private TextView pl_title;
     Context mContext;
 
 
     MediaActivityAdapter(Context mediaActivity) {
         //LayoutInflater mInflater = LayoutInflater.from(mediaActivity);
         mContext = mediaActivity;
+        mRewardedVideoAd = new RewardAd(mContext);
     }
 
     @NonNull
@@ -38,6 +43,7 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
     public PlayListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.playlist_item, parent, false);
+        pl_title = view.findViewById(R.id.pl_title);
         return new PlayListViewHolder(view);
     }
 
@@ -79,24 +85,24 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
                     holder.downloadButton.setTag(4);
                     holder.progressBar.setVisibility(View.VISIBLE);
                 }
-            /*else if(itemDownloading(current.chapter_id)){
-                //downloading
-                Log.i(TAG, " DOWNLOADING, " + current.chapter_id + " " + current.uzbek);
-                holder.downloadButton.setTag(5);
-                holder.progressBar.setVisibility(View.VISIBLE);
-                holder.downloadButton.setVisibility(View.GONE);
-            }*/
+//            else if(itemDownloading(current.chapter_id)){
+//                //downloading
+//                Log.i(TAG, " DOWNLOADING, " + current.chapter_id + " " + current.uzbek);
+//                holder.downloadButton.setTag(5);
+//                holder.progressBar.setVisibility(View.VISIBLE);
+//                holder.downloadButton.setVisibility(View.GONE);
+//            }
                 else {
-                    holder.downloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
+//                    holder.downloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
+//                    holder.downloadButton.setFocusable(true);
+//                    holder.downloadButton.setTag(2);
+//                    holder.progressBar.setVisibility(View.INVISIBLE);
+//                    holder.downloadButton.setVisibility(View.VISIBLE);
+                    holder.downloadButton.setImageResource(R.drawable.ic_unlock);
                     holder.downloadButton.setFocusable(true);
-                    holder.downloadButton.setTag(2);
-                    holder.progressBar.setVisibility(View.INVISIBLE);
+                    holder.downloadButton.setTag(1);
                     holder.downloadButton.setVisibility(View.VISIBLE);
-//                holder.downloadButton.setImageResource(R.drawable.ic_unlock);
-//                holder.downloadButton.setFocusable(true);
-//                holder.downloadButton.setTag(1);
-//                holder.downloadButton.setVisibility(View.VISIBLE);
-//                holder.progressBar.setVisibility(View.INVISIBLE);
+                    holder.progressBar.setVisibility(View.INVISIBLE);
                 }
             }
 
@@ -112,6 +118,24 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
             holder.progressBar.setVisibility(View.GONE);
             holder.down_cont.setVisibility(View.GONE);
         }
+    }
+
+    private boolean itemDownloading(int sid) {
+        DownloadManager downloadManager = (DownloadManager) mContext.getSystemService(mContext.DOWNLOAD_SERVICE);
+        DownloadManager.Query query = new DownloadManager.Query();
+        long did = (long) SharedPreferences.getInstance().read("downloading_surah_" + sid, 0);
+        //query.setFilterById(did);
+        Cursor cursor = downloadManager.query(query);
+        Log.i(TAG, cursor.getCount() + " cursor count " + did);
+        if (cursor.moveToFirst()) {
+            int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
+            int status = cursor.getInt(columnIndex);
+            Log.i(TAG, status + " cursor status");
+            if (status == DownloadManager.STATUS_SUCCESSFUL) {
+                return true;
+            }
+        }
+        return false;
     }
     void setTitles(List<ChapterTitleTable> titles){
         mTitles = titles;
@@ -206,10 +230,20 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
             container.setOnClickListener(this);
         }
 
+        private void ShowRewardAdForThisItem(View view) {
+
+            int position = this.getAdapterPosition();
+
+            mRewardedVideoAd.SHOW(pl_title.getText().toString());
+
+        }
         @Override
         public void onClick(View v) {
             if (download_view) {
                 switch (downloadButton.getTag().toString()) {
+                    case "1"://red arrow
+                        ShowRewardAdForThisItem(v);
+                        break;
                     case "2"://green arrow
                         StartDownload(v, pl_title.getText().toString());
                         break;

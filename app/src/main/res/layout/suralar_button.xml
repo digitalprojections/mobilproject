@@ -36,7 +36,7 @@
 
             <ImageView
                 android:id="@+id/imageViewSuralar"
-                android:layout_width="152dp"
+                android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:fadingEdgeLength="10dp"
                 app:srcCompat="@mipmap/read" />

@@ -33,6 +33,10 @@
         <key>first_visit_reward</key>
         <value>100</value>
     </entry>
+    <entry>
+        <key>server_link</key>
+        <value>https://inventivesolutionste.ipage.com</value>
+    </entry>
 
 
 </defaultsMap>

@@ -51,6 +51,9 @@ public interface ChapterTitleDAO {
     @Update
     void updateText(ChapterTextTable chapterText);
 
+    @Query("SELECT * FROM sura_names WHERE language_no LIKE:ln ORDER BY chapter_id ASC")
+    LiveData<List<ChapterTitleTable>> getAllTitlesByLanguage(String ln);
+
     @Query("SELECT * FROM sura_names ORDER BY chapter_id ASC")
     LiveData<List<ChapterTitleTable>> getAllTitlesQuranicOrder();
 

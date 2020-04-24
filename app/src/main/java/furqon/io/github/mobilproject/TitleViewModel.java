@@ -39,6 +39,10 @@ public class TitleViewModel extends AndroidViewModel {
         return mChapterText;
     }
 
+    LiveData<List<ChapterTitleTable>> getAllTitlesByLanguage(String ln) {
+        mAllTitles = titleRepository.getAllTitlesByLanguage(ln);
+        return mAllTitles;
+    }
     LiveData<List<ChapterTitleTable>> getAllTitles(){
         if((int) sharedPref.read(sharedPref.displayOrder, 0)==0){
             mAllTitles = titleRepository.getAllTitlesByQuranicOrder();
