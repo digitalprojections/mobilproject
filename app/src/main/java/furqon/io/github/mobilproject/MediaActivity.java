@@ -47,11 +47,23 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,6 +89,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     private static final int MY_WRITE_EXTERNAL_STORAGE = 101;
     private static final String TAG = "MediaActivity";
     private ArrayList<Track> trackList;
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private TitleViewModel titleViewModel;
     private MediaActivityAdapter mAdapter;
     private LinearLayout coordinatorLayout;
@@ -89,7 +102,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     private ArrayAdapter<CharSequence> recitationstyle_adapter;
     private ArrayAdapter<CharSequence> reciter_adapter;
     private MediaPlayer mediaPlayer;
-
+    private ArrayList<JSONObject> jsonArrayResponse;
 
 
     private Context context;
@@ -138,6 +151,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     MediaMetadataRetriever metadataRetriever = new MediaMetadataRetriever();
     DownloadManager downloadManager;
     DownloadManager.Query query;
+    private boolean download_attempted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,7 +159,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         setContentView(R.layout.activity_media);
 
         titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
-
+        context = this;
         mInterstitialAd = new InterstitialAd(this);
         if (BUILD_TYPE.equals("debug")) {
             mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
@@ -153,6 +167,12 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
         }
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setMinimumFetchIntervalInSeconds(3600)
+                .build();
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
 
         coordinatorLayout = findViewById(R.id.mp_main_linear_layout);
 
@@ -666,18 +686,104 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         titleViewModel.getAllTitlesByLanguage(languageNo(language)).observe(this, new Observer<List<ChapterTitleTable>>() {
             @Override
             public void onChanged(@Nullable List<ChapterTitleTable> surahTitles) {
-                //Toast.makeText(SuraNameList.this, "LOADING TITLES " + surahTitles.size(), Toast.LENGTH_LONG).show();
-//                assert surahTitles != null;
-//                if (surahTitles.size() != 114) {
-//
-//                } else {
-//                    //progressBar.setVisibility(View.GONE);
-//                }
+                if (surahTitles.size() != 114) {
+                    //tempbut.setVisibility(View.VISIBLE);
+                    if (!download_attempted) {
+                        Log.e(TAG, "LOADING LIST");
+                        download_attempted = true;
+                        LoadTitles();
+                    }
+
+                    //titleViewModel.deleteAll();
+                } else {
+                    //progressBar.setVisibility(View.GONE);
+                }
                 mAdapter.setTitles(surahTitles);
                 recyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
             }
         });
+    }
+
+    private void LoadTitles() {
+        Log.i(TAG, "CLICK THE TEMP BUTTON");
+        RequestQueue queue = Volley.newRequestQueue(context);
+        String url = mFirebaseRemoteConfig.getString("server_link") + "/ajax_quran.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //progressBar.setVisibility(View.INVISIBLE);
+                        // Convert String to json object
+                        jsonArrayResponse = new ArrayList<JSONObject>();
+
+                        try {
+                            JSONArray jsonArray = new JSONArray(response);
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject object = new JSONObject(jsonArray.getString(i));
+                                jsonArrayResponse.add(object);
+                            }
+
+                            //PASS to SPINNER
+                            //load auction names and available lot/bid count
+                            populateAuctionList(jsonArrayResponse);
+                            //progressBar.setVisibility(View.GONE);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            //Log.i("error json", "tttttttttttttttt");
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                //progressBar.setVisibility(View.INVISIBLE);
+            }
+        }) {
+            protected Map<String, String> getParams() {
+                Map<String, String> MyData = new HashMap<String, String>();
+                MyData.put("action", "names_as_objects"); //Add the data you'd like to send to the server.
+                MyData.put("language_id", "1");
+                //https://inventivesolutionste.ipage.com/ajax_quran.php
+                //POST
+                //action:names_as_objects
+                //language_id:1
+                return MyData;
+            }
+        };
+        queue.add(stringRequest);
+        //progressBar.setVisibility(View.VISIBLE);
+    }
+
+    void populateAuctionList(ArrayList<JSONObject> auclist) {
+
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(, android.R.layout.simple_spinner_item, auclist);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //spinner.setAdapter(adapter);
+        ChapterTitleTable title;
+
+        for (JSONObject i : auclist
+        ) {
+
+            try {
+                //Log.d(TAG, "JSONOBJECT "+ i.getString("language_no") + i.getString("uzbek"));
+                //int language_no = i.getInt("language_no");
+                int order_no = i.getInt("order_no");
+                int chapter_id = i.getInt("chapter_id");
+                String surah_type = i.getString("surah_type");
+                String uzbek = i.getString("uzbek");
+                String arabic = i.getString("arabic");
+
+                title = new ChapterTitleTable(1, order_no, chapter_id, uzbek, arabic, surah_type);
+                titleViewModel.insert(title);
+
+
+            } catch (Exception sx) {
+                Log.e("EXCEPTION", sx.getMessage());
+            }
+        }
     }
 /*
 

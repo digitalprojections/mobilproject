@@ -283,15 +283,15 @@ public class SuraNameList extends AppCompatActivity {
         ) {
 
             try {
-                Log.d(TAG, "JSONOBJECT " + i.getString("language_no") + i.getString("uzbek"));
-                int language_no = i.getInt("language_no");
+                //Log.d(TAG, "JSONOBJECT "+ i.getString("language_no") + i.getString("uzbek"));
+                //int language_no = i.getInt("language_no");
                 int order_no = i.getInt("order_no");
                 int chapter_id = i.getInt("chapter_id");
                 String surah_type = i.getString("surah_type");
                 String uzbek = i.getString("uzbek");
                 String arabic = i.getString("arabic");
 
-                title = new ChapterTitleTable(language_no, order_no, chapter_id, uzbek, arabic, surah_type);
+                title = new ChapterTitleTable(1, order_no, chapter_id, uzbek, arabic, surah_type);
                 titleViewModel.insert(title);
 
 
