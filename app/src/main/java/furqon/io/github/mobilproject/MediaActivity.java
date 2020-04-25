@@ -416,7 +416,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 } else {
                     //Toast.makeText(this, "Online audio!", Toast.LENGTH_SHORT).show();
                     //url = new StringBuilder().append("https://mobilproject.github.io/furqon_web_express/by_sura/").append(suraNumber).append(".mp3").toString();
-                    //url = "https://inventivesolutionste.ipage.com/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter  + "/" + prependZero(suraNumber) + ".mp3";
+                    //url = mFirebaseRemoteConfig.getString("server_link") + "/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter  + "/" + prependZero(suraNumber) + ".mp3";
                     // /storage/emulated/0/Android/data/furqon.io.github.mobilproject/files/quran_audio/arabic/by_surah/murattal/1/001.mp3
                     // /storage/emulated/0/Android/data/furqon.io.github.mobilproject/files/quran_audio/arabic/by_surah/murattal/1
                     url = newpath + "/" + suraNumber + ".mp3";
@@ -950,7 +950,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 String middle_path = language + "/by_surah/" + recitation_style + "/" + reciter;
                 //TODO new path:
             /*
-            newpath = "https://inventivesolutionste.ipage.com/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter;
+            newpath = mFirebaseRemoteConfig.getString("server_link") + "/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter;
             */
                 try{
                     int tempsn = Integer.parseInt(suraNumber);

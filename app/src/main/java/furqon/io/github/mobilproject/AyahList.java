@@ -39,6 +39,8 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.measurement.module.Analytics;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -91,7 +93,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
     private MenuItem playButton;
     private MenuItem menu_bookmark_btn;
     private FirebaseAnalytics mFirebaseAnalytics;
-
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
 
     private String suraNumber;
 
@@ -136,8 +138,12 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         setSupportActionBar(toolbar);
         // Get a support ActionBar corresponding to this toolbar and enable the Up button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-// Obtain the FirebaseAnalytics instance.
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setMinimumFetchIntervalInSeconds(3600)
+                .build();
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+        // Obtain the FirebaseAnalytics instance.
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         mInterstitialAd = new InterstitialAd(this);
         if (BuildConfig.BUILD_TYPE == "debug") {
@@ -273,7 +279,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
 
         Log.i(TAG, "CLICK clicking");
                 RequestQueue queue = Volley.newRequestQueue(context);
-                String url = "https://inventivesolutionste.ipage.com/ajax_quran.php";
+                String url = mFirebaseRemoteConfig.getString("server_link") + "/ajax_quran.php";
 
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                         new Response.Listener<String>() {

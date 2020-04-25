@@ -62,6 +62,13 @@
 
         </TableLayout>
 
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/visit_for_coins"
+            android:textAlignment="center" />
+
         <Space
             android:layout_width="match_parent"
             android:layout_height="100dp" />
@@ -108,13 +115,13 @@
                 android:lines="2"
                 android:textAlignment="center" />
 
-            <TextView
-                android:id="@+id/share_description_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:lines="2"
-                android:textAlignment="center" />
+<!--            <TextView-->
+<!--                android:id="@+id/share_description_tv"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:lines="2"-->
+<!--                android:textAlignment="center" />-->
         </LinearLayout>
 
         <LinearLayout

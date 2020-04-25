@@ -33,7 +33,7 @@ public class HTTPRequestHandler {
 
     public void httpRequest() {
         RequestQueue queue = Volley.newRequestQueue(mContext);
-        String url = "https://inventivesolutionste.ipage.com/ajax_quran.php";
+        String url = mFirebaseRemoteConfig.getString("server_link") + "/ajax_quran.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {

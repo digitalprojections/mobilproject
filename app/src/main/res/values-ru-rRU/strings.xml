@@ -113,4 +113,5 @@
     <string name="choose_font">Выберите шрифт</string>
     <string name="filenotfound">Файл не найден</string>
     <string name="tracklist_empty_warning">Сначала скачайте аудио!</string>
+    <string name="visit_for_coins">Вы также можете зарабатывать монеты, посещая приложение каждый день</string>
 </resources>

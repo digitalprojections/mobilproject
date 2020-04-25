@@ -118,4 +118,5 @@
     <string name="choose_font">Choose Quran font</string>
     <string name="filenotfound">File not found</string>
     <string name="tracklist_empty_warning">Download some audio first!</string>
+    <string name="visit_for_coins">You can also earn coins by visiting the app everyday</string>
 </resources>

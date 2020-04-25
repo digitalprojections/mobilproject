@@ -201,7 +201,7 @@ public class LoginActivity extends AppCompatActivity {
         //Log.i("ATTEMPTING TOKEN SEND", token);
 
         queue = Volley.newRequestQueue(this);
-        String url = "https://inventivesolutionste.ipage.com/apijson.php";
+        String url = mFirebaseRemoteConfig.getString("server_link") + "/apijson.php";
         //String url = "http://127.0.0.1:1234/apijson/localhost_test.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -382,7 +382,7 @@ public class LoginActivity extends AppCompatActivity {
         //Add to the user account token, app id, device id
         Log.i(TAG, "ATTEMPTING confirmation " + inviter_id);
         queue = Volley.newRequestQueue(this);
-        String url = "https://inventivesolutionste.ipage.com/apijson.php";
+        String url = mFirebaseRemoteConfig.getString("server_link") + "/apijson.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
