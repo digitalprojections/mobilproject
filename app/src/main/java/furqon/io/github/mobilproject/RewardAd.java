@@ -54,6 +54,11 @@ public class RewardAd{
                         manageCoins = (ManageCoins) mContext;
                         manageCoins.SetCoinValues();
                     }
+                    ManageDownloadIconState manageIcons;
+                    if (mContext instanceof ManageDownloadIconState) {
+                        manageIcons = (ManageDownloadIconState) mContext;
+                        manageIcons.SetDownloadIconState(true);
+                    }
                 }
 
                 @Override
@@ -87,6 +92,11 @@ public class RewardAd{
                         myListener = (MyListener) mContext;
                         myListener.MarkAsAwarded(currentSurahNumber);
                         titleListCall = false;
+                        ManageDownloadIconState manageIcons;
+                        if (mContext instanceof ManageDownloadIconState) {
+                            manageIcons = (ManageDownloadIconState) mContext;
+                            manageIcons.SetDownloadIconState(false);
+                        }
                     } else {
                         int coins = (int) (rewardItem.getAmount() * mFireBaseConfig.getLong("rewardad_multiplier"));
                         SharedPreferences.AddCoins(mContext, coins);

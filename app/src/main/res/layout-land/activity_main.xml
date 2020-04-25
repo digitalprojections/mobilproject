@@ -40,7 +40,7 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <include layout="@layout/suralar_button" />
+                <include layout="@layout/chapter_button" />
 
                 <include layout="@layout/continue_button" />
 

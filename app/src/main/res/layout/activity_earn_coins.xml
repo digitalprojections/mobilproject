@@ -82,14 +82,14 @@
                 android:textAlignment="center"
                 android:textSize="24sp" />
 
-            <TextView
-                android:id="@+id/textView5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/share"
-                android:textAlignment="center"
-                android:textSize="24sp" />
+            <!--            <TextView-->
+            <!--                android:id="@+id/textView5"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_weight="1"-->
+            <!--                android:text="@string/share"-->
+            <!--                android:textAlignment="center"-->
+            <!--                android:textSize="24sp" />-->
         </LinearLayout>
 
         <LinearLayout
@@ -131,13 +131,14 @@
                 android:contentDescription="@string/watch_ads"
                 app:srcCompat="@drawable/coin" />
 
-            <ImageButton
-                android:id="@+id/ShareImageButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:contentDescription="@string/share"
-                app:srcCompat="@drawable/ic_share" />
+            <!--            <ImageButton-->
+            <!--                android:id="@+id/ShareImageButton"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="match_parent"-->
+            <!--                android:layout_weight="1"-->
+            <!--                android:contentDescription="@string/share"-->
+            <!--                app:srcCompat="@drawable/ic_share"-->
+            <!--                />-->
         </LinearLayout>
 
     </LinearLayout>

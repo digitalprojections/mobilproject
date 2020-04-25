@@ -85,7 +85,7 @@ import io.fabric.sdk.android.services.common.Crash;
 
 import static furqon.io.github.mobilproject.BuildConfig.*;
 
-public class MediaActivity extends AppCompatActivity implements MyListener, ManageCoins, Playable, AdapterView.OnItemSelectedListener, View.OnClickListener, SetSuraNumber {
+public class MediaActivity extends AppCompatActivity implements MyListener, ManageCoins, Playable, AdapterView.OnItemSelectedListener, View.OnClickListener, SetSuraNumber, ManageDownloadIconState {
     private static final int MY_WRITE_EXTERNAL_STORAGE = 101;
     private static final String TAG = "MediaActivity";
     private ArrayList<Track> trackList;
@@ -645,7 +645,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             }
         }else {
             //Wrong path selected
-            current_track_tv.setText(R.string.tracklist_empty_warning);
+            //current_track_tv.setText(R.string.tracklist_empty_warning);
         }
     }
 
@@ -957,7 +957,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 } catch (NumberFormatException ignored) {
 
                 }
-                String url = "https://inventivesolutionste.ipage.com/quran_audio/" + middle_path + "/" + prependZero(suraNumber) + ".mp3";
+                String url = mFirebaseRemoteConfig.getString("server_link") + "/quran_audio/" + middle_path + "/" + prependZero(suraNumber) + ".mp3";
                 Log.e(TAG, " DOWNLOAD path " + newpath);
                 Log.e(TAG, " DOWNLOAD url " + url);
                 //String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suraNumber + ".mp3"; // your URL here
@@ -983,10 +983,11 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                             .setAllowedOverRoaming(true);
                 }
 
-                Log.i("PERMISSION OK", "Download start " + url);
+                Log.i("PERMISSION OK", "Download start " + suraNumber);
                 downloadId = downloadManager.enqueue(request);
                 mSharedPref.write("download_" + downloadId, suraNumber); //storing the download id under the right sura reference. We can use the id later to check for download status
                 mSharedPref.write("downloading_surah_" + suraNumber, (int) downloadId);
+
                 //MarkAsDownloading(Integer.parseInt(suranomer));
 
                 query.setFilterById(DownloadManager.STATUS_FAILED | DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING | DownloadManager.STATUS_SUCCESSFUL);
@@ -1154,9 +1155,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     @Override
     public void SetCoinValues() {
         Log.d("AYAHLIST:", "setcoinsvalue");
-
-
         available_coins = mSharedPref.read(mSharedPref.COINS, 0);
+
 
 
         //int unlock_cost = Integer.parseInt();
@@ -1473,11 +1473,16 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 special_actions_ll.setVisibility(View.GONE);
                 media_player_ll.setVisibility(View.GONE);
                 mp_seekBar.setVisibility(View.GONE);
+                if (mSharedPref.read(mSharedPref.COINS, 0) > 0) {
+                    current_track_tv.setText(getResources().getText(R.string.coins) + ": " + mSharedPref.read(mSharedPref.COINS, 0));
+                }
+
                 LoadTheList();
 
                 break;
             case R.id.mp_imageButton_pl:
                 //playlist view
+                current_track_tv.setText("");
                 mAdapter.setDownload_view(false);
                 special_actions_ll.setVisibility(View.VISIBLE);
                 media_player_ll.setVisibility(View.VISIBLE);
@@ -1512,5 +1517,11 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     @Override
     public void SetSurahNumber(String s) {
         suraNumber = s;
+    }
+
+    @Override
+    public void SetDownloadIconState(boolean b) {
+        mAdapter.setVideoAdLoaded(b);
+        mAdapter.notifyDataSetChanged();
     }
 }

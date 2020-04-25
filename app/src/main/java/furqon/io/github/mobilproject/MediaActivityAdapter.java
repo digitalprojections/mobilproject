@@ -29,6 +29,9 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
     private boolean download_view;
     private RewardAd mRewardedVideoAd;
     private TextView pl_title;
+
+
+    private boolean videoAdLoaded;
     Context mContext;
 
 
@@ -79,12 +82,15 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
                     holder.downloadButton.setTag(2);
                     holder.progressBar.setVisibility(View.INVISIBLE);
                     holder.downloadButton.setVisibility(View.VISIBLE);
-                } else if (current.status.equals("4")) {
-                    holder.downloadButton.setVisibility(View.GONE);
-                    holder.downloadButton.setFocusable(false);
-                    holder.downloadButton.setTag(4);
-                    holder.progressBar.setVisibility(View.VISIBLE);
+                    if (itemDownloading(current.chapter_id)) {
+                        //DOWNLOADING
+                        holder.downloadButton.setVisibility(View.GONE);
+                        holder.downloadButton.setFocusable(false);
+                        holder.downloadButton.setTag(5);
+                        holder.progressBar.setVisibility(View.VISIBLE);
+                    }
                 }
+
 //            else if(itemDownloading(current.chapter_id)){
 //                //downloading
 //                Log.i(TAG, " DOWNLOADING, " + current.chapter_id + " " + current.uzbek);
@@ -98,11 +104,20 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
 //                    holder.downloadButton.setTag(2);
 //                    holder.progressBar.setVisibility(View.INVISIBLE);
 //                    holder.downloadButton.setVisibility(View.VISIBLE);
-                    holder.downloadButton.setImageResource(R.drawable.ic_unlock);
-                    holder.downloadButton.setFocusable(true);
-                    holder.downloadButton.setTag(1);
-                    holder.downloadButton.setVisibility(View.VISIBLE);
-                    holder.progressBar.setVisibility(View.INVISIBLE);
+                    if (videoAdLoaded) {
+                        holder.downloadButton.setImageResource(R.drawable.ic_unlock);
+                        holder.downloadButton.setFocusable(true);
+                        holder.downloadButton.setTag(1);
+                        holder.downloadButton.setVisibility(View.VISIBLE);
+                        holder.progressBar.setVisibility(View.INVISIBLE);
+                    } else {
+                        holder.downloadButton.setImageResource(R.drawable.ic_lock_24dp);
+                        holder.downloadButton.setFocusable(true);
+                        holder.downloadButton.setTag(6);
+                        holder.downloadButton.setVisibility(View.VISIBLE);
+                        holder.progressBar.setVisibility(View.INVISIBLE);
+                    }
+
                 }
             }
 
@@ -120,21 +135,28 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
         }
     }
 
+    public void setVideoAdLoaded(boolean videoAdLoaded) {
+        this.videoAdLoaded = videoAdLoaded;
+    }
     private boolean itemDownloading(int sid) {
         DownloadManager downloadManager = (DownloadManager) mContext.getSystemService(mContext.DOWNLOAD_SERVICE);
         DownloadManager.Query query = new DownloadManager.Query();
         long did = (long) SharedPreferences.getInstance().read("downloading_surah_" + sid, 0);
-        //query.setFilterById(did);
-        Cursor cursor = downloadManager.query(query);
-        Log.i(TAG, cursor.getCount() + " cursor count " + did);
-        if (cursor.moveToFirst()) {
-            int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
-            int status = cursor.getInt(columnIndex);
-            Log.i(TAG, status + " cursor status");
-            if (status == DownloadManager.STATUS_SUCCESSFUL) {
-                return true;
+        query.setFilterById(did);
+        //Log.i(TAG, "download ID " + did + " surah-" + sid);
+        if (did > 0) {
+            Cursor cursor = downloadManager.query(query);
+            //Log.i(TAG, cursor.getCount() + " cursor count " + did);
+            if (cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
+                int status = cursor.getInt(columnIndex);
+                //Log.i(TAG, status + " cursor status");
+                if (status == DownloadManager.STATUS_RUNNING || status == DownloadManager.STATUS_PAUSED || status == DownloadManager.STATUS_PENDING) {
+                    return true;
+                }
             }
         }
+
         return false;
     }
     void setTitles(List<ChapterTitleTable> titles){

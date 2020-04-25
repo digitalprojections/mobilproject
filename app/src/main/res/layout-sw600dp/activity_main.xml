@@ -31,7 +31,7 @@
                 android:contentDescription="@string/app_logo_description"
                 android:src="@drawable/ic_asset_32furqon_logo" />
 
-            <include layout="@layout/suralar_button" />
+            <include layout="@layout/chapter_button" />
 
             <include layout="@layout/continue_button" />
 

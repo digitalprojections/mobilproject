@@ -33,7 +33,7 @@
                 app:srcCompat="@drawable/ic_asset_32furqon_logo" />
 
             <include
-                layout="@layout/suralar_button"
+                layout="@layout/chapter_button"
                 android:layout_weight="1" />
 
             <include
