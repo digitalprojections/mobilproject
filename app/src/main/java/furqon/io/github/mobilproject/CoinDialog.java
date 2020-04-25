@@ -37,16 +37,18 @@ public class CoinDialog extends AppCompatDialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.multiple_choice_for_use_coin_dialog, null);
         builder.setView(view);
-        builder.setPositiveButton(R.string.use_coins, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        if (available_coins >= ayah_unlock_cost) {
+            builder.setPositiveButton(R.string.use_coins, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
 
-//                ManageCoins manageCoins = (ManageCoins) getActivity();
-//                manageCoins.UseCoins(ayah_unlock_cost);
-                            MyListener usecoins = (MyListener) getActivity();
-                            usecoins.MarkAsAwarded(0);
-            }
-        });
+                    ManageCoins manageCoins = (ManageCoins) getActivity();
+                    manageCoins.UseCoins(ayah_unlock_cost);
+                    //MyListener usecoins = (MyListener) getActivity();
+                    //usecoins.MarkAsAwarded();
+                }
+            });
+        }
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {

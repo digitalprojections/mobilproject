@@ -3,7 +3,6 @@ package furqon.io.github.mobilproject;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
@@ -32,7 +31,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -40,7 +38,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
@@ -56,7 +53,6 @@ import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
@@ -74,14 +70,12 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import furqon.io.github.mobilproject.Services.OnClearFromService;
-import io.fabric.sdk.android.services.common.Crash;
 
 import static furqon.io.github.mobilproject.BuildConfig.*;
 
@@ -301,6 +295,11 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                         public void onClick(View view) {
 
                             DeleteTheTrack(trackList.get(position).getName());
+                            ChapterTitleTable ctitle = mAdapter.getTitleAt(position);
+                            if (ctitle.status.equals("2")) {
+                                ctitle.status = "";
+                                titleViewModel.update(ctitle);
+                            }
                             PopulateTrackList();
                             mAdapter.notifyDataSetChanged();
                             //recyclerView.scrollToPosition(position);
@@ -573,6 +572,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                         }
                     }
                 }
+
                 mAdapter.setTitles(trackList);
                 recyclerView.setAdapter(mAdapter);
             } else {
@@ -643,10 +643,12 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 mAdapter.setTitles(trackList);
                 recyclerView.setAdapter(mAdapter);
             }
+            //mAdapter.notifyDataSetChanged();
         }else {
             //Wrong path selected
             //current_track_tv.setText(R.string.tracklist_empty_warning);
         }
+
     }
 
     private void DeleteTheFile(File file) {
@@ -683,7 +685,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
     private void LoadTheList() {
         //TODO send language number as found in the database
-        titleViewModel.getAllTitlesByLanguage(languageNo(language)).observe(this, new Observer<List<ChapterTitleTable>>() {
+        titleViewModel.getAllTitles().observe(this, new Observer<List<ChapterTitleTable>>() {
             @Override
             public void onChanged(@Nullable List<ChapterTitleTable> surahTitles) {
                 if (surahTitles.size() != 114) {
@@ -826,6 +828,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
     }
 
+
     private boolean TrackDownloaded(String v) {
 
         boolean retval = false;
@@ -850,14 +853,12 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 //        }
 
     private void setAyahCost() {
-        int ayah_number = Integer.parseInt(suraNumber);
-        if (status == 0 && ayah_number > 0) {
+        Log.i(TAG, suraNumber + " suraNumber");
+        if (suraNumber != null) {
+            int ayah_number = Integer.parseInt(suraNumber);
+
             ayah_unlock_cost = QuranMap.AYAHCOUNT[ayah_number - 1];
-        } else {
-            if (status == 0)
-                ayah_unlock_cost = 10;//default
-            else
-                ayah_unlock_cost = 0; //no need
+
         }
         available_coins = mSharedPref.read(mSharedPref.COINS, 0);
     }
@@ -941,6 +942,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
     @Override
     public void DownloadThis(String suraNumber) {
+        this.suraNumber = suraNumber;
 
         if (WritePermission()) {
 
@@ -988,7 +990,10 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 mSharedPref.write("download_" + downloadId, suraNumber); //storing the download id under the right sura reference. We can use the id later to check for download status
                 mSharedPref.write("downloading_surah_" + suraNumber, (int) downloadId);
 
-                //MarkAsDownloading(Integer.parseInt(suranomer));
+                //MarkAsDownloading(Integer.parseInt(suraNumber));
+                //UseCoins(QuranMap.AYAHCOUNT[Integer.parseInt(suraNumber)]);
+                mAdapter.notifyDataSetChanged();
+
 
                 query.setFilterById(DownloadManager.STATUS_FAILED | DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING | DownloadManager.STATUS_SUCCESSFUL);
                 Cursor cursor = downloadManager.query(query);
@@ -1175,8 +1180,13 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
     @Override
     public void UseCoins(int val) {
-
-        Log.d("AYAHLIST:", "usecoins " + val);
+        int available_coins = mSharedPref.read(mSharedPref.COINS, 0);
+        int newtotal;
+        newtotal = available_coins - val;
+        mSharedPref.write(mSharedPref.COINS, newtotal);
+        updateUI();
+        Log.d("AYAHLIST:", "usecoins/left " + val + "/" + newtotal);
+        MarkAsAwarded(Integer.parseInt(suraNumber));
     }
 
     @Override
@@ -1186,12 +1196,15 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         startActivity(intent);
     }
 
-    private void ShowCoinAlert() {
-        //SetCoinValues();
-        //setAyahCost();
+    @Override
+    public void ShowCoinAlert(String s) {
+        suraNumber = s;
+        SetCoinValues();
+        setAyahCost();
         available_coins = mSharedPref.read(mSharedPref.COINS, 0);
         CoinDialog coinDialog = new CoinDialog(ayah_unlock_cost, available_coins);
         coinDialog.show(getSupportFragmentManager(), "TAG");
+        Log.e(TAG, "showing dialog");
 
 //        Button use_coins_btn = findViewById(R.id.use_coin_btn);
 //        Button earn_coins_btn = findViewById(R.id.use_coin_btn);
@@ -1309,11 +1322,20 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 //            Intent intent = new Intent(this, AudioService.class);
 //        }
 //    }
+
     public void pause() {
         if (isPlaying) {
             SharedPreferences.getInstance().write(suranomi, mediaPlayer.getCurrentPosition());
             isPlaying = false;
             stop();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -1474,7 +1496,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 media_player_ll.setVisibility(View.GONE);
                 mp_seekBar.setVisibility(View.GONE);
                 if (mSharedPref.read(mSharedPref.COINS, 0) > 0) {
-                    current_track_tv.setText(getResources().getText(R.string.coins) + ": " + mSharedPref.read(mSharedPref.COINS, 0));
+                    updateUI();
                 }
 
                 LoadTheList();
@@ -1512,6 +1534,10 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 break;
         }
 
+    }
+
+    private void updateUI() {
+        current_track_tv.setText(getResources().getText(R.string.coins) + ": " + mSharedPref.read(mSharedPref.COINS, 0));
     }
 
     @Override

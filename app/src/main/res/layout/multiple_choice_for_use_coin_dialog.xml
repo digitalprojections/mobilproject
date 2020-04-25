@@ -19,7 +19,7 @@
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="coins"
+                android:text="@string/required_coins"
                 android:textAlignment="center"
                 android:textColor="@color/colorPrimaryDark" />
 

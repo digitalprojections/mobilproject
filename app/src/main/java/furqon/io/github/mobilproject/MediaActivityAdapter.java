@@ -27,18 +27,20 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
     private ArrayList<Track> trackList;
     private List<ChapterTitleTable> mTitles = new ArrayList<>(); // Cached copy of titles
     private boolean download_view;
-    private RewardAd mRewardedVideoAd;
+    //private RewardAd mRewardedVideoAd;
     private TextView pl_title;
 
 
     private boolean videoAdLoaded;
     Context mContext;
-
+    private int ayah_unlock_cost = 0;
+    SharedPreferences sharedPreferences;
 
     MediaActivityAdapter(Context mediaActivity) {
         //LayoutInflater mInflater = LayoutInflater.from(mediaActivity);
         mContext = mediaActivity;
-        mRewardedVideoAd = new RewardAd(mContext);
+        //mRewardedVideoAd = new RewardAd(mContext);
+        sharedPreferences = SharedPreferences.getInstance();
     }
 
     @NonNull
@@ -104,7 +106,9 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
 //                    holder.downloadButton.setTag(2);
 //                    holder.progressBar.setVisibility(View.INVISIBLE);
 //                    holder.downloadButton.setVisibility(View.VISIBLE);
-                    if (videoAdLoaded) {
+                    ayah_unlock_cost = QuranMap.AYAHCOUNT[Integer.parseInt(pl_title.getText().toString()) - 1];
+
+                    if (sharedPreferences.read(sharedPreferences.COINS, 0) >= ayah_unlock_cost) {
                         holder.downloadButton.setImageResource(R.drawable.ic_unlock);
                         holder.downloadButton.setFocusable(true);
                         holder.downloadButton.setTag(1);
@@ -113,7 +117,7 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
                     } else {
                         holder.downloadButton.setImageResource(R.drawable.ic_lock_24dp);
                         holder.downloadButton.setFocusable(true);
-                        holder.downloadButton.setTag(6);
+                        holder.downloadButton.setTag(1);
                         holder.downloadButton.setVisibility(View.VISIBLE);
                         holder.progressBar.setVisibility(View.INVISIBLE);
                     }
@@ -256,18 +260,28 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
 
             int position = this.getAdapterPosition();
 
-            mRewardedVideoAd.SHOW(pl_title.getText().toString());
+            //mRewardedVideoAd.SHOW(pl_title.getText().toString());
 
         }
         @Override
         public void onClick(View v) {
+            ManageCoins manageCoins;
             if (download_view) {
                 switch (downloadButton.getTag().toString()) {
-                    case "1"://red arrow
-                        ShowRewardAdForThisItem(v);
+                    case "1"://red lock
+//                        ayah_unlock_cost = QuranMap.AYAHCOUNT[Integer.parseInt(pl_title.getText().toString())];
+//                        SharedPreferences sharedPreferences = SharedPreferences.getInstance();
+//                        if(sharedPreferences.read(sharedPreferences.COINS, 0) >= ayah_unlock_cost){
+                        manageCoins = (ManageCoins) mContext;
+                        manageCoins.ShowCoinAlert(pl_title.getText().toString());
+//                        }
+                        //ShowRewardAdForThisItem(v);
                         break;
                     case "2"://green arrow
+                        //manageCoins = (ManageCoins) mContext;
+                        //manageCoins.UseCoins(QuranMap.AYAHCOUNT[Integer.parseInt(pl_title.getText().toString())]);
                         StartDownload(v, pl_title.getText().toString());
+
                         break;
                 }
 
@@ -290,6 +304,7 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
                 MyListener myListener;
                 myListener = (MyListener) mContext;
                 myListener.DownloadThis(snumber);
+
                 //myListener.MarkAsDownloading(Integer.parseInt(snumber));
                 //getTitleAt(Integer.parseInt(snumber)-1).;
                 progressBar.setVisibility(View.VISIBLE);

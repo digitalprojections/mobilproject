@@ -1,7 +1,11 @@
 package furqon.io.github.mobilproject;
 
 public interface ManageCoins {
-    public void SetCoinValues();
-    public void UseCoins(int val);
-    public void EarnCoins();
+    void SetCoinValues();
+
+    void UseCoins(int val);
+
+    void EarnCoins();
+
+    void ShowCoinAlert(String s);
 }
