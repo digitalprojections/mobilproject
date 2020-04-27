@@ -324,11 +324,13 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     }
 
 
-
     private void playTheFileIfExists(String play_item_number) {
-        suraNumber = play_item_number;
 
-        play();
+        if (play_item_number != null) {
+            suraNumber = play_item_number;
+            play();
+        }
+
     }
 
     @Override
@@ -1122,19 +1124,21 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     public void MarkAsDownloaded(int surah_id) {
         if (mAdapter != null) {
             int actual_position = surah_id;
-            for (int i = 0; i < mAdapter.getItemCount(); i++) {
-                try {
-                    if (mAdapter.getTitleAt(i).chapter_id == surah_id) {
-                        actual_position = i;
+            if (mAdapter.getItemCount() > 0) {
+                for (int i = 0; i < mAdapter.getItemCount(); i++) {
+                    try {
+                        if (mAdapter.getTitleAt(i).chapter_id == surah_id) {
+                            actual_position = i;
+                        }
+                    } catch (IndexOutOfBoundsException x) {
+                        Crashlytics.log(x.getMessage() + " - " + x.getStackTrace());
                     }
-                } catch (IndexOutOfBoundsException x) {
-                    Crashlytics.log(x.getMessage() + " - " + x.getStackTrace());
                 }
-            }
-            ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
-            if (!ctitle.status.equals("3")) {
-                ctitle.status = "3";
-                titleViewModel.update(ctitle);
+                ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
+                if (!ctitle.status.equals("3")) {
+                    ctitle.status = "3";
+                    titleViewModel.update(ctitle);
+                }
             }
         }
     }
@@ -1337,6 +1341,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
         }
+        updateUI();
     }
 
     public void stop() {

@@ -106,7 +106,11 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
 //                    holder.downloadButton.setTag(2);
 //                    holder.progressBar.setVisibility(View.INVISIBLE);
 //                    holder.downloadButton.setVisibility(View.VISIBLE);
-                    ayah_unlock_cost = QuranMap.AYAHCOUNT[Integer.parseInt(pl_title.getText().toString()) - 1];
+                    try {
+                        ayah_unlock_cost = QuranMap.AYAHCOUNT[Integer.parseInt(pl_title.getText().toString()) - 1];
+                    } catch (NumberFormatException x) {
+                        ayah_unlock_cost = 0;
+                    }
 
                     if (sharedPreferences.read(sharedPreferences.COINS, 0) >= ayah_unlock_cost) {
                         holder.downloadButton.setImageResource(R.drawable.ic_unlock);

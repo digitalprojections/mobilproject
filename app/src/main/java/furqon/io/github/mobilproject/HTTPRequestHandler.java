@@ -9,6 +9,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HTTPRequestHandler {
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private Context mContext;
     private RequestQueue queue;
     private ArrayList<JSONObject> jsonArrayResponse;
@@ -28,7 +31,11 @@ public class HTTPRequestHandler {
     public HTTPRequestHandler(Context context, TitleViewModel titleViewModel){
         mContext = context;
         tvm = titleViewModel;
-
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setMinimumFetchIntervalInSeconds(3600)
+                .build();
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
     }
 
     public void httpRequest() {
