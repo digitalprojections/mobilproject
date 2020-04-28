@@ -175,9 +175,9 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
         try{
             return mTitles.get(position);
         }catch (IndexOutOfBoundsException iobx){
-            throw new IndexOutOfBoundsException();
+            //throw new IndexOutOfBoundsException();
+            return null;
         }
-
     }
 
     private String prependZero(String s) {

@@ -15,18 +15,28 @@ import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private ChapterTitleDatabase database;
-
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private static final String TAG = "FIREBASE Messages";
     private SharedPreferences sharedPref;
 
     public MyFirebaseMessagingService() {
         sharedPref = SharedPreferences.getInstance();
         //Log.e("MyFirebaseMessage", "initiated");
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
 
+
+        mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
+
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setMinimumFetchIntervalInSeconds(3600)
+                .build();
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
     }
 
     @Override
@@ -129,13 +139,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     }
     private void sendNotification(String messageBody) {
-
-
-
         Intent intent = new Intent(this, MessageList.class);
-        int pr = sharedPref.read(sharedPref.PERSONAL_REWARD, 50);
-        intent.putExtra("personalReward", pr);
 
+        int pr = 50;
+        if (mFirebaseRemoteConfig != null) {
+            pr = (int) mFirebaseRemoteConfig.getLong("personal_reward");
+        }
+        intent.putExtra("personalReward", pr);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);

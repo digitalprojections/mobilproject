@@ -296,7 +296,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
                             DeleteTheTrack(trackList.get(position).getName());
                             ChapterTitleTable ctitle = mAdapter.getTitleAt(position);
-                            if (ctitle.status.equals("2")) {
+                            if (ctitle != null && ctitle.status.equals("2")) {
                                 ctitle.status = "";
                                 titleViewModel.update(ctitle);
                             }
@@ -1091,7 +1091,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             int actual_position = surah_id;
             for (int i = 0; i < mAdapter.getItemCount(); i++) {
                 try {
-                    if (mAdapter.getTitleAt(i).chapter_id == surah_id) {
+                    if (mAdapter.getTitleAt(i) != null && mAdapter.getTitleAt(i).chapter_id == surah_id) {
                         actual_position = i;
                     }
                 } catch (IndexOutOfBoundsException iobx) {
@@ -1099,7 +1099,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 }
             }
             ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
-            if (!ctitle.status.equals("4")) {
+            if (ctitle != null && !ctitle.status.equals("4")) {
                 ctitle.status = "4";
                 titleViewModel.update(ctitle);
             }
@@ -1110,14 +1110,16 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     public void MarkAsAwarded(int surah_id) {
         int actual_position = surah_id;
         for (int i = 0; i < mAdapter.getItemCount(); i++) {
-            if (mAdapter.getTitleAt(i).chapter_id == surah_id) {
+            if (mAdapter.getTitleAt(i) != null && mAdapter.getTitleAt(i).chapter_id == surah_id) {
                 actual_position = i;
             }
         }
         Log.e(TAG, "ACTUAL SURAH ID?" + surah_id + " " + actual_position);
         ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
-        ctitle.status = "2";
-        titleViewModel.update(ctitle);
+        if (ctitle != null) {
+            ctitle.status = "2";
+            titleViewModel.update(ctitle);
+        }
     }
 
     @Override
@@ -1127,7 +1129,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             if (mAdapter.getItemCount() > 0) {
                 for (int i = 0; i < mAdapter.getItemCount(); i++) {
                     try {
-                        if (mAdapter.getTitleAt(i).chapter_id == surah_id) {
+                        if (mAdapter.getTitleAt(i) != null && mAdapter.getTitleAt(i).chapter_id == surah_id) {
                             actual_position = i;
                         }
                     } catch (IndexOutOfBoundsException x) {
@@ -1135,7 +1137,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                     }
                 }
                 ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
-                if (!ctitle.status.equals("3")) {
+                if (ctitle != null && !ctitle.status.equals("3")) {
                     ctitle.status = "3";
                     titleViewModel.update(ctitle);
                 }

@@ -141,6 +141,8 @@ public class LoginActivity extends AppCompatActivity {
                             //sharedpref.getInstance().write(sharedpref.INITIAL_COINS, (int) mFirebaseRemoteConfig.getLong("initial_coins"));
                             //Log.d("COINS", mSharedPref.read(mSharedPref.INITIAL_COINS_USED, false) + " " + mSharedPref.read(mSharedPref.INITIAL_COINS, 0));
                         } else {
+                            mSharedPref.write(mSharedPref.SHAREWARD, (int) mFirebaseRemoteConfig.getLong("share_reward"));
+                            mSharedPref.write(mSharedPref.PERSONAL_REWARD, (int) mFirebaseRemoteConfig.getLong("personal_reward"));
                             Toast.makeText(LoginActivity.this, "Fetch failed",
                                     Toast.LENGTH_SHORT).show();
                         }
