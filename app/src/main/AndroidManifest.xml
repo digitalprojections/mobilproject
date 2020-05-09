@@ -53,16 +53,14 @@
         </activity>
         <activity
             android:name=".EarnCoinsActivity"
-            android:parentActivityName=".ExtraActivity" />
-        <activity
-            android:name=".ExtraActivity"
             android:parentActivityName=".MainActivity" />
+
         <activity
             android:name=".MessageView"
             android:parentActivityName=".MessageList" />
         <activity
             android:name=".MessageList"
-            android:parentActivityName=".ExtraActivity" />
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".ScrollingActivity"
             android:excludeFromRecents="true"
@@ -111,7 +109,7 @@
             android:parentActivityName=".SuraNameList" />
         <activity
             android:name=".Favourites"
-            android:parentActivityName=".ExtraActivity" />
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".SuraNameList"
             android:launchMode="singleTask"
@@ -119,7 +117,7 @@
         <activity android:name=".MainActivity" />
         <activity
             android:name=".Search"
-            android:parentActivityName=".ExtraActivity" />
+            android:parentActivityName=".MainActivity" />
         <activity android:name=".AyahOfTheDay" />
     </application>
 
