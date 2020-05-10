@@ -44,23 +44,21 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
         <ImageView
-            android:id="@+id/mp_favourite_btn"
+            android:id="@+id/mp_playmode_btn"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0"
             android:background="@drawable/custom_ripple"
             android:clickable="true"
-            android:contentDescription="@string/favourite_it"
+            android:contentDescription="@string/play"
             android:focusable="auto"
             android:padding="5dp"
-            app:srcCompat="@drawable/ic_favorite_border_black_24dp" />
-
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
+            app:srcCompat="@drawable/ic_playlist_play_black_24dp" />
         <Space
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

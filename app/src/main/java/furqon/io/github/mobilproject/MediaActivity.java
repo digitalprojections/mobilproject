@@ -54,6 +54,8 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
@@ -99,6 +101,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     private ArrayList<JSONObject> jsonArrayResponse;
 
 
+
     private Context context;
     String newpath;
     long downloadId;
@@ -107,6 +110,9 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     ImageView play_btn;
     ImageView previous_btn;
     ImageView next_btn;
+    ImageView playmode_btn;
+
+    String play_mode = "list";
 
 
     //TODO create LL vars
@@ -180,6 +186,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         play_btn = findViewById(R.id.mp_play_toggle);
         previous_btn = findViewById(R.id.mp_previous);
         next_btn = findViewById(R.id.mp_next);
+        playmode_btn = findViewById(R.id.mp_playmode_btn);
 
         current_track_tv = findViewById(R.id.mp_current_title_tv);
         //current_track_tv.setText("");
@@ -189,6 +196,11 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         play_btn.setOnClickListener(this);
         previous_btn.setOnClickListener(this);
         next_btn.setOnClickListener(this);
+        playmode_btn.setOnClickListener(this);
+
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        Log.i(TAG, currentUser.getEmail());
 
         media_player_ll = findViewById(R.id.mp_player_ll);
         special_actions_ll = findViewById(R.id.mp_actions_ll);
@@ -196,7 +208,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
         mSharedPref = SharedPreferences.getInstance();
         mSharedPref.init(getApplicationContext());
-
+        getPlayMode();
 
         //registerReceiver(broadcastReceiverAudio, new IntentFilter("TRACKS_TRACKS"));
 
@@ -266,6 +278,53 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             }
         });
 
+    }
+
+    private void getPlayMode() {
+        try {
+            play_mode = mSharedPref.read(SharedPreferences.PLAYMODE, "list");
+            Log.i(TAG, play_mode);
+        } catch (NullPointerException x) {
+            play_mode = "list";
+            Log.i(TAG, play_mode + x.getMessage());
+        }
+
+        switch (play_mode) {
+            case "list":
+                playmode_btn.setImageResource(R.drawable.ic_playlist_play_black_24dp);
+                break;
+            case "repeat":
+                playmode_btn.setImageResource(R.drawable.ic_repeat_one_black_24dp);
+                break;
+            case "all":
+                playmode_btn.setImageResource(R.drawable.ic_repeat_black_24dp);
+                break;
+            case "one":
+                playmode_btn.setImageResource(R.drawable.ic_looks_one_black_24dp);
+                break;
+        }
+    }
+
+    private void setPlayMode() {
+        switch (play_mode) {
+            case "list":
+                play_mode = "repeat";
+                playmode_btn.setImageResource(R.drawable.ic_repeat_one_black_24dp);
+                break;
+            case "repeat":
+                play_mode = "all";
+                playmode_btn.setImageResource(R.drawable.ic_repeat_black_24dp);
+                break;
+            case "all":
+                play_mode = "one";
+                playmode_btn.setImageResource(R.drawable.ic_looks_one_black_24dp);
+                break;
+            case "one":
+                play_mode = "list";
+                playmode_btn.setImageResource(R.drawable.ic_playlist_play_black_24dp);
+                break;
+        }
+        mSharedPref.write(SharedPreferences.PLAYMODE, play_mode);
     }
 
     private void setSwipeControls() {
@@ -367,7 +426,12 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                         Log.e(TAG, suraNumber + " - next suranumber");
                         break;
                     }catch (IndexOutOfBoundsException x){
-                        suraNumber=null;
+                        if (play_mode.equals("all")) {
+                            //go to the first file
+                            suraNumber = String.valueOf(Integer.parseInt(trackList.get(0).getName()));
+                        } else {
+                            suraNumber = null;
+                        }
                         Crashlytics.log(x.getMessage() + " - " + Arrays.toString(x.getStackTrace()));
                     }
                 }
@@ -546,8 +610,17 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                     handler.removeCallbacks(runnable);
                     SharedPreferences.getInstance().write(suranomi, 0);
                     stop();
-                    nextTrack();
-                    play();
+                    if (play_mode.equals("list") || play_mode.equals("all")) {
+                        nextTrack();
+                        play();
+                    } else if (play_mode.equals("repeat")) {
+                        //playmode repeat one
+                        play();
+                    } else {
+                        // playmode a single file
+                        //stop
+                    }
+
                 }
             } catch (IllegalStateException x) {
                 isPlaying = false;
@@ -987,24 +1060,36 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                             .setAllowedOverRoaming(true);
                 }
 
-                Log.i("PERMISSION OK", "Download start " + suraNumber);
-                downloadId = downloadManager.enqueue(request);
-                mSharedPref.write("download_" + downloadId, suraNumber); //storing the download id under the right sura reference. We can use the id later to check for download status
-                mSharedPref.write("downloading_surah_" + suraNumber, (int) downloadId);
-
-                //MarkAsDownloading(Integer.parseInt(suraNumber));
-                //UseCoins(QuranMap.AYAHCOUNT[Integer.parseInt(suraNumber)]);
-                mAdapter.notifyDataSetChanged();
+                if (mSharedPref.read(SharedPreferences.SIGNATURE, "ERROR").equals("OK")) {
+                    if (isNetworkAvailable()) {
 
 
-                query.setFilterById(DownloadManager.STATUS_FAILED | DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING | DownloadManager.STATUS_SUCCESSFUL);
-                Cursor cursor = downloadManager.query(query);
-                if (cursor != null) {
-                    for (int i = 0; i < cursor.getCount(); i++) {
-                        Log.i(TAG, cursor.getInt(i) + " download ");
-                        cursor.moveToNext();
+                        //query.setFilterById(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING);
+                        Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterByStatus(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING));
+                        cursor.moveToFirst();
+                        if (cursor != null && cursor.getCount() >= 1) {
+//                            for (int i = 0; i < cursor.getCount(); i++) {
+//                                Log.i(TAG, cursor.getInt(i) + " download ");
+//                                cursor.moveToNext();
+//                            }
+                            Toast.makeText(getApplicationContext(), "Please, wait", Toast.LENGTH_SHORT).show();
+                            mAdapter.notifyDataSetChanged();
+                        } else {
+                            Log.i(TAG, cursor.getCount() + " downloads ");
+                            //No downloads running. allow download
+                            Log.i("PERMISSION OK", "Download start " + suraNumber);
+                            downloadId = downloadManager.enqueue(request);
+                            mSharedPref.write("download_" + downloadId, suraNumber); //storing the download id under the right sura reference. We can use the id later to check for download status
+                            mSharedPref.write("downloading_surah_" + suraNumber, (int) downloadId);
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    } else {
+                        Log.i(TAG, "NO NETWORK");
                     }
+                } else {
+                    Log.i(TAG, "NO SIGNATURE");
                 }
+
             }  //path is incomplete
 
         } else {
@@ -1539,12 +1624,15 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 }
                 OnTrackPlay();
                 break;
+            case R.id.mp_playmode_btn:
+                setPlayMode();
+                break;
         }
 
     }
 
     private void updateUI() {
-        current_track_tv.setText(getResources().getText(R.string.coins) + ": " + mSharedPref.read(mSharedPref.COINS, 0));
+        //current_track_tv.setText(getResources().getText(R.string.coins) + ": " + mSharedPref.read(mSharedPref.COINS, 0));
     }
 
     @Override

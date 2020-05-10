@@ -91,40 +91,34 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
                         holder.downloadButton.setTag(5);
                         holder.progressBar.setVisibility(View.VISIBLE);
                     }
+                } else if (itemDownloading(current.chapter_id)) {
+                    //downloading
+                    Log.i(TAG, " DOWNLOADING, " + current.chapter_id + " " + current.uzbek);
+                    holder.downloadButton.setTag(5);
+                    holder.progressBar.setVisibility(View.VISIBLE);
+                    holder.downloadButton.setVisibility(View.GONE);
                 }
-
-//            else if(itemDownloading(current.chapter_id)){
-//                //downloading
-//                Log.i(TAG, " DOWNLOADING, " + current.chapter_id + " " + current.uzbek);
-//                holder.downloadButton.setTag(5);
-//                holder.progressBar.setVisibility(View.VISIBLE);
-//                holder.downloadButton.setVisibility(View.GONE);
-//            }
                 else {
-//                    holder.downloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
-//                    holder.downloadButton.setFocusable(true);
-//                    holder.downloadButton.setTag(2);
-//                    holder.progressBar.setVisibility(View.INVISIBLE);
-//                    holder.downloadButton.setVisibility(View.VISIBLE);
-                    try {
-                        ayah_unlock_cost = QuranMap.AYAHCOUNT[Integer.parseInt(pl_title.getText().toString()) - 1];
-                    } catch (NumberFormatException x) {
-                        ayah_unlock_cost = 0;
-                    }
+                    holder.downloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
+                        holder.downloadButton.setFocusable(true);
+                    holder.downloadButton.setTag(2);
+                        holder.progressBar.setVisibility(View.INVISIBLE);
+                        holder.downloadButton.setVisibility(View.VISIBLE);
 
-                    if (sharedPreferences.read(sharedPreferences.COINS, 0) >= ayah_unlock_cost) {
-                        holder.downloadButton.setImageResource(R.drawable.ic_unlock);
-                        holder.downloadButton.setFocusable(true);
-                        holder.downloadButton.setTag(1);
-                        holder.downloadButton.setVisibility(View.VISIBLE);
-                        holder.progressBar.setVisibility(View.INVISIBLE);
-                    } else {
-                        holder.downloadButton.setImageResource(R.drawable.ic_lock_24dp);
-                        holder.downloadButton.setFocusable(true);
-                        holder.downloadButton.setTag(1);
-                        holder.downloadButton.setVisibility(View.VISIBLE);
-                        holder.progressBar.setVisibility(View.INVISIBLE);
-                    }
+
+//                    if (sharedPreferences.read(sharedPreferences.COINS, 0) >= ayah_unlock_cost) {
+//                        holder.downloadButton.setImageResource(R.drawable.ic_unlock);
+//                        holder.downloadButton.setFocusable(true);
+//                        holder.downloadButton.setTag(1);
+//                        holder.downloadButton.setVisibility(View.VISIBLE);
+//                        holder.progressBar.setVisibility(View.INVISIBLE);
+//                    } else {
+//                        holder.downloadButton.setImageResource(R.drawable.ic_lock_24dp);
+//                        holder.downloadButton.setFocusable(true);
+//                        holder.downloadButton.setTag(1);
+//                        holder.downloadButton.setVisibility(View.VISIBLE);
+//                        holder.progressBar.setVisibility(View.INVISIBLE);
+//                    }
 
                 }
             }

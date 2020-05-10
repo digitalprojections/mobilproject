@@ -3,9 +3,15 @@ package furqon.io.github.mobilproject;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +30,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInApi;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -44,6 +51,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,11 +60,14 @@ import io.fabric.sdk.android.Fabric;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private static final String TAG = "LOGIN ACTIVITY";
+    static final String TAG = "LOGIN ACTIVITY";
     TextView welcome_txt;
+    TextView username_txt;
     Button start_btn;
-    private String token;
-    private FirebaseAuth mAuth;
+    SignInButton google_btn;
+    Button privacy_btn;
+    String token;
+    FirebaseAuth mAuth;
     FirebaseUser currentUser;
 
     private static final int VALID = 0;
@@ -100,7 +111,9 @@ public class LoginActivity extends AppCompatActivity {
         // [END config_signin]
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
+
+        google_btn = findViewById(R.id.sign_in_button);
+        google_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent signInIntent = mGoogleSignInClient.getSignInIntent();
@@ -123,19 +136,13 @@ public class LoginActivity extends AppCompatActivity {
         }
 
 
-        updateUI(currentUser);
-        if (mSharedPref.isFirstRun()) {
-            Intent intent = new Intent(this, ScrollingActivity.class);
-            startActivity(intent);
 
-        } else {
-
-            CheckInviterThanked();
-        }
         //UI
         //===============================================
         welcome_txt = findViewById(R.id.welcome_textView);
         welcome_txt.setText(R.string.welcome_title);
+        username_txt = findViewById(R.id.username_textView);
+        username_txt.setText("");
 
         start_btn = findViewById(R.id.start_app_button);
         start_btn.setOnClickListener(new View.OnClickListener() {
@@ -150,6 +157,25 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
+        privacy_btn = findViewById(R.id.privacy_policy_btn);
+        privacy_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                Intent intent = new Intent(getApplicationContext(),
+                        PrivacyPolicyActivity.class);
+                startActivity(intent);
+            }
+        });
+        updateUI(currentUser);
+        if (mSharedPref.isFirstRun()) {
+            Intent intent = new Intent(this, ScrollingActivity.class);
+            startActivity(intent);
+
+        } else {
+
+            CheckInviterThanked();
+        }
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -181,6 +207,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
+                            mSharedPref.write(SharedPreferences.GOOGLE, true);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -275,8 +302,11 @@ public class LoginActivity extends AppCompatActivity {
         if (isSignedIn) {
             Log.i(TAG, "SIGNED IN. FIREBASE AUTH " + currentUser.getUid());
             sendRegistrationToServer();
-            //findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-            //checkAppSignature(this);
+            checkAppSignature(this);
+            if (mSharedPref.read(SharedPreferences.GOOGLE, false)) {
+                google_btn.setVisibility(View.GONE);
+                username_txt.setText(currentUser.getEmail());
+            }
         } else {
             signInAnonymously();
         }
@@ -422,49 +452,89 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    //    private int checkAppSignature(Context context) {
-//        try {
-//
-//            PackageInfo packageInfo;
-//            packageInfo = context.getPackageManager()
-//
-//                    .getPackageInfo(context.getPackageName(),
-//
-//                            PackageManager.GET_SIGNATURES);
-//
-//
-//            for (Signature signature : packageInfo.signatures) {
-//
-//                byte[] signatureBytes = signature.toByteArray();
-//
-//                MessageDigest md = MessageDigest.getInstance("SHA");
-//
-//                md.update(signature.toByteArray());
-//
-//
-//                currentSignature = Base64.encodeToString(md.digest(), Base64.DEFAULT);
-//                String model = Build.MODEL;
-//                String manufacturer = Build.MANUFACTURER;
-//                String bootloader = Build.BOOTLOADER;
-//
-//
-//                //checkSignatureOnServer(currentSignature);
-//                //Log.d("REMOVE_ME", "Include this string as a value for SIGNATURE:" + currentSignature + model + manufacturer + bootloader);
-//
-//                //compare signatures
-//
-//            }
-//
-//        } catch (Exception e) {
-//            Crashlytics.log(Log.ERROR, TAG, e.getStackTrace().toString());
-//
-////assumes an issue in checking signature., but we let the caller decide on what to do.
-//
-//        }
-//        sendRegistrationToServer();
-//        return INVALID;
-//
-//    }
+    private int checkAppSignature(Context context) {
+        try {
+
+            PackageInfo packageInfo;
+            packageInfo = context.getPackageManager()
+
+                    .getPackageInfo(context.getPackageName(),
+
+                            PackageManager.GET_SIGNATURES);
+
+
+            for (Signature signature : packageInfo.signatures) {
+
+                byte[] signatureBytes = signature.toByteArray();
+
+                MessageDigest md = MessageDigest.getInstance("SHA");
+
+                md.update(signature.toByteArray());
+
+
+                currentSignature = Base64.encodeToString(md.digest(), Base64.DEFAULT);
+                String model = Build.MODEL;
+                String manufacturer = Build.MANUFACTURER;
+                String bootloader = Build.BOOTLOADER;
+
+
+                checkSignatureOnServer(currentSignature);
+                //Log.d("REMOVE_ME", "Include this string as a value for SIGNATURE:" + currentSignature + model + manufacturer + bootloader);
+
+                //compare signatures
+
+            }
+
+        } catch (Exception e) {
+            Crashlytics.log(Log.ERROR, TAG, e.getStackTrace().toString());
+
+//assumes an issue in checking signature., but we let the caller decide on what to do.
+
+        }
+        sendRegistrationToServer();
+        return INVALID;
+
+    }
+
+    private void checkSignatureOnServer(final String currentSignature) {
+
+        queue = Volley.newRequestQueue(this);
+        String url = mFirebaseRemoteConfig.getString("server_link") + "/apijson.php";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //Log.i("APP SIGNATURE STORED?", response);
+                        if (response.contains("OK")) {
+                            Log.i(TAG, "signature " + response);
+                            mSharedPref.write(SharedPreferences.SIGNATURE, response);
+                        } else {
+                            Log.i(TAG, "signature failed " + response);
+                            //failed, save for future
+                            Toast.makeText(getApplicationContext(), "Illegal access", Toast.LENGTH_SHORT).show();
+                            mSharedPref.write(SharedPreferences.SIGNATURE, response);
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i(TAG, "Signature send fail " + error.toString());
+                Crashlytics.log(Log.ERROR, TAG, error.toString());
+            }
+        }) {
+            protected Map<String, String> getParams() {
+                Map<String, String> MyData = new HashMap<>();
+                MyData.put("action", "check_signature"); //Add the data you'd like to send to the server.
+                MyData.put("app_signature", currentSignature); //Add the data you'd like to send to the server.
+                return MyData;
+            }
+
+        };
+        queue.add(stringRequest);
+    }
+
     private void sendConfirmationToServer(final String inviter_id) {
         //TODO send the token to  database.
         //Add to the user account token, app id, device id

@@ -18,11 +18,13 @@
         android:roundIcon="@mipmap/ic_launcher2_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AboutActivity"
-            android:parentActivityName=".MainActivity"/>
-
+        <activity
+            android:name=".PrivacyPolicyActivity"
+            android:parentActivityName=".LoginActivity" />
+        <activity
+            android:name=".AboutActivity"
+            android:parentActivityName=".MainActivity" />
         <activity android:name=".CommunicationActivity" />
-
         <activity android:name=".MediaActivity" />
 
         <service
@@ -54,7 +56,6 @@
         <activity
             android:name=".EarnCoinsActivity"
             android:parentActivityName=".MainActivity" />
-
         <activity
             android:name=".MessageView"
             android:parentActivityName=".MessageList" />
