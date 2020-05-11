@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,8 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
     private List<ChapterTitleTable> mTitles = new ArrayList<>(); // Cached copy of titles
     private boolean download_view;
     //private RewardAd mRewardedVideoAd;
-    private TextView pl_title;
+    //private TextView pl_title;
+    private TextView pl_percent;
 
 
     private boolean videoAdLoaded;
@@ -48,7 +50,8 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
     public PlayListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.playlist_item, parent, false);
-        pl_title = view.findViewById(R.id.pl_title);
+        //pl_title = view.findViewById(R.id.pl_title);
+        //pl_percent = view.findViewById(R.id.percent_textView);
         return new PlayListViewHolder(view);
     }
 
@@ -66,6 +69,7 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
             holder.pl_time.setVisibility(View.GONE);
             holder.pl_title.setText(String.valueOf(numb));
             holder.down_cont.setVisibility(View.VISIBLE);
+            holder.pl_percent.setVisibility(View.GONE);
 
             if (TrackDownloaded(current.chapter_id + "")) {
                 //set by the actually available audio files
@@ -74,6 +78,7 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
                 holder.downloadButton.setFocusable(false);
                 holder.downloadButton.setTag(3);
                 holder.progressBar.setVisibility(View.INVISIBLE);
+                holder.pl_percent.setVisibility(View.GONE);
                 holder.downloadButton.setVisibility(View.VISIBLE);
 
             } else {
@@ -83,19 +88,22 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
                     holder.downloadButton.setFocusable(true);
                     holder.downloadButton.setTag(2);
                     holder.progressBar.setVisibility(View.INVISIBLE);
+                    holder.pl_percent.setVisibility(View.GONE);
                     holder.downloadButton.setVisibility(View.VISIBLE);
-                    if (itemDownloading(current.chapter_id)) {
+                    if (itemDownloading(current.chapter_id, holder.pl_percent)) {
                         //DOWNLOADING
                         holder.downloadButton.setVisibility(View.GONE);
                         holder.downloadButton.setFocusable(false);
                         holder.downloadButton.setTag(5);
                         holder.progressBar.setVisibility(View.VISIBLE);
+                        holder.pl_percent.setVisibility(View.VISIBLE);
                     }
-                } else if (itemDownloading(current.chapter_id)) {
+                } else if (itemDownloading(current.chapter_id, holder.pl_percent)) {
                     //downloading
                     Log.i(TAG, " DOWNLOADING, " + current.chapter_id + " " + current.uzbek);
                     holder.downloadButton.setTag(5);
                     holder.progressBar.setVisibility(View.VISIBLE);
+                    holder.pl_percent.setVisibility(View.VISIBLE);
                     holder.downloadButton.setVisibility(View.GONE);
                 }
                 else {
@@ -103,6 +111,7 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
                         holder.downloadButton.setFocusable(true);
                     holder.downloadButton.setTag(2);
                         holder.progressBar.setVisibility(View.INVISIBLE);
+                    holder.pl_percent.setVisibility(View.INVISIBLE);
                         holder.downloadButton.setVisibility(View.VISIBLE);
 
 
@@ -140,7 +149,8 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
     public void setVideoAdLoaded(boolean videoAdLoaded) {
         this.videoAdLoaded = videoAdLoaded;
     }
-    private boolean itemDownloading(int sid) {
+
+    private boolean itemDownloading(int sid, TextView tv) {
         DownloadManager downloadManager = (DownloadManager) mContext.getSystemService(mContext.DOWNLOAD_SERVICE);
         DownloadManager.Query query = new DownloadManager.Query();
         long did = (long) SharedPreferences.getInstance().read("downloading_surah_" + sid, 0);
@@ -152,6 +162,20 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
             if (cursor.moveToFirst()) {
                 int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
                 int status = cursor.getInt(columnIndex);
+
+                int sizeIndex = cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES);
+                int downloadedIndex = cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR);
+                long size = cursor.getInt(sizeIndex);
+                long downloaded = cursor.getInt(downloadedIndex);
+                double progress = 0.0;
+                if (size != -1) {
+                    progress = downloaded * 100.0 / size;
+
+
+                    // At this point you have the progress as a percentage.
+                    tv.setText(Math.floor(progress) + "%");
+                }
+
                 //Log.i(TAG, status + " cursor status");
                 if (status == DownloadManager.STATUS_RUNNING || status == DownloadManager.STATUS_PAUSED || status == DownloadManager.STATUS_PENDING) {
                     return true;
@@ -235,6 +259,7 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
         boolean download_view;
         private TextView pl_title;
         private TextView pl_time;
+        private TextView pl_percent;
         private TextView pl_description;
         ImageView downloadButton;
         ProgressBar progressBar;
@@ -245,6 +270,7 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
             super(playlistItem);
             pl_title = playlistItem.findViewById(R.id.pl_title);
             pl_time = playlistItem.findViewById(R.id.pl_time);
+            pl_percent = playlistItem.findViewById(R.id.percent_textView);
             pl_description = playlistItem.findViewById(R.id.pl_description);
             container = playlistItem.findViewById(R.id.pl_container);
             downloadButton = playlistItem.findViewById(R.id.button_download);

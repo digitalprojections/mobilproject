@@ -12,6 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.DownloadManager;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
@@ -27,6 +31,7 @@ import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -76,6 +81,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import furqon.io.github.mobilproject.Services.OnClearFromService;
 
@@ -121,7 +128,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     SeekBar mp_seekBar;
 
     TextView current_track_tv;
-    String suraNumber;
+    private String suraNumber2Play;
+    private String suraNumber2Download;
     public String suranomi;
     TextView cost_txt;
     TextView coins_txt;
@@ -152,7 +160,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     DownloadManager downloadManager;
     DownloadManager.Query query;
     private boolean download_attempted;
-
+    Timer myTimer = new Timer();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -209,6 +217,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         mSharedPref = SharedPreferences.getInstance();
         mSharedPref.init(getApplicationContext());
         getPlayMode();
+
 
         //registerReceiver(broadcastReceiverAudio, new IntentFilter("TRACKS_TRACKS"));
 
@@ -386,7 +395,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     private void playTheFileIfExists(String play_item_number) {
 
         if (play_item_number != null) {
-            suraNumber = play_item_number;
+            suraNumber2Play = play_item_number;
             play();
         }
 
@@ -401,15 +410,15 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
 
     void previousTrack(){
-        if(suraNumber!=null && trackList.size()>1){
+        if (suraNumber2Play != null && trackList.size() > 1) {
             for(int i=0;i<trackList.size();i++){
-                Log.e(TAG, suraNumber + " " + trackList.get(i).getName());
-                if(trackList.get(i).getName().equals(suraNumber)){
+                Log.e(TAG, suraNumber2Play + " " + trackList.get(i).getName());
+                if (trackList.get(i).getName().equals(suraNumber2Play)) {
                     try{
-                        suraNumber = String.valueOf(Integer.parseInt(trackList.get(i-1).getName()));
+                        suraNumber2Play = String.valueOf(Integer.parseInt(trackList.get(i - 1).getName()));
                         break;
                     }catch (IndexOutOfBoundsException x){
-                        suraNumber=null;
+                        suraNumber2Play = null;
                         Crashlytics.log(x.getMessage() + " - " + Arrays.toString(x.getStackTrace()));
                     }
                 }
@@ -417,41 +426,41 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         }
     }
     void nextTrack(){
-        if(suraNumber!=null && trackList.size()>1){
+        if (suraNumber2Play != null && trackList.size() > 1) {
             for(int i=0;i<trackList.size();i++){
 
-                if(trackList.get(i).getName().equals(suraNumber)){
+                if (trackList.get(i).getName().equals(suraNumber2Play)) {
                     try{
-                        suraNumber = String.valueOf(Integer.parseInt(trackList.get(i+1).getName()));
-                        Log.e(TAG, suraNumber + " - next suranumber");
+                        suraNumber2Play = String.valueOf(Integer.parseInt(trackList.get(i + 1).getName()));
+                        Log.e(TAG, suraNumber2Play + " - next suranumber");
                         break;
                     }catch (IndexOutOfBoundsException x){
                         if (play_mode.equals("all")) {
                             //go to the first file
-                            suraNumber = String.valueOf(Integer.parseInt(trackList.get(0).getName()));
+                            suraNumber2Play = String.valueOf(Integer.parseInt(trackList.get(0).getName()));
                         } else {
-                            suraNumber = null;
+                            suraNumber2Play = null;
                         }
                         Crashlytics.log(x.getMessage() + " - " + Arrays.toString(x.getStackTrace()));
                     }
                 }
             }
         }else{
-            suraNumber=null;
+            suraNumber2Play = null;
         }
     }
 
     void play() {
-        if(suraNumber!=null) {
+        if (suraNumber2Play != null) {
             int tempsn = 0;
             try {
-                tempsn = Integer.parseInt(suraNumber);
+                tempsn = Integer.parseInt(suraNumber2Play);
             }catch (NumberFormatException x){
                 Crashlytics.log(x.getMessage() + " - " + Arrays.toString(x.getStackTrace()));
             }
 
             if(tempsn>0){
-                suranomi = "(" + language + ") " + QuranMap.SURAHNAMES[Integer.parseInt(suraNumber) - 1];
+                suranomi = "(" + language + ") " + QuranMap.SURAHNAMES[Integer.parseInt(suraNumber2Play) - 1];
                 current_track_tv.setText(suranomi);
                 String url;
                 String filePath = "";
@@ -466,26 +475,26 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                         String trackname = file.getName();
                         if (trackname.contains(".")) {
                             trackname = trackname.substring(0, trackname.lastIndexOf("."));
-                            if (trackname.equals(suraNumber)) {
+                            if (trackname.equals(suraNumber2Play)) {
                                 //filePath = new StringBuilder().append(path).append("/quran_audio/"+language + "/by_surah/" + recitation_style + "/" + reciter+"/").append(prependZero(trackname)).append(".mp3").toString();
-                                filePath = newpath + "/" + suraNumber + ".mp3";
+                                filePath = newpath + "/" + suraNumber2Play + ".mp3";
                                 Log.i(TAG, "Trackname " + trackname + " FP:" + filePath);
                             }
                         }
                     }
                 }  //This surah is not available
 
-                Log.i(TAG, suraNumber);
+                Log.i(TAG, suraNumber2Play);
 
-                if (TrackDownloaded(suraNumber)) {
+                if (TrackDownloaded(suraNumber2Play)) {
                     url = filePath;
                 } else {
                     //Toast.makeText(this, "Online audio!", Toast.LENGTH_SHORT).show();
-                    //url = new StringBuilder().append("https://mobilproject.github.io/furqon_web_express/by_sura/").append(suraNumber).append(".mp3").toString();
-                    //url = mFirebaseRemoteConfig.getString("server_link") + "/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter  + "/" + prependZero(suraNumber) + ".mp3";
+                    //url = new StringBuilder().append("https://mobilproject.github.io/furqon_web_express/by_sura/").append(suraNumber2Play).append(".mp3").toString();
+                    //url = mFirebaseRemoteConfig.getString("server_link") + "/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter  + "/" + prependZero(suraNumber2Play) + ".mp3";
                     // /storage/emulated/0/Android/data/furqon.io.github.mobilproject/files/quran_audio/arabic/by_surah/murattal/1/001.mp3
                     // /storage/emulated/0/Android/data/furqon.io.github.mobilproject/files/quran_audio/arabic/by_surah/murattal/1
-                    url = newpath + "/" + suraNumber + ".mp3";
+                    url = newpath + "/" + suraNumber2Play + ".mp3";
 
                 }
                 //Log.i(TAG, "PLAY " + url);
@@ -518,7 +527,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                         mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
                     } catch (IOException x) {
                         Log.e(TAG, "ERROR " + x.getMessage());
-                        Crashlytics.log("ERROR " + x.getMessage() + "-> " + language + "/" + recitation_style + "/" + reciter + "/" + suraNumber);
+                        Crashlytics.log("ERROR " + x.getMessage() + "-> " + language + "/" + recitation_style + "/" + reciter + "/" + suraNumber2Play);
                         current_track_tv.setText("");
                         Toast.makeText(this, R.string.filenotfound, Toast.LENGTH_SHORT).show();
                         mediaPlayer.release();
@@ -899,7 +908,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 */
 
     private void StartDownload() {
-        //DownloadThis(suraNumber);
+        //DownloadThis();
 
     }
 
@@ -928,9 +937,9 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 //        }
 
     private void setAyahCost() {
-        Log.i(TAG, suraNumber + " suraNumber");
-        if (suraNumber != null) {
-            int ayah_number = Integer.parseInt(suraNumber);
+        Log.i(TAG, suraNumber2Download + " suraNumber");
+        if (suraNumber2Download != null) {
+            int ayah_number = Integer.parseInt(suraNumber2Download);
 
             ayah_unlock_cost = QuranMap.AYAHCOUNT[ayah_number - 1];
 
@@ -989,8 +998,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             // permission was granted, yay! Do the
             // contacts-related task you need to do.
-            if (suraNumber != null) {
-                DownloadThis(suraNumber);
+            if (suraNumber2Download != null) {
+                DownloadThis(suraNumber2Download);
 
             }  // permission denied, boo! Disable the
             // functionality that depends on this permission.
@@ -1017,7 +1026,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
     @Override
     public void DownloadThis(String suraNumber) {
-        this.suraNumber = suraNumber;
+        this.suraNumber2Download = suraNumber;
 
         if (WritePermission()) {
 
@@ -1028,22 +1037,22 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             newpath = mFirebaseRemoteConfig.getString("server_link") + "/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter;
             */
                 try{
-                    int tempsn = Integer.parseInt(suraNumber);
+                    int tempsn = Integer.parseInt(suraNumber2Download);
                     suranomi = QuranMap.SURAHNAMES[tempsn-1];
 
                 } catch (NumberFormatException ignored) {
 
                 }
-                String url = mFirebaseRemoteConfig.getString("server_link") + "/quran_audio/" + middle_path + "/" + prependZero(suraNumber) + ".mp3";
+                String url = mFirebaseRemoteConfig.getString("server_link") + "/quran_audio/" + middle_path + "/" + prependZero(suraNumber2Download) + ".mp3";
                 Log.e(TAG, " DOWNLOAD path " + newpath);
                 Log.e(TAG, " DOWNLOAD url " + url);
                 //String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suraNumber + ".mp3"; // your URL here
                 newpath = getExternalFilesDir(null) + "/quran_audio/" + middle_path;
-                File file = new File(newpath, suraNumber + ".mp3");
+                File file = new File(newpath, suraNumber2Download + ".mp3");
                 DownloadManager.Request request;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                     request = new DownloadManager.Request(Uri.parse(url))
-                            .setTitle(suraNumber)
+                            .setTitle(suraNumber2Download)
                             .setDescription("Downloading " + suranomi)
                             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
                             .setDestinationUri(Uri.fromFile(file))
@@ -1052,7 +1061,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                             .setAllowedOverRoaming(true);
                 } else {
                     request = new DownloadManager.Request(Uri.parse(url))
-                            .setTitle(suraNumber)
+                            .setTitle(suraNumber2Download)
                             .setDescription("Downloading " + suranomi)
                             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
                             .setDestinationUri(Uri.fromFile(file))
@@ -1074,14 +1083,33 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 //                            }
                             Toast.makeText(getApplicationContext(), "Please, wait", Toast.LENGTH_SHORT).show();
                             mAdapter.notifyDataSetChanged();
+                            mInterstitialAd.show();
                         } else {
                             Log.i(TAG, cursor.getCount() + " downloads ");
                             //No downloads running. allow download
-                            Log.i("PERMISSION OK", "Download start " + suraNumber);
+                            Log.i("PERMISSION OK", "Download start " + suraNumber2Download);
                             downloadId = downloadManager.enqueue(request);
-                            mSharedPref.write("download_" + downloadId, suraNumber); //storing the download id under the right sura reference. We can use the id later to check for download status
-                            mSharedPref.write("downloading_surah_" + suraNumber, (int) downloadId);
+                            mSharedPref.write("download_" + downloadId, suraNumber2Download); //storing the download id under the right sura reference. We can use the id later to check for download status
+                            mSharedPref.write("downloading_surah_" + suraNumber2Download, (int) downloadId);
                             mAdapter.notifyDataSetChanged();
+
+                            myTimer.schedule(new TimerTask() {
+                                Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterByStatus(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING));
+
+                                @Override
+                                public void run() {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mAdapter.notifyDataSetChanged();
+                                            cursor.moveToFirst();
+                                            if (cursor == null || cursor.getCount() == 0) {
+                                                myTimer.cancel();
+                                            }
+                                        }
+                                    });
+                                }
+                            }, 500, 1000);
                         }
                     } else {
                         Log.i(TAG, "NO NETWORK");
@@ -1100,6 +1128,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     }
 
     private BroadcastReceiver broadcastReceiverDownload = new BroadcastReceiver() {
+
         @Override
         public void onReceive(Context context, Intent intent) {
             long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
@@ -1129,8 +1158,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 //                    }
                     if (tripletNotNull()) {
                         PopulateTrackList();
-                        if (suraNumber != null) {
-                            int sn = Integer.parseInt(suraNumber);
+                        if (suraNumber2Download != null) {
+                            int sn = Integer.parseInt(suraNumber2Download);
                             MarkAsDownloaded(sn);
                         }
 
@@ -1139,7 +1168,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                     Snackbar.make(coordinatorLayout,
                             "error " + reason,
                             Snackbar.LENGTH_LONG).show();
-                    Crashlytics.log("download error - " + reason + "->" + language + "/" + recitation_style + "/" + reciter + "/" + suraNumber);
+                    Crashlytics.log("download error - " + reason + "->" + language + "/" + recitation_style + "/" + reciter + "/" + suraNumber2Download);
                     mAdapter.notifyDataSetChanged();
                 } else if (status == DownloadManager.STATUS_PAUSED) {
                     Snackbar.make(coordinatorLayout,
@@ -1277,7 +1306,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         mSharedPref.write(mSharedPref.COINS, newtotal);
         updateUI();
         Log.d("AYAHLIST:", "usecoins/left " + val + "/" + newtotal);
-        MarkAsAwarded(Integer.parseInt(suraNumber));
+        MarkAsAwarded(Integer.parseInt(suraNumber2Download));
     }
 
     @Override
@@ -1289,7 +1318,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
     @Override
     public void ShowCoinAlert(String s) {
-        suraNumber = s;
+        suraNumber2Download = s;
         SetCoinValues();
         setAyahCost();
         available_coins = mSharedPref.read(mSharedPref.COINS, 0);
@@ -1304,7 +1333,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 //        use_coins_btn.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
-//                MarkAsAwarded(Integer.parseInt(suraNumber));
+//                MarkAsAwarded(Integer.parseInt(suraNumber2Download));
 //            }
 //        });
 //
@@ -1331,7 +1360,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
         PopulateTrackList();
 
-        if (TrackDownloaded(suraNumber)) {
+        if (TrackDownloaded(suraNumber2Download)) {
             //set by the actually available audio files
             //playButton.setIcon(R.drawable.ic_play_circle);
             //Log.i("TITLES", " TRUE ");
@@ -1378,7 +1407,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         downloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Toast.makeText(mContext,"Download surah number " + suraNumber.getText().toString(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext,"Download surah number " + suraNumber2Download.getText().toString(), Toast.LENGTH_SHORT).show();
                 //String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suranomer + ".mp3"; // your URL here
                 switch (downloadButton.getTag().toString()) {
                     case "1"://red arrow
@@ -1584,9 +1613,19 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             case R.id.mp_imageButton_dl:
                 //download  view
                 mAdapter.setDownload_view(true);
+//                bouncer = new AnimatorSet();
+//                ValueAnimator fadeAnim = ObjectAnimator.ofFloat(media_player_ll, "alpha", 100f, 0f);
+//                ValueAnimator fadeAnim1 = ObjectAnimator.ofFloat(mp_seekBar, "alpha", 100f, 0f);
+//                ValueAnimator fadeAnim2 = ObjectAnimator.ofFloat(special_actions_ll, "alpha", 100f, 0f);
+//                bouncer.play(fadeAnim).with(fadeAnim1);
+//                bouncer.play(fadeAnim2).with(fadeAnim1);
+//                fadeAnim.setDuration(250);
+//                animatorSet = new AnimatorSet();
+//                animatorSet.start();
                 special_actions_ll.setVisibility(View.GONE);
-                media_player_ll.setVisibility(View.GONE);
                 mp_seekBar.setVisibility(View.GONE);
+                media_player_ll.setVisibility(View.GONE);
+
                 if (mSharedPref.read(mSharedPref.COINS, 0) > 0) {
                     updateUI();
                 }
@@ -1598,6 +1637,16 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 //playlist view
                 current_track_tv.setText("");
                 mAdapter.setDownload_view(false);
+
+//                bouncer = new AnimatorSet();
+//                fadeAnim = ObjectAnimator.ofFloat(media_player_ll, "alpha", 0f, 100f);
+//                fadeAnim1 = ObjectAnimator.ofFloat(mp_seekBar, "alpha", 0f, 100f);
+//                fadeAnim2 = ObjectAnimator.ofFloat(special_actions_ll, "alpha", 0f, 100f);
+//                bouncer.play(fadeAnim).with(fadeAnim1);
+//                bouncer.play(fadeAnim2).with(fadeAnim1);
+//                fadeAnim.setDuration(250);
+//                animatorSet = new AnimatorSet();
+//                animatorSet.start();
                 special_actions_ll.setVisibility(View.VISIBLE);
                 media_player_ll.setVisibility(View.VISIBLE);
                 mp_seekBar.setVisibility(View.VISIBLE);
@@ -1637,7 +1686,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
     @Override
     public void SetSurahNumber(String s) {
-        suraNumber = s;
+        suraNumber2Play = s;
     }
 
     @Override

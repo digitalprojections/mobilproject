@@ -83,14 +83,23 @@
                     android:contentDescription="@string/unlock_the_download"
 
                     android:tag="1"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     app:srcCompat="@drawable/ic_unlock" />
+
+                <TextView
+                    android:id="@+id/percent_textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="0%"
+                    android:textColor="#AEEA00"
+                    android:textSize="8sp" />
 
                 <ProgressBar
                     android:id="@+id/progressBar_download"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    tools:visibility="invisible" />
+                    tools:visibility="visible" />
 
 
             </androidx.cardview.widget.CardView>

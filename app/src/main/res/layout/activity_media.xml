@@ -48,6 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
+
         <ImageView
             android:id="@+id/mp_playmode_btn"
             android:layout_width="wrap_content"
@@ -59,6 +60,7 @@
             android:focusable="auto"
             android:padding="5dp"
             app:srcCompat="@drawable/ic_playlist_play_black_24dp" />
+
         <Space
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -68,7 +70,7 @@
     <LinearLayout
         android:id="@+id/mp_player_ll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:background="@color/trbg"
         android:gravity="center|center_vertical"
         android:orientation="horizontal">
@@ -139,14 +141,15 @@
     <SeekBar
         android:id="@+id/mp_seekBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="25dp"
         android:background="@color/favorites_bg" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/mp_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        tools:listitem="@layout/playlist_item" />
 
     <LinearLayout
         android:layout_width="match_parent"
