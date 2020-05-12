@@ -1,6 +1,6 @@
 package furqon.io.github.mobilproject;
 
-import androidx.annotation.NonNull;
+import   androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -12,10 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.app.DownloadManager;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
@@ -208,7 +204,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        Log.i(TAG, currentUser.getEmail());
+        //Log.i(TAG, currentUser.getEmail());
 
         media_player_ll = findViewById(R.id.mp_player_ll);
         special_actions_ll = findViewById(R.id.mp_actions_ll);

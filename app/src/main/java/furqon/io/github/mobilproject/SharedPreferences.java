@@ -7,6 +7,7 @@ import android.widget.Toast;
 public class SharedPreferences
 {
     public static final String GOOGLE = "GOOGLE";
+    public static final String RESTART_ATTEMPTED = "RESTARTED";
     static final String PLAYMODE = "PLAYMODE";
     static final String SIGNATURE = "SIGNATURE";
     static final String FONTSIZE = "FONTSIZE";

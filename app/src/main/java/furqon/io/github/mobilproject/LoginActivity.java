@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,7 +29,6 @@ import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInApi;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
@@ -55,10 +56,11 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import io.fabric.sdk.android.Fabric;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity{
 
     static final String TAG = "LOGIN ACTIVITY";
     TextView welcome_txt;
@@ -69,6 +71,8 @@ public class LoginActivity extends AppCompatActivity {
     String token;
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
+    String currentPoints;
+
 
     private static final int VALID = 0;
     private static final int INVALID = 1;
@@ -81,6 +85,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private SharedPreferences mSharedPref;
     private GoogleSignInClient mGoogleSignInClient;
+    private Button google_so_btn;
 
 
     @Override
@@ -120,7 +125,17 @@ public class LoginActivity extends AppCompatActivity {
                 startActivityForResult(signInIntent, 1);
             }
         });
+//        google_so_btn = findViewById(R.id.sign_out_button);
+//        google_so_btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mAuth.signOut();
+//            }
+//        });
         //========================================================
+
+
+
         mSharedPref = SharedPreferences.getInstance();
         mSharedPref.init(getApplicationContext());
         if (!mSharedPref.read(mSharedPref.TOKEN, "").isEmpty()) {
@@ -134,9 +149,7 @@ public class LoginActivity extends AppCompatActivity {
             Log.d(TAG, "TOKEN MISSING, RENEW");
 
         }
-
-
-
+        //updateUI(currentUser);
         //UI
         //===============================================
         welcome_txt = findViewById(R.id.welcome_textView);
@@ -167,7 +180,7 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        updateUI(currentUser);
+
         if (mSharedPref.isFirstRun()) {
             Intent intent = new Intent(this, ScrollingActivity.class);
             startActivity(intent);
@@ -176,6 +189,7 @@ public class LoginActivity extends AppCompatActivity {
 
             CheckInviterThanked();
         }
+
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -265,12 +279,14 @@ public class LoginActivity extends AppCompatActivity {
                                             if (task.isSuccessful()) {
                                                 Log.d(TAG, "linkWithCredential:success");
                                                 FirebaseUser user = task.getResult().getUser();
+                                                google_btn.setVisibility(View.GONE);
+                                                google_so_btn.setVisibility(View.VISIBLE);
                                                 updateUI(user);
                                             } else {
                                                 Log.w(TAG, "linkWithCredential:failure", task.getException());
                                                 Toast.makeText(LoginActivity.this, "Authentication failed.",
                                                         Toast.LENGTH_SHORT).show();
-                                                updateUI(null);
+                                                updateUI(currentUser);
                                             }
 
                                             // ...
@@ -281,11 +297,11 @@ public class LoginActivity extends AppCompatActivity {
 
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInAnonymously:failure", task.getException());
+                            Log.i(TAG, "signInAnonymously:failure", task.getException());
 
-                            Crashlytics.log(Log.ERROR, TAG, task.getException().toString());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+//                            Crashlytics.log(Log.ERROR, TAG, task.getException().toString());
+//                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+//                                    Toast.LENGTH_SHORT).show();
                             currentUser = null;
                         }
 
@@ -297,6 +313,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser currentUser) {
         boolean isSignedIn = (currentUser != null);
+        currentPoints = String.valueOf(mSharedPref.read(mSharedPref.COINS, 0));
 
         // Status text
         if (isSignedIn) {
@@ -305,10 +322,12 @@ public class LoginActivity extends AppCompatActivity {
             checkAppSignature(this);
             if (mSharedPref.read(SharedPreferences.GOOGLE, false)) {
                 google_btn.setVisibility(View.GONE);
+                google_so_btn.setVisibility(View.VISIBLE);
                 username_txt.setText(currentUser.getEmail());
             }
         } else {
-            signInAnonymously();
+            if(isNetworkAvailable())
+                signInAnonymously();
         }
 
     }
@@ -364,6 +383,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.i(TAG, "UserID and TOKEN failed to send" + error.toString());
+
             }
         }) {
             protected Map<String, String> getParams() {
@@ -372,6 +392,8 @@ public class LoginActivity extends AppCompatActivity {
                 MyData.put("appname", "furqon"); //Add the data you'd like to send to the server.
                 MyData.put("token", token); //Add the data you'd like to send to the server.
                 MyData.put("user_id", currentUser.getUid());
+                MyData.put("points", currentPoints);
+                MyData.put("email", Objects.requireNonNull(currentUser.getEmail()));
                 MyData.put("app_id", BuildConfig.VERSION_NAME);
                 return MyData;
             }
@@ -385,11 +407,18 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             Log.d(TAG, "missing important creds");
             Toast.makeText(this, "You are missing important credentials. Try to restart the app!", Toast.LENGTH_LONG).show();
+            google_btn.setVisibility(View.GONE);
+            google_so_btn.setVisibility(View.VISIBLE);
         }
 
 
     }
-
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
     private void checkForDynamicLink() {
         Log.i(TAG, "Dynamic LINK CHECKING");
         FirebaseDynamicLinks.getInstance()
@@ -491,7 +520,7 @@ public class LoginActivity extends AppCompatActivity {
 //assumes an issue in checking signature., but we let the caller decide on what to do.
 
         }
-        sendRegistrationToServer();
+        //sendRegistrationToServer();
         return INVALID;
 
     }
@@ -570,6 +599,8 @@ public class LoginActivity extends AppCompatActivity {
                 MyData.put("action", "confirm"); //Add the data you'd like to send to the server.
                 MyData.put("appname", "furqon"); //Add the data you'd like to send to the server.
                 MyData.put("user_id", currentUser.getUid()); //Add the data you'd like to send to the server.
+                MyData.put("points", currentPoints);
+                MyData.put("email", Objects.requireNonNull(currentUser.getEmail())); //Add the data you'd like to send to the server.
                 MyData.put("inviter_id", inviter_id);
                 return MyData;
             }
@@ -585,4 +616,17 @@ public class LoginActivity extends AppCompatActivity {
         mSharedPref.write(mSharedPref.RANDOM_AYAH_SEEN, true);
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        updateUI(currentUser);
+    }
+
 }

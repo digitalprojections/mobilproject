@@ -50,9 +50,15 @@
             android:id="@+id/sign_in_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-
         </com.google.android.gms.common.SignInButton>
+<!--        <Button-->
+<!--            android:id="@+id/sign_out_button"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Sign Out"-->
+<!--            android:visibility="gone"-->
+<!--            style="FirebaseUI.Button.AccountChooser.GoogleButton">-->
+<!--        </Button>-->
         <Space
             android:layout_width="match_parent"
             android:layout_height="10dp"
