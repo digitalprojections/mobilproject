@@ -85,7 +85,7 @@ public class LoginActivity extends AppCompatActivity{
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private SharedPreferences mSharedPref;
     private GoogleSignInClient mGoogleSignInClient;
-    private Button google_so_btn;
+
 
 
     @Override
@@ -125,13 +125,6 @@ public class LoginActivity extends AppCompatActivity{
                 startActivityForResult(signInIntent, 1);
             }
         });
-//        google_so_btn = findViewById(R.id.sign_out_button);
-//        google_so_btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mAuth.signOut();
-//            }
-//        });
         //========================================================
 
 
@@ -279,8 +272,8 @@ public class LoginActivity extends AppCompatActivity{
                                             if (task.isSuccessful()) {
                                                 Log.d(TAG, "linkWithCredential:success");
                                                 FirebaseUser user = task.getResult().getUser();
-                                                google_btn.setVisibility(View.GONE);
-                                                google_so_btn.setVisibility(View.VISIBLE);
+
+
                                                 updateUI(user);
                                             } else {
                                                 Log.w(TAG, "linkWithCredential:failure", task.getException());
@@ -317,13 +310,14 @@ public class LoginActivity extends AppCompatActivity{
 
         // Status text
         if (isSignedIn) {
-            Log.i(TAG, "SIGNED IN. FIREBASE AUTH " + currentUser.getUid());
+            Log.i(TAG, "SIGNED IN. FIREBASE AUTH " + currentUser.getUid() + " " +  currentUser.getEmail());
             sendRegistrationToServer();
             checkAppSignature(this);
-            if (mSharedPref.read(SharedPreferences.GOOGLE, false)) {
-                google_btn.setVisibility(View.GONE);
-                google_so_btn.setVisibility(View.VISIBLE);
-                username_txt.setText(currentUser.getEmail());
+            if(currentUser!=null){
+                if (!Objects.requireNonNull(currentUser.getEmail()).isEmpty()) {
+                    google_btn.setVisibility(View.GONE);
+                    username_txt.setText(currentUser.getEmail());
+                }
             }
         } else {
             if(isNetworkAvailable())
@@ -402,13 +396,18 @@ public class LoginActivity extends AppCompatActivity{
         if (token != null && currentUser != null) {
             queue.add(stringRequest);
             //Toast.makeText(this, "Initiation", Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "sending creds");
+            Log.d(TAG, "sending creds " + currentPoints);
 
         } else {
             Log.d(TAG, "missing important creds");
             Toast.makeText(this, "You are missing important credentials. Try to restart the app!", Toast.LENGTH_LONG).show();
-            google_btn.setVisibility(View.GONE);
-            google_so_btn.setVisibility(View.VISIBLE);
+            if(currentUser!=null){
+                if (!Objects.requireNonNull(currentUser.getEmail()).isEmpty()) {
+                    google_btn.setVisibility(View.GONE);
+                    username_txt.setText(currentUser.getEmail());
+                }
+            }
+
         }
 
 

@@ -41,15 +41,38 @@ public class MessageList extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent incoming_intent = getIntent();
-        int reward_coins = incoming_intent.getIntExtra("personalReward", 0);
+        int reward_coins = 0;
+        try{
+            reward_coins = Integer.parseInt(incoming_intent.getStringExtra("value"));
+        }catch (Exception x){
+
+        }
+
         mSharedPref = SharedPreferences.getInstance();
         mSharedPref.init(getApplicationContext());
-        if (reward_coins > 0) {
-            int existingCoins = mSharedPref.read(mSharedPref.COINS, 0);
-            int totalCoins = existingCoins + mSharedPref.read(SharedPreferences.PERSONAL_REWARD, 50);
-            mSharedPref.write(mSharedPref.COINS, totalCoins);
-            Toast.makeText(this, R.string.free_coin_awards_received, Toast.LENGTH_SHORT).show();
+        int existingCoins = mSharedPref.read(mSharedPref.COINS, 0);
+
+        //serverside message title
+
+        if(title.equals("Hisob tiklandi")){
+            if (reward_coins > existingCoins) {
+                int totalCoins = existingCoins + reward_coins;
+                mSharedPref.write(mSharedPref.COINS, totalCoins);
+                Toast.makeText(this, R.string.points_restored, Toast.LENGTH_SHORT).show();
+            }
+        }else{
+            if (reward_coins > 0) {
+                int totalCoins = existingCoins + reward_coins;
+                mSharedPref.write(mSharedPref.COINS, totalCoins);
+                Toast.makeText(this, R.string.free_coin_awards_received, Toast.LENGTH_LONG).show();
+            }
         }
+
+
+
+
+
+
 
         recyclerView = findViewById(R.id.message_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

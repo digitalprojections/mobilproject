@@ -22,8 +22,8 @@ android {
         applicationId "furqon.io.github.mobilproject"
         minSdkVersion 19
         targetSdkVersion rootProject.ext.compileSdkVersion
-        versionCode 40102
-        versionName "4.1.2"
+        versionCode 40104
+        versionName "4.1.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release
         manifestPlaceholders = [:]

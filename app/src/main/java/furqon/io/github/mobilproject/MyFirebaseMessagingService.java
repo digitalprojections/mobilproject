@@ -61,7 +61,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-            sendNotification(remoteMessage.getNotification().getBody());
+            sendNotification(remoteMessage.getData().get("title"), remoteMessage.getNotification().getBody());
             handleNow(remoteMessage);
         }
 
@@ -113,11 +113,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void handleNow(RemoteMessage s){
         Log.d(TAG, "text received: " + s.getData().get("title"));
         if(s.getNotification()!=null){
-            sendNotification(s.getNotification().getBody());
+            sendNotification(s.getData().get("title"), s.getNotification().getBody());
             database = ChapterTitleDatabase.getDatabase(this);
             database.SaveMessage(s);
         }else if(s.getData()!=null){
-            sendNotification(s.getData().get("body"));
+            sendNotification(s.getData().get("title"), s.getData().get("body"));
 //            if(s.getData().size()>0){
 //                try{
 //                    if(s.getData().get("title").equals("Thanks for sharing!")){
@@ -144,14 +144,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 
     }
-    private void sendNotification(String messageBody) {
+    private void sendNotification(String title, String messageBody) {
         Intent intent = new Intent(this, MessageList.class);
 
-        int pr = 50;
-        if (mFirebaseRemoteConfig != null) {
-            pr = (int) mFirebaseRemoteConfig.getLong("personal_reward");
-        }
-        intent.putExtra("personalReward", pr);
+//        int pr = 50;
+//        if (mFirebaseRemoteConfig != null) {
+//            pr = (int) mFirebaseRemoteConfig.getLong("personal_reward");
+//        }
+
+        intent.putExtra("title", title);
+        intent.putExtra("value", messageBody);
+
+
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
