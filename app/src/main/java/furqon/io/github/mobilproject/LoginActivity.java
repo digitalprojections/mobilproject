@@ -313,11 +313,13 @@ public class LoginActivity extends AppCompatActivity{
             Log.i(TAG, "SIGNED IN. FIREBASE AUTH " + currentUser.getUid() + " " +  currentUser.getEmail());
             sendRegistrationToServer();
             checkAppSignature(this);
-            if(currentUser!=null){
+            try{
                 if (!Objects.requireNonNull(currentUser.getEmail()).isEmpty()) {
                     google_btn.setVisibility(View.GONE);
                     username_txt.setText(currentUser.getEmail());
                 }
+            }catch (NullPointerException x){
+
             }
         } else {
             if(isNetworkAvailable())
@@ -401,11 +403,13 @@ public class LoginActivity extends AppCompatActivity{
         } else {
             Log.d(TAG, "missing important creds");
             Toast.makeText(this, "You are missing important credentials. Try to restart the app!", Toast.LENGTH_LONG).show();
-            if(currentUser!=null){
+            try{
                 if (!Objects.requireNonNull(currentUser.getEmail()).isEmpty()) {
                     google_btn.setVisibility(View.GONE);
                     username_txt.setText(currentUser.getEmail());
                 }
+            } catch (Exception e) {
+                
             }
 
         }

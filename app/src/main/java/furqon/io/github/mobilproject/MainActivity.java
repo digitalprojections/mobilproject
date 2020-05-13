@@ -40,6 +40,7 @@ import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.List;
@@ -162,11 +163,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //chat_but = findViewById(R.id.chat_button);
         audio_but = findViewById(R.id.mediabutton);
         about_but = findViewById(R.id.about_button);
-
         suralar_but = findViewById(R.id.suralar);
         davomi_but = findViewById(R.id.davomi);
         youtube_but = findViewById(R.id.youtubebut);
         imageView = findViewById(R.id.imageView);
+
+        Picasso.get().load(R.mipmap.read).into((ImageView) findViewById(R.id.imageViewSuralar));
+        Picasso.get().load(R.mipmap.author).into((ImageView) findViewById(R.id.imageViewAbout));
+        Picasso.get().load(R.mipmap.bookmarkjpg).into((ImageView) findViewById(R.id.imageViewBookmark));
+        Picasso.get().load(R.mipmap.audio).into((ImageView) findViewById(R.id.imageViewMedia));
+        Picasso.get().load(R.mipmap.youtube).into((ImageView) findViewById(R.id.imageViewYoutube));
+        Picasso.get().load(R.mipmap.search).into((ImageView) findViewById(R.id.imageViewSearch));
 
         imageView.setOnClickListener(this);
         youtube_but.setOnClickListener(this);

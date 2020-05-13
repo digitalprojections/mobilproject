@@ -22,8 +22,8 @@ android {
         applicationId "furqon.io.github.mobilproject"
         minSdkVersion 19
         targetSdkVersion rootProject.ext.compileSdkVersion
-        versionCode 40104
-        versionName "4.1.4"
+        versionCode 40107
+        versionName "4.1.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release
         manifestPlaceholders = [:]
@@ -96,6 +96,7 @@ dependencies {
     annotationProcessor "android.arch.persistence.room:compiler:2.2.0"
     androidTestImplementation "android.arch.persistence.room:testing:2.2.0"
     implementation 'com.android.support:cardview-v7:28.0.0'
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
 // Lifecycle components
     implementation "android.arch.lifecycle:extensions:2.2.0"

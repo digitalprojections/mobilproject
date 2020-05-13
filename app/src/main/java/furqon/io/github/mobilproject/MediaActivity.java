@@ -1097,10 +1097,16 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            mAdapter.notifyDataSetChanged();
-                                            cursor.moveToFirst();
-                                            if (cursor == null || cursor.getCount() == 0) {
-                                                myTimer.cancel();
+                                            try{
+                                                mAdapter.notifyDataSetChanged();
+                                                cursor.moveToFirst();
+                                                if (cursor == null || cursor.getCount() == 0) {
+                                                    myTimer.cancel();
+                                                }
+                                            }catch (IllegalStateException x){
+                                                if (cursor == null || cursor.getCount() == 0) {
+                                                    myTimer.cancel();
+                                                }
                                             }
                                         }
                                     });

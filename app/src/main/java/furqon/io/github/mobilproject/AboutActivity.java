@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
 
 public class AboutActivity extends AppCompatActivity {
 
@@ -15,5 +18,7 @@ public class AboutActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        Picasso.get().load(R.mipmap.assalamualaikum).into((ImageView) findViewById(R.id.imageViewAbout));
     }
 }
