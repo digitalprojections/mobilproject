@@ -1,88 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout12"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".LoginActivity">
 
-    <LinearLayout
+
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/toolbar" />
+
+    <TextView
+        android:id="@+id/welcome_textView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:gravity="center"
-        android:orientation="vertical"
         android:padding="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:text="Welcome"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
-        <TextView
-            android:id="@+id/welcome_textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:padding="8dp"
-            android:text="Welcome"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+    <ImageView
+        android:id="@+id/imageView9"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:padding="8dp"
+        app:srcCompat="@drawable/ic_asset_1furqon_logo" />
 
-        <ImageView
-            android:id="@+id/imageView9"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="8dp"
-            app:srcCompat="@drawable/ic_asset_1furqon_logo" />
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
 
-        <TextView
-            android:id="@+id/username_textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:textAlignment="center"
-            android:text="TextView" />
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/sign_in_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </com.google.android.gms.common.SignInButton>
-<!--        <Button-->
-<!--            android:id="@+id/sign_out_button"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="Sign Out"-->
-<!--            android:visibility="gone"-->
-<!--            style="FirebaseUI.Button.AccountChooser.GoogleButton">-->
-<!--        </Button>-->
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:layout_weight="0" />
-        <Button
-            android:id="@+id/start_app_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:padding="8dp"
-            android:text="Start"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+    <TextView
+        android:id="@+id/username_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:text="TextView"
+        android:textAlignment="center" />
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+    <!--        <Button-->
+    <!--            android:id="@+id/sign_out_button"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:text="Sign Out"-->
+    <!--            android:visibility="gone"-->
+    <!--            style="FirebaseUI.Button.AccountChooser.GoogleButton">-->
+    <!--        </Button>-->
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_weight="0" />
 
-        <Button
-            android:id="@+id/privacy_policy_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:text="Privacy Policy" />
+    <Button
+        android:id="@+id/start_app_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:padding="8dp"
+        android:text="Start"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/privacy_policy_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:text="Privacy Policy" />
+
+
+</LinearLayout>

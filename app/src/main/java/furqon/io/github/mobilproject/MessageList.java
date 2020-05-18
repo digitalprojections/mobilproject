@@ -21,6 +21,7 @@ import com.google.android.gms.ads.InterstitialAd;
 import java.util.List;
 
 public class MessageList extends AppCompatActivity {
+    private static final String TAG = "MESSAGE LIST";
     InterstitialAd mInterstitialAd;
     private RecyclerView recyclerView;
     private MessageListAdapter listAdapter;
@@ -36,14 +37,15 @@ public class MessageList extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
-        String title = getString(R.string.messages_button_text);
-        getSupportActionBar().setTitle(title);
+        String title = "";
+        getSupportActionBar().setTitle(getString(R.string.messages_button_text));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent incoming_intent = getIntent();
         int reward_coins = 0;
         try{
             reward_coins = Integer.parseInt(incoming_intent.getStringExtra("value"));
+            title = incoming_intent.getStringExtra("title");
         }catch (Exception x){
 
         }
@@ -53,26 +55,21 @@ public class MessageList extends AppCompatActivity {
         int existingCoins = mSharedPref.read(mSharedPref.COINS, 0);
 
         //serverside message title
-
+        Log.i(TAG, title);
+        
         if(title.equals("Hisob tiklandi")){
             if (reward_coins > existingCoins) {
-                int totalCoins = existingCoins + reward_coins;
+                int totalCoins = reward_coins;
                 mSharedPref.write(mSharedPref.COINS, totalCoins);
                 Toast.makeText(this, R.string.points_restored, Toast.LENGTH_SHORT).show();
             }
-        }else{
+        }else if(title.equals("Personal Reward")){
             if (reward_coins > 0) {
                 int totalCoins = existingCoins + reward_coins;
                 mSharedPref.write(mSharedPref.COINS, totalCoins);
                 Toast.makeText(this, R.string.free_coin_awards_received, Toast.LENGTH_LONG).show();
             }
         }
-
-
-
-
-
-
 
         recyclerView = findViewById(R.id.message_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -84,7 +81,7 @@ public class MessageList extends AppCompatActivity {
         messageViewModel.getMessages().observe(this, new Observer<List<MessageTable>>() {
             @Override
             public void onChanged(List<MessageTable> messageTables) {
-                Log.e("MESSAGETABLE", messageTables.size() + " long");
+                //Log.e(TAG, messageTables.size() + " long");
                 if(messageTables.size()>0){
                     listAdapter.setItems(messageTables);
                     //recyclerView.scheduleLayoutAnimation();
@@ -122,6 +119,7 @@ public class MessageList extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         messageViewModel.markAllAsRead();
-        mInterstitialAd.show();
+        if(!mSharedPref.read(SharedPreferences.NOMOREADS, false))
+            mInterstitialAd.show();
     }
 }

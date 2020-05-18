@@ -120,4 +120,7 @@
     <string name="tracklist_empty_warning">Download some audio first!</string>
     <string name="visit_for_coins">You can also earn coins by visiting the app everyday</string>
     <string name="points_restored">"Points restored "</string>
+    <string name="signin_request">Signin to get special rewards</string>
+    <string name="noads_button_label">No ads for today</string>
+    <string name="sign_in">Sign In</string>
 </resources>

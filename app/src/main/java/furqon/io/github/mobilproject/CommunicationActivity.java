@@ -46,6 +46,6 @@ public class CommunicationActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mInterstitialAd.show();
+        //mInterstitialAd.show();
     }
 }

@@ -11,6 +11,10 @@ import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class RewardAd{
 
     private static RewardedVideoAd mRewardedVideoAd;
@@ -18,6 +22,7 @@ public class RewardAd{
     boolean titleListCall;
     private Context mContext;
     FirebaseRemoteConfig mFireBaseConfig;
+    private boolean nomore;
 
 
     public RewardAd(Context context){
@@ -97,7 +102,14 @@ public class RewardAd{
                             manageIcons = (ManageDownloadIconState) mContext;
                             manageIcons.SetDownloadIconState(false);
                         }
-                    } else {
+                    }else if(nomore){
+                        SharedPreferences.NoMoreAds(true);
+                        nomore = false;
+                        Date c = Calendar.getInstance().getTime();
+
+                        SharedPreferences.getInstance().write(SharedPreferences.PREVIOUS_SET, String.valueOf(c.getTime()));
+                    }
+                    else {
                         int coins = (int) (rewardItem.getAmount() * mFireBaseConfig.getLong("rewardad_multiplier"));
                         SharedPreferences.AddCoins(mContext, coins);
                         ManageCoins manageCoins;
@@ -140,7 +152,12 @@ public class RewardAd{
             mRewardedVideoAd.show();
         }
     }
-
+    public void NOMORE() {
+        nomore = true;
+        if (mRewardedVideoAd.isLoaded()) {
+            mRewardedVideoAd.show();
+        }
+    }
     public void SHOW(String s) {
         titleListCall = true;
         currentSurahNumber = Integer.parseInt(s);

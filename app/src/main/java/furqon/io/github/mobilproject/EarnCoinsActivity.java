@@ -248,6 +248,7 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mInterstitialAd.show();
+        if(mSharedPref.read(SharedPreferences.NOMOREADS, false))
+            mInterstitialAd.show();
     }
 }

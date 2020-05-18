@@ -435,10 +435,10 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
                                 public void run() {
                                     // Do something after 5s = 5000ms
                                     contentloading.setVisibility(View.GONE);
-                                    if (mInterstitialAd.isLoaded())
+                                    if (mInterstitialAd.isLoaded()&& !sharedPref.read(SharedPreferences.NOMOREADS, false))
                                         mInterstitialAd.show();
                                 }
-                            }, 2000);
+                            }, 3000);
 
                             LoadSurah();
                             download_attempted = true;

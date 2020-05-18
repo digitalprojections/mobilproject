@@ -44,6 +44,23 @@ public class ScrollingActivity extends AppCompatActivity {
 
         viewPager.setAdapter(scrollingAdapter);
 
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
         dontshow = findViewById(R.id.dontshowagain_checkBox);
 
         button_done = findViewById(R.id.button_Done);

@@ -248,6 +248,7 @@ public class Settings extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mInterstitialAd.show();
+        if(!sharedPref.read(SharedPreferences.NOMOREADS, false))
+            mInterstitialAd.show();
     }
 }

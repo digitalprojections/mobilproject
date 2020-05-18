@@ -89,8 +89,11 @@ public class Favourites extends AppCompatActivity implements ManageSpecials {
             @Override
             public void onChanged(@Nullable List<FavouriteAyah> favouriteAyahs) {
                 Log.e("FAVOURITES", favouriteAyahs.size() + " ");
-                mAdapter.setText(favouriteAyahs);
-                recyclerView.scheduleLayoutAnimation();
+                if(favouriteAyahs.size()>0){
+                    mAdapter.setText(favouriteAyahs);
+                    recyclerView.scheduleLayoutAnimation();
+                }
+
             }
         });
         loadFavourites();
@@ -135,7 +138,8 @@ public class Favourites extends AppCompatActivity implements ManageSpecials {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mInterstitialAd.show();
+        if(!SharedPreferences.getInstance().read(SharedPreferences.NOMOREADS, false))
+            mInterstitialAd.show();
         //mDatabase.close();
     }
 

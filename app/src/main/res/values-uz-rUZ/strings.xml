@@ -114,4 +114,7 @@
     <string name="filenotfound">Fayl topilmadi</string>
     <string name="tracklist_empty_warning">Avval audio yuklab oling!</string>
     <string name="visit_for_coins">Siz har kuni ilovaga tashrif buyurib ham tangalar orttirishingiz mumkin</string>
+    <string name="signin_request">Maxsus mukofot olish uchun \"Sign in\" tugmasi orqali tizimga kiring</string>
+    <string name="points_restored">Tanga ballari tiklandi</string>
+    <string name="noads_button_label">Bugungi reklamalarni olib tashlash</string>
 </resources>

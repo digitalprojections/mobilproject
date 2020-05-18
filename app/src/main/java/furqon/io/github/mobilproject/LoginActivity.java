@@ -2,6 +2,7 @@ package furqon.io.github.mobilproject;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +16,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -53,7 +57,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.security.MessageDigest;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -66,13 +74,14 @@ public class LoginActivity extends AppCompatActivity{
     TextView welcome_txt;
     TextView username_txt;
     Button start_btn;
+    Button no_ads_btn;
     SignInButton google_btn;
     Button privacy_btn;
     String token;
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
     String currentPoints;
-
+    private RewardAd mRewardedVideoAd;
 
     private static final int VALID = 0;
     private static final int INVALID = 1;
@@ -86,12 +95,62 @@ public class LoginActivity extends AppCompatActivity{
     private SharedPreferences mSharedPref;
     private GoogleSignInClient mGoogleSignInClient;
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
 
+        MenuInflater inflater = getMenuInflater();
+
+        inflater.inflate(R.menu.menu_scrolling, menu);
+
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.signin_item:
+                signIn();
+                return true;
+            case R.id.action_settings:
+                open_settings();
+                return true;
+            case R.id.noads_item:
+                if(mSharedPref.contains(SharedPreferences.NOMOREADS)){
+                    if(mSharedPref.read(SharedPreferences.NOMOREADS, false))
+                        mRewardedVideoAd.NOMORE();
+                }
+                else{
+                    mRewardedVideoAd.NOMORE();
+                }
+                return true;
+//            case R.id.messages_i:
+//                open_messages();
+//                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void signIn() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, 1);
+    }
+
+    private void open_settings() {
+        Intent intent;
+        intent = new Intent(this, Settings.class);
+        startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Toolbar toolbar = findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
+
+        mRewardedVideoAd = new RewardAd(this);
 
         Fabric.with(this, new Crashlytics());
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
@@ -117,14 +176,6 @@ public class LoginActivity extends AppCompatActivity{
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        google_btn = findViewById(R.id.sign_in_button);
-        google_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                startActivityForResult(signInIntent, 1);
-            }
-        });
         //========================================================
 
 
@@ -183,6 +234,9 @@ public class LoginActivity extends AppCompatActivity{
             CheckInviterThanked();
         }
 
+
+
+
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -195,6 +249,7 @@ public class LoginActivity extends AppCompatActivity{
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
+
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
@@ -272,8 +327,6 @@ public class LoginActivity extends AppCompatActivity{
                                             if (task.isSuccessful()) {
                                                 Log.d(TAG, "linkWithCredential:success");
                                                 FirebaseUser user = task.getResult().getUser();
-
-
                                                 updateUI(user);
                                             } else {
                                                 Log.w(TAG, "linkWithCredential:failure", task.getException());
@@ -438,13 +491,24 @@ public class LoginActivity extends AppCompatActivity{
                             if (!inviter_id.equals(currentUser.getUid())) {
                                 Log.i(TAG, "Dynamic LINK FOUND " + inviter_id);
                                 pendingDynamicLinkData = null;
-                                Snackbar.make(findViewById(android.R.id.content),
-                                        R.string.invitation_confirm, Snackbar.LENGTH_LONG).show();
+
                                 //Send confirmation
-                                if (mSharedPref.read(mSharedPref.INVITER, 0) == 0) {
-                                    sendConfirmationToServer(inviter_id);
-                                } else {
-                                    //user is already invited
+                                if (mSharedPref.read(SharedPreferences.INVITER, 0) == 0 && mSharedPref.read(SharedPreferences.INVITER_ID, "").isEmpty()) {
+                                    //Initial thanking.
+                                    //both inviter and its ID are empty
+                                    //simply store if not logged in
+                                    if(currentUser.getEmail().isEmpty()){
+                                        mSharedPref.write(SharedPreferences.INVITER_ID, inviter_id);
+                                    }
+                                    else{
+                                        mSharedPref.write(SharedPreferences.INVITER_ID, inviter_id);
+                                        sendConfirmationToServer(inviter_id);
+                                    }
+                                } else if(mSharedPref.read(SharedPreferences.INVITER, 0) == 0 && !mSharedPref.read(SharedPreferences.INVITER_ID, "").isEmpty()){
+                                    //retry thanking, if the same person is inviting.
+                                    //user can not thank more than one inviter
+                                    if(mSharedPref.read(SharedPreferences.INVITER_ID, "")==inviter_id)
+                                        sendConfirmationToServer(inviter_id);
                                 }
                             } else {
                                 Log.i(TAG, "Can not use the dlink");
@@ -475,7 +539,12 @@ public class LoginActivity extends AppCompatActivity{
         if (mSharedPref.read(mSharedPref.INVITER, 0) == 0) {
             String inviter_id = mSharedPref.read(mSharedPref.INVITER_ID, "");
             if (!inviter_id.isEmpty()) {
-                sendConfirmationToServer(inviter_id);
+                if(!currentUser.getEmail().isEmpty()){
+                    sendConfirmationToServer(inviter_id);
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), R.string.signin_request, Toast.LENGTH_LONG).show();
+                }
             } else {
                 Crashlytics.log(Log.ERROR, TAG, "INVITER ID WAS EMPTY");
             }
@@ -583,11 +652,12 @@ public class LoginActivity extends AppCompatActivity{
                             Log.i(TAG, "Invitation " + response);
                             mSharedPref.AddCoins(getApplicationContext(), 200);
                             mSharedPref.write(mSharedPref.INVITER, 1);
-
+                            Snackbar.make(findViewById(android.R.id.content),
+                                    R.string.invitation_confirm, Snackbar.LENGTH_LONG).show();
                         } else {
                             Log.i(TAG, "Invitation failed " + response);
                             //failed, save for future
-                            mSharedPref.write(mSharedPref.INVITER_ID, inviter_id);
+
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -624,12 +694,31 @@ public class LoginActivity extends AppCompatActivity{
     protected void onResume() {
         super.onResume();
 
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         updateUI(currentUser);
+        Date c = Calendar.getInstance().getTime();
+        System.out.println("Current time => " + c);
+
+
+        Log.i(TAG, " " + c.getTime());
+        if(mSharedPref.contains(SharedPreferences.PREVIOUS_SET)){
+            String yesterday = mSharedPref.read(SharedPreferences.PREVIOUS_SET, "0");
+            long prev_day = Long.parseLong(yesterday);
+            long today = c.getTime();
+            if(Math.abs(prev_day-today)>(1000*60*60*24)){
+                Log.i(TAG, yesterday + " ONE DAY PASSED " + c.getTime());
+                mSharedPref.write(SharedPreferences.NOMOREADS, false);
+            }else{
+                Log.i(TAG, yesterday + " LESS THAN A DAY " + c.getTime());
+            }
+
+
+        }
     }
 
 }

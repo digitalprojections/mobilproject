@@ -155,6 +155,7 @@ public class Search extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mInterstitialAd.show();
+        if(!SharedPreferences.getInstance().read(SharedPreferences.NOMOREADS, false))
+            mInterstitialAd.show();
     }
 }

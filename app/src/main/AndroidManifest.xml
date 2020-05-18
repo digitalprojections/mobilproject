@@ -23,7 +23,9 @@
             android:parentActivityName=".LoginActivity" />
         <activity
             android:name=".AboutActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+
+            />
         <activity android:name=".CommunicationActivity" />
         <activity android:name=".MediaActivity" />
 
@@ -33,7 +35,7 @@
 
         <activity
             android:name=".LoginActivity"
-            android:excludeFromRecents="true"
+
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

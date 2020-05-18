@@ -5,7 +5,7 @@
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/nightsky"
+    android:background="@color/design_default_color_on_secondary"
     android:fitsSystemWindows="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     app:layout_scrollFlags="scroll|enterAlways"
@@ -32,12 +32,14 @@
 
         <CheckBox
             android:id="@+id/dontshowagain_checkBox"
+            style="@style/Widget.AppCompat.CompoundButton.CheckBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:checked="false"
+            android:background="@color/colorPrimaryDark"
             android:gravity="center"
-            android:text="@string/do_not_show_again" />
+            android:text="@string/do_not_show_again"
+            android:textColor="#FFFFFF" />
 
         <Button
             android:id="@+id/button_Done"

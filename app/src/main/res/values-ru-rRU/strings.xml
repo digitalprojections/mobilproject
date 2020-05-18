@@ -114,4 +114,7 @@
     <string name="filenotfound">Файл не найден</string>
     <string name="tracklist_empty_warning">Сначала скачайте аудио!</string>
     <string name="visit_for_coins">Вы также можете зарабатывать монеты, посещая приложение каждый день</string>
+    <string name="points_restored">Очки восстановлены</string>
+    <string name="signin_request">Войдите, чтобы получить специальные награды</string>
+    <string name="noads_button_label">Убрать рекламу на сегодня</string>
 </resources>

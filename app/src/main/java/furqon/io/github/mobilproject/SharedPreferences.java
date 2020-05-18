@@ -8,6 +8,8 @@ public class SharedPreferences
 {
     public static final String GOOGLE = "GOOGLE";
     public static final String RESTART_ATTEMPTED = "RESTARTED";
+    public static final String NOMOREADS = "NOMOREADS";
+    public static final String PREVIOUS_SET = "PREVIOUSSET";
     static final String PLAYMODE = "PLAYMODE";
     static final String SIGNATURE = "SIGNATURE";
     static final String FONTSIZE = "FONTSIZE";
@@ -61,6 +63,10 @@ public class SharedPreferences
         getInstance().write(getInstance().COINS, totalCoins);
         String mes = R.string.u_received + String.valueOf(totalCoins) + R.string._coins;
         Toast.makeText(mContext, "+" + coins, Toast.LENGTH_LONG).show();
+    }
+
+    public static void NoMoreAds(boolean b) {
+        getInstance().write(NOMOREADS, b);
     }
 
     public void init(Context context)

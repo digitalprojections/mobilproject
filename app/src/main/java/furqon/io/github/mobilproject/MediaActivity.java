@@ -1079,7 +1079,11 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 //                            }
                             Toast.makeText(getApplicationContext(), "Please, wait", Toast.LENGTH_SHORT).show();
                             mAdapter.notifyDataSetChanged();
-                            mInterstitialAd.show();
+
+                            if(!mSharedPref.read(SharedPreferences.NOMOREADS, false))
+                            {
+                                mInterstitialAd.show();
+                            }
                         } else {
                             Log.i(TAG, cursor.getCount() + " downloads ");
                             //No downloads running. allow download
@@ -1104,7 +1108,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                                                     myTimer.cancel();
                                                 }
                                             }catch (IllegalStateException x){
-                                                if (cursor == null || cursor.getCount() == 0) {
+                                                if (cursor == null || cursor.getCount() == 0 && myTimer!=null) {
                                                     myTimer.cancel();
                                                 }
                                             }
@@ -1498,7 +1502,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         } catch (IllegalArgumentException x) {
             Crashlytics.log(x.getMessage() + " - " + Arrays.toString(x.getStackTrace()));
         }
-        mInterstitialAd.show();
+        if(!mSharedPref.read(SharedPreferences.NOMOREADS, false))
+            mInterstitialAd.show();
     }
 
     @Override
