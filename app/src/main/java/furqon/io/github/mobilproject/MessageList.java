@@ -122,4 +122,6 @@ public class MessageList extends AppCompatActivity {
         if(!mSharedPref.read(SharedPreferences.NOMOREADS, false))
             mInterstitialAd.show();
     }
+
+
 }

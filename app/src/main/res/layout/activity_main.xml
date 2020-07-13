@@ -8,9 +8,14 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <include
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/tool_bar"
-        layout="@layout/toolbar" />
+
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        android:layout_width="match_parent" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -39,29 +44,29 @@
                 layout="@layout/chapter_button"
                 android:layout_weight="1" />
 
-            <include
-                layout="@layout/continue_button"
-                android:layout_weight="1" />
+<!--            <include-->
+<!--                layout="@layout/continue_button"-->
+<!--                android:layout_weight="1" />-->
 
-            <include
-                layout="@layout/youtube_button"
-                android:layout_width="match_parent"
-                android:layout_weight="1" />
+<!--            <include-->
+<!--                layout="@layout/youtube_button"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_weight="1" />-->
 
             <include
                 layout="@layout/rate_button"
                 android:layout_weight="1" />
 
-            <include
-                layout="@layout/search_button"
-                android:layout_width="match_parent"
-                android:layout_weight="1" />
+<!--            <include-->
+<!--                layout="@layout/search_button"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_weight="1" />-->
 
             <include layout="@layout/messages_button" />
 
             <include layout="@layout/media_button" />
 
-            <include layout="@layout/about_button" />
+<!--            <include layout="@layout/about_button" />-->
 
         </LinearLayout>
     </ScrollView>

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -182,17 +183,7 @@ public class LoginActivity extends AppCompatActivity{
 
         mSharedPref = SharedPreferences.getInstance();
         mSharedPref.init(getApplicationContext());
-        if (!mSharedPref.read(mSharedPref.TOKEN, "").isEmpty()) {
-            token = mSharedPref.read(mSharedPref.TOKEN, "");
-            Log.d(TAG, "TOKEN RESTORED:" + token);
-
-        } else {
-
-            token = null;
-
-            Log.d(TAG, "TOKEN MISSING, RENEW");
-
-        }
+        //CheckToken();
         //updateUI(currentUser);
         //UI
         //===============================================
@@ -238,6 +229,22 @@ public class LoginActivity extends AppCompatActivity{
 
 
     }
+
+    private void CheckToken() {
+        if (!mSharedPref.read(mSharedPref.TOKEN, "").isEmpty()) {
+            token = mSharedPref.read(mSharedPref.TOKEN, "");
+            Log.d(TAG, "TOKEN RESTORED:" + token);
+
+        } else {
+
+            token = null;
+
+            Log.d(TAG, "TOKEN MISSING, RENEW");
+
+        }
+    }
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -387,7 +394,7 @@ public class LoginActivity extends AppCompatActivity{
         //Log.i("ATTEMPTING TOKEN SEND", token);
 
         queue = Volley.newRequestQueue(this);
-        String url = mFirebaseRemoteConfig.getString("server_link") + "/apijson.php";
+        String url = mFirebaseRemoteConfig.getString("server_php") + "/apijson.php";
         //String url = "http://127.0.0.1:1234/apijson/localhost_test.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -457,6 +464,22 @@ public class LoginActivity extends AppCompatActivity{
             Log.d(TAG, "missing important creds");
             Toast.makeText(this, "You are missing important credentials. Try to restart the app!", Toast.LENGTH_LONG).show();
             try{
+                if(mSharedPref.contains(mSharedPref.TOKEN_ATTEMPTED)){
+                    int attempt_count = mSharedPref.read(mSharedPref.TOKEN_ATTEMPT_COUNT, 0);
+                    if(attempt_count<3){
+                        attempt_count++;
+                        mSharedPref.write(mSharedPref.TOKEN_ATTEMPT_COUNT, attempt_count);
+                        Intent i = getBaseContext().getPackageManager().
+                                getLaunchIntentForPackage(getBaseContext().getPackageName());
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+                        finish();
+                    }
+                }else{
+                    mSharedPref.write(mSharedPref.TOKEN_ATTEMPT_COUNT, 0);
+
+                }
                 if (!Objects.requireNonNull(currentUser.getEmail()).isEmpty()) {
                     google_btn.setVisibility(View.GONE);
                     username_txt.setText(currentUser.getEmail());
@@ -600,7 +623,7 @@ public class LoginActivity extends AppCompatActivity{
     private void checkSignatureOnServer(final String currentSignature) {
 
         queue = Volley.newRequestQueue(this);
-        String url = mFirebaseRemoteConfig.getString("server_link") + "/apijson.php";
+        String url = mFirebaseRemoteConfig.getString("server_php") + "/apijson.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -641,7 +664,7 @@ public class LoginActivity extends AppCompatActivity{
         //Add to the user account token, app id, device id
         Log.i(TAG, "ATTEMPTING confirmation " + inviter_id);
         queue = Volley.newRequestQueue(this);
-        String url = mFirebaseRemoteConfig.getString("server_link") + "/apijson.php";
+        String url = mFirebaseRemoteConfig.getString("server_php") + "/apijson.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -700,6 +723,7 @@ public class LoginActivity extends AppCompatActivity{
     @Override
     protected void onStart() {
         super.onStart();
+        CheckToken();
         updateUI(currentUser);
         Date c = Calendar.getInstance().getTime();
         System.out.println("Current time => " + c);

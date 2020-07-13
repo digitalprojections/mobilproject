@@ -34,8 +34,12 @@
         <value>100</value>
     </entry>
     <entry>
-        <key>server_link</key>
-        <value>https://inventivesolutionste.ipage.com</value>
+        <key>server_php</key>
+        <value>https://created.link/php</value>
+    </entry>
+    <entry>
+        <key>server_audio</key>
+        <value>https://created.link</value>
     </entry>
 
 

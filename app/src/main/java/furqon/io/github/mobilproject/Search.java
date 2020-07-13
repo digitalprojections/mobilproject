@@ -2,6 +2,7 @@ package furqon.io.github.mobilproject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -22,10 +23,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
-public class Search extends AppCompatActivity {
+public class Search extends OptionsMenuActivity {
     private static final String TAG = "SEARCH";
     private SearchListAdapter mAdapter;
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
     //public DatabaseAccess mDatabase;
     //Cursor ayahcursor;
     String searchtxt;
@@ -62,10 +66,7 @@ public class Search extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //TODO Serch functionality missing
-//        mDatabase = DatabaseAccess.getInstance(getApplicationContext());
-//        if (!mDatabase.isOpen()) {
-//            mDatabase.open();
-//        }
+
 
 
         ib_search.setOnClickListener(new View.OnClickListener() {
@@ -87,32 +88,6 @@ public class Search extends AppCompatActivity {
         mAdView = findViewById(R.id.adViewSearch);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.options_menu, menu);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.invite_i:
-                //shareDeepLink(deepLink.toString());
-                return true;
-            case R.id.settings_i:
-                open_settings();
-                return true;
-            case R.id.favourites_i:
-                open_favourites();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
     }
 
     //SEARCH
@@ -138,18 +113,6 @@ public class Search extends AppCompatActivity {
         progressBar.setVisibility(View.INVISIBLE);
         String found_text = String.valueOf(R.string.found + c);
         result_count.setText(found_text);
-    }
-
-    private void open_settings() {
-        Intent intent;
-        intent = new Intent(this, furqon.io.github.mobilproject.Settings.class);
-        startActivity(intent);
-    }
-
-    private void open_favourites() {
-        Intent intent;
-        intent = new Intent(this, furqon.io.github.mobilproject.Favourites.class);
-        startActivity(intent);
     }
 
     @Override

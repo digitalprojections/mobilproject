@@ -49,20 +49,20 @@ import java.util.Locale;
 import hotchemi.android.rate.AppRate;
 import io.fabric.sdk.android.Fabric;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends OptionsMenuActivity implements View.OnClickListener {
     Uri deepLink;
 
     CardView suralar_but;
-    CardView davomi_but;
-    CardView youtube_but;
+    //CardView davomi_but;
+    //CardView youtube_but;
     //Button favourite_but;
-    CardView search_but;
+    //CardView search_but;
     CardView rate_but;
     //Button coins_but;
     CardView message_but;
     //Button chat_but;
     CardView audio_but;
-    CardView about_but;
+    //CardView about_but;
     private Animation scaler;
     TextView nbadge;
     ImageView imageView;
@@ -72,40 +72,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FirebaseAnalytics mFirebaseAnalytics;
     private static final String TAG = "MAIN ACTIVITY";
     private static final String DEEP_LINK_URL = "https://furqon.page.link/ThB2";
-    private SharedPreferences mSharedPref;
+
     private boolean randomayahshown;
-    private FirebaseRemoteConfig mFirebaseRemoteConfig;
+
     private FirebaseFunctions mFunctions;
-    private FirebaseAuth mAuth;
-    FirebaseUser currentUser;
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
 
-        inflater.inflate(R.menu.options_menu, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.invite_i:
-                shareDeepLink();
-                return true;
-            case R.id.settings_i:
-                open_settings();
-                return true;
-            case R.id.favourites_i:
-                open_favourites();
-                return true;
-//            case R.id.messages_i:
-//                open_messages();
-//                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
-    }
 
 
     @Override
@@ -115,18 +87,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        mSharedPref = SharedPreferences.getInstance();
-        mSharedPref.init(getApplicationContext());
 
-        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(3600)
-                .build();
-        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+
+
         mFunctions = FirebaseFunctions.getInstance();
-        mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
+
 
         Fabric.with(this, new Crashlytics());
         Crashlytics.log("Activity created");
@@ -138,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         handler = new Handler();
         //favourite_but = findViewById(R.id.favouritebut);
-        search_but = findViewById(R.id.searchbtn);
+        //search_but = findViewById(R.id.searchbtn);
         rate_but = findViewById(R.id.ratebtn);
         //coins_but = findViewById(R.id.earn_coins_button);
         message_but = findViewById(R.id.messageButton);
@@ -162,37 +129,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
         //chat_but = findViewById(R.id.chat_button);
         audio_but = findViewById(R.id.mediabutton);
-        about_but = findViewById(R.id.about_button);
+        //about_but = findViewById(R.id.about_button);
         suralar_but = findViewById(R.id.suralar);
-        davomi_but = findViewById(R.id.davomi);
-        youtube_but = findViewById(R.id.youtubebut);
+        //davomi_but = findViewById(R.id.davomi);
+        //youtube_but = findViewById(R.id.youtubebut);
         imageView = findViewById(R.id.imageView);
 
         Picasso.get().load(R.mipmap.read).into((ImageView) findViewById(R.id.imageViewSuralar));
-        Picasso.get().load(R.mipmap.author).into((ImageView) findViewById(R.id.imageViewAbout));
-        Picasso.get().load(R.mipmap.bookmarkjpg).into((ImageView) findViewById(R.id.imageViewBookmark));
+        Picasso.get().load(R.mipmap.messages).into((ImageView) findViewById(R.id.imageViewMessages));
+        //Picasso.get().load(R.mipmap.bookmarkjpg).into((ImageView) findViewById(R.id.imageViewBookmark));
+        Picasso.get().load(R.mipmap.star).into((ImageView) findViewById(R.id.imageViewRate));
         Picasso.get().load(R.mipmap.audio).into((ImageView) findViewById(R.id.imageViewMedia));
-        Picasso.get().load(R.mipmap.youtube).into((ImageView) findViewById(R.id.imageViewYoutube));
-        Picasso.get().load(R.mipmap.search).into((ImageView) findViewById(R.id.imageViewSearch));
+        //Picasso.get().load(R.mipmap.youtube).into((ImageView) findViewById(R.id.imageViewYoutube));
+        //Picasso.get().load(R.mipmap.search).into((ImageView) findViewById(R.id.imageViewSearch));
 
         imageView.setOnClickListener(this);
-        youtube_but.setOnClickListener(this);
+        //youtube_but.setOnClickListener(this);
         suralar_but.setOnClickListener(this);
-        davomi_but.setOnClickListener(this);
+        //davomi_but.setOnClickListener(this);
         //favourite_but.setOnClickListener(this);
-        search_but.setOnClickListener(this);
+        //search_but.setOnClickListener(this);
         rate_but.setOnClickListener(this);
         message_but.setOnClickListener(this);
         audio_but.setOnClickListener(this);
-        about_but.setOnClickListener(this);
+        //about_but.setOnClickListener(this);
         //coins_but.setOnClickListener(this);
         //chat_but.setOnClickListener(this);
 
-        if (mSharedPref.contains(mSharedPref.XATCHUP)) {
-            davomi_but.setVisibility(View.VISIBLE);
-        } else {
-            davomi_but.setVisibility(View.GONE);
-        }
+//        if (mSharedPref.contains(mSharedPref.XATCHUP)) {
+//            davomi_but.setVisibility(View.VISIBLE);
+//        } else {
+//            davomi_but.setVisibility(View.GONE);
+//        }
 
         //String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -229,89 +197,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(intent);
     }
 
-    private void open_settings() {
-        Intent intent;
-        intent = new Intent(this, Settings.class);
-        startActivity(intent);
-    }
-    private void shareDeepLink() {
-        createShortLink();
-    }
-
-    public Uri buildDeepLink(Uri dl, int version) {
-        String uriPrefix = "furqon.page.link";
-
-        if(currentUser!=null){
-            Log.i(TAG, "CURRENT USER ID " + currentUser.getUid());
-            //userId=currentUser.getUid()
-            if (mSharedPref != null && !mSharedPref.read(mSharedPref.CREDS_ALREADY_SENT, false)) {
-                mSharedPref.write(mSharedPref.USERID, currentUser.getUid());
-                //checkAppSignature(this);
-            }
-
-        }
-
-        DynamicLink.Builder builder = FirebaseDynamicLinks.getInstance()
-                .createDynamicLink()
-                .setDomainUriPrefix(uriPrefix)
-                .setAndroidParameters(new DynamicLink.AndroidParameters.Builder()
-                        .setMinimumVersion(version)
-                        .build())
-                .setLink(dl);
-
-        // Build the dynamic link
-        DynamicLink link = builder.buildDynamicLink();
-        // [END build_dynamic_link]
 
 
-        // Return the dynamic link as a URI
-        return link.getUri();
-    }
-    public void createShortLink() {
-        // [START create_short_link]
-        if(currentUser!=null){
-            String val = "https://quran-kareem.web.app/?user_id="+currentUser.getUid();
-            Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
-                    //.setLink(Uri.parse("https://furqon.page.link/ThB2"))
-                    .setLink(Uri.parse(val))
-                    .setDomainUriPrefix("https://furqon.page.link")
-                    .setAndroidParameters(
-                            new DynamicLink.AndroidParameters.Builder("furqon.io.github.mobilproject")
-                                    .setMinimumVersion(0)
-                                    .build())
-
-                    // Set parameters
-                    // ...
-                    .buildShortDynamicLink()
-                    .addOnCompleteListener(this, new OnCompleteListener<ShortDynamicLink>() {
-                        @Override
-                        public void onComplete(@NonNull Task<ShortDynamicLink> task) {
-
-                                if (task.isSuccessful()) {
-                                    // Short link created
-
-                                        Uri shortLink = task.getResult().getShortLink();
-                                    Uri flowchartLink = task.getResult().getPreviewLink();
-                                    Log.i(TAG, "SHORT LINK " + shortLink.getPath());
-                                    Intent intent = new Intent(Intent.ACTION_SEND);
-                                    intent.setType("text/plain");
-                                    intent.putExtra(Intent.EXTRA_SUBJECT, R.string.quran_kareem_title);
-                                    intent.putExtra(Intent.EXTRA_TEXT, shortLink.toString());
-                                    startActivity(intent);
-                                    //Log.i("SHARE", deepLink.getPath());
-
-                                } else {
-                                    // Error
-                                    // ...
-                                    Crashlytics.log(Log.ERROR, TAG, task.getResult().toString());
-                                }
 
 
-                        }
-                    });
-        }
-        // [END create_short_link]
-    }
 
 
 
@@ -323,15 +212,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //updateUI();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mSharedPref.contains(mSharedPref.XATCHUP)) {
-            davomi_but.setVisibility(View.VISIBLE);
-        }else{
-            davomi_but.setVisibility(View.GONE);
-        }
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        if (mSharedPref.contains(mSharedPref.XATCHUP)) {
+//            davomi_but.setVisibility(View.VISIBLE);
+//        }else{
+//            davomi_but.setVisibility(View.GONE);
+//        }
+//    }
 
     public static boolean deleteDir(File dir) {
         if (dir != null && dir.isDirectory()) {
@@ -358,21 +247,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //TODO ClassCastException fixed???
     private void continueReading() {
-        if (mSharedPref.contains(mSharedPref.XATCHUP)) {
-            String xatchup = mSharedPref.read(mSharedPref.XATCHUP, "");
-            if (xatchup.length() > 0) {
-                Log.i("XATCHUP", xatchup);
-                Intent intent;
-                Context context = this;
-                intent = new Intent(context, AyahList.class);
-                intent.putExtra("SURANAME", xatchup);
-                context.startActivity(intent);
-            } else {
-                Toast.makeText(getBaseContext(), getString(R.string.no_bookmarks), Toast.LENGTH_LONG).show();
-            }
-        } else {
-            Toast.makeText(getBaseContext(), getString(R.string.no_bookmarks), Toast.LENGTH_LONG).show();
-        }
+//        if (mSharedPref.contains(mSharedPref.XATCHUP)) {
+//            String xatchup = mSharedPref.read(mSharedPref.XATCHUP, "");
+//            if (xatchup.length() > 0) {
+//                Log.i("XATCHUP", xatchup);
+//                Intent intent;
+//                Context context = this;
+//                intent = new Intent(context, AyahList.class);
+//                intent.putExtra("SURANAME", xatchup);
+//                context.startActivity(intent);
+//            } else {
+//                Toast.makeText(getBaseContext(), getString(R.string.no_bookmarks), Toast.LENGTH_LONG).show();
+//            }
+//        } else {
+//            Toast.makeText(getBaseContext(), getString(R.string.no_bookmarks), Toast.LENGTH_LONG).show();
+//        }
 
     }
 
@@ -398,40 +287,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void open_youtube() {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(mFirebaseRemoteConfig.getString("youtube_video")));
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        }
-    }
 
-    private void open_chatroom() {
-        Toast.makeText(getApplicationContext(), R.string.coming_soon, Toast.LENGTH_SHORT).show();
-    }
-
-    private void open_earn_coins() {
-        //Toast.makeText(getApplicationContext(), R.string.coming_soon, Toast.LENGTH_SHORT).show();
-        Intent intent;
-        intent = new Intent(this, EarnCoinsActivity.class);
-        startActivity(intent);
-    }
 
     private void Rateus() {
         AppRate.with(this).showRateDialog(this);
     }
 
-    private void open_favourites() {
-        Intent intent;
-        intent = new Intent(this, Favourites.class);
-        startActivity(intent);
-    }
 
-    private void open_search() {
-        Intent intent;
-        intent = new Intent(this, Search.class);
-        startActivity(intent);
-    }
+
 
     private void open_messages() {
         Intent intent;
@@ -445,11 +308,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(intent);
 
     }
-    private void open_about() {
-        Intent intent = new Intent(this, AboutActivity.class);
-        //intent.setData(Uri.parse(mFirebaseRemoteConfig.getString("youtube_video")));
-        startActivity(intent);
-    }
+
     private void displayResult(final String result) {
         handler.post(new Runnable() {
             public void run() {
@@ -499,30 +358,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.suralar:
                 open_suraNames();
                 break;
-            case R.id.davomi:
-                continueReading();
-                break;
-            case R.id.youtubebut:
-                open_youtube();
-                break;
+//            case R.id.davomi:
+//                continueReading();
+//                break;
+//            case R.id.youtubebut:
+//                open_youtube();
+//                break;
             case R.id.favouritebut:
-                open_favourites();
+                //open_favourites();
                 break;
-            case R.id.searchbtn:
-                open_search();
-                break;
+//            case R.id.searchbtn:
+//                open_search();
+//                break;
             case R.id.ratebtn:
                 Rateus();
                 break;
-            case R.id.earn_coins_button:
-                open_earn_coins();
-                break;
+//            case R.id.earn_coins_button:
+//                open_earn_coins();
+//                break;
             case R.id.messageButton:
                 open_messages();
                 break;
-            case R.id.chat_button:
-                //open_chatroom();
-                break;
+//            case R.id.chat_button:
+//                //open_chatroom();
+//                break;
             case R.id.mediabutton:
                 open_media_page();
 
@@ -533,9 +392,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                }
 
                 break;
-            case R.id.about_button:
-                open_about();
-                break;
+//            case R.id.about_button:
+//                open_about();
+//                break;
         }
     }
 

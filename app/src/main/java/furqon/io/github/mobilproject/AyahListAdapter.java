@@ -38,6 +38,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
     private List<AllTranslations> mText = new ArrayList<>();
 
+    private ImageButton share_button;
     private ImageButton fav_button;
     private ImageButton book_button;
 
@@ -103,7 +104,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             actions_lin_layout = itemView.findViewById(R.id.actions);
 
             //DONE create share/boomark/favourite and add programmatically
-            ImageButton share_button = itemView.findViewById(R.id.f_sharebut);
+            share_button = itemView.findViewById(R.id.f_sharebut);
             fav_button = itemView.findViewById(R.id.favouritebut);
             book_button = itemView.findViewById(R.id.f_bookmarkbut);
 

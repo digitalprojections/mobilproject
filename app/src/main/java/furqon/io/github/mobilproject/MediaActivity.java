@@ -2,6 +2,7 @@ package furqon.io.github.mobilproject;
 
 import   androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -219,7 +220,15 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             registerReceiver(broadcastReceiverDownload, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-            startService(new Intent(getBaseContext(), OnClearFromService.class));
+            try{
+                startService(new Intent(getBaseContext(), OnClearFromService.class));
+            }catch (IllegalStateException x){
+                Log.e(TAG, x.getMessage());
+            }
+            catch (SecurityException x){
+                Log.e(TAG, x.getMessage());
+            }
+
         }
 
         downloadManager = (DownloadManager) this.getSystemService(DOWNLOAD_SERVICE);
@@ -738,6 +747,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             Log.e(TAG, "FAILED to DELETE " + x.getMessage());
         }
     }
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void MoveFiles(File[] files) {
         //TODO only uzbek files exist in old location
         for (File file : files) {
@@ -790,7 +800,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     private void LoadTitles() {
         Log.i(TAG, "CLICK THE TEMP BUTTON");
         RequestQueue queue = Volley.newRequestQueue(context);
-        String url = mFirebaseRemoteConfig.getString("server_link") + "/ajax_quran.php";
+        String url = mFirebaseRemoteConfig.getString("server_php") + "/ajax_quran.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -1039,7 +1049,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 } catch (NumberFormatException ignored) {
 
                 }
-                String url = mFirebaseRemoteConfig.getString("server_link") + "/quran_audio/" + middle_path + "/" + prependZero(suraNumber2Download) + ".mp3";
+                String url = mFirebaseRemoteConfig.getString("server_audio") + "/quran_audio/" + middle_path + "/" + prependZero(suraNumber2Download) + ".mp3";
                 Log.e(TAG, " DOWNLOAD path " + newpath);
                 Log.e(TAG, " DOWNLOAD url " + url);
                 //String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suraNumber + ".mp3"; // your URL here

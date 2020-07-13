@@ -10,6 +10,8 @@ public class SharedPreferences
     public static final String RESTART_ATTEMPTED = "RESTARTED";
     public static final String NOMOREADS = "NOMOREADS";
     public static final String PREVIOUS_SET = "PREVIOUSSET";
+    public static final String TOKEN_ATTEMPTED = "TOKEN_ATTEMPTED";
+    public static final String TOKEN_ATTEMPT_COUNT = "token_attempts";
     static final String PLAYMODE = "PLAYMODE";
     static final String SIGNATURE = "SIGNATURE";
     static final String FONTSIZE = "FONTSIZE";

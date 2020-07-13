@@ -3,11 +3,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <item
+        android:id="@+id/invite_i"
+        android:icon="@drawable/ic_group_add_black_24dp"
+        android:title="@string/invite_i"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/about_i"
+        android:icon="@drawable/ic_about"
+        android:title="@string/about"
+        app:showAsAction="ifRoom"
+        tools:Context=".ToolbarMenu" />
+    <item
+        android:id="@+id/youtube_i"
+        android:icon="@drawable/ic_youtube"
+        android:title="@string/youtube_btn_title"
+        app:showAsAction="ifRoom"
+        tools:Context=".ToolbarMenu" />
+    <item
         android:id="@+id/favourites_i"
         android:icon="@drawable/ic_favorite_black_24dp"
         android:title="@string/favorites"
         app:showAsAction="ifRoom"
         tools:Context=".ToolbarMenu"/>
+    <item
+        android:id="@+id/search_i"
+        android:icon="@drawable/ic_search"
+        android:title="@android:string/search_go"
+        app:showAsAction="ifRoom"
+        tools:Context=".ToolbarMenu" />
     <item
         android:id="@+id/settings_i"
         android:icon="@drawable/ic_settings_black_24dp"
@@ -15,12 +38,7 @@
         app:showAsAction="ifRoom"
         tools:Context=".ToolbarMenu"/>
 
-    <item
-        android:id="@+id/invite_i"
-        android:icon="@drawable/ic_group_add_black_24dp"
-        android:title="@string/invite_i"
-        app:showAsAction="ifRoom" />
-<!--    <item-->
+    <!--    <item-->
 <!--        android:id="@+id/messages_i"-->
 <!--        android:icon="@drawable/ic_add_alert__24dp"-->
 <!--        android:title="@string/messages_button_text"-->

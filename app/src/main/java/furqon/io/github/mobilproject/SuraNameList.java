@@ -223,7 +223,7 @@ public class SuraNameList extends AppCompatActivity {
     private void LoadTitles() {
         Log.i(TAG, "CLICK THE TEMP BUTTON");
         RequestQueue queue = Volley.newRequestQueue(context);
-        String url = mFirebaseRemoteConfig.getString("server_link") + "/ajax_quran.php";
+        String url = mFirebaseRemoteConfig.getString("server_php") + "/ajax_quran.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -233,6 +233,7 @@ public class SuraNameList extends AppCompatActivity {
                         jsonArrayResponse = new ArrayList<JSONObject>();
 
                         try {
+                            Log.i(TAG, response);
                             JSONArray jsonArray = new JSONArray(response);
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject object = new JSONObject(jsonArray.getString(i));

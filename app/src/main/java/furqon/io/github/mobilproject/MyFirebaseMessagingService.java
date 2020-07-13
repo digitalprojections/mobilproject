@@ -22,17 +22,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private ChapterTitleDatabase database;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
-    private static final String TAG = "FIREBASE Messages";
+    private static final String TAG = "FIREBASE_Messages";
     private SharedPreferences sharedPref;
 
     public MyFirebaseMessagingService() {
         sharedPref = SharedPreferences.getInstance();
         //Log.e("MyFirebaseMessage", "initiated");
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-
-
         mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
-
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
                 .setMinimumFetchIntervalInSeconds(3600)
                 .build();
@@ -98,7 +95,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 
 
-
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
@@ -146,20 +142,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
     private void sendNotification(String title, String messageBody) {
         Intent intent = new Intent(this, MessageList.class);
-
-//        int pr = 50;
-//        if (mFirebaseRemoteConfig != null) {
-//            pr = (int) mFirebaseRemoteConfig.getLong("personal_reward");
-//        }
-
         intent.putExtra("title", title);
         intent.putExtra("value", messageBody);
-
-
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
-
         String channelId = getString(R.string.notification_from_author_channel);
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
