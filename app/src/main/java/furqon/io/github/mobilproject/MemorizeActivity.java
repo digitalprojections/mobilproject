@@ -36,6 +36,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -85,15 +86,30 @@ import furqon.io.github.mobilproject.Services.OnClearFromService;
 
 import static furqon.io.github.mobilproject.BuildConfig.*;
 
-public class MemorizeActivity extends AppCompatActivity{
+public class MemorizeActivity extends AppCompatActivity implements View.OnClickListener {
+
+    //DEFINE UI ELEMENTS
+    Button memorizeButton;
+    public static final String TAG = MemorizeActivity.class.getSimpleName();
+    private RecyclerView recyclerView;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_memorize);
+        //DONE restore the last state
 
-        //todo restore the last state
+        //INITIALIZE UI ELEMENTS
+        memorizeButton = findViewById(R.id.memorize_button);
+        recyclerView = findViewById(R.id.memorize_range_rv);
+
+
         //todo save state on exit
-        //todo memorize button action
+        //todo "memorize" button action
+
+        //UI ACTION
+        memorizeButton.setOnClickListener(this);
+
         //todo don't allow end number to be higher than the start
         /*todo end number never lower than the start
            if start number entered and it is higher than the end number, set the end number
@@ -104,8 +120,40 @@ public class MemorizeActivity extends AppCompatActivity{
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+    }
+
+    @Override
     protected void onDestroy() {
 
         super.onDestroy();
+    }
+
+    @Override
+    public void onClick(View v) {
+        //TODO make an HTTP request to load the matching ayats
+        //show the selected range
+
     }
 }
