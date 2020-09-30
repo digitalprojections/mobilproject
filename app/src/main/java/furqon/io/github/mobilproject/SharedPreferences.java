@@ -26,6 +26,7 @@ public class SharedPreferences
     static final String RANDOM_AYAH_SEEN = "SEEN";
     static final String PERSONAL_REWARD = "PERSONALREWARD";
     static final String SELECTED_AUDIO_LANGUAGE = "SELECTED_AUDIO";
+    static final String SELECTED_MEMORIZING_SURAH = "MEMORIZING_SURAH";
     private static final String TRACKS = "TRACKS";
     private static android.content.SharedPreferences mSharedPref;
     final String COINS = "COINS";

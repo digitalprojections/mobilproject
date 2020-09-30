@@ -103,14 +103,19 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
     private RecyclerView recyclerView;
     private MemorizeActivityAdapter adapter;
+    private Integer lastSurah = 0;
 
-
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_memorize);
+        sharedPreferences = SharedPreferences.getInstance();
         //DONE restore the last state
+        if(sharedPreferences.contains(SharedPreferences.SELECTED_MEMORIZING_SURAH)){
+            lastSurah = sharedPreferences.read(SharedPreferences.SELECTED_MEMORIZING_SURAH, 0);
+        }
 
         //INITIALIZE UI ELEMENTS
         suranames_spinner = findViewById(R.id.surah_spinner);
@@ -123,7 +128,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         repeatValue = findViewById(R.id.editTextNumber3);
 
         recyclerView = findViewById(R.id.memorize_range_rv);
-        adapter = new MemorizeActivityAdapter();
+        adapter = new MemorizeActivityAdapter(this);
 
         //todo save state on exit
         //todo "memorize" button action
@@ -184,7 +189,12 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Log.d(TAG, "p " + position);
+        //Log.d(TAG, "p " + position);
+        //DONE save the selected item for the resume
+        lastSurah = position;
+        //TODO HTTPrequest
+
+        sharedPreferences.write(SharedPreferences.SELECTED_MEMORIZING_SURAH, position);
     }
 
     @Override
