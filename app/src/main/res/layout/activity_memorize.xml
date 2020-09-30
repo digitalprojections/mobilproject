@@ -9,10 +9,13 @@
         android:id="@+id/textView15"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Memorize by Ayats"
+        android:text="Memorize Quran"
         android:textAlignment="center"
         android:textSize="24sp" />
-
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="8dp" />
     <Spinner
         android:id="@+id/surah_spinner"
         android:layout_width="match_parent"

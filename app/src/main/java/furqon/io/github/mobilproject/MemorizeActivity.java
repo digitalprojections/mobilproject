@@ -184,7 +184,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+        Log.d(TAG, "p " + position);
     }
 
     @Override
