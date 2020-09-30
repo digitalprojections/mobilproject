@@ -27,58 +27,45 @@
             android:id="@+id/editTextNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:layout_weight="2"
-            android:layout_marginRight="8dp"
+            android:autofillHints=""
             android:ems="10"
+            android:hint="start"
             android:inputType="number" />
-
-        <TextView
-            android:id="@+id/textView16"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
-            android:text="start" />
 
         <EditText
             android:id="@+id/editTextNumber2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:layout_weight="2"
-            android:layout_marginRight="8dp"
             android:ems="10"
+            android:hint="end"
+            android:importantForAutofill="no"
             android:inputType="number" />
-
-        <TextView
-            android:id="@+id/textView17"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
-            android:text="end" />
 
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
-            android:text="Repeat count:"/>
+
         <EditText
+            android:id="@+id/editTextNumber3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/editTextNumber3"
-            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
             android:ems="10"
-            android:inputType="number"/>
+            android:hint="repeat count"
+            android:importantForAutofill="no"
+            android:inputType="number" />
     </LinearLayout>
 
     <Button
         android:id="@+id/memorize_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
         android:text="Memorize" />
 
     <androidx.recyclerview.widget.RecyclerView
