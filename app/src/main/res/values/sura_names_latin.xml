@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="suranames">
+        <item>	1. Al-Fatihah (the Opening)	</item>
+        <item>	2. Al-Baqarah (the Cow)	</item>
+        <item>	3. Aali Imran (the Family of Imran)	</item>
+        <item>	4. An-Nisa’ (the Women)	</item>
+        <item>	5. Al-Ma’idah (the Table)	</item>
+        <item>	6. Al-An’am (the Cattle)	</item>
+        <item>	7. Al-A’raf (the Heights)	</item>
+        <item>	8. Al-Anfal (the Spoils of War)	</item>
+        <item>	9. At-Taubah (the Repentance)	</item>
+        <item>	10. Yunus (Yunus)	</item>
+        <item>	11. Hud (Hud)	</item>
+        <item>	12. Yusuf (Yusuf)	</item>
+        <item>	13. Ar-Ra’d (the Thunder)	</item>
+        <item>	14. Ibrahim (Ibrahim)	</item>
+        <item>	15. Al-Hijr (the Rocky Tract)	</item>
+        <item>	16. An-Nahl (the Bees)	</item>
+        <item>	17. Al-Isra’ (the Night Journey)	</item>
+        <item>	18. Al-Kahf (the Cave)	</item>
+        <item>	19. Maryam (Maryam)	</item>
+        <item>	20. Ta-Ha (Ta-Ha)	</item>
+        <item>	21. Al-Anbiya’ (the Prophets)	</item>
+        <item>	22. Al-Haj (the Pilgrimage)	</item>
+        <item>	23. Al-Mu’minun (the Believers)	</item>
+        <item>	24. An-Nur (the Light)	</item>
+        <item>	25. Al-Furqan (the Criterion)	</item>
+        <item>	26. Ash-Shu’ara’ (the Poets)	</item>
+        <item>	27. An-Naml (the Ants)	</item>
+        <item>	28. Al-Qasas (the Stories)	</item>
+        <item>	29. Al-Ankabut (the Spider)	</item>
+        <item>	30. Ar-Rum (the Romans)	</item>
+        <item>	31. Luqman (Luqman)	</item>
+        <item>	32. As-Sajdah (the Prostration)	</item>
+        <item>	33. Al-Ahzab (the Combined Forces)	</item>
+        <item>	34. Saba’ (the Sabeans)	</item>
+        <item>	35. Al-Fatir (the Originator)	</item>
+        <item>	36. Ya-Sin (Ya-Sin)	</item>
+        <item>	37. As-Saffah (Those Ranges in Ranks)	</item>
+        <item>	38. Sad (Sad)	</item>
+        <item>	39. Az-Zumar (the Groups)	</item>
+        <item>	40. Ghafar (the Forgiver)	</item>
+        <item>	41. Fusilat (Distinguished)	</item>
+        <item>	42. Ash-Shura (the Consultation)	</item>
+        <item>	43. Az-Zukhruf (the Gold)	</item>
+        <item>	44. Ad-Dukhan (the Smoke)	</item>
+        <item>	45. Al-Jathiyah (the Kneeling)	</item>
+        <item>	46. Al-Ahqaf (the Valley)	</item>
+        <item>	47. Muhammad (Muhammad)	</item>
+        <item>	48. Al-Fat’h (the Victory)	</item>
+        <item>	49. Al-Hujurat (the Dwellings)	</item>
+        <item>	50. Qaf (Qaf)	</item>
+        <item>	51. Adz-Dzariyah (the Scatterers)	</item>
+        <item>	52. At-Tur (the Mount)	</item>
+        <item>	53. An-Najm (the Star)	</item>
+        <item>	54. Al-Qamar (the Moon)	</item>
+        <item>	55. Ar-Rahman (the Most Gracious)	</item>
+        <item>	56. Al-Waqi’ah (the Event)	</item>
+        <item>	57. Al-Hadid (the Iron)	</item>
+        <item>	58. Al-Mujadilah (the Reasoning)	</item>
+        <item>	59. Al-Hashr (the Gathering)	</item>
+        <item>	60. Al-Mumtahanah (the Tested)	</item>
+        <item>	61. As-Saf (the Row)	</item>
+        <item>	62. Al-Jum’ah (Friday)	</item>
+        <item>	63. Al-Munafiqun (the Hypocrites)	</item>
+        <item>	64. At-Taghabun (the Loss and Gain)	</item>
+        <item>	65. At-Talaq (the Divorce)	</item>
+        <item>	66. At-Tahrim (the Prohibition)	</item>
+        <item>	67. Al-Mulk – (the Kingdom)	</item>
+        <item>	68. Al-Qalam (the Pen)	</item>
+        <item>	69. Al-Haqqah (the Inevitable)	</item>
+        <item>	70. Al-Ma’arij (the Elevated Passages)	</item>
+        <item>	71. Nuh (Nuh)	</item>
+        <item>	72. Al-Jinn (the Jinn)	</item>
+        <item>	73. Al-Muzammil (the Wrapped)	</item>
+        <item>	74. Al-Mudaththir (the Cloaked)	</item>
+        <item>	75. Al-Qiyamah (the Resurrection)	</item>
+        <item>	76. Al-Insan (the Human)	</item>
+        <item>	77. Al-Mursalat (Those Sent Forth)	</item>
+        <item>	78. An-Naba’ (the Great News)	</item>
+        <item>	79. An-Nazi’at (Those Who Pull Out)	</item>
+        <item>	80. ‘Abasa (He Frowned)	</item>
+        <item>	81. At-Takwir (the Overthrowing)	</item>
+        <item>	82. Al-Infitar (the Cleaving)	</item>
+        <item>	83. Al-Mutaffifin (Those Who Deal in Fraud)	</item>
+        <item>	84. Al-Inshiqaq (the Splitting Asunder)	</item>
+        <item>	85. Al-Buruj (the Stars)	</item>
+        <item>	86. At-Tariq (the Nightcomer)	</item>
+        <item>	87. Al-A’la (the Most High)	</item>
+        <item>	88. Al-Ghashiyah (the Overwhelming)	</item>
+        <item>	89. Al-Fajr (the Dawn)	</item>
+        <item>	90. Al-Balad (the City)	</item>
+        <item>	91. Ash-Shams (the Sun)	</item>
+        <item>	92. Al-Layl (the Night)	</item>
+        <item>	93. Adh-Dhuha (the Forenoon)	</item>
+        <item>	94. Al-Inshirah (the Opening Forth)	</item>
+        <item>	95. At-Tin (the Fig)	</item>
+        <item>	96. Al-‘Alaq (the Clot)	</item>
+        <item>	97. Al-Qadar (the Night of Decree)	</item>
+        <item>	98. Al-Bayinah (the Proof)	</item>
+        <item>	99. Az-Zalzalah (the Earthquake)	</item>
+        <item>	100. Al-‘Adiyah (the Runners)	</item>
+        <item>	101. Al-Qari’ah (the Striking Hour)	</item>
+        <item>	102. At-Takathur (the Piling Up)	</item>
+        <item>	103. Al-‘Asr (the Time)	</item>
+        <item>	104. Al-Humazah (the Slanderer)	</item>
+        <item>	105. Al-Fil (the Elephant)	</item>
+        <item>	106. Quraish (Quraish)	</item>
+        <item>	107. Al-Ma’un (the Assistance)	</item>
+        <item>	108. Al-Kauthar (the River of Abundance)	</item>
+        <item>	109. Al-Kafirun (the Disbelievers)	</item>
+        <item>	110. An-Nasr (the Help)	</item>
+        <item>	111. Al-Masad (the Palm Fiber)	</item>
+        <item>	112. Al-Ikhlas (the Sincerity)	</item>
+        <item>	113. Al-Falaq (the Daybreak)	</item>
+        <item>	114. An-Nas (Mankind)	</item>
+    </array>
+</resources>

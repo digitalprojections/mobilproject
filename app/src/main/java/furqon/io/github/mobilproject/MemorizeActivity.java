@@ -34,9 +34,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -86,12 +88,23 @@ import furqon.io.github.mobilproject.Services.OnClearFromService;
 
 import static furqon.io.github.mobilproject.BuildConfig.*;
 
-public class MemorizeActivity extends AppCompatActivity implements View.OnClickListener {
+public class MemorizeActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+
+    public static final String TAG = MemorizeActivity.class.getSimpleName();
 
     //DEFINE UI ELEMENTS
-    Button memorizeButton;
-    public static final String TAG = MemorizeActivity.class.getSimpleName();
+    private Spinner suranames_spinner;
+    private Button memorizeButton;
+    private Button decButton;
+    private Button incButton;
+    private EditText startValue;
+    private EditText endValue;
+    private EditText repeatValue;
+
     private RecyclerView recyclerView;
+    private MemorizeActivityAdapter adapter;
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -100,15 +113,27 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         //DONE restore the last state
 
         //INITIALIZE UI ELEMENTS
+        suranames_spinner = findViewById(R.id.surah_spinner);
         memorizeButton = findViewById(R.id.memorize_button);
-        recyclerView = findViewById(R.id.memorize_range_rv);
+        decButton = findViewById(R.id.dec_button);
+        incButton = findViewById(R.id.inc_button);
 
+        startValue = findViewById(R.id.editTextNumber1);
+        endValue = findViewById(R.id.editTextNumber2);
+        repeatValue = findViewById(R.id.editTextNumber3);
+
+        recyclerView = findViewById(R.id.memorize_range_rv);
+        adapter = new MemorizeActivityAdapter();
 
         //todo save state on exit
         //todo "memorize" button action
 
         //UI ACTION
         memorizeButton.setOnClickListener(this);
+        decButton.setOnClickListener(this);
+        incButton.setOnClickListener(this);
+
+        suranames_spinner.setOnItemSelectedListener(this);
 
         //todo don't allow end number to be higher than the start
         /*todo end number never lower than the start
@@ -154,6 +179,16 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         //TODO make an HTTP request to load the matching ayats
         //show the selected range
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
 
     }
 }

@@ -13,6 +13,12 @@
         android:textAlignment="center"
         android:textSize="24sp" />
 
+    <Spinner
+        android:id="@+id/surah_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/suranames" />
+
     <Space
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -24,7 +30,7 @@
         android:orientation="horizontal">
 
         <EditText
-            android:id="@+id/editTextNumber"
+            android:id="@+id/editTextNumber1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -51,6 +57,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+        <Button
+            android:id="@+id/dec_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="-" />
+
         <EditText
             android:id="@+id/editTextNumber3"
             android:layout_width="wrap_content"
@@ -60,6 +73,13 @@
             android:hint="repeat count"
             android:importantForAutofill="no"
             android:inputType="number" />
+
+        <Button
+            android:id="@+id/inc_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="+" />
     </LinearLayout>
 
     <Button
