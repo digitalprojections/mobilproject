@@ -122,7 +122,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         lastSurah = position;
         //TODO HTTPrequest
 
-        sharedPreferences.write(SharedPreferences.SELECTED_MEMORIZING_SURAH, position);
+        if(sharedPreferences!=null && sharedPreferences.contains(SharedPreferences.SELECTED_MEMORIZING_SURAH))
+            sharedPreferences.write(SharedPreferences.SELECTED_MEMORIZING_SURAH, position);
     }
 
     @Override
