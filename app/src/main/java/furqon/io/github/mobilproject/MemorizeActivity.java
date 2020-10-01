@@ -1,92 +1,15 @@
 package furqon.io.github.mobilproject;
 
-import   androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
-import android.app.DownloadManager;
-import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Color;
-import android.media.AudioManager;
-import android.media.MediaMetadataRetriever;
-import android.media.MediaPlayer;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
-import android.opengl.Visibility;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.SeekBar;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import furqon.io.github.mobilproject.Services.OnClearFromService;
-
-import static furqon.io.github.mobilproject.BuildConfig.*;
 
 public class MemorizeActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
@@ -94,12 +17,17 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
     //DEFINE UI ELEMENTS
     private Spinner suranames_spinner;
-    private Button memorizeButton;
-    private Button decButton;
-    private Button incButton;
-    private EditText startValue;
-    private EditText endValue;
-    private EditText repeatValue;
+    private ImageButton playVerse;
+    private ImageButton decRepeat;
+    private ImageButton incRepeat;
+    private ImageButton decStart;
+    private ImageButton incStart;
+    private ImageButton decEnd;
+    private ImageButton incEnd;
+
+    private TextView startValue;
+    private TextView endValue;
+    private TextView repeatValue;
 
     private RecyclerView recyclerView;
     private MemorizeActivityAdapter adapter;
@@ -119,13 +47,13 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
         //INITIALIZE UI ELEMENTS
         suranames_spinner = findViewById(R.id.surah_spinner);
-        memorizeButton = findViewById(R.id.memorize_button);
-        decButton = findViewById(R.id.dec_button);
-        incButton = findViewById(R.id.inc_button);
+        playVerse = findViewById(R.id.play_verse);
+        decRepeat = findViewById(R.id.dec_repeat);
+        incRepeat = findViewById(R.id.inc_repeat);
 
-        startValue = findViewById(R.id.editTextNumber1);
-        endValue = findViewById(R.id.editTextNumber2);
-        repeatValue = findViewById(R.id.editTextNumber3);
+        startValue = findViewById(R.id.start_tv);
+        endValue = findViewById(R.id.end_tv);
+        repeatValue = findViewById(R.id.repeat_count_tv);
 
         recyclerView = findViewById(R.id.memorize_range_rv);
         adapter = new MemorizeActivityAdapter(this);
@@ -134,9 +62,9 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         //todo "memorize" button action
 
         //UI ACTION
-        memorizeButton.setOnClickListener(this);
-        decButton.setOnClickListener(this);
-        incButton.setOnClickListener(this);
+        playVerse.setOnClickListener(this);
+        decRepeat.setOnClickListener(this);
+        incRepeat.setOnClickListener(this);
 
         suranames_spinner.setOnItemSelectedListener(this);
 
