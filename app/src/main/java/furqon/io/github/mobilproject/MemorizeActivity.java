@@ -34,6 +34,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     private Integer lastSurah = 0;
 
     SharedPreferences sharedPreferences;
+    private String rct;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -94,16 +95,16 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         //todo "memorize" button action
         switch (v.getId()){
             case R.id.dec_start:
-                adjustHighLow(decStart, incStart);
+                adjustHighLowStart(-1);
                 break;
             case R.id.inc_start:
-                adjustHighLow(decStart, incStart);
+                adjustHighLowStart(1);
                 break;
             case R.id.dec_end:
-                adjustHighLow(decEnd, incEnd);
+                adjustHighLowEnd(-1);
                 break;
             case R.id.inc_end:
-                adjustHighLow(decEnd, incEnd);
+                adjustHighLowEnd(1);
                 break;
             case R.id.dec_repeat:
                 adjustRepeat(-1);
@@ -121,15 +122,66 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         }catch (NumberFormatException nfx){
             //cant parse
         }
-        if(repeatCount >= 0){
-            String rct = "";
-            repeatValue.setText();
-            
+        if(repeatCount > -2){
+            {
+            repeatCount+=i;
+            rct = ""+repeatCount;
+            repeatValue.setText(rct);
+
+        }
         }
     }
 
-    void adjustHighLow(ImageButton decreaser, ImageButton increaser){
+    void adjustHighLowStart(int i)
+        {
         //todo don't allow end number to be higher than the start
+            int sVal = 0;
+            int eVal = 0;
+            try {
+                sVal = Integer.parseInt(startValue.getText().toString());
+                eVal = Integer.parseInt(endValue.getText().toString());
+            }catch (NumberFormatException nfx){
+                //cant parse
+            }
+            if(i>0){
+                if(sVal<eVal-1){
+                    sVal+=i;
+                    startValue.setText(""+sVal);
+                }else if(sVal==0 && eVal==0){
+                    sVal+=i;
+                    startValue.setText(""+sVal);
+                    eVal+=i+1;
+                    endValue.setText(""+eVal);
+                }
+            }else{
+                if(sVal>1){
+                    sVal--;
+                    startValue.setText(""+sVal);
+                }
+            }
+        }
+    void adjustHighLowEnd(int i)
+    {
+        //todo don't allow end number to be higher than the start
+        int sVal = 0;
+        int eVal = 0;
+        try {
+            sVal = Integer.parseInt(startValue.getText().toString());
+            eVal = Integer.parseInt(endValue.getText().toString());
+        }catch (NumberFormatException nfx){
+            //cant parse
+        }
+        if(i>0){
+            eVal+=i;
+            endValue.setText(""+eVal);
+        }else {
+            if(sVal+1<eVal){
+                eVal+=i;
+                endValue.setText(""+eVal);
+            }else if(sVal==0 && eVal==0){
+
+            }
+        }
 
     }
 
