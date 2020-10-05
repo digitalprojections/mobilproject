@@ -86,8 +86,51 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
          */
         //todo
     }
-    void adjustHighLow(){
+    @Override
+    public void onClick(View v) {
+        //TODO make an HTTP request to load the matching ayats
+        //show the selected range
+        //TODO
+        //todo "memorize" button action
+        switch (v.getId()){
+            case R.id.dec_start:
+                adjustHighLow(decStart, incStart);
+                break;
+            case R.id.inc_start:
+                adjustHighLow(decStart, incStart);
+                break;
+            case R.id.dec_end:
+                adjustHighLow(decEnd, incEnd);
+                break;
+            case R.id.inc_end:
+                adjustHighLow(decEnd, incEnd);
+                break;
+            case R.id.dec_repeat:
+                adjustRepeat(-1);
+                break;
+            case R.id.inc_repeat:
+                adjustRepeat(1);
+                break;
+        }
+    }
+
+    private void adjustRepeat(int i) {
+        int repeatCount = -1;
+        try{
+            repeatCount = Integer.parseInt(repeatValue.getText().toString());
+        }catch (NumberFormatException nfx){
+            //cant parse
+        }
+        if(repeatCount >= 0){
+            String rct = "";
+            repeatValue.setText();
+            
+        }
+    }
+
+    void adjustHighLow(ImageButton decreaser, ImageButton increaser){
         //todo don't allow end number to be higher than the start
+
     }
 
     @Override
@@ -122,27 +165,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         super.onDestroy();
     }
 
-    @Override
-    public void onClick(View v) {
-        //TODO make an HTTP request to load the matching ayats
-        //show the selected range
-        //TODO
-        //todo "memorize" button action
-        switch (v.getId()){
-            case R.id.dec_start:
-                break;
-            case R.id.inc_start:
-                break;
-            case R.id.dec_end:
-                break;
-            case R.id.inc_end:
-                break;
-            case R.id.dec_repeat:
-                break;
-            case R.id.inc_repeat:
-                break;
-        }
-    }
+
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
