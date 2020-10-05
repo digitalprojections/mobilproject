@@ -51,6 +51,11 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         decRepeat = findViewById(R.id.dec_repeat);
         incRepeat = findViewById(R.id.inc_repeat);
 
+        incStart = findViewById(R.id.inc_start);
+        decStart = findViewById(R.id.dec_start);
+        incEnd = findViewById(R.id.inc_end);
+        decEnd = findViewById(R.id.dec_end);
+
         startValue = findViewById(R.id.start_tv);
         endValue = findViewById(R.id.end_tv);
         repeatValue = findViewById(R.id.repeat_count_tv);
@@ -58,23 +63,31 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         recyclerView = findViewById(R.id.memorize_range_rv);
         adapter = new MemorizeActivityAdapter(this);
 
-        //todo save state on exit
-        //todo "memorize" button action
+
 
         //UI ACTION
         playVerse.setOnClickListener(this);
         decRepeat.setOnClickListener(this);
         incRepeat.setOnClickListener(this);
+        decStart.setOnClickListener(this);
+        incStart.setOnClickListener(this);
+        decEnd.setOnClickListener(this);
+        incEnd.setOnClickListener(this);
 
         suranames_spinner.setOnItemSelectedListener(this);
 
-        //todo don't allow end number to be higher than the start
+
+
+
         /*todo end number never lower than the start
            if start number entered and it is higher than the end number, set the end number
             equal to the start number. But if the start number is changed to a lower value,
             reset the end number back to what it was before
          */
         //todo
+    }
+    void adjustHighLow(){
+        //todo don't allow end number to be higher than the start
     }
 
     @Override
@@ -90,6 +103,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onPause() {
         super.onPause();
+        //todo save state on exit
     }
 
     @Override
@@ -112,7 +126,22 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         //TODO make an HTTP request to load the matching ayats
         //show the selected range
-
+        //TODO
+        //todo "memorize" button action
+        switch (v.getId()){
+            case R.id.dec_start:
+                break;
+            case R.id.inc_start:
+                break;
+            case R.id.dec_end:
+                break;
+            case R.id.inc_end:
+                break;
+            case R.id.dec_repeat:
+                break;
+            case R.id.inc_repeat:
+                break;
+        }
     }
 
     @Override
