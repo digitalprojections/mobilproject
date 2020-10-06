@@ -4,45 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#5BCDDC39"
     android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/textView15"
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/toolbar"
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Memorize Quran"
-        android:textAlignment="center"
-        android:textSize="24sp" />
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minHeight="8dp" />
-    <Spinner
-        android:id="@+id/surah_spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:entries="@array/suranames" />
-
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minHeight="8dp" />
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/dec_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             app:srcCompat="@drawable/ic_baseline_remove_24" />
 
         <TextView
             android:id="@+id/start_tv"
-            android:layout_width="40dp"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:text="start"
@@ -52,18 +39,20 @@
             android:id="@+id/inc_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             app:srcCompat="@drawable/ic_baseline_add_24" />
 
         <ImageButton
             android:id="@+id/dec_end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             app:srcCompat="@drawable/ic_baseline_remove_24" />
 
         <TextView
             android:id="@+id/end_tv"
-            android:layout_width="40dp"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:text="end"
@@ -73,9 +62,11 @@
             android:id="@+id/inc_end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             app:srcCompat="@drawable/ic_baseline_add_24" />
 
     </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -87,6 +78,7 @@
             android:id="@+id/dec_repeat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             app:srcCompat="@drawable/ic_baseline_remove_24" />
 
         <TextView
@@ -102,6 +94,7 @@
             android:id="@+id/inc_repeat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             app:srcCompat="@drawable/ic_baseline_add_24" />
 
     </LinearLayout>
@@ -149,6 +142,22 @@
             app:srcCompat="@drawable/ic_baseline_volume_mute_24" />
 
     </LinearLayout>
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="8dp" />
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="8dp" />
+
+    <Spinner
+        android:id="@+id/surah_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/suranames" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/memorize_range_rv"

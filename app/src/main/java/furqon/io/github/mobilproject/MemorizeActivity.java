@@ -2,6 +2,7 @@ package furqon.io.github.mobilproject;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
@@ -45,6 +46,11 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         if(sharedPreferences.contains(SharedPreferences.SELECTED_MEMORIZING_SURAH)){
             lastSurah = sharedPreferences.read(SharedPreferences.SELECTED_MEMORIZING_SURAH, 0);
         }
+        Toolbar toolbar = findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
+        String title = getString(R.string.favorites);
+        getSupportActionBar().setTitle(title);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //INITIALIZE UI ELEMENTS
         suranames_spinner = findViewById(R.id.surah_spinner);
