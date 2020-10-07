@@ -48,7 +48,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         }
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
-        String title = getString(R.string.favorites);
+        String title = getString(R.string.memorizer);
         getSupportActionBar().setTitle(title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
