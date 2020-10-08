@@ -5,12 +5,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class MemorizeActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
@@ -25,12 +32,19 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     private ImageButton incStart;
     private ImageButton decEnd;
     private ImageButton incEnd;
-
+    private Button commitBtn;
     private TextView startValue;
     private TextView endValue;
     private TextView repeatValue;
-
     private RecyclerView recyclerView;
+
+    //DATA
+    private TitleViewModel ayahViewModel;
+    private ArrayList<Track> trackList;
+    private ArrayAdapter<CharSequence> language_adapter;
+    private MediaPlayer mediaPlayer;
+    private ArrayList<JSONObject> jsonArrayResponse;
+
     private MemorizeActivityAdapter adapter;
     private Integer lastSurah = 0;
 
@@ -43,6 +57,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_memorize);
         sharedPreferences = SharedPreferences.getInstance();
         //DONE restore the last state
+        //There was a surah selected
         if(sharedPreferences.contains(SharedPreferences.SELECTED_MEMORIZING_SURAH)){
             lastSurah = sharedPreferences.read(SharedPreferences.SELECTED_MEMORIZING_SURAH, 0);
         }
@@ -63,6 +78,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         incEnd = findViewById(R.id.inc_end);
         decEnd = findViewById(R.id.dec_end);
 
+        commitBtn = findViewById(R.id.commit_btn);
+
         startValue = findViewById(R.id.start_tv);
         endValue = findViewById(R.id.end_tv);
         repeatValue = findViewById(R.id.repeat_count_tv);
@@ -80,11 +97,9 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         incStart.setOnClickListener(this);
         decEnd.setOnClickListener(this);
         incEnd.setOnClickListener(this);
+        commitBtn.setOnClickListener(this);
 
         suranames_spinner.setOnItemSelectedListener(this);
-
-
-
 
         /*todo end number never lower than the start
            if start number entered and it is higher than the end number, set the end number
@@ -116,6 +131,9 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 adjustRepeat(-1);
                 break;
             case R.id.inc_repeat:
+                adjustRepeat(1);
+                break;
+            case R.id.commit_btn:
                 adjustRepeat(1);
                 break;
         }
@@ -232,8 +250,10 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         lastSurah = position;
         //TODO HTTPrequest
 
-        if(sharedPreferences!=null && sharedPreferences.contains(SharedPreferences.SELECTED_MEMORIZING_SURAH))
+        if(sharedPreferences!=null)
+        {
             sharedPreferences.write(SharedPreferences.SELECTED_MEMORIZING_SURAH, position);
+        }
     }
 
     @Override

@@ -88,9 +88,9 @@ import static furqon.io.github.mobilproject.BuildConfig.*;
 public class MediaActivity extends AppCompatActivity implements MyListener, ManageCoins, Playable, AdapterView.OnItemSelectedListener, View.OnClickListener, SetSuraNumber, ManageDownloadIconState {
     private static final int MY_WRITE_EXTERNAL_STORAGE = 101;
     private static final String TAG = MediaActivity.class.getSimpleName();
-    private ArrayList<Track> trackList;
+
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
-    private TitleViewModel titleViewModel;
+
     private MediaActivityAdapter mAdapter;
     private LinearLayout coordinatorLayout;
     private RecyclerView recyclerView;
@@ -98,6 +98,9 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     private Spinner recitationstyle_spinner;
     private Spinner reciter_spinner;
     private SpinnerAdapter spinnerAdapter;
+
+    private TitleViewModel titleViewModel;
+    private ArrayList<Track> trackList;
     private ArrayAdapter<CharSequence> language_adapter;
     private ArrayAdapter<CharSequence> recitationstyle_adapter;
     private ArrayAdapter<CharSequence> reciter_adapter;

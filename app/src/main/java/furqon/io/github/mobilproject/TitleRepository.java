@@ -18,6 +18,7 @@ public class TitleRepository {
     private LiveData<List<RandomSurah>> randomSurah;
     private LiveData<List<MessageTable>> liveMessages;
     private LiveData<List<NewMessages>> liveUnreadMessages;
+    private LiveData<List<AyahRange>> ayahRange;
     private Context context;
 
     //MyListener myListener = (MyListener) new SuraNameList();
@@ -67,6 +68,11 @@ public class TitleRepository {
     LiveData<ChapterTitleTable> getTitle(String suraNomer){
 
         return mTitleDao.getTitle(suraNomer);
+    }
+
+    LiveData<List<AyahRange>> getAyahRange(String suraNomer, String beg, String end){
+        ayahRange = mTitleDao.getAyahRange(suraNomer, beg, end);
+        return ayahRange;
     }
 
     public void insert(ChapterTitleTable title){

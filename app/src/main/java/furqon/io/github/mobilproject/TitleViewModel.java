@@ -17,6 +17,7 @@ public class TitleViewModel extends AndroidViewModel {
     private LiveData<List<RandomSurah>> randomSurah;
     private LiveData<List<MessageTable>> liveMessages;
     private LiveData<List<NewMessages>> liveUnreadMessages;
+    private LiveData<List<AyahRange>> ayahRange;
 
     private SharedPreferences sharedPref;
 
@@ -62,6 +63,10 @@ public class TitleViewModel extends AndroidViewModel {
 
     LiveData<ChapterTitleTable> getTitle(String suraNomer){
         return titleRepository.getTitle(suraNomer);
+    }
+
+    LiveData<List<AyahRange>> getAyahRange(String suraNomer, String beg, String end){
+        return titleRepository.getAyahRange(suraNomer, beg, end);
     }
 
     public void insert(ChapterTitleTable title){

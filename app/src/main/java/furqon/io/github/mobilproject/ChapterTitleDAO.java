@@ -78,6 +78,8 @@ public interface ChapterTitleDAO {
    @Query("SELECT message_title as mTitle, message_read as unread FROM messages WHERE message_read = 0")
     LiveData<List<NewMessages>> getUnreadMessages();
 
+   @Query("")
+
 
 
 
