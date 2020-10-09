@@ -3,6 +3,8 @@ package furqon.io.github.mobilproject;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.media.MediaPlayer;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MemorizeActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
@@ -66,6 +69,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         String title = getString(R.string.memorizer);
         getSupportActionBar().setTitle(title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ayahViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
 
         //INITIALIZE UI ELEMENTS
         suranames_spinner = findViewById(R.id.surah_spinner);
@@ -134,9 +139,19 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 adjustRepeat(1);
                 break;
             case R.id.commit_btn:
-                adjustRepeat(1);
+                loadRange();
                 break;
         }
+    }
+
+    private void loadRange() {
+        ayahViewModel.getAyahRange("1", "1", "3").observe(this, new Observer<List<AyahRange>>() {
+            @Override
+            public void onChanged(List<AyahRange> ayahRanges) {
+                //TODO display the range
+                //send to the adapter
+            }
+        });
     }
 
     private void adjustRepeat(int i) {
