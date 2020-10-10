@@ -78,7 +78,7 @@ public interface ChapterTitleDAO {
    @Query("SELECT message_title as mTitle, message_read as unread FROM messages WHERE message_read = 0")
     LiveData<List<NewMessages>> getUnreadMessages();
 
-   @Query("SELECT id, sura_id, language_id, share_count, ayah_text as ar_text, audio_progress FROM quran_text WHERE sura_id =:suraid AND verse_id BETWEEN :start AND :end")
+   @Query("SELECT id, verse_id, sura_id, language_id, share_count, ayah_text as ar_text, audio_progress FROM quran_text WHERE sura_id =:suraid AND verse_id BETWEEN :start AND :end")
     LiveData<List<AyahRange>> getAyahRange(String suraid, String start, String end);
 
 

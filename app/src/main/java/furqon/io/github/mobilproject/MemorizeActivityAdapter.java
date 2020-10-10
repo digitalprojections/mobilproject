@@ -1,6 +1,7 @@
 package furqon.io.github.mobilproject;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +15,12 @@ import java.util.List;
 
 public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivityAdapter.AyahViewHolder> {
 
+    private static final String TAG = MemorizeActivityAdapter.class.getSimpleName();
     Context mContext;
     SharedPreferences sharedPreferences;
 
     private ArrayList<String> mArrayList;
+    private List<AyahRange> mAyahList;
 
     private String verse_number;//oyat nomeri
 
@@ -36,13 +39,29 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
 
     @Override
     public void onBindViewHolder(@NonNull AyahViewHolder holder, int position) {
+        AyahRange current = mAyahList.get(position);
 
+        String ayah_txt = current.ar_text;
+        String verse_number = String.valueOf(current.verse_id);
+        String download_progress = Double.toString(Math.ceil(current.audio_progress));
+
+        holder.arabic_text.setText(ayah_txt);
+        holder.ayah_number.setText(verse_number);
+        Log.d(TAG, "RANGE " + verse_number);
     }
 
 
     @Override
     public int getItemCount() {
-        return 0;
+        int size = 0;
+        if(mAyahList!=null)
+            size = mAyahList.size();
+        return size;
+    }
+
+    public void setText(List<AyahRange> ayahRanges) {
+            mAyahList = ayahRanges;
+            notifyDataSetChanged();
     }
 
     class AyahViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

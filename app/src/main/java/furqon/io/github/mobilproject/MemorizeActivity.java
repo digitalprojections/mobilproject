@@ -5,10 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,10 +20,23 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 public class MemorizeActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
@@ -53,6 +69,9 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
     SharedPreferences sharedPreferences;
     private String rct;
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
+    private Context context;
+    private String suraNumber;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,6 +88,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         String title = getString(R.string.memorizer);
         getSupportActionBar().setTitle(title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        context = this;
 
         ayahViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
 
@@ -90,7 +111,11 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         repeatValue = findViewById(R.id.repeat_count_tv);
 
         recyclerView = findViewById(R.id.memorize_range_rv);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         adapter = new MemorizeActivityAdapter(this);
+
+        recyclerView.setAdapter(adapter);
 
 
 
@@ -145,15 +170,103 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void loadRange() {
-        ayahViewModel.getAyahRange("1", "1", "3").observe(this, new Observer<List<AyahRange>>() {
+        ayahViewModel.getAyahRange(suraNumber, "1", "3").observe(this, new Observer<List<AyahRange>>() {
             @Override
             public void onChanged(List<AyahRange> ayahRanges) {
                 //TODO display the range
                 //send to the adapter
+                adapter.setText(ayahRanges);
+                Log.d(TAG, "ADAPTER " + ayahRanges.size());
+
+                if(ayahRanges.size()==0){
+                    //The list is empty. DOWNLOAD
+                    LoadSurah();
+                }
             }
         });
     }
+    private void LoadSurah() {
 
+        Log.i(TAG, "CLICK clicking");
+        RequestQueue queue = Volley.newRequestQueue(context);
+        String url = mFirebaseRemoteConfig.getString("server_php") + "/ajax_quran.php";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //progressBar.setVisibility(View.INVISIBLE);
+                        // Convert String to json object
+                        //httpresponse = true;
+                        jsonArrayResponse = new ArrayList<JSONObject>();
+
+                        try {
+                            JSONArray jsonArray = new JSONArray(response);
+                            for (int i=0; i<jsonArray.length();i++)
+                            {
+                                JSONObject object = new JSONObject(jsonArray.getString(i));
+                                jsonArrayResponse.add(object);
+                            }
+                            //PASS to SPINNER
+                            //load auction names and available lot/bid count
+                            populateAyahList(jsonArrayResponse);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.i(TAG, "error json ttttttttttttttttt");
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i(TAG, "ERROR RESPONSE enable reload button");
+                //progressBar.setVisibility(View.INVISIBLE);
+                //tempbut.setVisibility(View.VISIBLE);
+
+            }
+        }) {
+            protected Map<String, String> getParams() {
+                Map<String, String> MyData = new HashMap<String, String>();
+                MyData.put("action", "izohsiz_text_obj"); //Add the data you'd like to send to the server.
+                MyData.put("database_id", "1, 120, 59, 79");
+                MyData.put("surah_id", suraNumber);
+                //https://inventivesolutionste.ipage.com/ajax_quran.php
+                //POST
+                //action:names_as_objects
+                //language_id:1
+                return MyData;
+            }
+        };
+        tempbut.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+        queue.add(stringRequest);
+    }
+    void populateAyahList(ArrayList<JSONObject> auclist){
+
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(, android.R.layout.simple_spinner_item, auclist);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //spinner.setAdapter(adapter);
+        ChapterTextTable text;
+
+        for (JSONObject i:auclist
+        ) {
+
+            try{
+                //"ID":"31206","VerseID":"7","AyahText":"صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ","DatabaseID":"1","SuraID":"1","OrderNo":"5","SuraType":"Meccan","Note":null
+                //Log.d("JSONOBJECT", i.toString());
+                int verse_id = i.getInt("VerseID");
+                int DatabaseID = i.getInt("DatabaseID");
+                int chapter_id = i.getInt("SuraID");
+                int OrderNo = i.getInt("OrderNo");
+                String surah_type = i.getString("SuraType");
+                String AyahText = i.getString("AyahText");
+                //int sura_id, int verse_id, int favourite, int language_id, String ayah_text, String surah_type, int order_no, String comment, int read_count, int shared_count, int audio_position
+                text = new ChapterTextTable(chapter_id, verse_id,0, DatabaseID, OrderNo, AyahText, "", surah_type);
+                titleViewModel.insertText(text);
+            }catch (Exception sx){
+                Log.e(TAG, "EXCEPTION " + sx.getMessage());
+            }
+        }
+    }
     private void adjustRepeat(int i) {
         int repeatCount = -1;
         try{
@@ -262,10 +375,11 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         //Log.d(TAG, "p " + position);
         //DONE save the selected item for the resume
-        lastSurah = position;
+        lastSurah = position+1;
         //TODO HTTPrequest
+        suraNumber = String.valueOf(position+1);
 
-        if(sharedPreferences!=null)
+        if(sharedPreferences!=null && sharedPreferences.contains(SharedPreferences.SELECTED_MEMORIZING_SURAH))
         {
             sharedPreferences.write(SharedPreferences.SELECTED_MEMORIZING_SURAH, position);
         }
