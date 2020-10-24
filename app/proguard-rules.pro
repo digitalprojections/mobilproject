@@ -20,7 +20,7 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 -ignorewarnings
--keep class com.google.android.gms.** { *; }
+-keep class com.google.android.gms.* { *; }
 -keep class * {
     public private *;
 }

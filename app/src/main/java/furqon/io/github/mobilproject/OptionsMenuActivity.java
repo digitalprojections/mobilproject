@@ -13,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -196,7 +195,7 @@ public class OptionsMenuActivity extends AppCompatActivity {
                             } else {
                                 // Error
                                 // ...
-                                Crashlytics.log(Log.ERROR, TAG, task.getResult().toString());
+
                             }
 
 

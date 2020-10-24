@@ -23,7 +23,6 @@ import androidx.cardview.widget.CardView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -47,7 +46,6 @@ import java.util.List;
 import java.util.Locale;
 
 import hotchemi.android.rate.AppRate;
-import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends OptionsMenuActivity implements View.OnClickListener {
     Uri deepLink;
@@ -89,16 +87,7 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-
-
-
         mFunctions = FirebaseFunctions.getInstance();
-
-
-        Fabric.with(this, new Crashlytics());
-        Crashlytics.log("Activity created");
-
-
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         MobileAds.initialize(this, getString(R.string.addmob_app_id));
@@ -169,8 +158,6 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
             deleteDir(dir);
         } catch (Exception e) {
             e.printStackTrace();
-            Crashlytics.log(Log.ERROR, TAG, "NPE caught");
-            Crashlytics.logException(e);
         }
 // Create a deep link and display it in the UI
         if(deepLink==null){

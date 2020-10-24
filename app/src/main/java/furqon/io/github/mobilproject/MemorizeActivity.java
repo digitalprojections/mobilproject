@@ -27,6 +27,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,7 +37,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 public class MemorizeActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
@@ -92,7 +92,11 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         context = this;
 
         ayahViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
-
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setMinimumFetchIntervalInSeconds(3600)
+                .build();
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
         //INITIALIZE UI ELEMENTS
         suranames_spinner = findViewById(R.id.surah_spinner);
         playVerse = findViewById(R.id.play_verse);
@@ -170,6 +174,9 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void loadRange() {
+        if (lastSurah == 0)
+            lastSurah = 1;
+        suraNumber = Integer.toString(lastSurah);
         ayahViewModel.getAyahRange(suraNumber, "1", "3").observe(this, new Observer<List<AyahRange>>() {
             @Override
             public void onChanged(List<AyahRange> ayahRanges) {
@@ -178,14 +185,17 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 adapter.setText(ayahRanges);
                 Log.d(TAG, "ADAPTER " + ayahRanges.size());
 
-                if(ayahRanges.size()==0){
+                if (ayahRanges.size() == 0) {
                     //The list is empty. DOWNLOAD
-                    LoadSurah();
+                    httpRequestSurah();
+                } else {
+                    Log.d(TAG, "surah exists in database");
                 }
             }
         });
     }
-    private void LoadSurah() {
+
+    private void httpRequestSurah() {
 
         Log.i(TAG, "CLICK clicking");
         RequestQueue queue = Volley.newRequestQueue(context);
@@ -236,8 +246,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 return MyData;
             }
         };
-        tempbut.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
+        //tempbut.setVisibility(View.GONE);
+        //progressBar.setVisibility(View.VISIBLE);
         queue.add(stringRequest);
     }
     void populateAyahList(ArrayList<JSONObject> auclist){
@@ -260,8 +270,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 String surah_type = i.getString("SuraType");
                 String AyahText = i.getString("AyahText");
                 //int sura_id, int verse_id, int favourite, int language_id, String ayah_text, String surah_type, int order_no, String comment, int read_count, int shared_count, int audio_position
-                text = new ChapterTextTable(chapter_id, verse_id,0, DatabaseID, OrderNo, AyahText, "", surah_type);
-                titleViewModel.insertText(text);
+                text = new ChapterTextTable(chapter_id, verse_id, 0, DatabaseID, OrderNo, AyahText, "", surah_type);
+                ayahViewModel.insertText(text);
             }catch (Exception sx){
                 Log.e(TAG, "EXCEPTION " + sx.getMessage());
             }

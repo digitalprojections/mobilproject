@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.Activity;
+import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +27,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins {
 
+    Activity activity;
     private ImageButton share_btn;
     private ImageButton watchAds_btn;
     private TextView coins_txt;
@@ -35,7 +39,7 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
     private SharedPreferences mSharedPref;
     Uri deepLink;
     String userid;
-    private RewardAd mRewardedVideoAd;
+    private RewardAd mRewardedAd;
     private AdView mAdView;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     InterstitialAd mInterstitialAd;
@@ -51,9 +55,10 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
         getSupportActionBar().setTitle(title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        activity = this;
         mSharedPref = SharedPreferences.getInstance();
         mSharedPref.init(getApplicationContext());
-        mRewardedVideoAd = new RewardAd(this);
+        mRewardedAd = new RewardAd(this);
 
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
@@ -86,7 +91,7 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
             @Override
             public void onClick(View view) {
                 //TODO watch reward ads to earn coins
-                mRewardedVideoAd.SHOW();
+                mRewardedAd.SHOW(activity);
             }
         });
         mAdView = findViewById(R.id.adViewEarnCoins);
@@ -142,7 +147,7 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
 
     private void ShowRewardAdForThisItem() {
         //String suranomi = suraName.getText().toString();
-        mRewardedVideoAd.SHOW();
+        mRewardedAd.SHOW(this);
     }
     private void shareDeepLink() {
         if(userid!=null){

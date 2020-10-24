@@ -31,7 +31,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -67,7 +66,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import io.fabric.sdk.android.Fabric;
 
 public class LoginActivity extends AppCompatActivity{
 
@@ -119,10 +117,10 @@ public class LoginActivity extends AppCompatActivity{
             case R.id.noads_item:
                 if(mSharedPref.contains(SharedPreferences.NOMOREADS)){
                     if(mSharedPref.read(SharedPreferences.NOMOREADS, false))
-                        mRewardedVideoAd.NOMORE();
+                        mRewardedVideoAd.NOMORE(this);
                 }
                 else{
-                    mRewardedVideoAd.NOMORE();
+                    mRewardedVideoAd.NOMORE(this);
                 }
                 return true;
 //            case R.id.messages_i:
@@ -153,7 +151,7 @@ public class LoginActivity extends AppCompatActivity{
 
         mRewardedVideoAd = new RewardAd(this);
 
-        Fabric.with(this, new Crashlytics());
+
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
 
 
@@ -425,7 +423,7 @@ public class LoginActivity extends AppCompatActivity{
                         } catch (JSONException e) {
                             e.printStackTrace();
                             //Log.i("error json", "tttttttttttttttt");
-                            Crashlytics.log(Log.ERROR, TAG, e.getStackTrace().toString());
+                            //Crashlytics.log(Log.ERROR, TAG, e.getStackTrace().toString());
                         } catch (IndexOutOfBoundsException iobx) {
                             Log.d(TAG, "JSON " + iobx);
                         }
@@ -569,7 +567,7 @@ public class LoginActivity extends AppCompatActivity{
                     Toast.makeText(getApplicationContext(), R.string.signin_request, Toast.LENGTH_LONG).show();
                 }
             } else {
-                Crashlytics.log(Log.ERROR, TAG, "INVITER ID WAS EMPTY");
+                //Crashlytics.log(Log.ERROR, TAG, "INVITER ID WAS EMPTY");
             }
         } else {
             //user is already invited
@@ -610,7 +608,7 @@ public class LoginActivity extends AppCompatActivity{
             }
 
         } catch (Exception e) {
-            Crashlytics.log(Log.ERROR, TAG, e.getStackTrace().toString());
+            //Crashlytics.log(Log.ERROR, TAG, e.getStackTrace().toString());
 
 //assumes an issue in checking signature., but we let the caller decide on what to do.
 
@@ -645,7 +643,7 @@ public class LoginActivity extends AppCompatActivity{
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.i(TAG, "Signature send fail " + error.toString());
-                Crashlytics.log(Log.ERROR, TAG, error.toString());
+                //Crashlytics.log(Log.ERROR, TAG, error.toString());
             }
         }) {
             protected Map<String, String> getParams() {
@@ -687,7 +685,7 @@ public class LoginActivity extends AppCompatActivity{
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.i(TAG, "Signature send fail " + error.toString());
-                Crashlytics.log(Log.ERROR, TAG, error.toString());
+                //Crashlytics.log(Log.ERROR, TAG, error.toString());
             }
         }) {
             protected Map<String, String> getParams() {

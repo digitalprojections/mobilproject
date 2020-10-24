@@ -52,7 +52,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.material.snackbar.Snackbar;
@@ -427,7 +426,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                         break;
                     }catch (IndexOutOfBoundsException x){
                         suraNumber2Play = null;
-                        Crashlytics.log(x.getMessage() + " - " + Arrays.toString(x.getStackTrace()));
                     }
                 }
             }
@@ -449,7 +447,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                         } else {
                             suraNumber2Play = null;
                         }
-                        Crashlytics.log(x.getMessage() + " - " + Arrays.toString(x.getStackTrace()));
+
                     }
                 }
             }
@@ -464,7 +462,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             try {
                 tempsn = Integer.parseInt(suraNumber2Play);
             }catch (NumberFormatException x){
-                Crashlytics.log(x.getMessage() + " - " + Arrays.toString(x.getStackTrace()));
+
             }
 
             if(tempsn>0){
@@ -535,7 +533,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                         mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
                     } catch (IOException x) {
                         Log.e(TAG, "ERROR " + x.getMessage());
-                        Crashlytics.log("ERROR " + x.getMessage() + "-> " + language + "/" + recitation_style + "/" + reciter + "/" + suraNumber2Play);
                         current_track_tv.setText("");
                         Toast.makeText(this, R.string.filenotfound, Toast.LENGTH_SHORT).show();
                         mediaPlayer.release();
@@ -643,7 +640,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 isPlaying = false;
                 mediaPlayer.release();
                 handler.removeCallbacks(runnable);
-                Crashlytics.log(x.getMessage() + "TIMER STOPPED on error???");
+
             }
 
         }
@@ -707,7 +704,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                                     Track track = new Track(AudioTimer.getTimeStringFromMs(Integer.parseInt(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION))), trackname, filePath);
                                     trackList.add(track);
                                 } catch (RuntimeException x) {
-                                    Crashlytics.log(x.getMessage() + "\n" + Arrays.toString(x.getStackTrace()));
+
                                 }
                             }
                         } catch (NumberFormatException nfx) {
@@ -761,7 +758,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             try {
                 Files.move(source, target.resolve(source.getFileName()), StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException x) {
-                Crashlytics.log(x.getMessage());
+
             }
         }
     }
@@ -1003,6 +1000,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         // If request is cancelled, the result arrays are empty.
         // other 'case' lines to check for other
         // permissions this app might request.
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_WRITE_EXTERNAL_STORAGE) if (grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             // permission was granted, yay! Do the
@@ -1187,7 +1185,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                     Snackbar.make(coordinatorLayout,
                             "error " + reason,
                             Snackbar.LENGTH_LONG).show();
-                    Crashlytics.log("download error - " + reason + "->" + language + "/" + recitation_style + "/" + reciter + "/" + suraNumber2Download);
+                    //Crashlytics.log("download error - " + reason + "->" + language + "/" + recitation_style + "/" + reciter + "/" + suraNumber2Download);
                     mAdapter.notifyDataSetChanged();
                 } else if (status == DownloadManager.STATUS_PAUSED) {
                     Snackbar.make(coordinatorLayout,
@@ -1266,7 +1264,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                             actual_position = i;
                         }
                     } catch (IndexOutOfBoundsException x) {
-                        Crashlytics.log(x.getMessage() + " - " + x.getStackTrace());
+                        //Crashlytics.log(x.getMessage() + " - " + x.getStackTrace());
                     }
                 }
                 ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
@@ -1513,7 +1511,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
             }
         } catch (IllegalArgumentException x) {
-            Crashlytics.log(x.getMessage() + " - " + Arrays.toString(x.getStackTrace()));
+            //Crashlytics.log(x.getMessage() + " - " + Arrays.toString(x.getStackTrace()));
         }
         if(!mSharedPref.read(SharedPreferences.NOMOREADS, false))
             mInterstitialAd.show();
@@ -1608,7 +1606,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                         getIntent().removeExtra("suranumber");
                         playTheFileIfExists(play_item_number);
                     } catch (NullPointerException x) {
-                        Crashlytics.log(x.getMessage() + " - " + Arrays.toString(x.getStackTrace()));
+                        //Crashlytics.log(x.getMessage() + " - " + Arrays.toString(x.getStackTrace()));
                     }
                 }
             }
