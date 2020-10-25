@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -44,7 +45,8 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
                 .inflate(R.layout.memorize_ayat_item, parent, false);
         lpartxt = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, // Width of TextView
-                ViewGroup.LayoutParams.WRAP_CONTENT, 10.0f);
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                0.0f);
         return new AyahViewHolder(view);
     }
 
@@ -55,7 +57,7 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
         String ayah_txt = current.ar_text;
         String verse_number = String.valueOf(current.verse_id);
         String download_progress = Double.toString(Math.ceil(current.audio_progress));
-        holder.arabic_text.setGravity(Gravity.END);
+        holder.arabic_text.setGravity(Gravity.START);
         holder.arabic_text.setText(ayah_txt);
         holder.ayah_number.setText(verse_number);
         Log.d(TAG, "RANGE " + verse_number);
@@ -79,13 +81,18 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
 
         TextView arabic_text;
         TextView ayah_number;
+        TextView translit;
         LinearLayout arabic_text_lin_layout;
+        ProgressBar progressBar;
 
         public AyahViewHolder(@NonNull View itemView) {
             super(itemView);
             arabic_text_lin_layout = itemView.findViewById(R.id.h_mem_ar_layout);
             arabic_text = itemView.findViewById(R.id.memorization_arabic_tv);
             ayah_number = itemView.findViewById(R.id.arab_number);
+            translit = itemView.findViewById(R.id.transliteration_tv);
+            progressBar = itemView.findViewById(R.id.progressBarVerse);
+
             Typeface madina;
             if (sharedPreferences.contains(sharedPreferences.FONT)) {
                 switch (sharedPreferences.read(sharedPreferences.FONT, "")) {
@@ -106,18 +113,19 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
                 madina = ResourcesCompat.getFont(mContext, R.font.al_qalam);
             }
             ((LinearLayout.LayoutParams) lpartxt).setMargins(10, 0, 1, 1);
+            translit.setVisibility(View.GONE);
             arabic_text.setTextSize(30);
             if (sharedPreferences.contains(sharedPreferences.FONTSIZE)) {
                 float fs = (float) sharedPreferences.read(sharedPreferences.FONTSIZE, 0);
                 arabic_text.setTextSize(TypedValue.COMPLEX_UNIT_PX, fs);
             }
-            arabic_text_lin_layout.setGravity(Gravity.END);
-            arabic_text.setLayoutParams(lpartxt);
+            arabic_text_lin_layout.setGravity(Gravity.END | Gravity.CENTER_VERTICAL | Gravity.RIGHT);
+            //arabic_text.setLayoutParams(lpartxt);
             arabic_text.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
-            arabic_text.setGravity(Gravity.END);
+            arabic_text.setGravity(Gravity.START);
             arabic_text.setTypeface(madina);
-
-
+            //arabic_text.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+            progressBar.setVisibility(View.GONE);
         }
 
         @Override

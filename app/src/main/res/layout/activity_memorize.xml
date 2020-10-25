@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#5BCDDC39"
+    android:background="#C8E6C9"
     android:orientation="vertical">
+
     <include
         android:id="@+id/tool_bar"
         layout="@layout/toolbar"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        />
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,16 +22,16 @@
         android:paddingBottom="4dp">
 
         <ImageButton
-            android:clickable="true"
             android:id="@+id/dec_start"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/memorize_custom_button"
+            android:clickable="true"
             android:contentDescription="@string/decrease_the_value"
 
-            app:srcCompat="@drawable/ic_baseline_remove_24"
-            android:focusable="true" />
+            android:focusable="true"
+            app:srcCompat="@drawable/ic_baseline_remove_24" />
 
         <TextView
             android:id="@+id/start_tv"
@@ -39,20 +39,21 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:inputType="number"
             android:text="1"
             android:textAlignment="center"
             android:textSize="24sp" />
 
         <ImageButton
             android:id="@+id/inc_start"
-            android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/memorize_custom_button"
+            android:clickable="true"
             android:contentDescription="@string/increase_the_value"
-            app:srcCompat="@drawable/ic_baseline_add_24"
-            android:focusable="true" />
+            android:focusable="true"
+            app:srcCompat="@drawable/ic_baseline_add_24" />
 
         <Space
             android:layout_width="wrap_content"
@@ -61,14 +62,14 @@
 
         <ImageButton
             android:id="@+id/dec_end"
-            android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/memorize_custom_button"
+            android:clickable="true"
             android:contentDescription="@string/decrease_the_value"
-            app:srcCompat="@drawable/ic_baseline_remove_24"
-            android:focusable="true" />
+            android:focusable="true"
+            app:srcCompat="@drawable/ic_baseline_remove_24" />
 
         <TextView
             android:id="@+id/end_tv"
@@ -76,20 +77,21 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:inputType="number"
             android:text="2"
             android:textAlignment="center"
             android:textSize="24sp" />
 
         <ImageButton
             android:id="@+id/inc_end"
-            android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/memorize_custom_button"
+            android:clickable="true"
             android:contentDescription="@string/increase_the_value"
-            app:srcCompat="@drawable/ic_baseline_add_24"
-            android:focusable="true" />
+            android:focusable="true"
+            app:srcCompat="@drawable/ic_baseline_add_24" />
 
     </LinearLayout>
 
@@ -104,14 +106,14 @@
 
         <ImageButton
             android:id="@+id/dec_repeat"
-            android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/memorize_custom_button"
+            android:clickable="true"
             android:contentDescription="@string/decrease_repeat_count"
-            app:srcCompat="@drawable/ic_baseline_remove_24"
-            android:focusable="true" />
+            android:focusable="true"
+            app:srcCompat="@drawable/ic_baseline_remove_24" />
 
         <TextView
             android:id="@+id/repeat_count_tv"
@@ -125,14 +127,14 @@
 
         <ImageButton
             android:id="@+id/inc_repeat"
-            android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/memorize_custom_button"
+            android:clickable="true"
             android:contentDescription="@string/increase_repeat_count"
-            app:srcCompat="@drawable/ic_baseline_add_24"
-            android:focusable="true" />
+            android:focusable="true"
+            app:srcCompat="@drawable/ic_baseline_add_24" />
 
     </LinearLayout>
 
@@ -175,13 +177,13 @@
 
         <ImageButton
             android:id="@+id/previous_verse"
-            android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/memorize_custom_button"
+            android:clickable="true"
             android:contentDescription="@string/previous_ayah"
-            app:srcCompat="@drawable/ic_previous"
-            android:focusable="true" />
+            android:focusable="true"
+            app:srcCompat="@drawable/ic_previous" />
 
         <Space
             android:layout_width="wrap_content"
@@ -204,13 +206,13 @@
 
         <ImageButton
             android:id="@+id/next_verse"
-            android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/memorize_custom_button"
+            android:clickable="true"
             android:contentDescription="@string/next_ayah"
-            app:srcCompat="@drawable/ic_next"
-            android:focusable="true" />
+            android:focusable="true"
+            app:srcCompat="@drawable/ic_next" />
 
         <Space
             android:layout_width="wrap_content"

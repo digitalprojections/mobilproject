@@ -186,8 +186,15 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.commit_btn:
                 loadRange();
+                //TODO
+                //also load all the audio files in a row
+                loadAudioFiles();
                 break;
         }
+    }
+
+    private void loadAudioFiles() {
+
     }
 
     private void loadRange() {

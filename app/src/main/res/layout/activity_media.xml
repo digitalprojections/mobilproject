@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0"
-            android:background="@drawable/custom_ripple"
+            android:background="@drawable/custom_ripple_media"
             android:clickable="true"
             android:contentDescription="@string/play"
             android:focusable="auto"
@@ -85,7 +85,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0"
-            android:background="@drawable/custom_ripple"
+            android:background="@drawable/custom_ripple_media"
             android:clickable="true"
             android:focusable="auto"
             app:srcCompat="@drawable/ic_fast_rewind_black_32dp" />
@@ -100,7 +100,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:background="@drawable/custom_ripple"
+            android:background="@drawable/custom_ripple_media"
             android:clickable="true"
             android:focusable="auto"
             app:srcCompat="@drawable/ic_play_circle_48dp" />
@@ -115,7 +115,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0"
-            android:background="@drawable/custom_ripple"
+            android:background="@drawable/custom_ripple_media"
             android:clickable="true"
             android:focusable="auto"
             app:srcCompat="@drawable/ic_fast_forward_black_32dp" />
