@@ -7,9 +7,18 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/tool_bar"
+
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        android:layout_width="match_parent" />
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:paddingStart="8dp"
         android:paddingEnd="8dp">
 
@@ -28,27 +37,35 @@
                 android:layout_marginBottom="10dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/app_logo_description"
-                android:src="@drawable/ic_asset_32furqon_logo" />
+                app:srcCompat="@drawable/ic_asset_32furqon_logo" />
 
-            <include layout="@layout/chapter_button" />
+            <include
+                layout="@layout/chapter_button"
+                android:layout_weight="1" />
 
-            <include layout="@layout/continue_button" />
+            <!--            <include-->
+            <!--                layout="@layout/continue_button"-->
+            <!--                android:layout_weight="1" />-->
 
-            <include layout="@layout/youtube_button" />
+            <!--            <include-->
+            <!--                layout="@layout/youtube_button"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_weight="1" />-->
 
-            <include layout="@layout/search_button" />
+            <include
+                layout="@layout/rate_button"
+                android:layout_weight="1" />
 
-            <include layout="@layout/rate_button" />
+            <!--            <include-->
+            <!--                layout="@layout/search_button"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_weight="1" />-->
 
             <include layout="@layout/messages_button" />
 
             <include layout="@layout/media_button" />
 
-            <include
-                layout="@layout/about_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
+            <!--            <include layout="@layout/about_button" />-->
 
         </LinearLayout>
     </ScrollView>

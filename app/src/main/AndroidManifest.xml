@@ -48,16 +48,16 @@
                     android:pathPattern="*"
                     android:scheme="https" />
             </intent-filter>
-        </activity>
-        <activity android:name=".MemorizeActivity"
-            android:label="Memorize by Ayats"
-            android:parentActivityName=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".MemorizeActivity"
+            android:label="Memorize by Ayats"
+            android:parentActivityName=".MainActivity"></activity>
         <activity
             android:name=".EarnCoinsActivity"
             android:parentActivityName=".MediaActivity" />

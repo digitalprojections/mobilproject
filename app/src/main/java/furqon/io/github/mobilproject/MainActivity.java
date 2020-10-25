@@ -1,44 +1,26 @@
 package furqon.io.github.mobilproject;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.appindexing.Action;
 import com.google.firebase.appindexing.FirebaseUserActions;
 import com.google.firebase.appindexing.builders.Actions;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.dynamiclinks.DynamicLink;
-import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
-import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.google.firebase.functions.FirebaseFunctions;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -51,6 +33,7 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
     Uri deepLink;
 
     CardView suralar_but;
+    CardView memorize_but;
     //CardView davomi_but;
     //CardView youtube_but;
     //Button favourite_but;
@@ -120,13 +103,15 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
         audio_but = findViewById(R.id.mediabutton);
         //about_but = findViewById(R.id.about_button);
         suralar_but = findViewById(R.id.suralar);
+        memorize_but = findViewById(R.id.memorizebutton);
+
         //davomi_but = findViewById(R.id.davomi);
         //youtube_but = findViewById(R.id.youtubebut);
         imageView = findViewById(R.id.imageView);
 
         Picasso.get().load(R.mipmap.read).into((ImageView) findViewById(R.id.imageViewSuralar));
         Picasso.get().load(R.mipmap.messages).into((ImageView) findViewById(R.id.imageViewMessages));
-        //Picasso.get().load(R.mipmap.bookmarkjpg).into((ImageView) findViewById(R.id.imageViewBookmark));
+        Picasso.get().load(R.mipmap.bookmarkjpg).into((ImageView) findViewById(R.id.imageViewMemorize));
         Picasso.get().load(R.mipmap.star).into((ImageView) findViewById(R.id.imageViewRate));
         Picasso.get().load(R.mipmap.audio).into((ImageView) findViewById(R.id.imageViewMedia));
         //Picasso.get().load(R.mipmap.youtube).into((ImageView) findViewById(R.id.imageViewYoutube));
@@ -135,6 +120,7 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
         imageView.setOnClickListener(this);
         //youtube_but.setOnClickListener(this);
         suralar_but.setOnClickListener(this);
+        memorize_but.setOnClickListener(this);
         //davomi_but.setOnClickListener(this);
         //favourite_but.setOnClickListener(this);
         //search_but.setOnClickListener(this);
@@ -296,6 +282,11 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
 
     }
 
+    private void open_memory_activity() {
+        Intent intent = new Intent(this, MemorizeActivity.class);
+        startActivity(intent);
+    }
+
     private void displayResult(final String result) {
         handler.post(new Runnable() {
             public void run() {
@@ -345,9 +336,9 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
             case R.id.suralar:
                 open_suraNames();
                 break;
-//            case R.id.davomi:
-//                continueReading();
-//                break;
+            case R.id.memorizebutton:
+                open_memory_activity();
+                break;
 //            case R.id.youtubebut:
 //                open_youtube();
 //                break;

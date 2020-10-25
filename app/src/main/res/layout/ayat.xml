@@ -45,8 +45,9 @@
             android:layoutDirection="ltr"
 
             android:padding="5dp"
+            android:text="test"
             android:textColor="#000000"
-            android:textDirection="rtl" />
+            android:textDirection="ltr" />
 
     </LinearLayout>
 

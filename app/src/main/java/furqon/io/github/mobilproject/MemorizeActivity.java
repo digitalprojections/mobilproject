@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -56,6 +57,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     private TextView endValue;
     private TextView repeatValue;
     private RecyclerView recyclerView;
+    private ProgressBar progressBar;
 
     //DATA
     private TitleViewModel ayahViewModel;
@@ -68,6 +70,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     private Integer lastSurah = 0;
 
     SharedPreferences sharedPreferences;
+    private String startAyahNumber;
+    private String endAyahNumber;
     private String rct;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private Context context;
@@ -78,6 +82,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_memorize);
         sharedPreferences = SharedPreferences.getInstance();
+        sharedPreferences.init(getApplicationContext());
         //DONE restore the last state
         //There was a surah selected
         if(sharedPreferences.contains(SharedPreferences.SELECTED_MEMORIZING_SURAH)){
@@ -99,6 +104,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
         //INITIALIZE UI ELEMENTS
         suranames_spinner = findViewById(R.id.surah_spinner);
+
         playVerse = findViewById(R.id.play_verse);
         decRepeat = findViewById(R.id.dec_repeat);
         incRepeat = findViewById(R.id.inc_repeat);
@@ -116,12 +122,14 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
         recyclerView = findViewById(R.id.memorize_range_rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         adapter = new MemorizeActivityAdapter(this);
-
         recyclerView.setAdapter(adapter);
 
+        progressBar = findViewById(R.id.progressBarMemorize);
+        progressBar.setVisibility(View.GONE);
 
+        startAyahNumber = startValue.getText().toString();
+        endAyahNumber = endValue.getText().toString();
 
         //UI ACTION
         playVerse.setOnClickListener(this);
@@ -135,20 +143,29 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
         suranames_spinner.setOnItemSelectedListener(this);
 
-        /*todo end number never lower than the start
+        /*DONE end number never lower than the start
            if start number entered and it is higher than the end number, set the end number
             equal to the start number. But if the start number is changed to a lower value,
             reset the end number back to what it was before
          */
-        //todo
+        //DONE
+        populateSpinner();
     }
+
+    private void populateSpinner() {
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.suranames, android.R.layout.simple_spinner_item);
+// Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+// Apply the adapter to the spinner
+        suranames_spinner.setAdapter(adapter);
+        suranames_spinner.setSelection(sharedPreferences.read(SharedPreferences.SELECTED_MEMORIZING_SURAH, 0));
+    }
+
     @Override
     public void onClick(View v) {
-        //TODO make an HTTP request to load the matching ayats
-        //show the selected range
-        //TODO
-        //todo "memorize" button action
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.dec_start:
                 adjustHighLowStart(-1);
                 break;
@@ -177,7 +194,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         if (lastSurah == 0)
             lastSurah = 1;
         suraNumber = Integer.toString(lastSurah);
-        ayahViewModel.getAyahRange(suraNumber, "1", "3").observe(this, new Observer<List<AyahRange>>() {
+        ayahViewModel.getAyahRange(suraNumber, startAyahNumber, endAyahNumber).observe(this, new Observer<List<AyahRange>>() {
             @Override
             public void onChanged(List<AyahRange> ayahRanges) {
                 //TODO display the range
@@ -205,20 +222,18 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //progressBar.setVisibility(View.INVISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                        commitBtn.setEnabled(true);
                         // Convert String to json object
                         //httpresponse = true;
                         jsonArrayResponse = new ArrayList<JSONObject>();
 
                         try {
                             JSONArray jsonArray = new JSONArray(response);
-                            for (int i=0; i<jsonArray.length();i++)
-                            {
+                            for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject object = new JSONObject(jsonArray.getString(i));
                                 jsonArrayResponse.add(object);
                             }
-                            //PASS to SPINNER
-                            //load auction names and available lot/bid count
                             populateAyahList(jsonArrayResponse);
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -229,7 +244,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.i(TAG, "ERROR RESPONSE enable reload button");
-                //progressBar.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.GONE);
+                commitBtn.setEnabled(true);
                 //tempbut.setVisibility(View.VISIBLE);
 
             }
@@ -246,8 +262,11 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 return MyData;
             }
         };
+        //Making request. Disable the commit button to avoid multiple requests.
+
         //tempbut.setVisibility(View.GONE);
-        //progressBar.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+        commitBtn.setEnabled(false);
         queue.add(stringRequest);
     }
     void populateAyahList(ArrayList<JSONObject> auclist){
@@ -278,20 +297,23 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         }
     }
     private void adjustRepeat(int i) {
-        int repeatCount = -1;
+        int repeatCount = 0;
         try{
             repeatCount = Integer.parseInt(repeatValue.getText().toString());
         }catch (NumberFormatException nfx){
             //cant parse
+            repeatCount = 1;
         }
-        if(repeatCount > -2){
-            {
-            repeatCount+=i;
-            rct = ""+repeatCount;
-            repeatValue.setText(rct);
+        if (i > 0) {
+            repeatCount += i;
+        } else {
+            if (repeatCount > 1) {
+                repeatCount += i;
+            }
+        }
+        rct = "" + repeatCount;
+        repeatValue.setText(rct);
 
-        }
-        }
     }
 
     void adjustHighLowStart(int i)
@@ -321,6 +343,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     startValue.setText(""+sVal);
                 }
             }
+            startAyahNumber = startValue.getText().toString();
         }
     void adjustHighLowEnd(int i)
     {
@@ -344,7 +367,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
             }
         }
-
+        endAyahNumber = endValue.getText().toString();
     }
 
     @Override
@@ -389,8 +412,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         //TODO HTTPrequest
         suraNumber = String.valueOf(position+1);
 
-        if(sharedPreferences!=null && sharedPreferences.contains(SharedPreferences.SELECTED_MEMORIZING_SURAH))
-        {
+        if (sharedPreferences != null) {
             sharedPreferences.write(SharedPreferences.SELECTED_MEMORIZING_SURAH, position);
         }
     }

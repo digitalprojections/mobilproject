@@ -144,6 +144,13 @@
         android:paddingBottom="4dp"
         android:text="@string/committolearn" />
 
+    <ProgressBar
+        android:id="@+id/progressBarMemorize"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -230,7 +237,8 @@
         android:id="@+id/surah_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:entries="@array/suranames" />
+        android:entries="@array/suranames"
+        android:minHeight="48dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/memorize_range_rv"
