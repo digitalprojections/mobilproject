@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +35,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +55,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     private ImageButton decEnd;
     private ImageButton incEnd;
     private Button commitBtn;
+    private Button dl_audio;
     private TextView startValue;
     private TextView endValue;
     private TextView repeatValue;
@@ -104,7 +107,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
         //INITIALIZE UI ELEMENTS
         suranames_spinner = findViewById(R.id.surah_spinner);
-
+        dl_audio = findViewById(R.id.download_audio_button);
         playVerse = findViewById(R.id.play_verse);
         decRepeat = findViewById(R.id.dec_repeat);
         incRepeat = findViewById(R.id.inc_repeat);
@@ -132,6 +135,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         endAyahNumber = endValue.getText().toString();
 
         //UI ACTION
+        dl_audio.setOnClickListener(this);
         playVerse.setOnClickListener(this);
         decRepeat.setOnClickListener(this);
         incRepeat.setOnClickListener(this);
@@ -188,13 +192,17 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 loadRange();
                 //TODO
                 //also load all the audio files in a row
+                break;
+            case R.id.download_audio_button:
                 loadAudioFiles();
                 break;
         }
     }
 
     private void loadAudioFiles() {
-
+        //Open download page
+        Intent intent = new Intent(this, MemorizeDownloadActivity.class);
+        startActivity(intent);
     }
 
     private void loadRange() {

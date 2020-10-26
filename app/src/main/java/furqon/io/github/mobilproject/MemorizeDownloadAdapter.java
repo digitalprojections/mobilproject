@@ -1,24 +1,45 @@
 package furqon.io.github.mobilproject;
 
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MemorizeDownloadAdapter extends RecyclerView.Adapter<MemorizeDownloadAdapter.DownloadListViewHolder> {
-    Arra
+
+    private Context mContext;
+    private List<ChapterTitleTable> mTitles = new ArrayList<>(); // Cached copy of titles
 
     @NonNull
     @Override
 
     public MemorizeDownloadAdapter.DownloadListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.sura_name_list, parent, false);
+        return new MemorizeDownloadAdapter.DownloadListViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MemorizeDownloadAdapter.DownloadListViewHolder holder, int position) {
+        ChapterTitleTable current = mTitles.get(position);
+        String name = current.uzbek;
+        String arname = current.arabic;
+        int numb = current.chapter_id;
+        holder.suraName.setText(name);
+        holder.arabic_name.setText(arname);
+        holder.suraNumber.setText(String.valueOf(numb));
+    }
 
+    void setTitles(List<ChapterTitleTable> titles) {
+        mTitles = titles;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -27,8 +48,16 @@ public class MemorizeDownloadAdapter extends RecyclerView.Adapter<MemorizeDownlo
     }
 
     public class DownloadListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView suraName;
+        TextView arabic_name;
+        TextView suraNumber;
+
         public DownloadListViewHolder(@NonNull View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
+            suraName = itemView.findViewById(R.id.sura_name_item);
+            arabic_name = itemView.findViewById(R.id.arabic);
+            suraNumber = itemView.findViewById(R.id.sura_number_item);
         }
 
         @Override

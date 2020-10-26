@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@android:dimen/notification_large_icon_height"
+    android:layout_marginBottom="2dp"
+    android:background="#9AB2DFDB"
+    android:clickable="false"
+    android:orientation="horizontal"
+    android:padding="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            app:cardBackgroundColor="#00FFFFFF">
+
+            <TextView
+                android:id="@+id/sura_number_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:background="@drawable/ayahsymbol"
+                android:gravity="center|center_horizontal|center_vertical"
+                android:textColor="#000000"
+                android:textSize="14sp" />
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/sura_name_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:text="@string/app_name"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:typeface="serif" />
+
+        <TextView
+            android:id="@+id/arabic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="0"
+            android:gravity="end"
+            android:text="@string/app_name"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <Space
+            android:layout_width="8dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/verse_count_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="0"
+            android:text="285"
+            android:textColor="#304FFE"
+            android:textSize="18sp" />
+
+        <!--<androidx.cardview.widget.CardView
+            android:id="@+id/download_cont"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardBackgroundColor="#36FFFFFF"
+            tools:visibility="visible">
+
+
+            <ImageView
+                android:id="@+id/button_download"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/unlock_the_download"
+                android:focusable="true"
+                android:tag="1"
+                android:visibility="visible"
+                app:srcCompat="@drawable/ic_unlock" />
+
+            <ProgressBar
+                android:id="@+id/progressBar_download"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:visibility="invisible" />
+
+
+        </androidx.cardview.widget.CardView>-->
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

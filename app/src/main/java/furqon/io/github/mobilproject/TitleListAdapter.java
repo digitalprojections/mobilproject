@@ -24,19 +24,18 @@ import java.util.List;
 public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.SuraListViewHolder> {
 
     private static final String TAG = "TITLELISTADAPTER";
-    //created according to the available downloaded files
-    private ArrayList<String> trackList;
+
+    private ArrayList<String> trackList;//created according to the available downloaded files
+    private Context mContext;
+    private List<ChapterTitleTable> mTitles = new ArrayList<>(); // Cached copy of titles
+
     //private ArrayList<String> enabledList = new ArrayList<String>();
     //private List<ChapterTitle> mTitleList = new ArrayList<>();
     //private RewardAd mRewardedVideoAd;
-    private Context mContext;
-
     //private final LayoutInflater mInflater;
-    private List<ChapterTitleTable> mTitles = new ArrayList<>(); // Cached copy of titles
 
 
-
-    TitleListAdapter(Context context, ArrayList<String> trackLst){
+    TitleListAdapter(Context context, ArrayList<String> trackLst) {
         //mRewardedVideoAd = new RewardAd(context);
         //mInflater = LayoutInflater.from(context);
         mContext = context;
@@ -70,7 +69,7 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
         holder.suraName.setText(name);
         holder.arabic_name.setText(arname);
         holder.suraNumber.setText(String.valueOf(numb));
-
+    }
         //TODO deciding the state of the item is tricky, when the download initiated and untill it ends.
         /*
         Since it may be impossible to listen to the result of the download, tracking is necessary
@@ -126,8 +125,8 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
 ////                holder.progressBar.setVisibility(View.INVISIBLE);
 //            }
 //        }
-    }
-    private boolean itemDownloading(int sid){
+//    }
+    /*private boolean itemDownloading(int sid){
         DownloadManager downloadManager = (DownloadManager) mContext.getSystemService(mContext.DOWNLOAD_SERVICE);
         DownloadManager.Query query = new DownloadManager.Query();
         long did = (long) SharedPreferences.getInstance().read("downloading_surah_"+sid, 0);
@@ -143,7 +142,7 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
                 }
             }
             return false;
-        }
+        }*/
     void setTitles(List<ChapterTitleTable> titles){
         mTitles = titles;
         notifyDataSetChanged();
@@ -172,7 +171,7 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
 //        }
         return retval;
     }
-
+/*
     private boolean TrackDownloaded(String v) {
         boolean retval = false;
         for (String i : trackList
@@ -185,25 +184,28 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
 
         }
         return retval;
-    }
+    }*/
+/*
 
     private boolean nameNotFound(String name) {
         boolean retval = false;
-        /*for (String i:mArrayList
+        */
+/*for (String i:mArrayList
              ) {
             if(i==name){
                 retval = true;
             }
-        }*/
+        }*//*
+
         return retval;
     }
+*/
 
 
     @Override
     public int getItemCount() {
         int c = 0;
-        if(mTitles!=null)
-        {
+        if (mTitles != null) {
             c = mTitles.size();
         }
         return c;

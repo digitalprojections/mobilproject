@@ -242,6 +242,13 @@
         android:entries="@array/suranames"
         android:minHeight="48dp" />
 
+    <Button
+        android:id="@+id/download_audio_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/memorize_custom_button"
+        android:text="Download Audio" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/memorize_range_rv"
         android:layout_width="match_parent"

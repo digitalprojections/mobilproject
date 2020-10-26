@@ -10,8 +10,8 @@
 
     <include
         android:id="@+id/tool_bar"
-        android:layout_weight="0"
-        android:layout_height="match_parent"
+        layout="@layout/toolbar"
+        android:layout_height="wrap_content"
         android:layout_width="match_parent" />
 
     <androidx.recyclerview.widget.RecyclerView

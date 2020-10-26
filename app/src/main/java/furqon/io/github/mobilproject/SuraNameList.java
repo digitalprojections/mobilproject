@@ -1,14 +1,8 @@
 package furqon.io.github.mobilproject;
 
-import android.Manifest;
 import android.app.DownloadManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -17,13 +11,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -45,7 +36,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -242,7 +232,7 @@ public class SuraNameList extends AppCompatActivity {
 
                             //PASS to SPINNER
                             //load auction names and available lot/bid count
-                            populateAuctionList(jsonArrayResponse);
+                            populateSurahTitleList(jsonArrayResponse);
                             progressBar.setVisibility(View.GONE);
 
                         } catch (JSONException e) {
@@ -273,14 +263,14 @@ public class SuraNameList extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    void populateAuctionList(ArrayList<JSONObject> auclist) {
+    void populateSurahTitleList(ArrayList<JSONObject> surahTitleList) {
 
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(, android.R.layout.simple_spinner_item, auclist);
 //        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //spinner.setAdapter(adapter);
         ChapterTitleTable title;
 
-        for (JSONObject i : auclist
+        for (JSONObject i : surahTitleList
         ) {
 
             try {
