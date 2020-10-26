@@ -255,6 +255,7 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
     public boolean getDownload_view() {
         return download_view;
     }
+
     class PlayListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         boolean download_view;
         private TextView pl_title;

@@ -37,11 +37,7 @@ public class Track implements Comparable {
         int rv = 0;
         try {
             rv = Integer.parseInt(this.getName()) - Integer.parseInt(((Track) o).getName());
-        } catch (NumberFormatException ignored) {
-
-        } catch (NullPointerException ignored) {
-
-        } catch (ClassCastException ignored) {
+        } catch (NumberFormatException | NullPointerException | ClassCastException ignored) {
 
         }
 

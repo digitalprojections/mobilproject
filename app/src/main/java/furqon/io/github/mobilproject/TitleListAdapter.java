@@ -31,14 +31,14 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
     //private RewardAd mRewardedVideoAd;
     private Context mContext;
 
-    private final LayoutInflater mInflater;
+    //private final LayoutInflater mInflater;
     private List<ChapterTitleTable> mTitles = new ArrayList<>(); // Cached copy of titles
 
 
 
     TitleListAdapter(Context context, ArrayList<String> trackLst){
         //mRewardedVideoAd = new RewardAd(context);
-        mInflater = LayoutInflater.from(context);
+        //mInflater = LayoutInflater.from(context);
         mContext = context;
         this.trackList = trackLst;
     }
@@ -52,7 +52,7 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
     @Override
     public SuraListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
         //View view = mInflater.inflate(R.layout.sura_title, parent, false);
-        View view = mInflater.from(parent.getContext())
+        View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.sura_title, parent, false);
         return new SuraListViewHolder(view);
     }

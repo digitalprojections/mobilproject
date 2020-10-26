@@ -18,6 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher2_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".MemorizeDownloadActivity"></activity>
         <activity android:name=".OptionsMenuActivity" />
         <activity
             android:name=".PrivacyPolicyActivity"
@@ -36,7 +37,6 @@
             android:name=".LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -48,7 +48,6 @@
                     android:pathPattern="*"
                     android:scheme="https" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".MemorizeActivity"
@@ -56,6 +55,7 @@
             android:parentActivityName=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
