@@ -209,6 +209,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         if (lastSurah == 0)
             lastSurah = 1;
         suraNumber = Integer.toString(lastSurah);
+        sharedPreferences.write(suraNumber + "_start", startAyahNumber);
+        sharedPreferences.write(suraNumber + "_end", endAyahNumber);
         ayahViewModel.getAyahRange(suraNumber, startAyahNumber, endAyahNumber).observe(this, new Observer<List<AyahRange>>() {
             @Override
             public void onChanged(List<AyahRange> ayahRanges) {

@@ -22,22 +22,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.cardview.widget.CardView
+        <TextView
+            android:id="@+id/sura_number_item"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="0"
-            app:cardBackgroundColor="#00FFFFFF">
-
-            <TextView
-                android:id="@+id/sura_number_item"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:background="@drawable/ayahsymbol"
-                android:gravity="center|center_horizontal|center_vertical"
-                android:textColor="#000000"
-                android:textSize="14sp" />
-        </androidx.cardview.widget.CardView>
+            android:background="@drawable/ayahsymbol"
+            android:gravity="center|center_horizontal|center_vertical"
+            android:textColor="#000000"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/sura_name_item"

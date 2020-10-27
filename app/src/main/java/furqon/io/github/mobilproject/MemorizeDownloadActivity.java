@@ -74,6 +74,7 @@ public class MemorizeDownloadActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable List<ChapterTitleTable> surahTitles) {
                 //Toast.makeText(SuraNameList.this, "LOADING TITLES " + surahTitles.size(), Toast.LENGTH_LONG).show();
+                Log.e(TAG, "LOADING SURAH NAMES");
                 if (surahTitles.size() != 114) {
                     //tempbut.setVisibility(View.VISIBLE);
 

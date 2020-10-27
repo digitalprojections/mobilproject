@@ -146,13 +146,6 @@
         android:paddingBottom="4dp"
         android:text="@string/committolearn" />
 
-    <ProgressBar
-        android:id="@+id/progressBarMemorize"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminate="true" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -248,6 +241,13 @@
         android:layout_height="wrap_content"
         android:background="@drawable/memorize_custom_button"
         android:text="Download Audio" />
+
+    <ProgressBar
+        android:id="@+id/progressBarMemorize"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/memorize_range_rv"

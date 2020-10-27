@@ -28,7 +28,6 @@ import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -71,7 +70,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -222,12 +220,9 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             registerReceiver(broadcastReceiverDownload, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-            try{
+            try {
                 startService(new Intent(getBaseContext(), OnClearFromService.class));
-            }catch (IllegalStateException x){
-                Log.e(TAG, x.getMessage());
-            }
-            catch (SecurityException x){
+            } catch (IllegalStateException | SecurityException x) {
                 Log.e(TAG, x.getMessage());
             }
 
@@ -321,7 +316,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         }
     }
 
-    private void setPlayMode() {
+    private void setNextPlayMode() {
         switch (play_mode) {
             case "list":
                 play_mode = "repeat";
@@ -1692,7 +1687,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 OnTrackPlay();
                 break;
             case R.id.mp_playmode_btn:
-                setPlayMode();
+                setNextPlayMode();
                 break;
         }
 

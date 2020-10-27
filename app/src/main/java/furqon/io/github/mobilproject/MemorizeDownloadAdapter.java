@@ -1,6 +1,7 @@
 package furqon.io.github.mobilproject;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import java.util.List;
 
 public class MemorizeDownloadAdapter extends RecyclerView.Adapter<MemorizeDownloadAdapter.DownloadListViewHolder> {
 
+    String TAG = "MemorizeAdapter";
     private Context mContext;
     private List<ChapterTitleTable> mTitles = new ArrayList<>(); // Cached copy of titles
 
@@ -35,6 +37,7 @@ public class MemorizeDownloadAdapter extends RecyclerView.Adapter<MemorizeDownlo
         holder.suraName.setText(name);
         holder.arabic_name.setText(arname);
         holder.suraNumber.setText(String.valueOf(numb));
+        //Log.e(TAG, "SHOWING TITLES");
     }
 
     void setTitles(List<ChapterTitleTable> titles) {
@@ -44,13 +47,18 @@ public class MemorizeDownloadAdapter extends RecyclerView.Adapter<MemorizeDownlo
 
     @Override
     public int getItemCount() {
-        return 0;
+        int c = 0;
+        if (mTitles != null) {
+            c = mTitles.size();
+        }
+        return c;
     }
 
     public class DownloadListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView suraName;
         TextView arabic_name;
         TextView suraNumber;
+        TextView verseCount;
 
         public DownloadListViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -58,10 +66,15 @@ public class MemorizeDownloadAdapter extends RecyclerView.Adapter<MemorizeDownlo
             suraName = itemView.findViewById(R.id.sura_name_item);
             arabic_name = itemView.findViewById(R.id.arabic);
             suraNumber = itemView.findViewById(R.id.sura_number_item);
+            verseCount = itemView.findViewById(R.id.verse_count_tv);
+
+            verseCount.setVisibility(View.GONE);
         }
 
         @Override
         public void onClick(View v) {
+            int position = this.getAdapterPosition();
+            Log.d(TAG, position + "");
 
         }
     }
