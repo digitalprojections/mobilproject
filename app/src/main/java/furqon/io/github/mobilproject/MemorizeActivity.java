@@ -35,7 +35,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -70,7 +69,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     private ArrayList<JSONObject> jsonArrayResponse;
 
     private MemorizeActivityAdapter adapter;
-    private Integer lastSurah = 0;
+    private Integer lastSurahIndex = 0;
 
     SharedPreferences sharedPreferences;
     private String startAyahNumber = "1";
@@ -160,13 +159,18 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 // Apply the adapter to the spinner
         suranames_spinner.setAdapter(adapter);
+        lastSurahIndex = sharedPreferences.read(SharedPreferences.SELECTED_MEMORIZING_SURAH, 0);
+        suranames_spinner.setSelection(lastSurahIndex);
+        setUIValues();
+    }
 
-        lastSurah = sharedPreferences.read(SharedPreferences.SELECTED_MEMORIZING_SURAH, 0);
-        suranames_spinner.setSelection(lastSurah);
-        startAyahNumber = sharedPreferences.read((lastSurah + 1) + "_start", "1");
-        endAyahNumber = sharedPreferences.read((lastSurah + 1) + "_end", "2");
+    private void setUIValues() {
 
-        Log.d(TAG, lastSurah + " last surah " + startAyahNumber + " - " + endAyahNumber);
+
+        startAyahNumber = sharedPreferences.read(lastSurahIndex + "_start", "1");
+        endAyahNumber = sharedPreferences.read(lastSurahIndex + "_end", "2");
+
+        Log.d(TAG, lastSurahIndex + " last surah index, start:" + startAyahNumber + " - end:" + endAyahNumber);
 
         startValue.setText(startAyahNumber);
         endValue.setText(endAyahNumber);
@@ -211,11 +215,9 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void loadRange() {
-        if (lastSurah == 0)
-            lastSurah = 1;
-        suraNumber = Integer.toString(lastSurah);
-        sharedPreferences.write(suraNumber + "_start", startAyahNumber);
-        sharedPreferences.write(suraNumber + "_end", endAyahNumber);
+        suraNumber = Integer.toString(lastSurahIndex + 1);//we adjust the value with only where it is necessary
+        sharedPreferences.write(lastSurahIndex + "_start", startAyahNumber);
+        sharedPreferences.write(lastSurahIndex + "_end", endAyahNumber);
         ayahViewModel.getAyahRange(suraNumber, startAyahNumber, endAyahNumber).observe(this, new Observer<List<AyahRange>>() {
             @Override
             public void onChanged(List<AyahRange> ayahRanges) {
@@ -426,14 +428,14 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         //Log.d(TAG, "p " + position);
         //DONE save the selected item for the resume
-        lastSurah = position + 1;
+        lastSurahIndex = position;
         //TODO HTTPrequest
         suraNumber = String.valueOf(position + 1);
 
         if (sharedPreferences != null) {
             sharedPreferences.write(SharedPreferences.SELECTED_MEMORIZING_SURAH, position);
         }
-
+        setUIValues();
         adapter.setText(null);
     }
 
