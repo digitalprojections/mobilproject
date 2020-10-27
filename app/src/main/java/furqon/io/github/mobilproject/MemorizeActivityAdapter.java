@@ -73,8 +73,8 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
     }
 
     public void setText(List<AyahRange> ayahRanges) {
-            mAyahList = ayahRanges;
-            notifyDataSetChanged();
+        mAyahList = ayahRanges;
+        notifyDataSetChanged();
     }
 
     class AyahViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

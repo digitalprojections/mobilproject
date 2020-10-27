@@ -73,8 +73,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     private Integer lastSurah = 0;
 
     SharedPreferences sharedPreferences;
-    private String startAyahNumber;
-    private String endAyahNumber;
+    private String startAyahNumber = "1";
+    private String endAyahNumber = "2";
     private String rct;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private Context context;
@@ -88,9 +88,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         sharedPreferences.init(getApplicationContext());
         //DONE restore the last state
         //There was a surah selected
-        if(sharedPreferences.contains(SharedPreferences.SELECTED_MEMORIZING_SURAH)){
-            lastSurah = sharedPreferences.read(SharedPreferences.SELECTED_MEMORIZING_SURAH, 0);
-        }
+
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         String title = getString(R.string.memorizer);
@@ -123,6 +121,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         endValue = findViewById(R.id.end_tv);
         repeatValue = findViewById(R.id.repeat_count_tv);
 
+
         recyclerView = findViewById(R.id.memorize_range_rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MemorizeActivityAdapter(this);
@@ -130,9 +129,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
         progressBar = findViewById(R.id.progressBarMemorize);
         progressBar.setVisibility(View.GONE);
-
-        startAyahNumber = startValue.getText().toString();
-        endAyahNumber = endValue.getText().toString();
 
         //UI ACTION
         dl_audio.setOnClickListener(this);
@@ -164,7 +160,16 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 // Apply the adapter to the spinner
         suranames_spinner.setAdapter(adapter);
-        suranames_spinner.setSelection(sharedPreferences.read(SharedPreferences.SELECTED_MEMORIZING_SURAH, 0));
+
+        lastSurah = sharedPreferences.read(SharedPreferences.SELECTED_MEMORIZING_SURAH, 0);
+        suranames_spinner.setSelection(lastSurah);
+        startAyahNumber = sharedPreferences.read((lastSurah + 1) + "_start", "1");
+        endAyahNumber = sharedPreferences.read((lastSurah + 1) + "_end", "2");
+
+        Log.d(TAG, lastSurah + " last surah " + startAyahNumber + " - " + endAyahNumber);
+
+        startValue.setText(startAyahNumber);
+        endValue.setText(endAyahNumber);
     }
 
     @Override
@@ -230,11 +235,9 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void httpRequestSurah() {
-
         Log.i(TAG, "CLICK clicking");
         RequestQueue queue = Volley.newRequestQueue(context);
         String url = mFirebaseRemoteConfig.getString("server_php") + "/ajax_quran.php";
-
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -244,7 +247,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         // Convert String to json object
                         //httpresponse = true;
                         jsonArrayResponse = new ArrayList<JSONObject>();
-
                         try {
                             JSONArray jsonArray = new JSONArray(response);
                             for (int i = 0; i < jsonArray.length(); i++) {
@@ -264,7 +266,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 progressBar.setVisibility(View.GONE);
                 commitBtn.setEnabled(true);
                 //tempbut.setVisibility(View.VISIBLE);
-
             }
         }) {
             protected Map<String, String> getParams() {
@@ -425,13 +426,15 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         //Log.d(TAG, "p " + position);
         //DONE save the selected item for the resume
-        lastSurah = position+1;
+        lastSurah = position + 1;
         //TODO HTTPrequest
-        suraNumber = String.valueOf(position+1);
+        suraNumber = String.valueOf(position + 1);
 
         if (sharedPreferences != null) {
             sharedPreferences.write(SharedPreferences.SELECTED_MEMORIZING_SURAH, position);
         }
+
+        adapter.setText(null);
     }
 
     @Override
