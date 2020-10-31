@@ -54,7 +54,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class AyahList extends AppCompatActivity implements ManageSpecials, Playable {
+public class AyahList extends AppCompatActivity implements ManageSpecials {
 
     private static final String TAG = "AYAHLIST";
     private ArrayList<JSONObject> jsonArrayResponse;
@@ -701,7 +701,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         titleViewModel.updateText(text);
 
     }
-
+/*
     @Override
     public void OnTrackPrevious() {
 
@@ -723,7 +723,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials, Playa
         //Furqon.ShowNotification(AyahList.this, R.drawable.ic_play_circle, suranomi, audio_pos);
         //TODO just pause?
         pause();
-    }
+    }*/
 
 
 }

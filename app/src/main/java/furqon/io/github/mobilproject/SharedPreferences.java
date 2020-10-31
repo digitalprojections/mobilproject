@@ -12,6 +12,7 @@ public class SharedPreferences
     public static final String PREVIOUS_SET = "PREVIOUSSET";
     public static final String TOKEN_ATTEMPTED = "TOKEN_ATTEMPTED";
     public static final String TOKEN_ATTEMPT_COUNT = "token_attempts";
+    public static final String PREFERRED_REPEAT_COUNT = "PREFERREDREPEAT";
     static final String PLAYMODE = "PLAYMODE";
     static final String SIGNATURE = "SIGNATURE";
     static final String FONTSIZE = "FONTSIZE";

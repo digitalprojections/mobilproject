@@ -176,6 +176,7 @@
             android:clickable="true"
             android:contentDescription="@string/previous_ayah"
             android:focusable="true"
+            android:visibility="gone"
             app:srcCompat="@drawable/ic_previous" />
 
         <Space
@@ -205,6 +206,7 @@
             android:clickable="true"
             android:contentDescription="@string/next_ayah"
             android:focusable="true"
+            android:visibility="gone"
             app:srcCompat="@drawable/ic_next" />
 
         <Space

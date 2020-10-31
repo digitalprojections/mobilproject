@@ -1,6 +1,7 @@
 package furqon.io.github.mobilproject;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.util.Log;
@@ -32,6 +33,7 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
 
     private String verse_number;//oyat nomeri
     private ViewGroup.LayoutParams lpartxt; // Height of TextView
+    private ArrayList<Track> trackList;
 
     public MemorizeActivityAdapter(MemorizeActivity memorizeActivity) {
         mContext = memorizeActivity;
@@ -93,6 +95,8 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
             translit = itemView.findViewById(R.id.transliteration_tv);
             progressBar = itemView.findViewById(R.id.progressBarVerse);
 
+            arabic_text.setOnClickListener(this);
+
             Typeface madina;
             if (sharedPreferences.contains(sharedPreferences.FONT)) {
                 switch (sharedPreferences.read(sharedPreferences.FONT, "")) {
@@ -131,6 +135,41 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
         @Override
         public void onClick(View v) {
             //TODO repeat the verse on click
+            Log.d(TAG, "clicked " + v.getId() + " " + v.toString() + this.ayah_number.getText());
+            //TODO check against the existing files in the matching folder and play or download
+            StartDownload(this.ayah_number.getText().toString());
+        }
+        private void StartDownload(String verse) {
+
+
+            if (!TrackDownloaded(verse)) {
+                MyListener myListener;
+                myListener = (MyListener) mContext;
+                myListener.DownloadThis(verse);
+
+                //myListener.MarkAsDownloading(Integer.parseInt(snumber));
+                //getTitleAt(Integer.parseInt(snumber)-1).;
+                progressBar.setVisibility(View.VISIBLE);
+                //downloadButton.setVisibility(View.GONE);
+            } else {
+                Log.e(TAG, "track already downloaded");
+            }
+        }
+        private boolean TrackDownloaded(String v) {
+            //v = prependZero(v);
+            boolean retval = false;
+            if (trackList != null) {
+                for (Track i : trackList
+                ) {
+                    if (i.getName().equals(v)) {
+                        //match found
+                        //Log.i("TRACK DOWNLOADED?", String.valueOf(v) + " " + i + " " + (i.equals(v)));
+                        retval = true;
+                    }
+
+                }
+            }
+            return retval;
         }
     }
 }

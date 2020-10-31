@@ -734,7 +734,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         }
 
     }
-
     private void DeleteTheFile(File file) {
         try {
             file.delete();
