@@ -19,6 +19,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.IllegalFormatException;
 import java.util.List;
 
 public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivityAdapter.AyahViewHolder> {
@@ -135,9 +136,30 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
         @Override
         public void onClick(View v) {
             //TODO repeat the verse on click
-            Log.d(TAG, "clicked " + v.getId() + " " + v.toString() + this.ayah_number.getText());
+            Log.d(TAG, "clicked " + this.ayah_number.getText());
             //TODO check against the existing files in the matching folder and play or download
-            StartDownload(this.ayah_number.getText().toString());
+
+            StartDownload(fixZeroes(this.ayah_number.getText().toString()));
+        }
+        private String fixZeroes(String s){
+            String retVal = "";
+            int tempVal;
+            //try to parse the string into integer
+            try{
+                tempVal = Integer.parseInt(s);
+                if(tempVal<10){
+                    retVal = "00"+tempVal;
+                }else if(tempVal>9&&tempVal<100){
+                    retVal = "0"+tempVal;
+                }else {
+                    //it is higher than 99
+                    retVal = s;
+                }
+            }catch (IllegalFormatException ignore){
+
+            }
+
+            return retVal;
         }
         private void StartDownload(String verse) {
 

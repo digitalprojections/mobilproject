@@ -624,26 +624,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
         }
     }
-    private String fixZeroes(String s){
-        String retVal = "";
-        int tempVal;
-        //try to parse the string into integer
-        try{
-            tempVal = Integer.parseInt(s);
-            if(tempVal<10){
-                retVal = "00"+tempVal;
-            }else if(tempVal>9&&tempVal<100){
-                retVal = "0"+tempVal;
-            }else {
-                //it is higher than 99
-                retVal = s;
-            }
-        }catch (IllegalFormatException ignore){
 
-        }
-
-        return retVal;
-    }
     private boolean TrackDownloaded(String v) {
 
         boolean retval = false;
@@ -917,7 +898,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         } else {
                             Log.i(TAG, cursor.getCount() + " downloads ");
                             //No downloads running. allow download
-                            Log.i("PERMISSION OK", "Download start " + zznumber);
+                            Log.i(TAG, "Download start " + zznumber);
                             downloadId = downloadManager.enqueue(request);
                             sharedPreferences.write("download_" + downloadId, zznumber); //storing the download id under the right sura reference. We can use the id later to check for download status
                             sharedPreferences.write("downloading_surah_" + zznumber, (int) downloadId);
