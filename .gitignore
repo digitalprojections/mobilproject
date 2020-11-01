@@ -103,3 +103,4 @@ lint/tmp/
 # lint/reports/
 *.aab
 app/build.gradle
+app/build.gradle
