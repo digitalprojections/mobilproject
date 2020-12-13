@@ -841,6 +841,26 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         }
 
     }
+    private String fixZeroes(String s){
+        String retVal = "";
+        int tempVal;
+        //try to parse the string into integer
+        try{
+            tempVal = Integer.parseInt(s);
+            if(tempVal<10){
+                retVal = "00"+tempVal;
+            }else if(tempVal>9&&tempVal<100){
+                retVal = "0"+tempVal;
+            }else {
+                //it is higher than 99
+                retVal = s;
+            }
+        }catch (IllegalFormatException ignore){
+
+        }
+
+        return retVal;
+    }
     @Override
     public void DownloadThis(String suraNumber) {
         if (WritePermission()) {
