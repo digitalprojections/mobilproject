@@ -114,6 +114,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     private boolean download_attempted;
     Timer myTimer = new Timer();
     long downloadId;
+    private boolean RANGEISSHOWN;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -260,22 +261,50 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         suraNumber = Integer.toString(lastSurahIndex + 1);//we adjust the value with only where it is necessary
         sharedPreferences.write(lastSurahIndex + "_start", startAyahNumber);
         sharedPreferences.write(lastSurahIndex + "_end", endAyahNumber);
-        ayahViewModel.getAyahRange(suraNumber, startAyahNumber, endAyahNumber).observe(this, new Observer<List<AyahRange>>() {
-            @Override
-            public void onChanged(List<AyahRange> ayahRanges) {
-                //TODO display the range
-                //send to the adapter
-                adapter.setText(ayahRanges);
-                Log.d(TAG, "ADAPTER " + ayahRanges.size());
+                //TODO First load all the surah to check if it is fully available.
 
-                if (ayahRanges.size() == 0) {
-                    //The list is empty. DOWNLOAD
-                    httpRequestSurah();
-                } else {
-                    Log.d(TAG, "surah exists in database");
+            ayahViewModel.getAyahRange(suraNumber, startAyahNumber, endAyahNumber).observe(this, new Observer<List<AyahRange>>() {
+                @Override
+                public void onChanged(List<AyahRange> ayahRanges) {
+                    //TODO display the range
+                    //send to the adapter
+                    if (!RANGEISSHOWN) {
+                        adapter.setText(ayahRanges);
+                        Log.d(TAG, "ADAPTER " + ayahRanges.size());
+
+                        if (ayahRanges.size() == 0) {
+                            //The list is empty. DOWNLOAD
+                            Log.d(TAG, "surah not yet downloaded");
+                            httpRequestSurah();
+                        } else {
+                            Log.d(TAG, "surah exists in database");
+                            RANGEISSHOWN = true;
+
+                        }
+                    } else {
+                        Log.d(TAG, "RANGEISSHOWN " + RANGEISSHOWN);
+                    }
+                }
+            });
+
+
+
+
+       /* ayahViewModel.getChapterText(suraNumber).observe(this, new Observer<List<AllTranslations>>() {
+            @Override
+            public void onChanged(List<AllTranslations> allTranslations) {
+                if (allTranslations.size()==QuranMap.GetSurahLength(Integer.parseInt(suraNumber))){
+
+                    //the quantity match, go on to show the ayah
+
+                }else{
+                    //wait and try again
+
                 }
             }
-        });
+        });*/
+
+
     }
 
     private void httpRequestSurah() {
@@ -417,6 +446,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 }
             }
             startAyahNumber = startValue.getText().toString();
+            RANGEISSHOWN=false;
         }
     void adjustHighLowEnd(int i)
     {
@@ -441,6 +471,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
             }
         }
         endAyahNumber = endValue.getText().toString();
+        RANGEISSHOWN=false;
     }
 
     @Override
@@ -794,7 +825,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         lastSurahIndex = position;
         //TODO HTTPrequest
         suraNumber = String.valueOf(position + 1);
-
+        RANGEISSHOWN = false;
         if (sharedPreferences != null) {
             sharedPreferences.write(SharedPreferences.SELECTED_MEMORIZING_SURAH, position);
         }

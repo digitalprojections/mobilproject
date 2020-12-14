@@ -7,7 +7,7 @@ android {
         debug {
             //storeFile file('C:\\Users\\ahmad\\Documents\\GitHub\\mobilproject\\keystore.private')
             //storeFile file('C:\\Users\\denta\\OneDrive\\Documents\\GitHub\\mobilproject\\keystore.private')
-            storeFile file('C:\\Users\\ahmad\\Documents\\GitHub\\mobilproject\\keystore.private')
+            storeFile file('C:\\Users\\aj\\Documents\\GitHub\\mobilproject\\keystore.private')
             storePassword '1285422'
             keyAlias = 'baa'
             keyPassword '1285422'

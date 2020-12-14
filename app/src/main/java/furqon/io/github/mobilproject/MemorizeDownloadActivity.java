@@ -93,7 +93,7 @@ public class MemorizeDownloadActivity extends AppCompatActivity {
     }
 
     private void LoadTitles() {
-        Log.i(TAG, "CLICK THE TEMP BUTTON");
+        Log.i(TAG, "LOAD AUDIO CLICKED");
         RequestQueue queue = Volley.newRequestQueue(context);
         String url = mFirebaseRemoteConfig.getString("server_php") + "/ajax_quran.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
