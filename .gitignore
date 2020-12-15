@@ -106,3 +106,4 @@ app/build.gradle
 app/build.gradle
 app/build.gradle
 app/build.gradle
+*.gradle
