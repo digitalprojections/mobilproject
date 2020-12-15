@@ -1,5 +1,4 @@
 *.iml
-.gradle
 /local.properties
 /.idea/caches
 /.idea/libraries
@@ -103,7 +102,3 @@ lint/tmp/
 # lint/reports/
 *.aab
 app/build.gradle
-app/build.gradle
-app/build.gradle
-app/build.gradle
-*.gradle
