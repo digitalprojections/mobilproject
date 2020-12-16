@@ -68,6 +68,9 @@ public class TitleViewModel extends AndroidViewModel {
     LiveData<List<AyahRange>> getAyahRange(String suraNomer, String beg, String end){
         return titleRepository.getAyahRange(suraNomer, beg, end);
     }
+    public void update(AyahRange ayah){
+        titleRepository.update(ayah);
+    }
 
     public void insert(ChapterTitleTable title){
         Log.d("TITLE insert", title.uzbek);
@@ -91,7 +94,6 @@ public class TitleViewModel extends AndroidViewModel {
 
         titleRepository.updateText(text);
     }
-
     public void deleteSurah(int x){
 
         titleRepository.deteteSurah(x);

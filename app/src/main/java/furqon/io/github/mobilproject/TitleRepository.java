@@ -112,6 +112,11 @@ public class TitleRepository {
     public void deteteSurah(int x) {
         new deleteSurahAsyncTask(mTitleDao).execute(x);
     }
+
+    public void update(AyahRange ayah) {
+        new updateAyahAsyncTask(mTitleDao).execute(ayah);
+    }
+
     private class deleteSurahAsyncTask extends AsyncTask<Integer, Void, Void>{
         private ChapterTitleDAO mAsyncTitleDAO;
         public deleteSurahAsyncTask(ChapterTitleDAO dao){
@@ -188,6 +193,19 @@ public class TitleRepository {
         @Override
         protected Void doInBackground(String... suraNomer) {
             mAsyncTitleDAO.updateTitleAsRewarded(suraNomer[0]);
+            return null;
+        }
+    }
+
+    private class updateAyahAsyncTask extends AsyncTask<AyahRange, Void, Void> {
+        private ChapterTitleDAO titleDAO;
+        public updateAyahAsyncTask(ChapterTitleDAO mTitleDao) {
+            titleDAO = mTitleDao;
+        }
+
+        @Override
+        protected Void doInBackground(AyahRange... ayahRanges) {
+            titleDAO.update(ayahRanges[0].sura_id, ayahRanges[0].verse_id, ayahRanges[0].audio_progress);
             return null;
         }
     }

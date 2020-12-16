@@ -1,9 +1,7 @@
 package furqon.io.github.mobilproject;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -63,6 +61,14 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
         holder.arabic_text.setGravity(Gravity.START);
         holder.arabic_text.setText(ayah_txt);
         holder.ayah_number.setText(verse_number);
+        if(current.audio_progress>0 && current.audio_progress<100)
+        {
+            holder.progressBar.setVisibility(View.VISIBLE);
+        }else if(current.audio_progress==100){
+            holder.progressBar.setVisibility(View.GONE);
+        }else{
+            holder.progressBar.setVisibility(View.GONE);
+        }
         Log.d(TAG, "RANGE " + verse_number);
     }
 
@@ -74,7 +80,14 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
             size = mAyahList.size();
         return size;
     }
-
+    public AyahRange getTitleAt(int position){
+        try{
+            return mAyahList.get(position);
+        }catch (IndexOutOfBoundsException iobx){
+            //throw new IndexOutOfBoundsException();
+            return null;
+        }
+    }
     public void setText(List<AyahRange> ayahRanges) {
         mAyahList = ayahRanges;
         notifyDataSetChanged();

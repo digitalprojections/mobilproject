@@ -13,8 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.AudioManager;
@@ -23,6 +25,7 @@ import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -31,6 +34,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -43,6 +47,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
@@ -62,6 +67,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import furqon.io.github.mobilproject.Services.OnClearFromService;
 
 public class MemorizeActivity extends AppCompatActivity implements View.OnClickListener, MyListener, AdapterView.OnItemSelectedListener, Playable {
     private static final int MY_WRITE_EXTERNAL_STORAGE = 101;
@@ -83,7 +90,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     private MediaPlayer mediaPlayer;
     private ArrayList<JSONObject> jsonArrayResponse;
 
-    private MemorizeActivityAdapter adapter;
+    private MemorizeActivityAdapter mAdapter;
+    private LinearLayout coordinatorLayout;
     private Integer lastSurahIndex = 0;
 
 
@@ -145,6 +153,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         ImageButton incEnd = findViewById(R.id.inc_end);
         ImageButton decEnd = findViewById(R.id.dec_end);
 
+        coordinatorLayout = findViewById(R.id.mem_main_lin_layout);
+
         commitBtn = findViewById(R.id.commit_btn);
 
         startValue = findViewById(R.id.start_tv);
@@ -154,8 +164,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
         RecyclerView recyclerView = findViewById(R.id.memorize_range_rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new MemorizeActivityAdapter(this);
-        recyclerView.setAdapter(adapter);
+        mAdapter = new MemorizeActivityAdapter(this);
+        recyclerView.setAdapter(mAdapter);
         handler = new Handler();
 
         progressBar = findViewById(R.id.progressBarMemorize);
@@ -173,7 +183,15 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         commitBtn.setOnClickListener(this);
 
         suranames_spinner.setOnItemSelectedListener(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            registerReceiver(broadcastReceiverDownload, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+            try {
+                startService(new Intent(getBaseContext(), OnClearFromService.class));
+            } catch (IllegalStateException | SecurityException x) {
+                Log.e(TAG, x.getMessage());
+            }
 
+        }
         /*DONE end number never lower than the start
            if start number entered and it is higher than the end number, set the end number
             equal to the start number. But if the start number is changed to a lower value,
@@ -182,7 +200,60 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         //DONE
         populateSpinner();
     }
+    private BroadcastReceiver broadcastReceiverDownload = new BroadcastReceiver() {
 
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+            query.setFilterById(id);
+            Cursor cursor = downloadManager.query(query);
+            if (cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
+                int status = cursor.getInt(columnIndex);
+                int columnReason = cursor.getColumnIndex(DownloadManager.COLUMN_REASON);
+                int reason = cursor.getInt(columnReason);
+
+                if (status == DownloadManager.STATUS_SUCCESSFUL) {
+                    //Retrieve the saved download id
+                    /*
+                    there are multiple files being downloaded.
+                    */
+                    String ayahNumber2Download = sharedPreferences.read("download_" + id, "0");
+                    if (Integer.parseInt(ayahNumber2Download) > 0) {
+                        sharedPreferences.write("download_" + id, "0");
+                        PopulateTrackList();
+                    }
+                    Log.i(TAG, "DOWNLOAD COMPLETE, Download id " + id + " ayah number: " + ayahNumber2Download);
+                        //PopulateTrackList();
+                    if (ayahNumber2Download != null) {
+                        int sn = Integer.parseInt(ayahNumber2Download);
+                        MarkAsDownloaded(sn);
+                    }
+
+
+                } else if (status == DownloadManager.STATUS_FAILED) {
+                    Snackbar.make(coordinatorLayout,
+                            "error " + reason,
+                            Snackbar.LENGTH_LONG).show();
+                    //Crashlytics.log("download error - " + reason + "->" + language + "/" + recitation_style + "/" + reciter + "/" + suraNumber2Download);
+                    mAdapter.notifyDataSetChanged();
+                } else if (status == DownloadManager.STATUS_PAUSED) {
+                    Snackbar.make(coordinatorLayout,
+                            "PAUSED!\n" + "reason of " + reason,
+                            Snackbar.LENGTH_LONG).show();
+                } else if (status == DownloadManager.STATUS_PENDING) {
+                    Snackbar.make(coordinatorLayout,
+                            "PENDING!",
+                            Snackbar.LENGTH_LONG).show();
+                } else if (status == DownloadManager.STATUS_RUNNING) {
+                    Snackbar.make(coordinatorLayout,
+                            "RUNNING!",
+                            Snackbar.LENGTH_LONG).show();
+                }
+            }
+        }
+
+    };
     private void populateSpinner() {
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -273,7 +344,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                             Log.d(TAG, "surah not yet downloaded");
                             httpRequestSurah();
                         } else {
-                            adapter.setText(ayahRanges);
+                            mAdapter.setText(ayahRanges);
                             PopulateTrackList();
                             Log.d(TAG, "ADAPTER " + ayahRanges.size());
                             Log.d(TAG, "surah exists in database");
@@ -427,7 +498,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         }
     void adjustHighLowEnd(int i)
     {
-        //todo don't allow end number to be higher than the start
         int sVal = 0;
         int eVal = 0;
         try {
@@ -751,7 +821,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
             sharedPreferences.write(SharedPreferences.SELECTED_MEMORIZING_SURAH, position);
         }
         setUIValues();
-        adapter.setText(null);
+        mAdapter.setText(null);
     }
 
     @Override
@@ -857,7 +927,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         cursor.moveToFirst();
                         if (cursor != null && cursor.getCount() >= 1) {
                             Toast.makeText(getApplicationContext(), "Please, wait", Toast.LENGTH_SHORT).show();
-                            adapter.notifyDataSetChanged();
+                            mAdapter.notifyDataSetChanged();
 
                             if(!sharedPreferences.read(SharedPreferences.NOMOREADS, false))
                             {
@@ -870,7 +940,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                             downloadId = downloadManager.enqueue(request);
                             sharedPreferences.write("download_" + downloadId, zznumber); //storing the download id under the right sura reference. We can use the id later to check for download status
                             sharedPreferences.write("downloading_surah_" + zznumber, (int) downloadId);
-                            adapter.notifyDataSetChanged();
+                            mAdapter.notifyDataSetChanged();
 
                             myTimer.schedule(new TimerTask() {
                                 Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterByStatus(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING));
@@ -881,7 +951,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                                         @Override
                                         public void run() {
                                             try{
-                                                adapter.notifyDataSetChanged();
+                                                mAdapter.notifyDataSetChanged();
                                                 cursor.moveToFirst();
                                                 if (cursor == null || cursor.getCount() == 0) {
                                                     myTimer.cancel();
@@ -930,8 +1000,27 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public void MarkAsDownloaded(int surah_id) {
-
+    public void MarkAsDownloaded(int ayah_id) {
+        //TODO set the downloaded ayah state
+        if (mAdapter != null) {
+            int actual_position = ayah_id;
+            if (mAdapter.getItemCount() > 0) {
+                for (int i = 0; i < mAdapter.getItemCount(); i++) {
+                    try {
+                        if (mAdapter.getTitleAt(i) != null && mAdapter.getTitleAt(i).verse_id == ayah_id) {
+                            actual_position = i;
+                        }
+                    } catch (IndexOutOfBoundsException x) {
+                        //Crashlytics.log(x.getMessage() + " - " + x.getStackTrace());
+                    }
+                }
+                AyahRange ctitle = mAdapter.getTitleAt(actual_position);
+                if (ctitle != null && ctitle.audio_progress < 100) {
+                    ctitle.audio_progress = 100;
+                    ayahViewModel.update(ctitle);
+                }
+            }
+        }
     }
 
     @Override
