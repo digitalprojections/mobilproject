@@ -156,6 +156,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MemorizeActivityAdapter(this);
         recyclerView.setAdapter(adapter);
+        handler = new Handler();
 
         progressBar = findViewById(R.id.progressBarMemorize);
         progressBar.setVisibility(View.GONE);
@@ -239,6 +240,12 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 //TODO
                 //also load all the audio files in a row
                 break;
+            case R.id.play_verse:
+                if(isPlaying)
+                    stop();
+                else
+                    play();
+                break;
             case R.id.download_audio_button:
                 loadAudioFiles();
                 break;
@@ -246,13 +253,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void loadAudioFiles() {
-        //Open download page
-        //Intent intent = new Intent(this, MemorizeDownloadActivity.class);
-        //startActivity(intent);
-
-        //LOOP
-        //existance check
-
         playTheFileIfExists(fixZeroes(suraNumber)+fixZeroes(startAyahNumber));
     }
 
@@ -274,6 +274,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                             httpRequestSurah();
                         } else {
                             adapter.setText(ayahRanges);
+                            PopulateTrackList();
                             Log.d(TAG, "ADAPTER " + ayahRanges.size());
                             Log.d(TAG, "surah exists in database");
                             RANGEISSHOWN = true;
@@ -342,9 +343,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     }
     void populateAyahList(ArrayList<JSONObject> auclist){
 
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(, android.R.layout.simple_spinner_item, auclist);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //spinner.setAdapter(adapter);
         ChapterTextTable text;
 
         for (JSONObject i:auclist
@@ -461,12 +459,17 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onStop() {
         super.onStop();
+
+
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         //todo save state on exit
+        stopPlay();
+
     }
 
     @Override
@@ -481,8 +484,9 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     protected void onDestroy() {
-
+        stop();
         super.onDestroy();
+
     }
 
 
@@ -499,26 +503,29 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         }
     }
     void nextTrack(){
-        if (suraNumber2Play != null && trackList.size() > 1) {
-            for(int i=0;i<trackList.size();i++){
+        if (suraNumber2Play != null && trackList !=null) {
+            if(trackList.size() > 1){
+                for(int i=0;i<trackList.size();i++){
 
-                if (trackList.get(i).getName().equals(suraNumber2Play)) {
-                    try{
-                        suraNumber2Play = String.valueOf(Integer.parseInt(trackList.get(i + 1).getName()));
-                        Log.e(TAG, suraNumber2Play + " - next suranumber");
-                        break;
-                    }catch (IndexOutOfBoundsException x){
-                        if (repeatCountInteger>1) {
-                            //go to the first file
-                            repeatCountInteger--;//minus 1
-                            suraNumber2Play = String.valueOf(Integer.parseInt(trackList.get(0).getName()));
-                        } else {
-                            suraNumber2Play = null;
+                    if (trackList.get(i).getName().equals(suraNumber2Play)) {
+                        try{
+                            suraNumber2Play = String.valueOf(Integer.parseInt(trackList.get(i + 1).getName()));
+                            Log.e(TAG, suraNumber2Play + " - next suranumber");
+                            break;
+                        }catch (IndexOutOfBoundsException x){
+                            if (repeatCountInteger>1) {
+                                //go to the first file
+                                repeatCountInteger--;//minus 1
+                                suraNumber2Play = String.valueOf(Integer.parseInt(trackList.get(0).getName()));
+                            } else {
+                                suraNumber2Play = null;
+                            }
+
                         }
-
                     }
                 }
             }
+
         }else{
             suraNumber2Play = null;
         }
@@ -556,11 +563,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 if (TrackDownloaded(suraNumber2Play)) {
                     url = filePath;
                 } else {
-                    //Toast.makeText(this, "Online audio!", Toast.LENGTH_SHORT).show();
-                    //url = new StringBuilder().append("https://mobilproject.github.io/furqon_web_express/by_sura/").append(suraNumber2Play).append(".mp3").toString();
-                    //url = mFirebaseRemoteConfig.getString("server_link") + "/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter  + "/" + prependZero(suraNumber2Play) + ".mp3";
-                    // /storage/emulated/0/Android/data/furqon.io.github.mobilproject/files/quran_audio/arabic/by_surah/murattal/1/001.mp3
-                    // /storage/emulated/0/Android/data/furqon.io.github.mobilproject/files/quran_audio/arabic/by_surah/murattal/1
                     url = newpath + "/" + suraNumber2Play + ".mp3";
 
                 }
@@ -581,9 +583,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                         @Override
                         public void onPrepared(MediaPlayer mediaPlayer) {
-                            //Furqon.ShowNotification(AyahList.this, R.drawable.ic_pause_circle, suranomi, audio_pos);
-                            //mp_seekBar.setMax(mediaPlayer.getDuration());
-                            //progressBar.setVisibility(View.INVISIBLE);
                             resume();
                         }
                     });
@@ -600,24 +599,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
                         mediaPlayer = null;
                     }
-                    //progressBar.setVisibility(View.VISIBLE);
-
-
-                    //mediaPlayer.start();
-
-//            else {
-//                Log.i(TAG, "Playing");
-//                if(isPlaying){
-//                    pause();
-//                }else{
-//                    mediaPlayer.release();
-//                    mediaPlayer = null;
-//                    //mediaPlayer.start();
-//                    //isPlaying = true;
-//                    //resume();
-//                }
-//            }
-                    //trackDownload = true;
                 } else {
                     final PopupWindow popupWindow = new PopupWindow(this);
                     View view = getLayoutInflater().inflate(R.layout.popup_hint, null);
@@ -646,7 +627,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     Log.i("TRACK DOWNLOADED?", v + " " + i + " " + (i.getName().equals(v)));
                     retval = true;
                 }
-                //Log.i("TRACK DOWNLOADED????", String.valueOf(v) + " " + i.getName());
             }
         }
 
@@ -655,18 +635,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     public void resume() {
 
         if (mediaPlayer != null) {
-
-            int audio_pos;
-//            if(!language.equals("arabic"))
-            //audio_pos = SharedPreferences.getInstance().read(suranomi, 0);
-            /*if (audio_pos > 0 && audio_pos != mediaPlayer.getDuration()) {
-                mediaPlayer.seekTo(audio_pos);
-            } else {
-                SharedPreferences.getInstance().write(suranomi, 1);
-                mediaPlayer.seekTo(1);
-                Toast.makeText(getBaseContext(), audiorestore, Toast.LENGTH_SHORT).show();
-                //Snackbar.make(coordinatorLayout, audiorestore, Snackbar.LENGTH_SHORT).show();
-            }*/
             mediaPlayer.start();
             playVerse.setImageResource(R.drawable.ic_pause_circle_60dp);
             isPlaying = true;
@@ -677,10 +645,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     public void playCycle() {
         if (mediaPlayer != null) {
             try {
-                //mp_seekBar.setProgress(mediaPlayer.getCurrentPosition());
-                //audio_pos = mediaPlayer.getCurrentPosition();
-                //timer = findViewById(R.id.audio_timer);
-                //timer.setText(AudioTimer.getTimeStringFromMs(audio_pos));
 
                 if (mediaPlayer.isPlaying()) {
                     runnable = new Runnable() {
@@ -693,14 +657,9 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     };
                     handler.postDelayed(runnable, 1000);
                 } else {
-                    //get the position of the item in tracklist
-
                     Log.e(TAG, "PLAYING STOPPED");
-                    //current_track_tv.setText("");
                     isPlaying = false;
-                    //mp_seekBar.setProgress(0);
                     handler.removeCallbacks(runnable);
-                    //SharedPreferences.getInstance().write(suranomi, 0);
                     stop();
                     if (repeatCountInteger>1) {
                         nextTrack();
@@ -722,10 +681,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         if (mediaPlayer != null) {
             mediaPlayer.release();
             mediaPlayer = null;
-            //mediaPlayer.reset();
-            //progressBar.setVisibility(View.INVISIBLE);
             playVerse.setImageResource(R.drawable.ic_play_circle_48dp);
-            //current_track_tv.setText("");
         }
     }
     private void PopulateTrackList() {
@@ -773,15 +729,10 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     //current_track_tv.setText(R.string.tracklist_empty_warning);
                 }
 
-                //adapter.setText(trackList);
-                //recyclerView.setAdapter(mAdapter);
             } else {
                 //current_track_tv.setText(R.string.tracklist_empty_warning);
                 Log.d(TAG, "NULL ARRAY no files found");
-                //adapter.setTitles(trackList);
-                //recyclerView.setAdapter(mAdapter);
             }
-            //mAdapter.notifyDataSetChanged();
     }
     private void DeleteTheFile(File file) {
         try {
@@ -792,8 +743,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     }
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        //Log.d(TAG, "p " + position);
-        //DONE save the selected item for the resume
         lastSurahIndex = position;
         //TODO HTTPrequest
         suraNumber = String.valueOf(position + 1);
@@ -907,10 +856,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterByStatus(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING));
                         cursor.moveToFirst();
                         if (cursor != null && cursor.getCount() >= 1) {
-//                            for (int i = 0; i < cursor.getCount(); i++) {
-//                                Log.i(TAG, cursor.getInt(i) + " download ");
-//                                cursor.moveToNext();
-//                            }
                             Toast.makeText(getApplicationContext(), "Please, wait", Toast.LENGTH_SHORT).show();
                             adapter.notifyDataSetChanged();
 
