@@ -70,18 +70,10 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     //DEFINE UI ELEMENTS
     private Spinner suranames_spinner;
     private ImageButton playVerse;
-    private ImageButton decRepeat;
-    private ImageButton incRepeat;
-    private ImageButton decStart;
-    private ImageButton incStart;
-    private ImageButton decEnd;
-    private ImageButton incEnd;
     private Button commitBtn;
-    private Button dl_audio;
     private TextView startValue;
     private TextView endValue;
     private TextView repeatValue;
-    private RecyclerView recyclerView;
     private ProgressBar progressBar;
 
     //DATA
@@ -128,7 +120,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         String title = getString(R.string.memorizer);
-        getSupportActionBar().setTitle(title);
+        Objects.requireNonNull(getSupportActionBar()).setTitle(title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         context = this;
@@ -141,15 +133,15 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
         //INITIALIZE UI ELEMENTS
         suranames_spinner = findViewById(R.id.surah_spinner);
-        dl_audio = findViewById(R.id.download_audio_button);
+        Button dl_audio = findViewById(R.id.download_audio_button);
         playVerse = findViewById(R.id.play_verse);
-        decRepeat = findViewById(R.id.dec_repeat);
-        incRepeat = findViewById(R.id.inc_repeat);
+        ImageButton decRepeat = findViewById(R.id.dec_repeat);
+        ImageButton incRepeat = findViewById(R.id.inc_repeat);
 
-        incStart = findViewById(R.id.inc_start);
-        decStart = findViewById(R.id.dec_start);
-        incEnd = findViewById(R.id.inc_end);
-        decEnd = findViewById(R.id.dec_end);
+        ImageButton incStart = findViewById(R.id.inc_start);
+        ImageButton decStart = findViewById(R.id.dec_start);
+        ImageButton incEnd = findViewById(R.id.inc_end);
+        ImageButton decEnd = findViewById(R.id.dec_end);
 
         commitBtn = findViewById(R.id.commit_btn);
 
@@ -158,7 +150,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         repeatValue = findViewById(R.id.repeat_count_tv);
 
 
-        recyclerView = findViewById(R.id.memorize_range_rv);
+        RecyclerView recyclerView = findViewById(R.id.memorize_range_rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MemorizeActivityAdapter(this);
         recyclerView.setAdapter(adapter);
@@ -253,8 +245,11 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
     private void loadAudioFiles() {
         //Open download page
-        Intent intent = new Intent(this, MemorizeDownloadActivity.class);
-        startActivity(intent);
+        //Intent intent = new Intent(this, MemorizeDownloadActivity.class);
+        //startActivity(intent);
+
+        //LOOP
+        playTheFileIfExists(fixZeroes(suraNumber)+fixZeroes(startAyahNumber));
     }
 
     private void loadRange() {
@@ -269,14 +264,13 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     //TODO display the range
                     //send to the adapter
                     if (!RANGEISSHOWN) {
-                        adapter.setText(ayahRanges);
-                        Log.d(TAG, "ADAPTER " + ayahRanges.size());
-
                         if (ayahRanges.size() == 0) {
                             //The list is empty. DOWNLOAD
                             Log.d(TAG, "surah not yet downloaded");
                             httpRequestSurah();
                         } else {
+                            adapter.setText(ayahRanges);
+                            Log.d(TAG, "ADAPTER " + ayahRanges.size());
                             Log.d(TAG, "surah exists in database");
                             RANGEISSHOWN = true;
 
@@ -553,7 +547,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 String filePath = "";
 
                 String path = Objects.requireNonNull(getExternalFilesDir(null)).getAbsolutePath();
-                newpath = path + "/quran_audio/arabic/by_ayah/1";//1 will change when there are more reciters
+                newpath = path + "/quran_audio/arabic/by_ayah/" + fixZeroes(suraNumber);//1 will change when there are more reciters
                 File directory = new File(newpath);
                 File[] files = directory.listFiles();
 
@@ -562,7 +556,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         String trackname = file.getName();
                         if (trackname.contains(".")) {
                             trackname = trackname.substring(0, trackname.lastIndexOf("."));
-                            suraNumber2Play = fixZeroes(suraNumber2Play);
+                            suraNumber2Play =  fixZeroes(suraNumber)+fixZeroes(suraNumber2Play);
                             if (trackname.equals(suraNumber2Play)) {
                                 //filePath = new StringBuilder().append(path).append("/quran_audio/"+language + "/by_surah/" + recitation_style + "/" + reciter+"/").append(prependZero(trackname)).append(".mp3").toString();
                                 filePath = newpath + "/" + trackname + ".mp3";
