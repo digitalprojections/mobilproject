@@ -20,7 +20,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MemorizeDownloadActivity"
-            android:parentActivityName=".MemorizeActivity"></activity>
+            android:parentActivityName=".MemorizeActivity" />
         <activity android:name=".OptionsMenuActivity" />
         <activity
             android:name=".PrivacyPolicyActivity"
@@ -39,27 +39,17 @@
             android:name=".LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="quran-kareem.web.app"
-                    android:pathPattern="*"
-                    android:scheme="https" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".MemorizeActivity"
             android:label="Memorize by Ayats"
             android:parentActivityName=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".EarnCoinsActivity"
@@ -126,7 +116,21 @@
         <activity
             android:name=".Search"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".AyahOfTheDay" />
+        <activity android:name=".AyahOfTheDay">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="quran-kareem.web.app"
+                    android:pathPattern="*"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+
+
     </application>
 
 </manifest>

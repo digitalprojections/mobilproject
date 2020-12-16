@@ -125,6 +125,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
         context = this;
         downloadManager = (DownloadManager) this.getSystemService(DOWNLOAD_SERVICE);
+        query = new DownloadManager.Query();
+
         ayahViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
@@ -249,6 +251,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         //startActivity(intent);
 
         //LOOP
+        //existance check
+
         playTheFileIfExists(fixZeroes(suraNumber)+fixZeroes(startAyahNumber));
     }
 
@@ -280,25 +284,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     }
                 }
             });
-
-
-
-
-       /* ayahViewModel.getChapterText(suraNumber).observe(this, new Observer<List<AllTranslations>>() {
-            @Override
-            public void onChanged(List<AllTranslations> allTranslations) {
-                if (allTranslations.size()==QuranMap.GetSurahLength(Integer.parseInt(suraNumber))){
-
-                    //the quantity match, go on to show the ayah
-
-                }else{
-                    //wait and try again
-
-                }
-            }
-        });*/
-
-
     }
 
     private void httpRequestSurah() {
@@ -547,7 +532,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 String filePath = "";
 
                 String path = Objects.requireNonNull(getExternalFilesDir(null)).getAbsolutePath();
-                newpath = path + "/quran_audio/arabic/by_ayah/" + fixZeroes(suraNumber);//1 will change when there are more reciters
+                newpath = path + "/quran_audio/arabic/by_ayah/1/" + fixZeroes(suraNumber);//1 will change when there are more reciters
                 File directory = new File(newpath);
                 File[] files = directory.listFiles();
 
@@ -556,7 +541,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         String trackname = file.getName();
                         if (trackname.contains(".")) {
                             trackname = trackname.substring(0, trackname.lastIndexOf("."));
-                            suraNumber2Play =  fixZeroes(suraNumber)+fixZeroes(suraNumber2Play);
+                            //suraNumber2Play =  fixZeroes(suraNumber)+fixZeroes(suraNumber2Play);
                             if (trackname.equals(suraNumber2Play)) {
                                 //filePath = new StringBuilder().append(path).append("/quran_audio/"+language + "/by_surah/" + recitation_style + "/" + reciter+"/").append(prependZero(trackname)).append(".mp3").toString();
                                 filePath = newpath + "/" + trackname + ".mp3";
@@ -566,7 +551,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     }
                 }  //This surah is not available
 
-                Log.i(TAG, suraNumber2Play);
+                Log.i(TAG, "SURANAME 2 PLAY "+ suraNumber2Play);
 
                 if (TrackDownloaded(suraNumber2Play)) {
                     url = filePath;
@@ -748,18 +733,11 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         String path = Objects.requireNonNull(getExternalFilesDir(null)).getAbsolutePath();
             //Log.d(TAG, "Files Path: " + path);
             //TODO adding new folder structure
-            newpath = path + "/quran_audio/arabic/by_ayah/1/";
+            newpath = path + "/quran_audio/arabic/by_ayah/1/"+fixZeroes(suraNumber);
             Log.d(TAG, "Files Path: " + newpath);
-//            File directory = new File(path);
-//            File[] files = directory.listFiles();
-//            if (files != null) {
-//                Log.d(TAG, "MOVE FILES count: " + files.length);
-//                MoveFiles(files);
-//            }
             File directory = new File(newpath);
             File[] files = directory.listFiles();
             if (files != null) {
-                Log.e(TAG, "Files were moved successfully");
                 for (File file : files) {
                     if (file.getName().contains(".")) {
                         //String trackname = files[i].getName().substring(0, files[i].getName().lastIndexOf("."));
@@ -861,7 +839,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
             return false;
         } else {
             // Permission has already been granted
-            Log.i("MY PERMISSION TO WRITE", MY_WRITE_EXTERNAL_STORAGE + " already granted");
+            Log.i("PERMISSION TO WRITE", MY_WRITE_EXTERNAL_STORAGE + " already granted");
             return true;
         }
 
@@ -887,19 +865,19 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         return retVal;
     }
     @Override
-    public void DownloadThis(String suraNumber) {
+    public void DownloadThis(String startAyahNumber) {
         if (WritePermission()) {
 
             
                 String middle_path = "arabic/by_ayah/1";
-                //TODO new path:
-            String zznumber = fixZeroes(suraNumber);
-                String url = mFirebaseRemoteConfig.getString("server_audio") + "/quran_audio/" + middle_path + "/" + zznumber + ".mp3";
+
+                String zznumber = fixZeroes(suraNumber) + fixZeroes(startAyahNumber);
+                String url = mFirebaseRemoteConfig.getString("server_audio") + "/quran_audio/" + middle_path + "/" + fixZeroes(suraNumber) +"/" + zznumber + ".mp3";
                 
                 Log.e(TAG, " DOWNLOAD url " + url);
                 //String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suraNumber + ".mp3"; // your URL here
             
-                newpath = getExternalFilesDir(null) + "/quran_audio/" + middle_path;
+                newpath = getExternalFilesDir(null) + "/quran_audio/" + middle_path + "/" + fixZeroes(suraNumber);
                 File file = new File(newpath, zznumber + ".mp3");
                 DownloadManager.Request request;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
@@ -921,7 +899,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                             .setAllowedOverRoaming(true);
                 }
 
-                if (sharedPreferences.read(SharedPreferences.SIGNATURE, "ERROR").equals("OK")) {
+                //if (sharedPreferences.read(SharedPreferences.SIGNATURE, "ERROR").equals("OK")) {
                     if (isNetworkAvailable()) {
 
 
@@ -976,9 +954,10 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     } else {
                         Log.i(TAG, "NO NETWORK");
                     }
-                } else {
-                    Log.i(TAG, "NO SIGNATURE");
-                }
+                //} else {
+                    //Log.i(TAG, "NO SIGNATURE");
+            //must start the app normal
+                //}
 
         } else {
             Log.i("PERMISSION NG", "Download fail");
