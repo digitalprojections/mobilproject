@@ -280,7 +280,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         startAyahNumber = sharedPreferences.read(lastSurahIndex + "_start", "1");
         endAyahNumber = sharedPreferences.read(lastSurahIndex + "_end", "2");
 
-        Log.d(TAG, lastSurahIndex + " last surah index, start:" + startAyahNumber + " - end:" + endAyahNumber);
+        Log.d(TAG, lastSurahIndex + " last surah index, start:" + startAyahNumber + "-end:" + endAyahNumber);
 
         startValue.setText(startAyahNumber);
         endValue.setText(endAyahNumber);
@@ -329,7 +329,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void loadRange() {
-        suraNumber = Integer.toString(lastSurahIndex + 1);//we adjust the value with only where it is necessary
+        suraNumber = String.valueOf(lastSurahIndex+1);//we adjust the value with only where it is necessary
         sharedPreferences.write(lastSurahIndex + "_start", startAyahNumber);
         sharedPreferences.write(lastSurahIndex + "_end", endAyahNumber);
                 //TODO First load all the surah to check if it is fully available.
@@ -583,13 +583,13 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     if (trackList.get(i).getName().equals(suraNumber2Play)) {
                         try{
                             suraNumber2Play =  trackList.get(i + 1).getName();
-                            Log.e(TAG, suraNumber2Play + " - next suranumber");
+                            Log.e(TAG, suraNumber2Play + " - next suranumber. " + repeatCountInteger + " - repeatCountInteger");
                             break;
                         }catch (IndexOutOfBoundsException x){
                             if (repeatCountInteger>1) {
                                 //go to the first file
                                 repeatCountInteger--;//minus 1
-                                suraNumber2Play = String.valueOf(Integer.parseInt(trackList.get(0).getName()));
+                                suraNumber2Play = trackList.get(0).getName();
                             } else {
                                 suraNumber2Play = null;
                             }
@@ -633,7 +633,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 if (TrackDownloaded(suraNumber2Play)) {
                     url = filePath;
                 } else {
-                    url = newpath + "/" + suraNumber2Play + ".mp3";
+                    url = newpath + "/" + fixAyahNameZeros(Integer.parseInt(suraNumber2Play)) + ".mp3";
 
                 }
                 //Log.i(TAG, "PLAY " + url);
@@ -700,7 +700,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 }
             }
         }else {
-            Log.i(TAG, "TRACK DOWNLOADED? " + v + " => " + trackList);
+            Log.i(TAG, "TRACK DOWNLOADED CHECK FAIL " + v + " => " + trackList);
         }
 
         return retval;
@@ -773,6 +773,12 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         String trackname = file.getName();
                         trackname = trackname.substring(0, trackname.lastIndexOf("."));
                         Log.d(TAG, "track name: " + trackname);
+                        try{
+                            Integer.parseInt(trackname);
+                        }catch (NumberFormatException nfx){
+                            DeleteTheFile(file);
+                        }
+
                         try {
                             //int tt = Integer.parseInt(trackname);
                             if (!TrackDownloaded(file.getName())) {
