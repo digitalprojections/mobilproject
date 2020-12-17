@@ -228,8 +228,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     Log.i(TAG, "DOWNLOAD COMPLETE, Download id " + id + " ayah number: " + ayahNumber2Download);
                         //PopulateTrackList();
                     if (ayahNumber2Download != null) {
-                        int sn = Integer.parseInt(ayahNumber2Download);
-                        MarkAsDownloaded(sn);
+                        int ayah_no = Integer.parseInt(ayahNumber2Download);
+                        MarkAsDownloaded(ayah_no);
                     }
 
 
@@ -1005,15 +1005,45 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
+    String fixAyahNameZeros(int ayah_id){
+        String retVal = "";
+        int tempVal;
+        //try to parse the string into integer
+        try{
+            tempVal = ayah_id;
+            if(tempVal<9999){
+                retVal = "00"+tempVal;
+            }else if(tempVal>9999&&tempVal<99999){
+                retVal = "0"+tempVal;
+            }else {
+                //it is higher than 99
+                retVal = String.valueOf(ayah_id);
+            }
+        }catch (IllegalFormatException ignore){
+
+        }
+        return retVal;
+    }
+
+    String makeAyahRefName(int verse_id){
+        String rv = "";
+        rv = fixZeroes(suraNumber).concat(fixZeroes(String.valueOf(verse_id)));
+        return rv;
+    }
+
     @Override
     public void MarkAsDownloaded(int ayah_id) {
         //TODO set the downloaded ayah state
+
+
         if (mAdapter != null) {
-            int actual_position = ayah_id;
+            int actual_position = 0;
             if (mAdapter.getItemCount() > 0) {
                 for (int i = 0; i < mAdapter.getItemCount(); i++) {
+                    String ayah_ref_name =  makeAyahRefName(mAdapter.getTitleAt(i).verse_id);
                     try {
-                        if (mAdapter.getTitleAt(i) != null && mAdapter.getTitleAt(i).verse_id == ayah_id) {
+                        Log.d(TAG, ayah_ref_name + " vs " + fixAyahNameZeros(ayah_id));
+                        if (mAdapter.getTitleAt(i) != null && ayah_ref_name == fixAyahNameZeros(ayah_id)) {
                             actual_position = i;
                         }
                     } catch (IndexOutOfBoundsException x) {
