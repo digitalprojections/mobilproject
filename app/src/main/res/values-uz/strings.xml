@@ -117,4 +117,5 @@
     <string name="signin_request">Maxsus mukofot olish uchun \"Sign in\" tugmasi orqali tizimga kiring</string>
     <string name="points_restored">Tanga ballari tiklandi</string>
     <string name="noads_button_label">Bugungi reklamalarni olib tashlash</string>
+    <string name="write_permission_denied">Xatolik! Yozishga ruxsat beriing</string>
 </resources>

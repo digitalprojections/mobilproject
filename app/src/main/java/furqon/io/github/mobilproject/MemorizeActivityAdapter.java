@@ -61,6 +61,7 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
         holder.arabic_text.setGravity(Gravity.START);
         holder.arabic_text.setText(ayah_txt);
         holder.ayah_number.setText(verse_number);
+
         if(current.audio_progress>0 && current.audio_progress<100)
         {
             holder.progressBar.setVisibility(View.VISIBLE);

@@ -129,4 +129,6 @@
     <string name="increase_repeat_count">increase repeat count</string>
     <string name="decrease_the_value">decrease the value</string>
     <string name="increase_the_value">increase the value</string>
+    <string name="write_permission_denied">Xatolik! Yozishga ruxsat beriing</string>
+    <string name="no_internet">No Internet Connection</string>
 </resources>

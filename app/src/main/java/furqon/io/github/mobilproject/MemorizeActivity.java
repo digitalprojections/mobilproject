@@ -70,6 +70,8 @@ import java.util.TimerTask;
 
 import furqon.io.github.mobilproject.Services.OnClearFromService;
 
+import static com.google.android.material.snackbar.Snackbar.*;
+
 public class MemorizeActivity extends AppCompatActivity implements View.OnClickListener, MyListener, AdapterView.OnItemSelectedListener, Playable {
     private static final int MY_WRITE_EXTERNAL_STORAGE = 101;
     public static final String TAG = MemorizeActivity.class.getSimpleName();
@@ -232,23 +234,23 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
 
                 } else if (status == DownloadManager.STATUS_FAILED) {
-                    Snackbar.make(coordinatorLayout,
+                    make(coordinatorLayout,
                             "error " + reason,
-                            Snackbar.LENGTH_LONG).show();
+                            LENGTH_LONG).show();
                     //Crashlytics.log("download error - " + reason + "->" + language + "/" + recitation_style + "/" + reciter + "/" + suraNumber2Download);
                     mAdapter.notifyDataSetChanged();
                 } else if (status == DownloadManager.STATUS_PAUSED) {
-                    Snackbar.make(coordinatorLayout,
+                    make(coordinatorLayout,
                             "PAUSED!\n" + "reason of " + reason,
-                            Snackbar.LENGTH_LONG).show();
+                            LENGTH_LONG).show();
                 } else if (status == DownloadManager.STATUS_PENDING) {
-                    Snackbar.make(coordinatorLayout,
+                    make(coordinatorLayout,
                             "PENDING!",
-                            Snackbar.LENGTH_LONG).show();
+                            LENGTH_LONG).show();
                 } else if (status == DownloadManager.STATUS_RUNNING) {
-                    Snackbar.make(coordinatorLayout,
+                    make(coordinatorLayout,
                             "RUNNING!",
-                            Snackbar.LENGTH_LONG).show();
+                            LENGTH_LONG).show();
                 }
             }
         }
@@ -939,9 +941,9 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                             Log.i(TAG, "Download start " + zznumber);
                             downloadId = downloadManager.enqueue(request);
                             sharedPreferences.write("download_" + downloadId, zznumber); //storing the download id under the right sura reference. We can use the id later to check for download status
-                            sharedPreferences.write("downloading_surah_" + zznumber, (int) downloadId);
+                            //sharedPreferences.write("downloading_surah_" + zznumber, (int) downloadId);
                             mAdapter.notifyDataSetChanged();
-
+                            make(coordinatorLayout, "Downloading ayah: "+zznumber, LENGTH_SHORT).show();
                             myTimer.schedule(new TimerTask() {
                                 Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterByStatus(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING));
 
@@ -967,7 +969,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                             }, 500, 1000);
                         }
                     } else {
-                        Log.i(TAG, "NO NETWORK");
+                        //Log.i(TAG, "NO NETWORK");
+                        make(coordinatorLayout, R.string.no_internet, LENGTH_SHORT).show();
                     }
                 //} else {
                     //Log.i(TAG, "NO SIGNATURE");
@@ -976,6 +979,9 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
         } else {
             Log.i("PERMISSION NG", "Download fail");
+            make(coordinatorLayout,
+                    R.string.write_permission_denied,
+                    LENGTH_LONG).show();
         }
     }
     private boolean isNetworkAvailable() {
