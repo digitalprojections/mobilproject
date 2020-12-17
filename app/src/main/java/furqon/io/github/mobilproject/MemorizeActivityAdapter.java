@@ -73,7 +73,7 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
             holder.progressBar.setVisibility(View.GONE);
             holder.audio_file.setBackgroundResource(R.drawable.ic_audio_missing);
         }
-        Log.d(TAG, "RANGE ayah " + current.verse_id + ", audio downloaded % - " + current.audio_progress);
+        //Log.d(TAG, "RANGE ayah " + current.verse_id + ", audio downloaded % - " + current.audio_progress);
     }
 
 

@@ -110,7 +110,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     private boolean isPlaying;
     private Runnable runnable;
     private Handler handler;
-    private MediaMetadataRetriever metadataRetriever;
+    MediaMetadataRetriever metadataRetriever = new MediaMetadataRetriever();
     private DownloadManager downloadManager;
     DownloadManager.Query query;
     private boolean download_attempted;
@@ -574,13 +574,15 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         }
     }
     void nextTrack(){
-        if (suraNumber2Play != null && trackList !=null) {
+
+        PopulateTrackList();
+        Log.d(TAG, "tracklist " + trackList.size());
             if(trackList.size() > 1){
                 for(int i=0;i<trackList.size();i++){
-
+                    Log.d(TAG, i + " index. " + trackList.get(i).getName() + " " + suraNumber2Play);
                     if (trackList.get(i).getName().equals(suraNumber2Play)) {
                         try{
-                            suraNumber2Play = String.valueOf(Integer.parseInt(trackList.get(i + 1).getName()));
+                            suraNumber2Play =  trackList.get(i + 1).getName();
                             Log.e(TAG, suraNumber2Play + " - next suranumber");
                             break;
                         }catch (IndexOutOfBoundsException x){
@@ -596,10 +598,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     }
                 }
             }
-
-        }else{
-            suraNumber2Play = null;
-        }
     }
 
     void play() {
@@ -609,8 +607,9 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 String url;
                 String filePath = "";
 
-                String path = Objects.requireNonNull(getExternalFilesDir(null)).getAbsolutePath();
-                newpath = path + "/quran_audio/arabic/by_ayah/1/" + fixZeroes(suraNumber);//1 will change when there are more reciters
+                //String path = Objects.requireNonNull(getExternalFilesDir(null)).getAbsolutePath();
+                //newpath = path + "/quran_audio/arabic/by_ayah/1/" + fixZeroes(suraNumber);//1 will change when there are more reciters
+            newpath = getNewPath();
                 File directory = new File(newpath);
                 File[] files = directory.listFiles();
 
@@ -693,12 +692,15 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         if (trackList != null) {
             for (Track i : trackList
             ) {
+                Log.i(TAG, "TRACK DOWNLOADED? " + v + " => " + i + " " + (i.getName().equals(v)));
                 if (i.getName().equals(v)) {
                     //match found
-                    Log.i("TRACK DOWNLOADED?", v + " " + i + " " + (i.getName().equals(v)));
+
                     retval = true;
                 }
             }
+        }else {
+            Log.i(TAG, "TRACK DOWNLOADED? " + v + " => " + trackList);
         }
 
         return retval;
@@ -757,10 +759,10 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     }
     private void PopulateTrackList() {
         trackList = new ArrayList<>();
-        String path = Objects.requireNonNull(getExternalFilesDir(null)).getAbsolutePath();
+
             //Log.d(TAG, "Files Path: " + path);
-            //TODO adding new folder structure
-            newpath = path + "/quran_audio/arabic/by_ayah/1/"+fixZeroes(suraNumber);
+            //adding new folder structure
+            newpath = getNewPath();
             Log.d(TAG, "Files Path: " + newpath);
             File directory = new File(newpath);
             File[] files = directory.listFiles();
@@ -770,17 +772,18 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         //String trackname = files[i].getName().substring(0, files[i].getName().lastIndexOf("."));
                         String trackname = file.getName();
                         trackname = trackname.substring(0, trackname.lastIndexOf("."));
+                        Log.d(TAG, "track name: " + trackname);
                         try {
-                            int tt = Integer.parseInt(trackname);
+                            //int tt = Integer.parseInt(trackname);
                             if (!TrackDownloaded(file.getName())) {
                                 String filePath = newpath + "/" + file.getName();
                                 try {
                                     metadataRetriever.setDataSource(filePath);
                                     //Date date = new Date();
-                                    Track track = new Track(AudioTimer.getTimeStringFromMs(Integer.parseInt(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION))), trackname, filePath);
+                                    Track track = new Track(AudioTimer.getTimeStringFromMs(Integer.parseInt(Objects.requireNonNull(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)))), trackname, filePath);
                                     trackList.add(track);
                                 } catch (RuntimeException x) {
-
+                                    Log.e(TAG, "METADATA ERROR " + trackname);
                                 }
                             }
                         } catch (NumberFormatException nfx) {
@@ -805,6 +808,14 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 Log.d(TAG, "NULL ARRAY no files found");
             }
     }
+
+    private String getNewPath() {
+
+
+        String path = Objects.requireNonNull(getExternalFilesDir(null)).getAbsolutePath();
+        return path + "/quran_audio/arabic/by_ayah/1/"+fixZeroes(suraNumber);
+    }
+
     private void DeleteTheFile(File file) {
         try {
             file.delete();
@@ -888,16 +899,12 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     public void DownloadThis(String startAyahNumber) {
         if (WritePermission()) {
 
-            
-                String middle_path = "arabic/by_ayah/1";
 
-                String zznumber = fixZeroes(suraNumber) + fixZeroes(startAyahNumber);
-                String url = mFirebaseRemoteConfig.getString("server_audio") + "/quran_audio/" + middle_path + "/" + fixZeroes(suraNumber) +"/" + zznumber + ".mp3";
-                
-                Log.e(TAG, " DOWNLOAD url " + url);
-                //String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suraNumber + ".mp3"; // your URL here
-            
-                newpath = getExternalFilesDir(null) + "/quran_audio/" + middle_path + "/" + fixZeroes(suraNumber);
+            String zznumber = fixZeroes(suraNumber) + fixZeroes(startAyahNumber);
+            String url = mFirebaseRemoteConfig.getString("server_audio") + "/quran_audio/arabic/by_ayah/1/" + fixZeroes(suraNumber) +"/" + zznumber + ".mp3";
+
+                newpath = getNewPath();
+                //newpath = getExternalFilesDir(null) + "/quran_audio/arabic/by_ayah/1/" + fixZeroes(suraNumber);
                 File file = new File(newpath, zznumber + ".mp3");
                 DownloadManager.Request request;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
@@ -1023,6 +1030,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         }
         return retVal;
     }
+
 
     String makeAyahRefName(int verse_id){
         String rv = "";
