@@ -2,6 +2,7 @@ package furqon.io.github.mobilproject;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -67,8 +68,10 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
             holder.progressBar.setVisibility(View.VISIBLE);
         }else if(current.audio_progress==100){
             holder.progressBar.setVisibility(View.GONE);
+            holder.audio_file.setBackgroundResource(R.drawable.ic_audio_symbol);
         }else{
             holder.progressBar.setVisibility(View.GONE);
+            holder.audio_file.setBackgroundResource(R.drawable.ic_audio_missing);
         }
         Log.d(TAG, "RANGE ayah " + current.verse_id + ", audio downloaded % - " + current.audio_progress);
     }
@@ -96,14 +99,17 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
 
     class AyahViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        TextView audio_file;
         TextView arabic_text;
         TextView ayah_number;
         TextView translit;
         LinearLayout arabic_text_lin_layout;
         ProgressBar progressBar;
 
+
         public AyahViewHolder(@NonNull View itemView) {
             super(itemView);
+            audio_file = itemView.findViewById(R.id.audio_file_icon);
             arabic_text_lin_layout = itemView.findViewById(R.id.h_mem_ar_layout);
             arabic_text = itemView.findViewById(R.id.memorization_arabic_tv);
             ayah_number = itemView.findViewById(R.id.arab_number);
@@ -133,6 +139,7 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
             }
             ((LinearLayout.LayoutParams) lpartxt).setMargins(10, 0, 1, 1);
             translit.setVisibility(View.GONE);
+            audio_file.setBackgroundResource(R.drawable.ic_audio_missing);
             arabic_text.setTextSize(30);
             if (sharedPreferences.contains(sharedPreferences.FONTSIZE)) {
                 float fs = (float) sharedPreferences.read(sharedPreferences.FONTSIZE, 0);

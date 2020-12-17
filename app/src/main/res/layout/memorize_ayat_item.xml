@@ -11,7 +11,6 @@
         android:id="@+id/h_mem_ar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="10"
         android:background="#D3B2EBF2"
         android:gravity="center_vertical|end"
         android:orientation="horizontal">
@@ -45,16 +44,35 @@
             android:minHeight="16dp"
             android:visibility="visible" />
 
-        <TextView
-            android:id="@+id/arab_number"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            android:layout_weight="0"
-            android:background="@drawable/ayahsymbol"
-            android:gravity="center"
-            android:textColor="#000000"
-            android:visibility="visible" />
+            <TextView
+                android:id="@+id/arab_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_weight="0"
+                android:background="@drawable/ayahsymbol"
+                android:gravity="center"
+                android:textColor="#000000"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/audio_file_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+
+                android:layout_weight="0"
+                android:background="@drawable/ic_audio_missing"
+                android:gravity="center"
+                android:textColor="#000000"
+                android:visibility="visible" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

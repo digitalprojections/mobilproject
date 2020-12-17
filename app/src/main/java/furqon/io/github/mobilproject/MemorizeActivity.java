@@ -943,29 +943,29 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                             //sharedPreferences.write("downloading_surah_" + zznumber, (int) downloadId);
                             mAdapter.notifyDataSetChanged();
                             make(coordinatorLayout, "Downloading ayah: "+zznumber, LENGTH_SHORT).show();
-                            myTimer.schedule(new TimerTask() {
-                                Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterByStatus(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING));
+                            //myTimer.schedule(new TimerTask() {
+                            //Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterByStatus(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING));
 
-                                @Override
-                                public void run() {
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            try{
-                                                mAdapter.notifyDataSetChanged();
-                                                cursor.moveToFirst();
-                                                if (cursor == null || cursor.getCount() == 0) {
-                                                    myTimer.cancel();
-                                                }
-                                            }catch (IllegalStateException x){
-                                                if (cursor == null || cursor.getCount() == 0 && myTimer!=null) {
-                                                    myTimer.cancel();
-                                                }
-                                            }
-                                        }
-                                    });
-                                }
-                            }, 500, 1000);
+//                                @Override
+//                                public void run() {
+//                                    runOnUiThread(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            try{
+//                                                mAdapter.notifyDataSetChanged();
+//                                                cursor.moveToFirst();
+//                                                if (cursor == null || cursor.getCount() == 0) {
+//                                                    myTimer.cancel();
+//                                                }
+//                                            }catch (IllegalStateException x){
+//                                                if (cursor == null || cursor.getCount() == 0 && myTimer!=null) {
+//                                                    myTimer.cancel();
+//                                                }
+//                                            }
+//                                        }
+//                                    });
+//                                }
+//                            }, 500, 1000);
                         }
                     } else {
                         //Log.i(TAG, "NO NETWORK");
@@ -1046,6 +1046,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         if (mAdapter.getTitleAt(i) != null && ayah_ref_name.equals(downloadedAyahId)) {
                             Log.d(TAG, ayah_ref_name + " matches downloadedAyahId " + downloadedAyahId);
                             actual_position = i;
+                            mAdapter.notifyDataSetChanged();
                         }
                     } catch (IndexOutOfBoundsException x) {
                         //Crashlytics.log(x.getMessage() + " - " + x.getStackTrace());
