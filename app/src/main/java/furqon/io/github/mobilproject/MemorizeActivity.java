@@ -781,7 +781,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
                         try {
                             //int tt = Integer.parseInt(trackname);
-                            if (!TrackDownloaded(file.getName())) {
+                            if (!TrackDownloaded(trackname)) {
                                 String filePath = newpath + "/" + file.getName();
                                 try {
                                     metadataRetriever.setDataSource(filePath);
@@ -902,21 +902,22 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         return retVal;
     }
     @Override
-    public void DownloadThis(String startAyahNumber) {
+    public void DownloadThis(String ayah2download) {
+
         if (WritePermission()) {
+            String ayahReferenceNumber = fixZeroes(suraNumber) + fixZeroes(ayah2download);
+            if (!TrackDownloaded(ayahReferenceNumber)) {
 
-
-            String zznumber = fixZeroes(suraNumber) + fixZeroes(startAyahNumber);
-            String url = mFirebaseRemoteConfig.getString("server_audio") + "/quran_audio/arabic/by_ayah/1/" + fixZeroes(suraNumber) +"/" + zznumber + ".mp3";
+                String url = mFirebaseRemoteConfig.getString("server_audio") + "/quran_audio/arabic/by_ayah/1/" + fixZeroes(suraNumber) + "/" + ayahReferenceNumber + ".mp3";
 
                 newpath = getNewPath();
                 //newpath = getExternalFilesDir(null) + "/quran_audio/arabic/by_ayah/1/" + fixZeroes(suraNumber);
-                File file = new File(newpath, zznumber + ".mp3");
+                File file = new File(newpath, ayahReferenceNumber + ".mp3");
                 DownloadManager.Request request;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                     request = new DownloadManager.Request(Uri.parse(url))
-                            .setTitle(zznumber)
-                            .setDescription("Downloading " + zznumber)
+                            .setTitle(ayahReferenceNumber)
+                            .setDescription("Downloading " + ayahReferenceNumber)
                             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
                             .setDestinationUri(Uri.fromFile(file))
                             .setRequiresCharging(false)
@@ -924,8 +925,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                             .setAllowedOverRoaming(true);
                 } else {
                     request = new DownloadManager.Request(Uri.parse(url))
-                            .setTitle(zznumber)
-                            .setDescription("Downloading " + zznumber)
+                            .setTitle(ayahReferenceNumber)
+                            .setDescription("Downloading " + ayahReferenceNumber)
                             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
                             .setDestinationUri(Uri.fromFile(file))
                             .setAllowedOverMetered(true)
@@ -933,31 +934,30 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 }
 
                 //if (sharedPreferences.read(SharedPreferences.SIGNATURE, "ERROR").equals("OK")) {
-                    if (isNetworkAvailable()) {
+                if (isNetworkAvailable()) {
 
 
-                        //query.setFilterById(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING);
-                        Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterByStatus(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING));
-                        cursor.moveToFirst();
-                        if (cursor != null && cursor.getCount() >= 1) {
-                            Toast.makeText(getApplicationContext(), "Please, wait", Toast.LENGTH_SHORT).show();
-                            mAdapter.notifyDataSetChanged();
+                    //query.setFilterById(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING);
+                    Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterByStatus(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING));
+                    cursor.moveToFirst();
+                    if (cursor != null && cursor.getCount() >= 1) {
+                        Toast.makeText(getApplicationContext(), "Please, wait", Toast.LENGTH_SHORT).show();
+                        mAdapter.notifyDataSetChanged();
 
-                            if(!sharedPreferences.read(SharedPreferences.NOMOREADS, false))
-                            {
-                                //mInterstitialAd.show();
-                            }
-                        } else {
-                            Log.i(TAG, cursor.getCount() + " downloads ");
-                            //No downloads running. allow download
-                            Log.i(TAG, "Download start " + zznumber);
-                            downloadId = downloadManager.enqueue(request);
-                            sharedPreferences.write("download_" + downloadId, zznumber); //storing the download id under the right sura reference. We can use the id later to check for download status
-                            //sharedPreferences.write("downloading_surah_" + zznumber, (int) downloadId);
-                            mAdapter.notifyDataSetChanged();
-                            make(coordinatorLayout, "Downloading ayah: "+zznumber, LENGTH_SHORT).show();
-                            //myTimer.schedule(new TimerTask() {
-                            //Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterByStatus(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING));
+                        if (!sharedPreferences.read(SharedPreferences.NOMOREADS, false)) {
+                            //mInterstitialAd.show();
+                        }
+                    } else {
+                        Log.i(TAG, cursor.getCount() + " downloads ");
+                        //No downloads running. allow download
+                        Log.i(TAG, "Download start " + ayahReferenceNumber);
+                        downloadId = downloadManager.enqueue(request);
+                        sharedPreferences.write("download_" + downloadId, ayahReferenceNumber); //storing the download id under the right sura reference. We can use the id later to check for download status
+                        //sharedPreferences.write("downloading_surah_" + zznumber, (int) downloadId);
+                        mAdapter.notifyDataSetChanged();
+                        make(coordinatorLayout, "Downloading ayah: " + ayahReferenceNumber, LENGTH_SHORT).show();
+                        //myTimer.schedule(new TimerTask() {
+                        //Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterByStatus(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING));
 
 //                                @Override
 //                                public void run() {
@@ -979,21 +979,24 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 //                                    });
 //                                }
 //                            }, 500, 1000);
-                        }
-                    } else {
-                        //Log.i(TAG, "NO NETWORK");
-                        make(coordinatorLayout, R.string.no_internet, LENGTH_SHORT).show();
                     }
+                } else {
+                    //Log.i(TAG, "NO NETWORK");
+                    make(coordinatorLayout, R.string.no_internet, LENGTH_SHORT).show();
+                }
                 //} else {
-                    //Log.i(TAG, "NO SIGNATURE");
-            //must start the app normal
+                //Log.i(TAG, "NO SIGNATURE");
+                //must start the app normal
                 //}
 
-        } else {
-            Log.i("PERMISSION NG", "Download fail");
-            make(coordinatorLayout,
-                    R.string.write_permission_denied,
-                    LENGTH_LONG).show();
+            } else {
+                Log.i("PERMISSION NG", "Download fail");
+                make(coordinatorLayout,
+                        R.string.write_permission_denied,
+                        LENGTH_LONG).show();
+            }
+        }else{
+            Log.d(TAG, "audio file already exists " + ayah2download);
         }
     }
     private boolean isNetworkAvailable() {
