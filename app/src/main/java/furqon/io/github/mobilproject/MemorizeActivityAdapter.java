@@ -70,7 +70,7 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
         }else{
             holder.progressBar.setVisibility(View.GONE);
         }
-        Log.d(TAG, "RANGE " + verse_number);
+        Log.d(TAG, "RANGE ayah " + current.verse_id + ", audio downloaded % - " + current.audio_progress);
     }
 
 
@@ -183,7 +183,7 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
                 myListener = (MyListener) mContext;
                 myListener.DownloadThis(verse);
 
-                //myListener.MarkAsDownloading(Integer.parseInt(snumber));
+                myListener.MarkAsDownloading(Integer.parseInt(verse));
                 //getTitleAt(Integer.parseInt(snumber)-1).;
                 progressBar.setVisibility(View.VISIBLE);
                 //downloadButton.setVisibility(View.GONE);

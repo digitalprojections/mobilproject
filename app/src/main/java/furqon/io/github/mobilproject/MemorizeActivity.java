@@ -227,10 +227,9 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     }
                     Log.i(TAG, "DOWNLOAD COMPLETE, Download id " + id + " ayah number: " + ayahNumber2Download);
                         //PopulateTrackList();
-                    if (ayahNumber2Download != null) {
-                        int ayah_no = Integer.parseInt(ayahNumber2Download);
-                        MarkAsDownloaded(ayah_no);
-                    }
+
+                    MarkAyahAsDownloaded(ayahNumber2Download);
+
 
 
                 } else if (status == DownloadManager.STATUS_FAILED) {
@@ -1035,15 +1034,17 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     public void MarkAsDownloaded(int ayah_id) {
         //TODO set the downloaded ayah state
 
+    }
 
+    void MarkAyahAsDownloaded(String downloadedAyahId){
         if (mAdapter != null) {
             int actual_position = 0;
             if (mAdapter.getItemCount() > 0) {
                 for (int i = 0; i < mAdapter.getItemCount(); i++) {
                     String ayah_ref_name =  makeAyahRefName(mAdapter.getTitleAt(i).verse_id);
                     try {
-                        Log.d(TAG, ayah_ref_name + " vs " + fixAyahNameZeros(ayah_id));
-                        if (mAdapter.getTitleAt(i) != null && ayah_ref_name == fixAyahNameZeros(ayah_id)) {
+                        if (mAdapter.getTitleAt(i) != null && ayah_ref_name.equals(downloadedAyahId)) {
+                            Log.d(TAG, ayah_ref_name + " matches downloadedAyahId " + downloadedAyahId);
                             actual_position = i;
                         }
                     } catch (IndexOutOfBoundsException x) {
@@ -1051,6 +1052,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     }
                 }
                 AyahRange ctitle = mAdapter.getTitleAt(actual_position);
+                Log.d(TAG,  "CTITLE " + " index:" + actual_position + ". " + ctitle.verse_id + " - verse id, audio progress: " + ctitle.audio_progress);
                 if (ctitle != null && ctitle.audio_progress < 100) {
                     ctitle.audio_progress = 100;
                     ayahViewModel.update(ctitle);
@@ -1060,7 +1062,23 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public void MarkAsDownloading(int surah_id) {
-
+    public void MarkAsDownloading(int ayah_id) {
+        if (mAdapter != null) {
+            int actual_position = 0;
+            for (int i = 0; i < mAdapter.getItemCount(); i++) {
+                try {
+                    if (mAdapter.getTitleAt(i) != null && mAdapter.getTitleAt(i).verse_id == ayah_id) {
+                        actual_position = i;
+                    }
+                } catch (IndexOutOfBoundsException iobx) {
+                    Log.e("CANNOT GET POSITION", iobx.getMessage());
+                }
+            }
+            AyahRange ctitle = mAdapter.getTitleAt(actual_position);
+            if (ctitle != null) {
+                ctitle.audio_progress = 50;
+                ayahViewModel.update(ctitle);
+            }
+        }
     }
 }
