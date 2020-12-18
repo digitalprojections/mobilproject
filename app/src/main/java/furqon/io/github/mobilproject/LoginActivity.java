@@ -428,7 +428,7 @@ public class LoginActivity extends AppCompatActivity{
                             Log.d(TAG, "JSON " + iobx);
                         }
                         CheckRC();
-                        checkForDynamicLink();
+                        //checkForDynamicLink();
 
                         //successfully saved creds. Mark the app launch to get rid of redundant requests
                         mSharedPref.write(mSharedPref.CREDS_ALREADY_SENT, true);
@@ -496,65 +496,7 @@ public class LoginActivity extends AppCompatActivity{
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
-    private void checkForDynamicLink() {
-        Log.i(TAG, "Dynamic LINK CHECKING");
-        FirebaseDynamicLinks.getInstance()
-                .getDynamicLink(getIntent())
-                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
-                    @Override
-                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
-                        // Get deep link from result (may be null if no link is found)
-                        Uri deepLink = null;
-                        if (pendingDynamicLinkData != null) {
 
-                            deepLink = pendingDynamicLinkData.getLink();
-                            String inviter_id = deepLink.getQueryParameter("user_id");
-                            if (!inviter_id.equals(currentUser.getUid())) {
-                                Log.i(TAG, "Dynamic LINK FOUND " + inviter_id);
-                                pendingDynamicLinkData = null;
-
-                                //Send confirmation
-                                if (mSharedPref.read(SharedPreferences.INVITER, 0) == 0 && mSharedPref.read(SharedPreferences.INVITER_ID, "").isEmpty()) {
-                                    //Initial thanking.
-                                    //both inviter and its ID are empty
-                                    //simply store if not logged in
-                                    if(currentUser.getEmail().isEmpty()){
-                                        mSharedPref.write(SharedPreferences.INVITER_ID, inviter_id);
-                                    }
-                                    else{
-                                        mSharedPref.write(SharedPreferences.INVITER_ID, inviter_id);
-                                        sendConfirmationToServer(inviter_id);
-                                    }
-                                } else if(mSharedPref.read(SharedPreferences.INVITER, 0) == 0 && !mSharedPref.read(SharedPreferences.INVITER_ID, "").isEmpty()){
-                                    //retry thanking, if the same person is inviting.
-                                    //user can not thank more than one inviter
-                                    if(mSharedPref.read(SharedPreferences.INVITER_ID, "")==inviter_id)
-                                        sendConfirmationToServer(inviter_id);
-                                }
-                            } else {
-                                Log.i(TAG, "Can not use the dlink");
-
-                            }
-
-                        } else {
-
-                        }
-                        // Handle the deep link. For example, open the linked
-                        // content, or apply promotional credit to the user's
-                        // account.
-                        // ...
-                        // ...
-                    }
-                })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "getDynamicLink:onFailure", e);
-                    }
-                });
-        //sendConfirmationToServer("b4sGS2mH92RIv8bTJnomGzH9IDp1");
-        //CheckRC();
-    }
 
     private void CheckInviterThanked() {
         if (mSharedPref.read(mSharedPref.INVITER, 0) == 0) {

@@ -336,21 +336,23 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
             ayahViewModel.getAyahRange(suraNumber, startAyahNumber, endAyahNumber).observe(this, new Observer<List<AyahRange>>() {
                 @Override
                 public void onChanged(List<AyahRange> ayahRanges) {
+                    Log.d(TAG, suraNumber + " - " + startAyahNumber + " - " + endAyahNumber + " surah being called from DB " + ayahRanges.size() + " vs " + QuranMap.GetSurahLength(Integer.parseInt(suraNumber)-1));
                     //TODO display the range
                     //send to the adapter
                     if (!RANGEISSHOWN) {
                         if (ayahRanges.size() == 0) {
                             //The list is empty. DOWNLOAD
                             Log.d(TAG, "surah not yet downloaded");
+                            mAdapter.setText(null);
                             httpRequestSurah();
-                        } else {
+
+                        } else if(ayahRanges.size()==(Integer.parseInt(endAyahNumber)-Integer.parseInt(startAyahNumber))+1) {
                             mAdapter.setText(ayahRanges);
                             PopulateTrackList();
                             Log.d(TAG, "ADAPTER " + ayahRanges.size());
                             Log.d(TAG, "surah exists in database");
                             RANGEISSHOWN = true;
                             commitBtn.setEnabled(false);
-
                         }
                     } else {
                         Log.d(TAG, "RANGEISSHOWN " + RANGEISSHOWN);
@@ -360,7 +362,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void httpRequestSurah() {
-        Log.i(TAG, "CLICK clicking");
+        Log.i(TAG, "HTTPREQUEST sura text");
         RequestQueue queue = Volley.newRequestQueue(context);
         String url = mFirebaseRemoteConfig.getString("server_php") + "/ajax_quran.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -413,11 +415,11 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         commitBtn.setEnabled(false);
         queue.add(stringRequest);
     }
-    void populateAyahList(ArrayList<JSONObject> auclist){
+    void populateAyahList(ArrayList<JSONObject> ayah_list){
 
         ChapterTextTable text;
 
-        for (JSONObject i:auclist
+        for (JSONObject i:ayah_list
         ) {
 
             try{
@@ -436,6 +438,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 Log.e(TAG, "EXCEPTION " + sx.getMessage());
             }
         }
+
     }
     private void adjustRepeat(int i) {
         int repeatCount = 0;
@@ -807,16 +810,16 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         }
                     }
                 }
-                if (trackList.size() > 1){
-                    Collections.sort(trackList);
-                    //current_track_tv.setText("");
-                    mAdapter.setTrackList(trackList);
-                }else if(trackList.size()==1){
-                    //current_track_tv.setText("");
-                }
-                else{
-                    //current_track_tv.setText(R.string.tracklist_empty_warning);
-                }
+//                if (trackList.size() > 1){
+//                    Collections.sort(trackList);
+//                    //current_track_tv.setText("");
+//                    mAdapter.setTrackList(trackList);
+//                }else if(trackList.size()==1){
+//                    //current_track_tv.setText("");
+//                }
+//                else{
+//                    //current_track_tv.setText(R.string.tracklist_empty_warning);
+//                }
 
             } else {
                 //current_track_tv.setText(R.string.tracklist_empty_warning);
@@ -846,9 +849,10 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         if (sharedPreferences != null) {
             sharedPreferences.write(SharedPreferences.SELECTED_MEMORIZING_SURAH, position);
         }
-        setUIValues();
+
         mAdapter.setText(null);
         enableCommitButton();
+        setUIValues();
     }
 
     @Override

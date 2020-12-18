@@ -105,6 +105,8 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
         }
     }
     public void setText(List<AyahRange> ayahRanges) {
+        if(mAyahList!=null)
+            mAyahList.clear();
         mAyahList = ayahRanges;
         notifyDataSetChanged();
     }

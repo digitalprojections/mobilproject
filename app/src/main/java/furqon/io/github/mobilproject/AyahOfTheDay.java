@@ -13,12 +13,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 
 import java.util.List;
 
@@ -262,7 +267,63 @@ public class AyahOfTheDay extends AppCompatActivity {
         }
 
     }
+    private void checkForDynamicLink() {
+        Log.i(TAG, "Dynamic LINK CHECKING");
+        FirebaseDynamicLinks.getInstance()
+                .getDynamicLink(getIntent())
+                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
+                    @Override
+                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
+                        // Get deep link from result (may be null if no link is found)
+                        Uri deepLink = null;
+                        if (pendingDynamicLinkData != null) {
 
+                            deepLink = pendingDynamicLinkData.getLink();
+                            String inviter_id = deepLink.getQueryParameter("user_id");
+
+                                Log.i(TAG, "Dynamic LINK FOUND " + inviter_id);
+                                pendingDynamicLinkData = null;
+
+//                                //Send confirmation
+//                                if (mSharedPref.read(SharedPreferences.INVITER, 0) == 0 && mSharedPref.read(SharedPreferences.INVITER_ID, "").isEmpty()) {
+//                                    //Initial thanking.
+//                                    //both inviter and its ID are empty
+//                                    //simply store if not logged in
+//                                    if(currentUser.getEmail().isEmpty()){
+//                                        mSharedPref.write(SharedPreferences.INVITER_ID, inviter_id);
+//                                    }
+//                                    else{
+//                                        mSharedPref.write(SharedPreferences.INVITER_ID, inviter_id);
+//                                        sendConfirmationToServer(inviter_id);
+//                                    }-
+//                                } else if(mSharedPref.read(SharedPreferences.INVITER, 0) == 0 && !mSharedPref.read(SharedPreferences.INVITER_ID, "").isEmpty()){
+//                                    //retry thanking, if the same person is inviting.
+//                                    //user can not thank more than one inviter
+//                                    if(mSharedPref.read(SharedPreferences.INVITER_ID, "")==inviter_id)
+//                                        sendConfirmationToServer(inviter_id);
+//                                }
+                            } else {
+                                Log.i(TAG, "Can not use the dlink");
+
+                            }
+
+
+                        // Handle the deep link. For example, open the linked
+                        // content, or apply promotional credit to the user's
+                        // account.
+                        // ...
+                        // ...
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "getDynamicLink:onFailure", e);
+                    }
+                });
+        //sendConfirmationToServer("b4sGS2mH92RIv8bTJnomGzH9IDp1");
+        //CheckRC();
+    }
     @Override
     protected void onStop() {
         super.onStop();
