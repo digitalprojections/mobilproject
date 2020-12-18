@@ -332,7 +332,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         suraNumber = String.valueOf(lastSurahIndex+1);//we adjust the value with only where it is necessary
         sharedPreferences.write(lastSurahIndex + "_start", startAyahNumber);
         sharedPreferences.write(lastSurahIndex + "_end", endAyahNumber);
-                //TODO First load all the surah to check if it is fully available.
+        //TODO First load all the surah to check if it is fully available.
 
             ayahViewModel.getAyahRange(suraNumber, startAyahNumber, endAyahNumber).observe(this, new Observer<List<AyahRange>>() {
                 @Override
@@ -350,6 +350,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                             Log.d(TAG, "ADAPTER " + ayahRanges.size());
                             Log.d(TAG, "surah exists in database");
                             RANGEISSHOWN = true;
+                            commitBtn.setEnabled(false);
 
                         }
                     } else {
@@ -457,8 +458,15 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         }
         String repeatCount1 = String.format("%d", repeatCount);
         repeatValue.setText(repeatCount1);
-        sharedPreferences.write(SharedPreferences.PREFERRED_REPEAT_COUNT, "10");
+        sharedPreferences.write(SharedPreferences.PREFERRED_REPEAT_COUNT, repeatCount1);
+        repeatCountInteger = repeatCount;
+        enableCommitButton();
 
+    }
+
+    private void enableCommitButton() {
+        commitBtn.setEnabled(true);
+        RANGEISSHOWN = false;
     }
 
     private void stopPlay() {
@@ -495,7 +503,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 }
             }
             startAyahNumber = startValue.getText().toString();
-            RANGEISSHOWN=false;
+            enableCommitButton();
         }
     void adjustHighLowEnd(int i)
     {
@@ -519,7 +527,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
             }
         }
         endAyahNumber = endValue.getText().toString();
-        RANGEISSHOWN=false;
+        enableCommitButton();
     }
 
     @Override
@@ -834,12 +842,12 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         lastSurahIndex = position;
         //TODO HTTPrequest
         suraNumber = String.valueOf(position + 1);
-        RANGEISSHOWN = false;
         if (sharedPreferences != null) {
             sharedPreferences.write(SharedPreferences.SELECTED_MEMORIZING_SURAH, position);
         }
         setUIValues();
         mAdapter.setText(null);
+        enableCommitButton();
     }
 
     @Override
@@ -906,7 +914,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
         if (WritePermission()) {
             String ayahReferenceNumber = fixZeroes(suraNumber) + fixZeroes(ayah2download);
-            if (!TrackDownloaded(ayahReferenceNumber)) {
+
 
                 String url = mFirebaseRemoteConfig.getString("server_audio") + "/quran_audio/arabic/by_ayah/1/" + fixZeroes(suraNumber) + "/" + ayahReferenceNumber + ".mp3";
 
@@ -995,9 +1003,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         R.string.write_permission_denied,
                         LENGTH_LONG).show();
             }
-        }else{
-            Log.d(TAG, "audio file already exists " + ayah2download);
-        }
     }
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager

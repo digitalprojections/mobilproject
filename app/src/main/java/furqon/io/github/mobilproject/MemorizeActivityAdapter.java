@@ -32,6 +32,8 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
     private List<AyahRange> mAyahList;
 
     private String verse_number;//oyat nomeri
+    private String sura_number;
+
     private ViewGroup.LayoutParams lpartxt; // Height of TextView
     private ArrayList<Track> trackList;
 
@@ -57,7 +59,8 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
         AyahRange current = mAyahList.get(position);
 
         String ayah_txt = current.ar_text;
-        String verse_number = String.valueOf(current.verse_id);
+        verse_number = String.valueOf(current.verse_id);
+        sura_number = String.valueOf(current.sura_id);
         String download_progress = Double.toString(Math.ceil(current.audio_progress));
         holder.arabic_text.setGravity(Gravity.START);
         holder.arabic_text.setText(ayah_txt);
@@ -200,11 +203,12 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
         }
         private boolean TrackDownloaded(String v) {
             //v = prependZero(v);
+            String ayahReferenceNumber = fixZeroes(sura_number).concat(fixZeroes(v));
             boolean retval = false;
             if (trackList != null) {
                 for (Track i : trackList
                 ) {
-                    if (i.getName().equals(v)) {
+                    if (i.getName().equals(ayahReferenceNumber)) {
                         //match found
                         //Log.i("TRACK DOWNLOADED?", String.valueOf(v) + " " + i + " " + (i.equals(v)));
                         retval = true;
