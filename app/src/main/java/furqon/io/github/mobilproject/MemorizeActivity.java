@@ -697,7 +697,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         if (trackList != null) {
             for (Track i : trackList
             ) {
-                Log.i(TAG, "TRACK DOWNLOADED? " + v + " => " + i + " " + (i.getName().equals(v)));
+                //Log.i(TAG, "TRACK DOWNLOADED? " + v + " => " + i + " " + (i.getName().equals(v)));
                 if (i.getName().equals(v)) {
                     //match found
 
@@ -810,6 +810,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 if (trackList.size() > 1){
                     Collections.sort(trackList);
                     //current_track_tv.setText("");
+                    mAdapter.setTrackList(trackList);
                 }else if(trackList.size()==1){
                     //current_track_tv.setText("");
                 }
@@ -875,7 +876,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
     }
     private boolean WritePermission() {
-        Log.i("MY PERMISSION TO WRITE", this + " granted?");
+        Log.i(TAG, "MY PERMISSION TO WRITE granted?");
         if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             // No explanation needed; request the permission
             ActivityCompat.requestPermissions(this,
@@ -884,7 +885,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
             return false;
         } else {
             // Permission has already been granted
-            Log.i("PERMISSION TO WRITE", MY_WRITE_EXTERNAL_STORAGE + " already granted");
+            Log.i(TAG, "PERMISSION TO WRITE " + MY_WRITE_EXTERNAL_STORAGE + " already granted");
             return true;
         }
 
@@ -912,7 +913,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void DownloadThis(String ayah2download) {
 
-        if (WritePermission()) {
+        if (WritePermission())
+        {
             String ayahReferenceNumber = fixZeroes(suraNumber) + fixZeroes(ayah2download);
 
 
@@ -949,14 +951,14 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterByStatus(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING));
                     cursor.moveToFirst();
                     if (cursor != null && cursor.getCount() >= 1) {
-                        Toast.makeText(getApplicationContext(), "Please, wait", Toast.LENGTH_SHORT).show();
+                        make(coordinatorLayout, "Please, wait", LENGTH_SHORT).show();
                         mAdapter.notifyDataSetChanged();
 
                         if (!sharedPreferences.read(SharedPreferences.NOMOREADS, false)) {
                             //mInterstitialAd.show();
                         }
-                    } else {
                         Log.i(TAG, cursor.getCount() + " downloads ");
+                    } else {
                         //No downloads running. allow download
                         Log.i(TAG, "Download start " + ayahReferenceNumber);
                         downloadId = downloadManager.enqueue(request);
@@ -964,32 +966,9 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         //sharedPreferences.write("downloading_surah_" + zznumber, (int) downloadId);
                         mAdapter.notifyDataSetChanged();
                         make(coordinatorLayout, "Downloading ayah: " + ayahReferenceNumber, LENGTH_SHORT).show();
-                        //myTimer.schedule(new TimerTask() {
-                        //Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterByStatus(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING));
-
-//                                @Override
-//                                public void run() {
-//                                    runOnUiThread(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            try{
-//                                                mAdapter.notifyDataSetChanged();
-//                                                cursor.moveToFirst();
-//                                                if (cursor == null || cursor.getCount() == 0) {
-//                                                    myTimer.cancel();
-//                                                }
-//                                            }catch (IllegalStateException x){
-//                                                if (cursor == null || cursor.getCount() == 0 && myTimer!=null) {
-//                                                    myTimer.cancel();
-//                                                }
-//                                            }
-//                                        }
-//                                    });
-//                                }
-//                            }, 500, 1000);
                     }
                 } else {
-                    //Log.i(TAG, "NO NETWORK");
+                    Log.i(TAG, "NO NETWORK");
                     make(coordinatorLayout, R.string.no_internet, LENGTH_SHORT).show();
                 }
                 //} else {
@@ -998,7 +977,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 //}
 
             } else {
-                Log.i("PERMISSION NG", "Download fail");
+                Log.i(TAG, "PERMISSION NG Download fail");
                 make(coordinatorLayout,
                         R.string.write_permission_denied,
                         LENGTH_LONG).show();
@@ -1055,10 +1034,11 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void MarkAsDownloaded(int ayah_id) {
         //TODO set the downloaded ayah state
-
+        MarkAyahAsDownloaded(String.valueOf(ayah_id));
     }
 
     void MarkAyahAsDownloaded(String downloadedAyahId){
+        Log.d(TAG, "AYAH AUDIO EXISTS, MARK AS DOWNLOADED " + downloadedAyahId);
         if (mAdapter != null) {
             int actual_position = 0;
             if (mAdapter.getItemCount() > 0) {

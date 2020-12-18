@@ -69,6 +69,15 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
         if(current.audio_progress>0 && current.audio_progress<100)
         {
             holder.progressBar.setVisibility(View.VISIBLE);
+
+            if(holder.TrackDownloaded(String.valueOf(current.verse_id)))
+            {
+                current.audio_progress = 100;
+                MyListener myListener;
+                myListener = (MyListener) mContext;
+                myListener.MarkAsDownloaded(current.verse_id);
+                Log.d(TAG, "DOWNLOADED ayah " + current.verse_id);
+            }
         }else if(current.audio_progress==100){
             holder.progressBar.setVisibility(View.GONE);
             holder.audio_file.setBackgroundResource(R.drawable.ic_audio_symbol);
@@ -76,7 +85,7 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
             holder.progressBar.setVisibility(View.GONE);
             holder.audio_file.setBackgroundResource(R.drawable.ic_audio_missing);
         }
-        Log.d(TAG, "RANGE ayah " + current.verse_id + ", audio downloaded % - " + current.audio_progress);
+        //Log.d(TAG, "RANGE ayah " + current.verse_id + ", audio downloaded % - " + current.audio_progress);
     }
 
 
@@ -98,6 +107,9 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
     public void setText(List<AyahRange> ayahRanges) {
         mAyahList = ayahRanges;
         notifyDataSetChanged();
+    }
+    public void setTrackList(ArrayList<Track> tracks){
+        trackList = tracks;
     }
 
     class AyahViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -163,7 +175,7 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
             Log.d(TAG, "clicked " + this.ayah_number.getText());
             //TODO check against the existing files in the matching folder and play or download
 
-            StartDownload(fixZeroes(this.ayah_number.getText().toString()));
+            StartDownload(this.ayah_number.getText().toString());
         }
         private String fixZeroes(String s){
             String retVal = "";
@@ -202,20 +214,22 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
             }
         }
         private boolean TrackDownloaded(String v) {
-            //v = prependZero(v);
+
             String ayahReferenceNumber = fixZeroes(sura_number).concat(fixZeroes(v));
             boolean retval = false;
+
             if (trackList != null) {
-                for (Track i : trackList
-                ) {
-                    if (i.getName().equals(ayahReferenceNumber)) {
+                Log.d(TAG, "tracklist " + trackList.size());
+                for (Track i : trackList) {
+
+                    if (i.getName().compareTo(ayahReferenceNumber)==0) {
                         //match found
-                        //Log.i("TRACK DOWNLOADED?", String.valueOf(v) + " " + i + " " + (i.equals(v)));
+                        //
+                        Log.i(TAG, "TRACK DOWNLOADED " + String.valueOf(v) + " - " + ayahReferenceNumber + " " + i.getName());
                         retval = true;
                     }
-
                 }
-            }
+                }
             return retval;
         }
     }
