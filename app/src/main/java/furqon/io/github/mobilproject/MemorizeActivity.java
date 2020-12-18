@@ -269,7 +269,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
         if(sharedPreferences.contains(SharedPreferences.PREFERRED_REPEAT_COUNT))
             preferredRepeatCount = sharedPreferences.read(SharedPreferences.PREFERRED_REPEAT_COUNT, "10");
-
         repeatCountInteger = Integer.parseInt(preferredRepeatCount);
         repeatValue.setText(preferredRepeatCount);
     }
@@ -582,7 +581,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         }
     }
     void nextTrack(){
-
         PopulateTrackList();
         Log.d(TAG, "tracklist " + trackList.size());
             if(trackList.size() > 1){
@@ -674,7 +672,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         //current_track_tv.setText("");
                         Toast.makeText(this, R.string.filenotfound, Toast.LENGTH_SHORT).show();
                         mediaPlayer.release();
-
                         mediaPlayer = null;
                     }
                 } else {
@@ -740,11 +737,14 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 } else {
                     Log.e(TAG, "PLAYING STOPPED");
                     isPlaying = false;
+                    playVerse.setImageResource(R.drawable.ic_play_circle_48dp);
                     handler.removeCallbacks(runnable);
                     stop();
-                    if (repeatCountInteger>1) {
+                    if (repeatCountInteger>0) {
                         nextTrack();
                         play();
+                    }else {
+
                     }
 
                 }
