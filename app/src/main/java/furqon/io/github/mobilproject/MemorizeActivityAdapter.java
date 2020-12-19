@@ -133,7 +133,7 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
                     //Log.d(TAG, "ayahlist item: " + i.verse_id);
                     if (i.verse_id == verseNumber) {
                         //match found
-                        //Log.i(TAG, "TRACK found " + suraNumber2Play + " vs " + mAyahList.indexOf(i));
+                        Log.i(TAG, "TRACK found " + suraNumber2Play + " vs " + mAyahList.indexOf(i));
                         playingTrackIndex = mAyahList.indexOf(i);
                     }
                 }

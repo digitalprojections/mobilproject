@@ -146,6 +146,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         //INITIALIZE UI ELEMENTS
         suranames_spinner = findViewById(R.id.surah_spinner);
         Button dl_audio = findViewById(R.id.download_audio_button);
+        dl_audio.setVisibility(View.GONE);
         playVerse = findViewById(R.id.play_verse);
         ImageButton decRepeat = findViewById(R.id.dec_repeat);
         ImageButton incRepeat = findViewById(R.id.inc_repeat);
@@ -192,7 +193,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
             } catch (IllegalStateException | SecurityException x) {
                 Log.e(TAG, x.getMessage());
             }
-
         }
         /*DONE end number never lower than the start
            if start number entered and it is higher than the end number, set the end number
@@ -315,15 +315,16 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 if(isPlaying)
                     stop();
                 else
-                    play();
+                    loadAudioFiles();
                 break;
             case R.id.download_audio_button:
-                loadAudioFiles();
+                //downloadTheAudioInRange();
                 break;
         }
     }
 
     private void loadAudioFiles() {
+        PopulateTrackList();
         playTheFileIfExists(fixZeroes(suraNumber)+fixZeroes(startAyahNumber));
     }
 
@@ -540,9 +541,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onStop() {
         super.onStop();
-
-
-
     }
 
     @Override
@@ -550,7 +548,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         super.onPause();
         //todo save state on exit
         stopPlay();
-
     }
 
     @Override
@@ -567,46 +564,53 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     protected void onDestroy() {
         stop();
         super.onDestroy();
-
     }
-
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-
     }
     private void playTheFileIfExists(String play_item_number) {
-
         if (play_item_number != null) {
             suraNumber2Play = play_item_number;
             play();
         }
     }
     void nextTrack(){
-        PopulateTrackList();
         Log.d(TAG, "tracklist " + trackList.size());
-            if(trackList.size() > 1){
-                for(int i=0;i<trackList.size();i++){
-                    Log.d(TAG, i + " index. " + trackList.get(i).getName() + " " + suraNumber2Play);
-                    if (trackList.get(i).getName().equals(suraNumber2Play)) {
-                        try{
-                            suraNumber2Play =  trackList.get(i + 1).getName();
-                            Log.e(TAG, suraNumber2Play + " - next suranumber. " + repeatCountInteger + " - repeatCountInteger");
-                            break;
-                        }catch (IndexOutOfBoundsException x){
-                            if (repeatCountInteger>1) {
-                                //the last file is playing
-                                repeatCountInteger--;//minus 1
-                                suraNumber2Play = trackList.get(0).getName();
-                            } else {
-                                suraNumber2Play = null;
-                            }
-
-                        }
-                    }
-                }
+        if (TrackDownloaded(suraNumber2Play) && repeatCountInteger>0) {
+            suraNumber2Play =  getTheNextVerseNumber(suraNumber2Play);
+            Log.e(TAG, suraNumber2Play + " - next suranumber. " + repeatCountInteger + " - repeatCountInteger");
+        }else
+            {
+                suraNumber2Play = null;
+            //STOP PLAYING?
+            // set values null?
             }
+
+    }
+
+    private String getTheNextVerseNumber(String suraNumber2Play) {
+        int sn2p = 0;
+        int vn=0;
+        String rv=null;
+        try{
+            sn2p=Integer.parseInt(suraNumber2Play);
+            vn=sn2p%1000;
+            if(vn<Integer.parseInt(endAyahNumber)){
+                vn=vn+1;
+                rv=String.valueOf(vn);
+                rv=makeAyahRefName(rv);
+            }else{
+                repeatCountInteger--;//minus 1
+                repeatValue.setText(String.valueOf(repeatCountInteger));
+                rv=makeAyahRefName(startAyahNumber);
+            }
+        }
+        catch (IllegalFormatException ifx){
+
+        }
+        return rv;
     }
 
     void play() {
@@ -707,7 +711,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 //Log.i(TAG, "TRACK DOWNLOADED? " + v + " => " + i + " " + (i.getName().equals(v)));
                 if (i.getName().equals(v)) {
                     //match found
-
                     retval = true;
                 }
             }
@@ -748,8 +751,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     handler.removeCallbacks(runnable);
                     stop();
                     if (repeatCountInteger>0) {
-                        nextTrack();
                         play();
+                        nextTrack();
                     }else {
 
                     }
@@ -775,10 +778,9 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     }
     private void PopulateTrackList() {
         trackList = new ArrayList<>();
-
-            //Log.d(TAG, "Files Path: " + path);
-            //adding new folder structure
-            newpath = getNewPath();
+        //Log.d(TAG, "Files Path: " + path);
+        // adding new folder structure
+        newpath = getNewPath();
             Log.d(TAG, "Files Path: " + newpath);
             File directory = new File(newpath);
             File[] files = directory.listFiles();
@@ -797,23 +799,19 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
                         try {
                             //int tt = Integer.parseInt(trackname);
-                            if (!TrackDownloaded(trackname)) {
                                 String filePath = newpath + "/" + file.getName();
-                                try {
-                                    Log.d(TAG, "COMPARE AYAHS " + trackname + " vs " + makeAyahRefName(startAyahNumber));
-                                    if(Integer.parseInt(trackname)>=Integer.parseInt(makeAyahRefName(startAyahNumber)) && Integer.parseInt(trackname)<=Integer.parseInt(makeAyahRefName(endAyahNumber))){
-                                        metadataRetriever.setDataSource(filePath);
-                                        //Date date = new Date();
-                                        Track track = new Track(AudioTimer.getTimeStringFromMs(Integer.parseInt(Objects.requireNonNull(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)))), trackname, filePath);
-                                        trackList.add(track);
-                                    }
-                                    else{
-                                        Log.d(TAG, "filename outside the range");
-                                    }
-                                } catch (RuntimeException x) {
-                                    Log.e(TAG, "METADATA ERROR " + x.getMessage());
+                                Log.d(TAG, "COMPARE AYAHS " + trackname + " vs " + makeAyahRefName(startAyahNumber));
+                                if(Integer.parseInt(trackname)>=Integer.parseInt(makeAyahRefName(startAyahNumber)) && Integer.parseInt(trackname)<=Integer.parseInt(makeAyahRefName(endAyahNumber))){
+                                    metadataRetriever.setDataSource(filePath);
+                                    //Date date = new Date();
+                                    Track track = new Track(AudioTimer.getTimeStringFromMs(Integer.parseInt(Objects.requireNonNull(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)))), trackname, filePath);
+                                    trackList.add(track);
                                 }
-                            }
+                                else
+                                    {
+                                    Log.d(TAG, "filename outside the range");
+                                }
+
                         } catch (NumberFormatException nfx) {
                             Log.e(TAG, "TRACKNAME ERROR " + trackname);
                             DeleteTheFile(file);
@@ -821,16 +819,12 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         }
                     }
                 }
-//                if (trackList.size() > 1){
-//                    Collections.sort(trackList);
-//                    //current_track_tv.setText("");
-//                    mAdapter.setTrackList(trackList);
-//                }else if(trackList.size()==1){
-//                    //current_track_tv.setText("");
-//                }
-//                else{
-//                    //current_track_tv.setText(R.string.tracklist_empty_warning);
-//                }
+                if(trackList.size()==1){
+                    //current_track_tv.setText("");
+                }
+                else{
+                    //current_track_tv.setText(R.string.tracklist_empty_warning);
+                }
 
             } else {
                 //current_track_tv.setText(R.string.tracklist_empty_warning);
@@ -839,8 +833,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private String getNewPath() {
-
-
         String path = Objects.requireNonNull(getExternalFilesDir(null)).getAbsolutePath();
         return path + "/quran_audio/arabic/by_ayah/1/"+fixZeroes(suraNumber);
     }
@@ -1041,6 +1033,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
 
     String makeAyahRefName(int verse_id){
+
         String rv = "";
         rv = fixZeroes(suraNumber).concat(fixZeroes(String.valueOf(verse_id)));
         return rv;
@@ -1058,12 +1051,13 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     }
 
     void MarkAyahAsDownloaded(String downloadedAyahId){
-        Log.d(TAG, "AYAH AUDIO EXISTS, MARK AS DOWNLOADED " + downloadedAyahId);
+        Log.d(TAG, "MARK AS DOWNLOADED " + downloadedAyahId);
         if (mAdapter != null) {
             int actual_position = 0;
             if (mAdapter.getItemCount() > 0) {
                 for (int i = 0; i < mAdapter.getItemCount(); i++) {
                     String ayah_ref_name =  makeAyahRefName(mAdapter.getTitleAt(i).verse_id);
+                    Log.d(TAG, ayah_ref_name + " matches??? downloadedAyahId " + downloadedAyahId);
                     try {
                         if (mAdapter.getTitleAt(i) != null && ayah_ref_name.equals(downloadedAyahId)) {
                             Log.d(TAG, ayah_ref_name + " matches downloadedAyahId " + downloadedAyahId);
