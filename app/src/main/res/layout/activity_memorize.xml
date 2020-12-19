@@ -256,5 +256,7 @@
         android:id="@+id/memorize_range_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fadingEdge="horizontal"
+        android:fadingEdgeLength="15dp"
         tools:listitem="@layout/memorize_ayat_item" />
 </LinearLayout>
