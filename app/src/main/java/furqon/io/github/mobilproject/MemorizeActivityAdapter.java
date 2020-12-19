@@ -114,6 +114,23 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
         trackList = tracks;
     }
 
+    public void markAsPlaying(String suraNumber2Play) {
+
+        int verseNumber = Integer.parseInt(suraNumber2Play)%1000;
+
+        if (mAyahList != null) {
+            Log.d(TAG, "ayahlist " + verseNumber + " in " + mAyahList.size());
+            for (AyahRange i : mAyahList) {
+                //Log.d(TAG, "ayahlist item: " + i.verse_id);
+                if (i.verse_id == verseNumber) {
+                    //match found
+                    //Log.i(TAG, "TRACK found " + suraNumber2Play + " vs " + mAyahList.indexOf(i));
+                    
+                }
+            }
+        }
+    }
+
     class AyahViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView audio_file;

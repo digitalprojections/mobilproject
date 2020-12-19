@@ -643,9 +643,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     url = filePath;
                 } else {
                     url = newpath + "/" + fixAyahNameZeros(Integer.parseInt(suraNumber2Play)) + ".mp3";
-
                 }
-                //Log.i(TAG, "PLAY " + url);
+                MarkAsPlaying(suraNumber2Play);
                 if (!url.isEmpty()) {
                     Log.i(TAG, "PLAY " + url);
 
@@ -692,6 +691,10 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 }
 
         }
+    }
+
+    private void MarkAsPlaying(String suraNumber2Play) {
+        mAdapter.markAsPlaying(suraNumber2Play);
     }
 
     private boolean TrackDownloaded(String v) {
