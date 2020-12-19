@@ -1,6 +1,7 @@
 package furqon.io.github.mobilproject;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -36,6 +37,7 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
 
     private ViewGroup.LayoutParams lpartxt; // Height of TextView
     private ArrayList<Track> trackList;
+    private int playingTrackIndex = -1;
 
     public MemorizeActivityAdapter(MemorizeActivity memorizeActivity) {
         mContext = memorizeActivity;
@@ -65,6 +67,14 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
         holder.arabic_text.setGravity(Gravity.START);
         holder.arabic_text.setText(ayah_txt);
         holder.ayah_number.setText(verse_number);
+        if(playingTrackIndex==position){
+            Log.d(TAG, "PLAYING INDEX FOUND");
+            //"#A103A9F4"
+            //#6D03A9F4
+            holder.arabic_text_lin_layout.setBackgroundColor(Color.parseColor("#A103A9F4"));
+        }else{
+            holder.arabic_text_lin_layout.setBackgroundColor(Color.parseColor("#6D03A9F4"));
+        }
 
         if(current.audio_progress>0 && current.audio_progress<100)
         {
@@ -115,19 +125,21 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
     }
 
     public void markAsPlaying(String suraNumber2Play) {
-
-        int verseNumber = Integer.parseInt(suraNumber2Play)%1000;
-
-        if (mAyahList != null) {
-            Log.d(TAG, "ayahlist " + verseNumber + " in " + mAyahList.size());
-            for (AyahRange i : mAyahList) {
-                //Log.d(TAG, "ayahlist item: " + i.verse_id);
-                if (i.verse_id == verseNumber) {
-                    //match found
-                    //Log.i(TAG, "TRACK found " + suraNumber2Play + " vs " + mAyahList.indexOf(i));
-                    
+        if(suraNumber2Play!=null) {
+            int verseNumber = Integer.parseInt(suraNumber2Play) % 1000;
+            if (mAyahList != null) {
+                Log.d(TAG, "ayahlist " + verseNumber + " in " + mAyahList.size());
+                for (AyahRange i : mAyahList) {
+                    //Log.d(TAG, "ayahlist item: " + i.verse_id);
+                    if (i.verse_id == verseNumber) {
+                        //match found
+                        //Log.i(TAG, "TRACK found " + suraNumber2Play + " vs " + mAyahList.indexOf(i));
+                        playingTrackIndex = mAyahList.indexOf(i);
+                    }
                 }
             }
+        }else{
+            playingTrackIndex = -1;
         }
     }
 

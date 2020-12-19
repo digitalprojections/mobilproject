@@ -695,6 +695,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
     private void MarkAsPlaying(String suraNumber2Play) {
         mAdapter.markAsPlaying(suraNumber2Play);
+        mAdapter.notifyDataSetChanged();
     }
 
     private boolean TrackDownloaded(String v) {
@@ -769,6 +770,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
             mediaPlayer.release();
             mediaPlayer = null;
             playVerse.setImageResource(R.drawable.ic_play_circle_48dp);
+            MarkAsPlaying(null);
         }
     }
     private void PopulateTrackList() {
