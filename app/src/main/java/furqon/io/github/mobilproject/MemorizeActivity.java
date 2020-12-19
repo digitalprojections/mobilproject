@@ -595,8 +595,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                             Log.e(TAG, suraNumber2Play + " - next suranumber. " + repeatCountInteger + " - repeatCountInteger");
                             break;
                         }catch (IndexOutOfBoundsException x){
-                            if (repeatCountInteger>1) {
-                                //go to the first file
+                            if (repeatCountInteger>1 && trackList.get(trackList.size()-1).getName()==suraNumber2Play) {
+                                //the last file is playing
                                 repeatCountInteger--;//minus 1
                                 suraNumber2Play = trackList.get(0).getName();
                             } else {
@@ -795,10 +795,15 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                             if (!TrackDownloaded(trackname)) {
                                 String filePath = newpath + "/" + file.getName();
                                 try {
-                                    metadataRetriever.setDataSource(filePath);
-                                    //Date date = new Date();
-                                    Track track = new Track(AudioTimer.getTimeStringFromMs(Integer.parseInt(Objects.requireNonNull(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)))), trackname, filePath);
-                                    trackList.add(track);
+                                    if(Integer.parseInt(file.getName())>=Integer.parseInt(startAyahNumber) && Integer.parseInt(file.getName())<=Integer.parseInt(endAyahNumber)){
+                                        metadataRetriever.setDataSource(filePath);
+                                        //Date date = new Date();
+                                        Track track = new Track(AudioTimer.getTimeStringFromMs(Integer.parseInt(Objects.requireNonNull(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)))), trackname, filePath);
+                                        trackList.add(track);
+                                    }
+                                    else{
+                                        Log.d(TAG, "filename outside the range");
+                                    }
                                 } catch (RuntimeException x) {
                                     Log.e(TAG, "METADATA ERROR " + trackname);
                                 }
