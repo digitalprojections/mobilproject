@@ -595,7 +595,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                             Log.e(TAG, suraNumber2Play + " - next suranumber. " + repeatCountInteger + " - repeatCountInteger");
                             break;
                         }catch (IndexOutOfBoundsException x){
-                            if (repeatCountInteger>1 && trackList.get(trackList.size()-1).getName()==suraNumber2Play) {
+                            if (repeatCountInteger>1) {
                                 //the last file is playing
                                 repeatCountInteger--;//minus 1
                                 suraNumber2Play = trackList.get(0).getName();
@@ -795,7 +795,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                             if (!TrackDownloaded(trackname)) {
                                 String filePath = newpath + "/" + file.getName();
                                 try {
-                                    if(Integer.parseInt(file.getName())>=Integer.parseInt(startAyahNumber) && Integer.parseInt(file.getName())<=Integer.parseInt(endAyahNumber)){
+                                    Log.d(TAG, "COMPARE AYAHS " + trackname + " vs " + makeAyahRefName(startAyahNumber));
+                                    if(Integer.parseInt(trackname)>=Integer.parseInt(makeAyahRefName(startAyahNumber)) && Integer.parseInt(trackname)<=Integer.parseInt(makeAyahRefName(endAyahNumber))){
                                         metadataRetriever.setDataSource(filePath);
                                         //Date date = new Date();
                                         Track track = new Track(AudioTimer.getTimeStringFromMs(Integer.parseInt(Objects.requireNonNull(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)))), trackname, filePath);
@@ -805,7 +806,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                                         Log.d(TAG, "filename outside the range");
                                     }
                                 } catch (RuntimeException x) {
-                                    Log.e(TAG, "METADATA ERROR " + trackname);
+                                    Log.e(TAG, "METADATA ERROR " + x.getMessage());
                                 }
                             }
                         } catch (NumberFormatException nfx) {
@@ -1037,6 +1038,11 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     String makeAyahRefName(int verse_id){
         String rv = "";
         rv = fixZeroes(suraNumber).concat(fixZeroes(String.valueOf(verse_id)));
+        return rv;
+    }
+    String makeAyahRefName(String verse_id){
+        String rv = "";
+        rv = fixZeroes(suraNumber).concat(fixZeroes(verse_id));
         return rv;
     }
 
