@@ -42,10 +42,14 @@
 
             <include
                 layout="@layout/chapter_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
             <include
                 layout="@layout/memorize_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
             <!--            <include-->
@@ -55,6 +59,8 @@
 
             <include
                 layout="@layout/rate_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
             <!--            <include-->
@@ -62,9 +68,15 @@
 <!--                android:layout_width="match_parent"-->
 <!--                android:layout_weight="1" />-->
 
-            <include layout="@layout/messages_button" />
+            <include
+                layout="@layout/messages_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-            <include layout="@layout/media_button" />
+            <include
+                layout="@layout/media_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
 <!--            <include layout="@layout/about_button" />-->
 

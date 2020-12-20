@@ -26,7 +26,7 @@
         android:id="@+id/youtubebut"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="#0277BD"
+        app:cardBackgroundColor="#000277BD"
         app:cardCornerRadius="5dp"
         app:contentPadding="5dp">
 

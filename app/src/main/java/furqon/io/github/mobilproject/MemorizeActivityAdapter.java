@@ -28,7 +28,6 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
     Context mContext;
     SharedPreferences sharedPreferences;
 
-
     private ArrayList<String> mArrayList;
     private List<AyahRange> mAyahList;
 
@@ -39,7 +38,7 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
     private ArrayList<Track> trackList;
     private int playingTrackIndex = -1;
 
-    public MemorizeActivityAdapter(MemorizeActivity memorizeActivity) {
+    public MemorizeActivityAdapter(MemorizeActivity memorizeActivity, String sura_number) {
         mContext = memorizeActivity;
         sharedPreferences = SharedPreferences.getInstance();
     }
@@ -208,26 +207,7 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
 
             StartDownload(this.ayah_number.getText().toString());
         }
-        private String fixZeroes(String s){
-            String retVal = "";
-            int tempVal;
-            //try to parse the string into integer
-            try{
-                tempVal = Integer.parseInt(s);
-                if(tempVal<10){
-                    retVal = "00"+tempVal;
-                }else if(tempVal>9&&tempVal<100){
-                    retVal = "0"+tempVal;
-                }else {
-                    //it is higher than 99
-                    retVal = s;
-                }
-            }catch (IllegalFormatException ignore){
 
-            }
-
-            return retVal;
-        }
         private void StartDownload(String verse) {
 
 
@@ -246,8 +226,9 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
         }
         private boolean TrackDownloaded(String v) {
 
-            String ayahReferenceNumber = fixZeroes(sura_number).concat(fixZeroes(v));
+            String ayahReferenceNumber = ARG.makeAyahRefName(v);
             boolean retval = false;
+
 
             if (trackList != null) {
                 Log.d(TAG, "tracklist " + trackList.size());

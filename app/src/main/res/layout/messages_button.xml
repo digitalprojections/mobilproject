@@ -55,7 +55,7 @@
         android:id="@+id/messageButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="#0277BD"
+        app:cardBackgroundColor="#000277BD"
         app:cardCornerRadius="5dp"
         app:contentPadding="5dp">
 
@@ -67,6 +67,7 @@
 
             <ImageView
                 android:id="@+id/imageViewMessages"
+                android:layout_margin="5dp"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 app:srcCompat="@mipmap/messages" />
@@ -78,7 +79,7 @@
                 android:layout_weight="1"
                 android:text="@string/messages_button_text"
                 android:textAlignment="center"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/browser_actions_text_color"
                 android:textSize="24sp" />
 
             <TextView

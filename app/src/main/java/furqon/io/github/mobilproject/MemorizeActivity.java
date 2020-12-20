@@ -104,7 +104,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     private int repeatCountInteger = 10;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private Context context;
-    private String suraNumber;
+    //private String suraNumber;
     private String suraNumber2Play;
     private String newpath;
     private boolean isPlaying;
@@ -127,6 +127,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         //DONE restore the last state
         //There was a surah selected
 
+
+
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         String title = getString(R.string.memorizer);
@@ -145,6 +147,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
         //INITIALIZE UI ELEMENTS
         suranames_spinner = findViewById(R.id.surah_spinner);
+        suranames_spinner.setOnItemSelectedListener(this);
         Button dl_audio = findViewById(R.id.download_audio_button);
         dl_audio.setVisibility(View.GONE);
         playVerse = findViewById(R.id.play_verse);
@@ -167,7 +170,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
         RecyclerView recyclerView = findViewById(R.id.memorize_range_rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new MemorizeActivityAdapter(this);
+        mAdapter = new MemorizeActivityAdapter(this, ARG.suraNumber);
         recyclerView.setAdapter(mAdapter);
         handler = new Handler();
 
@@ -185,7 +188,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         incEnd.setOnClickListener(this);
         commitBtn.setOnClickListener(this);
 
-        suranames_spinner.setOnItemSelectedListener(this);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             registerReceiver(broadcastReceiverDownload, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
             try {
@@ -325,19 +328,20 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
     private void loadAudioFiles() {
         PopulateTrackList();
-        playTheFileIfExists(fixZeroes(suraNumber)+fixZeroes(startAyahNumber));
+        playTheFileIfExists(ARG.makeAyahRefName(startAyahNumber));
+
     }
 
     private void loadRange() {
-        suraNumber = String.valueOf(lastSurahIndex+1);//we adjust the value with only where it is necessary
+        ARG.setSuraName(String.valueOf(lastSurahIndex+1));
         sharedPreferences.write(lastSurahIndex + "_start", startAyahNumber);
         sharedPreferences.write(lastSurahIndex + "_end", endAyahNumber);
         //TODO First load all the surah to check if it is fully available.
 
-            ayahViewModel.getAyahRange(suraNumber, startAyahNumber, endAyahNumber).observe(this, new Observer<List<AyahRange>>() {
+            ayahViewModel.getAyahRange(ARG.suraNumber, startAyahNumber, endAyahNumber).observe(this, new Observer<List<AyahRange>>() {
                 @Override
                 public void onChanged(List<AyahRange> ayahRanges) {
-                    Log.d(TAG, suraNumber + " - " + startAyahNumber + " - " + endAyahNumber + " surah being called from DB " + ayahRanges.size() + " vs " + QuranMap.GetSurahLength(Integer.parseInt(suraNumber)-1));
+                    Log.d(TAG, ARG.suraNumber + " - " + startAyahNumber + " - " + endAyahNumber + " surah being called from DB " + ayahRanges.size() + " vs " + QuranMap.GetSurahLength(Integer.parseInt(ARG.suraNumber)-1));
                     //TODO display the range
                     //send to the adapter
                     if (!RANGEISSHOWN) {
@@ -401,7 +405,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 Map<String, String> MyData = new HashMap<String, String>();
                 MyData.put("action", "izohsiz_text_obj"); //Add the data you'd like to send to the server.
                 MyData.put("database_id", "1, 120, 59, 79");
-                MyData.put("surah_id", suraNumber);
+                MyData.put("surah_id", ARG.suraNumber);
                 //https://inventivesolutionste.ipage.com/ajax_quran.php
                 //POST
                 //action:names_as_objects
@@ -600,11 +604,11 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
             if(vn<Integer.parseInt(endAyahNumber)){
                 vn=vn+1;
                 rv=String.valueOf(vn);
-                rv=makeAyahRefName(rv);
+                rv=ARG.makeAyahRefName(rv);
             }else{
                 repeatCountInteger--;//minus 1
                 repeatValue.setText(String.valueOf(repeatCountInteger));
-                rv=makeAyahRefName(startAyahNumber);
+                rv=ARG.makeAyahRefName(startAyahNumber);
             }
         }
         catch (IllegalFormatException ifx){
@@ -646,7 +650,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 if (TrackDownloaded(suraNumber2Play)) {
                     url = filePath;
                 } else {
-                    url = newpath + "/" + fixAyahNameZeros(Integer.parseInt(suraNumber2Play)) + ".mp3";
+                    url = newpath + "/" + ARG.makeAyahRefName(suraNumber2Play) + ".mp3";
                 }
                 MarkAsPlaying(suraNumber2Play);
                 if (!url.isEmpty()) {
@@ -800,8 +804,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         try {
                             //int tt = Integer.parseInt(trackname);
                                 String filePath = newpath + "/" + file.getName();
-                                Log.d(TAG, "COMPARE AYAHS " + trackname + " vs " + makeAyahRefName(startAyahNumber));
-                                if(Integer.parseInt(trackname)>=Integer.parseInt(makeAyahRefName(startAyahNumber)) && Integer.parseInt(trackname)<=Integer.parseInt(makeAyahRefName(endAyahNumber))){
+                                Log.d(TAG, "COMPARE AYAHS " + trackname + " vs " + ARG.makeAyahRefName(startAyahNumber));
+                                if(Integer.parseInt(trackname)>=Integer.parseInt(ARG.makeAyahRefName(startAyahNumber)) && Integer.parseInt(trackname)<=Integer.parseInt(ARG.makeAyahRefName(endAyahNumber))){
                                     metadataRetriever.setDataSource(filePath);
                                     //Date date = new Date();
                                     Track track = new Track(AudioTimer.getTimeStringFromMs(Integer.parseInt(Objects.requireNonNull(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)))), trackname, filePath);
@@ -834,7 +838,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
     private String getNewPath() {
         String path = Objects.requireNonNull(getExternalFilesDir(null)).getAbsolutePath();
-        return path + "/quran_audio/arabic/by_ayah/1/"+fixZeroes(suraNumber);
+        return path + "/quran_audio/arabic/by_ayah/1/"+ARG.getSurahNameOnly();
     }
 
     private void DeleteTheFile(File file) {
@@ -847,12 +851,10 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         lastSurahIndex = position;
-        //TODO HTTPrequest
-        suraNumber = String.valueOf(position + 1);
+        ARG.setSuraName(String.valueOf(position + 1));
         if (sharedPreferences != null) {
             sharedPreferences.write(SharedPreferences.SELECTED_MEMORIZING_SURAH, position);
         }
-
         mAdapter.setText(null);
         enableCommitButton();
         setUIValues();
@@ -897,36 +899,14 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         }
 
     }
-    private String fixZeroes(String s){
-        String retVal = "";
-        int tempVal;
-        //try to parse the string into integer
-        try{
-            tempVal = Integer.parseInt(s);
-            if(tempVal<10){
-                retVal = "00"+tempVal;
-            }else if(tempVal>9&&tempVal<100){
-                retVal = "0"+tempVal;
-            }else {
-                //it is higher than 99
-                retVal = s;
-            }
-        }catch (IllegalFormatException ignore){
 
-        }
-
-        return retVal;
-    }
     @Override
     public void DownloadThis(String ayah2download) {
 
         if (WritePermission())
         {
-            String ayahReferenceNumber = fixZeroes(suraNumber) + fixZeroes(ayah2download);
-
-
-                String url = mFirebaseRemoteConfig.getString("server_audio") + "/quran_audio/arabic/by_ayah/1/" + fixZeroes(suraNumber) + "/" + ayahReferenceNumber + ".mp3";
-
+            String ayahReferenceNumber = ARG.makeAyahRefName(ayah2download);
+                String url = mFirebaseRemoteConfig.getString("server_audio") + "/quran_audio/arabic/by_ayah/1/" + ARG.getSurahNameOnly() + "/" + ayahReferenceNumber + ".mp3";
                 newpath = getNewPath();
                 //newpath = getExternalFilesDir(null) + "/quran_audio/arabic/by_ayah/1/" + fixZeroes(suraNumber);
                 File file = new File(newpath, ayahReferenceNumber + ".mp3");
@@ -1011,38 +991,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-    String fixAyahNameZeros(int ayah_id){
-        String retVal = "";
-        int tempVal;
-        //try to parse the string into integer
-        try{
-            tempVal = ayah_id;
-            if(tempVal<9999){
-                retVal = "00"+tempVal;
-            }else if(tempVal>9999&&tempVal<99999){
-                retVal = "0"+tempVal;
-            }else {
-                //it is higher than 99
-                retVal = String.valueOf(ayah_id);
-            }
-        }catch (IllegalFormatException ignore){
 
-        }
-        return retVal;
-    }
-
-
-    String makeAyahRefName(int verse_id){
-
-        String rv = "";
-        rv = fixZeroes(suraNumber).concat(fixZeroes(String.valueOf(verse_id)));
-        return rv;
-    }
-    String makeAyahRefName(String verse_id){
-        String rv = "";
-        rv = fixZeroes(suraNumber).concat(fixZeroes(verse_id));
-        return rv;
-    }
 
     @Override
     public void MarkAsDownloaded(int ayah_id) {
@@ -1056,7 +1005,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
             int actual_position = 0;
             if (mAdapter.getItemCount() > 0) {
                 for (int i = 0; i < mAdapter.getItemCount(); i++) {
-                    String ayah_ref_name =  makeAyahRefName(mAdapter.getTitleAt(i).verse_id);
+                    String ayah_ref_name = ARG.makeAyahRefName(mAdapter.getTitleAt(i).verse_id);
                     Log.d(TAG, ayah_ref_name + " matches??? downloadedAyahId " + downloadedAyahId);
                     try {
                         if (mAdapter.getTitleAt(i) != null && ayah_ref_name.equals(downloadedAyahId)) {
