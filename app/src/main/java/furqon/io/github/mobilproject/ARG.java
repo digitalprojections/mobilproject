@@ -24,13 +24,17 @@ public class ARG {
      */
     public static void setSuraName(String sura_number) {
         /**
-        * runs on creating an instance
          * @param String sura number
          */
         suraNumber = sura_number;
          }
-
+    /**
+     * @param ayah_id
+     * @returns String of three digits like 001
+     */
     public static String getAyahNameOnly(int ayah_id){
+
+
         String retVal = "";
         int tempVal;
         //try to parse the string into integer
@@ -51,7 +55,8 @@ public class ARG {
     }
 
     /**
-     * eg. 5 -> 001005
+     * @param verse_id int
+     * @returns String of six digits like 001001
      */
     public static String makeAyahRefName(int verse_id){
 
@@ -60,17 +65,21 @@ public class ARG {
         return rv;
     }
     /**
-     * Returns audio file name. eg. 5 -> 001005
+     * @param verse_id string
+     * @returns audio file name. eg. 5 -> 001005
      */
     public static String makeAyahRefName(String verse_id){
+
         String rv = "";
         rv = getZeroesFixed(suraNumber).concat(getZeroesFixed(verse_id));
         return rv;
     }
     /**
-     * 5 -> 005
-    */
+     * @param s a digit
+     * @returns String of three digits like 001
+     */
     private static String getZeroesFixed(String s){
+
         String retVal = "";
         int tempVal;
         //try to parse the string into integer
@@ -91,7 +100,11 @@ public class ARG {
         return retVal;
     }
 
+    /**
+     * @returns String of three digits like 001
+     */
     public static String getSurahNameOnly() {
+
         String retVal = "";
         int tempVal;
         //try to parse the string into integer

@@ -222,6 +222,7 @@
             android:background="#00FFFFFF"
             android:contentDescription="mute audio"
             android:padding="8dp"
+            android:visibility="gone"
             app:srcCompat="@drawable/ic_baseline_volume_mute_24" />
 
     </LinearLayout>

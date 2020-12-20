@@ -209,19 +209,24 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
         }
 
         private void StartDownload(String verse) {
-
-
             if (!TrackDownloaded(verse)) {
                 MyListener myListener;
                 myListener = (MyListener) mContext;
                 myListener.DownloadThis(verse);
-
                 myListener.MarkAsDownloading(Integer.parseInt(verse));
                 //getTitleAt(Integer.parseInt(snumber)-1).;
                 progressBar.setVisibility(View.VISIBLE);
                 //downloadButton.setVisibility(View.GONE);
             } else {
                 Log.e(TAG, "track already downloaded");
+                SetSuraNumber myListener;
+                myListener = (SetSuraNumber) mContext;
+                myListener.SetSurahNumber(verse);
+
+                Playable playable;
+                playable = (Playable) mContext;
+                playable.OnTrackPlay();
+
             }
         }
         private boolean TrackDownloaded(String v) {
