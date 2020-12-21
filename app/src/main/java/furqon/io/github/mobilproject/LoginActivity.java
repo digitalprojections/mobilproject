@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -12,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Base64;
@@ -38,8 +36,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
@@ -47,8 +43,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
-import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
@@ -57,8 +51,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.security.MessageDigest;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -87,7 +79,6 @@ public class LoginActivity extends AppCompatActivity{
     private String shash;
     private static final int REQUEST_INVITE = 0;
 
-    private String currentSignature;
     private ArrayList<JSONObject> jsonArrayResponse;
     private RequestQueue queue;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
@@ -296,13 +287,13 @@ public class LoginActivity extends AppCompatActivity{
                             boolean updated = task.getResult();
                             Log.d(TAG, "Config params updated: " + updated);
                             //Toast.makeText(MainActivity.this, "Fetch and activate succeeded", Toast.LENGTH_SHORT).show();
-                            mSharedPref.write(mSharedPref.SHAREWARD, (int) mFirebaseRemoteConfig.getLong("share_reward"));
-                            mSharedPref.write(mSharedPref.PERSONAL_REWARD, (int) mFirebaseRemoteConfig.getLong("personal_reward"));
+                            mSharedPref.write(SharedPreferences.SHAREWARD, (int) mFirebaseRemoteConfig.getLong("share_reward"));
+                            mSharedPref.write(SharedPreferences.PERSONAL_REWARD, (int) mFirebaseRemoteConfig.getLong("personal_reward"));
                             //sharedpref.getInstance().write(sharedpref.INITIAL_COINS, (int) mFirebaseRemoteConfig.getLong("initial_coins"));
                             //Log.d("COINS", mSharedPref.read(mSharedPref.INITIAL_COINS_USED, false) + " " + mSharedPref.read(mSharedPref.INITIAL_COINS, 0));
                         } else {
-                            mSharedPref.write(mSharedPref.SHAREWARD, (int) mFirebaseRemoteConfig.getLong("share_reward"));
-                            mSharedPref.write(mSharedPref.PERSONAL_REWARD, (int) mFirebaseRemoteConfig.getLong("personal_reward"));
+                            mSharedPref.write(SharedPreferences.SHAREWARD, (int) mFirebaseRemoteConfig.getLong("share_reward"));
+                            mSharedPref.write(SharedPreferences.PERSONAL_REWARD, (int) mFirebaseRemoteConfig.getLong("personal_reward"));
                             Toast.makeText(LoginActivity.this, "Fetch failed",
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -312,7 +303,7 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     private void signInAnonymously() {
-        mSharedPref.write(mSharedPref.RANDOM_AYAH_SEEN, false);
+        mSharedPref.write(SharedPreferences.RANDOM_AYAH_SEEN, false);
         //showProgressBar();
         // [START signin_anonymously]
         mAuth.signInAnonymously()
@@ -325,7 +316,7 @@ public class LoginActivity extends AppCompatActivity{
 
                             currentUser = mAuth.getCurrentUser();
                             AuthCredential credential = GoogleAuthProvider.getCredential( getString(R.string.default_web_client_id), null);
-                            mAuth.getCurrentUser().linkWithCredential(credential)
+                            Objects.requireNonNull(mAuth.getCurrentUser()).linkWithCredential(credential)
                                     .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                                         @Override
                                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -376,7 +367,7 @@ public class LoginActivity extends AppCompatActivity{
                     google_btn.setVisibility(View.GONE);
                     username_txt.setText(currentUser.getEmail());
                 }
-            }catch (NullPointerException x){
+            }catch (NullPointerException ignored){
 
             }
         } else {
@@ -416,7 +407,7 @@ public class LoginActivity extends AppCompatActivity{
                                 //String mes = new StringBuilder().append(getString(R.string.u_received)).append(String.valueOf(sdate)).append(getString(R.string._coins)).toString();
                                 //Toast.makeText(getApplicationContext(), mes, Toast.LENGTH_LONG).show();
                             } else {
-                                mSharedPref.AddCoins(getApplicationContext(), (int) mFirebaseRemoteConfig.getLong("first_visit_reward"));
+                                SharedPreferences.AddCoins(getApplicationContext(), (int) mFirebaseRemoteConfig.getLong("first_visit_reward"));
                                 //String mes = new StringBuilder().append(getString(R.string.u_received)).append(String.valueOf(sdate)).append(getString(R.string._coins)).toString();
                                 //Toast.makeText(getApplicationContext(), "+" + sdate, Toast.LENGTH_LONG).show();
                             }
@@ -431,7 +422,7 @@ public class LoginActivity extends AppCompatActivity{
                         //checkForDynamicLink();
 
                         //successfully saved creds. Mark the app launch to get rid of redundant requests
-                        mSharedPref.write(mSharedPref.CREDS_ALREADY_SENT, true);
+                        mSharedPref.write(SharedPreferences.CREDS_ALREADY_SENT, true);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -462,27 +453,28 @@ public class LoginActivity extends AppCompatActivity{
             Log.d(TAG, "missing important creds");
             Toast.makeText(this, "You are missing important credentials. Try to restart the app!", Toast.LENGTH_LONG).show();
             try{
-                if(mSharedPref.contains(mSharedPref.TOKEN_ATTEMPTED)){
-                    int attempt_count = mSharedPref.read(mSharedPref.TOKEN_ATTEMPT_COUNT, 0);
+                if(mSharedPref.contains(SharedPreferences.TOKEN_ATTEMPTED)){
+                    int attempt_count = mSharedPref.read(SharedPreferences.TOKEN_ATTEMPT_COUNT, 0);
                     if(attempt_count<3){
                         attempt_count++;
-                        mSharedPref.write(mSharedPref.TOKEN_ATTEMPT_COUNT, attempt_count);
+                        mSharedPref.write(SharedPreferences.TOKEN_ATTEMPT_COUNT, attempt_count);
                         Intent i = getBaseContext().getPackageManager().
                                 getLaunchIntentForPackage(getBaseContext().getPackageName());
+                        assert i != null;
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(i);
                         finish();
                     }
                 }else{
-                    mSharedPref.write(mSharedPref.TOKEN_ATTEMPT_COUNT, 0);
+                    mSharedPref.write(SharedPreferences.TOKEN_ATTEMPT_COUNT, 0);
 
                 }
                 if (!Objects.requireNonNull(currentUser.getEmail()).isEmpty()) {
                     google_btn.setVisibility(View.GONE);
                     username_txt.setText(currentUser.getEmail());
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored) {
                 
             }
 
@@ -499,24 +491,22 @@ public class LoginActivity extends AppCompatActivity{
 
 
     private void CheckInviterThanked() {
-        if (mSharedPref.read(mSharedPref.INVITER, 0) == 0) {
-            String inviter_id = mSharedPref.read(mSharedPref.INVITER_ID, "");
+        if (mSharedPref.read(SharedPreferences.INVITER, 0) == 0) {
+            String inviter_id = mSharedPref.read(SharedPreferences.INVITER_ID, "");
             if (!inviter_id.isEmpty()) {
-                if(!currentUser.getEmail().isEmpty()){
+                if(!Objects.requireNonNull(currentUser.getEmail()).isEmpty()){
                     sendConfirmationToServer(inviter_id);
                 }
                 else{
                     Toast.makeText(getApplicationContext(), R.string.signin_request, Toast.LENGTH_LONG).show();
                 }
-            } else {
-                //Crashlytics.log(Log.ERROR, TAG, "INVITER ID WAS EMPTY");
-            }
-        } else {
-            //user is already invited
-        }
+            }  //Crashlytics.log(Log.ERROR, TAG, "INVITER ID WAS EMPTY");
+
+        }  //user is already invited
+
     }
 
-    private int checkAppSignature(Context context) {
+    private void checkAppSignature(Context context) {
         try {
 
             PackageInfo packageInfo;
@@ -536,7 +526,7 @@ public class LoginActivity extends AppCompatActivity{
                 md.update(signature.toByteArray());
 
 
-                currentSignature = Base64.encodeToString(md.digest(), Base64.DEFAULT);
+                String currentSignature = Base64.encodeToString(md.digest(), Base64.DEFAULT);
                 String model = Build.MODEL;
                 String manufacturer = Build.MANUFACTURER;
                 String bootloader = Build.BOOTLOADER;
@@ -556,7 +546,6 @@ public class LoginActivity extends AppCompatActivity{
 
         }
         //sendRegistrationToServer();
-        return INVALID;
 
     }
 
@@ -613,8 +602,8 @@ public class LoginActivity extends AppCompatActivity{
                         //Log.i("APP SIGNATURE STORED?", response);
                         if (response.contains("confirmation")) {
                             Log.i(TAG, "Invitation " + response);
-                            mSharedPref.AddCoins(getApplicationContext(), 200);
-                            mSharedPref.write(mSharedPref.INVITER, 1);
+                            SharedPreferences.AddCoins(getApplicationContext(), 200);
+                            mSharedPref.write(SharedPreferences.INVITER, 1);
                             Snackbar.make(findViewById(android.R.id.content),
                                     R.string.invitation_confirm, Snackbar.LENGTH_LONG).show();
                         } else {
@@ -649,7 +638,7 @@ public class LoginActivity extends AppCompatActivity{
 
         Intent intent = new Intent(this, AyahOfTheDay.class);
         startActivity(intent);
-        mSharedPref.write(mSharedPref.RANDOM_AYAH_SEEN, true);
+        mSharedPref.write(SharedPreferences.RANDOM_AYAH_SEEN, true);
 
     }
 

@@ -200,15 +200,15 @@
             android:minWidth="8dp" />
 
         <ImageButton
-            android:id="@+id/next_verse"
+            android:id="@+id/refresh_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/memorize_custom_button"
             android:clickable="true"
-            android:contentDescription="@string/next_ayah"
+            android:contentDescription="@string/refresh"
             android:focusable="true"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_next" />
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_baseline_refresh_24" />
 
         <Space
             android:layout_width="wrap_content"

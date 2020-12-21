@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -47,7 +48,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
@@ -59,14 +59,12 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.IllegalFormatException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import furqon.io.github.mobilproject.Services.OnClearFromService;
 
@@ -154,6 +152,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         dl_audio.setVisibility(View.GONE);
         playVerse = findViewById(R.id.play_verse);
         playMode = findViewById(R.id.play_mode);
+        ImageButton refreshBtn = findViewById(R.id.refresh_btn);
         ImageButton decRepeat = findViewById(R.id.dec_repeat);
         ImageButton incRepeat = findViewById(R.id.inc_repeat);
 
@@ -184,6 +183,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         dl_audio.setOnClickListener(this);
         playVerse.setOnClickListener(this);
         playMode.setOnClickListener(this);
+        refreshBtn.setOnClickListener(this);
         decRepeat.setOnClickListener(this);
         incRepeat.setOnClickListener(this);
         decStart.setOnClickListener(this);
@@ -198,7 +198,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
             try {
                 startService(new Intent(getBaseContext(), OnClearFromService.class));
             } catch (IllegalStateException | SecurityException x) {
-                Log.e(TAG, x.getMessage());
+                Log.e(TAG, Objects.requireNonNull(x.getMessage()));
             }
         }
         /*DONE end number never lower than the start
@@ -210,7 +210,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         populateSpinner();
     }
     //DOWNLOAD COMPLETE OR FAILED
-    private BroadcastReceiver broadcastReceiverDownload = new BroadcastReceiver() {
+    private final BroadcastReceiver broadcastReceiverDownload = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -235,7 +235,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     }
                     Log.i(TAG, "DOWNLOAD COMPLETE, Download id " + id + " ayah number: " + ayahNumber2Download);
                         //PopulateTrackList();
-                    if(ayahNumber2Download!="0")
+                    if(ayahNumber2Download.equals("0"))
                         MarkAyahAsDownloaded(ayahNumber2Download);
 
 
@@ -326,6 +326,9 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 repeatOne=!repeatOne;
                 setPlayMode();
                 break;
+                case R.id.refresh_btn:
+                setUIValues();
+                break;
             case R.id.download_audio_button:
                 //downloadTheAudioInRange();
                 break;
@@ -344,10 +347,9 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
     private void loadAudioFiles() {
         PopulateTrackList();
-        if (ARG.makeAyahRefName(startAyahNumber) != null) {
-            suraNumber2Play = ARG.makeAyahRefName(startAyahNumber);
-            play();
-        }
+        ARG.makeAyahRefName(startAyahNumber);
+        suraNumber2Play = ARG.makeAyahRefName(startAyahNumber);
+        play();
 
     }
 
@@ -482,7 +484,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 stopPlay();
             }
         }
-        String repeatCount1 = String.format("%d", repeatCount);
+        @SuppressLint("DefaultLocale") String repeatCount1 = String.format("%d", repeatCount);
         repeatValue.setText(repeatCount1);
         sharedPreferences.write(SharedPreferences.PREFERRED_REPEAT_COUNT, repeatCount1);
         repeatCountInteger = repeatCount;
@@ -515,17 +517,17 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
             if(i>0){
                 if(sVal<eVal-1){
                     sVal+=i;
-                    startValue.setText(""+sVal);
+                    startValue.setText(String.valueOf(sVal));
                 }else if(sVal==0 && eVal==0){
                     sVal+=i;
-                    startValue.setText(""+sVal);
+                    startValue.setText(String.valueOf(sVal));
                     eVal+=i+1;
-                    endValue.setText(""+eVal);
+                    endValue.setText(String.valueOf(sVal));
                 }
             }else{
                 if(sVal>1){
                     sVal--;
-                    startValue.setText(""+sVal);
+                    startValue.setText(String.valueOf(sVal));
                 }
             }
             startAyahNumber = startValue.getText().toString();
@@ -543,13 +545,11 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         }
         if(i>0){
             eVal+=i;
-            endValue.setText(""+eVal);
+            endValue.setText(String.valueOf(eVal));
         }else {
             if(sVal+1<eVal){
                 eVal+=i;
-                endValue.setText(""+eVal);
-            }else if(sVal==0 && eVal==0){
-
+                endValue.setText(String.valueOf(eVal));
             }
         }
         endAyahNumber = endValue.getText().toString();
@@ -636,7 +636,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
             }
         }
-        catch (IllegalFormatException ifx){
+        catch (IllegalFormatException ignored){
 
         }
         return rv;
@@ -711,7 +711,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     }
                 } else {
                     final PopupWindow popupWindow = new PopupWindow(this);
-                    View view = getLayoutInflater().inflate(R.layout.popup_hint, null);
+                    View view = getLayoutInflater().inflate(R.layout.popup_hint, coordinatorLayout);
                     popupWindow.setContentView(view);
                     //popupWindow.showAtLocation(cl, 0, 0,0);
                     view.setOnClickListener(new View.OnClickListener() {
@@ -744,6 +744,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 if (i.getName().equals(v)) {
                     //match found
                     retval = true;
+                    break;
                 }
             }
         }else {
@@ -784,8 +785,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     stop();
                     if (repeatCountInteger>0) {
                         nextTrack();
-                    }else {
-
                     }
 
                 }
@@ -851,14 +850,10 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         }
                     }
                 }
-                if(trackList.size()>=1){
+                if(trackList.size()>=1) {
                     //current_track_tv.setText("");
                     mAdapter.setTrackList(trackList);
                 }
-                else{
-                    //current_track_tv.setText(R.string.tracklist_empty_warning);
-                }
-
             } else {
                 //current_track_tv.setText(R.string.tracklist_empty_warning);
                 Log.d(TAG, "NULL ARRAY no files found");
@@ -872,7 +867,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
     private void DeleteTheFile(File file) {
         try {
-            file.delete();
+            if(file.delete())
+                PopulateTrackList();
         } catch (SecurityException x) {
             Log.e(TAG, "FAILED to DELETE " + x.getMessage());
         }
@@ -949,7 +945,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     //query.setFilterById(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING);
                     Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterByStatus(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING));
                     cursor.moveToFirst();
-                    if (cursor != null && cursor.getCount() >= 1) {
+                    if (cursor.getCount() >= 1) {
                         make(coordinatorLayout, "Please, wait", LENGTH_SHORT).show();
                         mAdapter.notifyDataSetChanged();
 
@@ -1031,7 +1027,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 }
                 AyahRange ctitle = mAdapter.getTitleAt(actual_position);
                 Log.d(TAG,  "CTITLE " + " index:" + actual_position + ". " + ctitle.verse_id + " - verse id, audio progress: " + ctitle.audio_progress);
-                if (ctitle != null && ctitle.audio_progress < 100) {
+                if (ctitle.audio_progress < 100) {
                     ctitle.audio_progress = 100;
                     ayahViewModel.update(ctitle);
                 }
@@ -1049,7 +1045,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         actual_position = i;
                     }
                 } catch (IndexOutOfBoundsException iobx) {
-                    Log.e("CANNOT GET POSITION", iobx.getMessage());
+                    Log.e("CANNOT GET POSITION", Objects.requireNonNull(iobx.getMessage()));
                 }
             }
             AyahRange ctitle = mAdapter.getTitleAt(actual_position);

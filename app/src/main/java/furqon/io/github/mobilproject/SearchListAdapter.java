@@ -12,11 +12,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.SearchListViewHolder> {
     private Cursor mCursor;
     private Context mContext;
     private SharedPreferences sharedPref;
     private Search search;
+    private List<SearchResult> searchResults = new ArrayList<>();
 
     SearchListAdapter(Context context, Cursor cursor) {
         mContext = context;
@@ -68,6 +72,11 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Se
         }
 
         return c;
+    }
+
+    public void setResults(List<SearchResult> searchResults) {
+        this.searchResults = searchResults;
+        notifyDataSetChanged();
     }
 
     public class SearchListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

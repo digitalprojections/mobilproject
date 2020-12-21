@@ -69,7 +69,7 @@
     <string name="audio_player_title">Аудиоплеер Фуркан</string>
     <string name="surah_size_issue">Текст главы был загружен с ошибками. Пытаясь исправить</string>
     <string name="youtube_btn_title">Следите за обновлениями</string>
-    <string name="please_watch_video">Прежде чем вы сможете прослушать аудиофайл, вам необходимо сначала загрузить его. Зарабатывайте монеты, поделившись приложением или просмотрев видеообъявления</string>
+    <string name="please_watch_video">Прежде чем вы сможете прослушать аудиофайл, вам необходимо сначала загрузить его</string>
     <string name="audio_download">Скачать аудио</string>
     <string name="earn_coins">Заработать монеты</string>
     <string name="extra_title">Дополнительно</string>
@@ -117,4 +117,14 @@
     <string name="points_restored">Очки восстановлены</string>
     <string name="signin_request">Войдите, чтобы получить специальные награды</string>
     <string name="noads_button_label">Убрать рекламу на сегодня</string>
+    <string name="sign_in">Войти в систему</string>
+    <string name="memorizer">Выучить Коран</string>
+    <string name="committolearn">Зафиксировать</string>
+    <string name="decrease_repeat_count">уменьшить количество повторов</string>
+    <string name="increase_repeat_count">увеличить количество повторов</string>
+    <string name="decrease_the_value">уменьшить значение</string>
+    <string name="increase_the_value">увеличить значение</string>
+    <string name="write_permission_denied">Ошибка! Требуется разрешение на запись</string>
+    <string name="no_internet">Подключение к Интернету отсутствует</string>
+    <string name="refresh">Обновить значение</string>
 </resources>

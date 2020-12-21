@@ -15,7 +15,10 @@ import androidx.cardview.widget.CardView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.appindexing.Action;
 import com.google.firebase.appindexing.FirebaseUserActions;
@@ -26,8 +29,11 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import hotchemi.android.rate.AppRate;
+
+import static furqon.io.github.mobilproject.BuildConfig.BUILD_TYPE;
 
 public class MainActivity extends OptionsMenuActivity implements View.OnClickListener {
     Uri deepLink;
@@ -37,7 +43,7 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
     //CardView davomi_but;
     //CardView youtube_but;
     //Button favourite_but;
-    //CardView search_but;
+    CardView search_but;
     CardView rate_but;
     //Button coins_but;
     CardView message_but;
@@ -49,7 +55,7 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
     ImageView imageView;
     private Handler handler;
     // Try to use more data here. ANDROID_ID is a single point of attack.
-    //InterstitialAd mInterstitialAd;
+    InterstitialAd mInterstitialAd = new InterstitialAd(this);
     private FirebaseAnalytics mFirebaseAnalytics;
     private static final String TAG = "MAIN ACTIVITY";
     private static final String DEEP_LINK_URL = "https://furqon.page.link/ThB2";
@@ -68,16 +74,26 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
 
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
         mFunctions = FirebaseFunctions.getInstance();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
-        MobileAds.initialize(this, getString(R.string.addmob_app_id));
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        if (BUILD_TYPE.equals("debug")) {
+            mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        } else {
+            mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+        }
+
 
         handler = new Handler();
         //favourite_but = findViewById(R.id.favouritebut);
-        //search_but = findViewById(R.id.searchbtn);
+        search_but = findViewById(R.id.searchbtn);
         rate_but = findViewById(R.id.ratebtn);
         //coins_but = findViewById(R.id.earn_coins_button);
         message_but = findViewById(R.id.messageButton);
@@ -123,7 +139,7 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
         memorize_but.setOnClickListener(this);
         //davomi_but.setOnClickListener(this);
         //favourite_but.setOnClickListener(this);
-        //search_but.setOnClickListener(this);
+        search_but.setOnClickListener(this);
         rate_but.setOnClickListener(this);
         message_but.setOnClickListener(this);
         audio_but.setOnClickListener(this);
@@ -252,6 +268,12 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
     }
 
+    private void open_search() {
+        Intent intent;
+        intent = new Intent(this, Search.class);
+        startActivity(intent);
+    }
+
     public void ayahOfTheDay() {
             Intent intent = new Intent(this, AyahOfTheDay.class);
             startActivity(intent);
@@ -345,9 +367,9 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
             case R.id.favouritebut:
                 //open_favourites();
                 break;
-//            case R.id.searchbtn:
-//                open_search();
-//                break;
+            case R.id.searchbtn:
+                open_search();
+                break;
             case R.id.ratebtn:
                 Rateus();
                 break;

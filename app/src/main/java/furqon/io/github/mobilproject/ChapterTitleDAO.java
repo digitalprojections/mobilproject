@@ -83,4 +83,7 @@ public interface ChapterTitleDAO {
 
     @Query("UPDATE quran_text SET audio_progress=:audioProgress WHERE language_id=1 AND sura_id=:suraNumber AND verse_id=:ayahNumber")
     void update(int suraNumber, int ayahNumber, int audioProgress);
+
+    @Query("SELECT q.id, q.sura_id, q.verse_id, q.favourite, q.order_no, q.read_count, q.surah_type, q.share_count, q.audio_progress, qe.ayah_text as en_text, qr.ayah_text as ru_text, qu.ayah_text as uz_text,  q.ayah_text as ar_text FROM quran_text q JOIN quran_text qe ON qe.sura_id = q.sura_id AND qe.verse_id = q.verse_id JOIN quran_text qr ON qr.sura_id = q.sura_id AND qr.verse_id = q.verse_id JOIN quran_text qu ON qu.sura_id=q.sura_id AND qu.verse_id = q.verse_id WHERE q.ayah_text MATCH:word AND q.language_id = 1 AND qr.language_id = 79 AND qe.language_id = 59 AND qu.language_id = 120 ORDER BY q.sura_id, q.verse_id")
+    LiveData<List<SearchResult>> getSearchResults(String word);
 }

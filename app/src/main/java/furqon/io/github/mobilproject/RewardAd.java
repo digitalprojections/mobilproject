@@ -53,10 +53,6 @@ public class RewardAd{
 
         // Get reference to singleton RewardedVideoAd object
 
-        if (mRewardedAd == null) {
-            MobileAds.initialize(mContext);
-        }
-
         final RewardedAdLoadCallback rewardedAdLoadCallback = new RewardedAdLoadCallback() {
             @Override
             public void onRewardedAdLoaded() {
@@ -102,9 +98,6 @@ public class RewardAd{
             public void onUserEarnedReward(@NonNull com.google.android.gms.ads.rewarded.RewardItem rewardItem) {
                 if (titleListCall) {
                     MyListener myListener;
-                    if (mContext instanceof MyListener) {
-
-                    }
                     myListener = (MyListener) mContext;
                     myListener.MarkAsAwarded(currentSurahNumber);
                     titleListCall = false;

@@ -91,7 +91,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     private MediaActivityAdapter mAdapter;
     private LinearLayout coordinatorLayout;
     private RecyclerView recyclerView;
-    private Spinner language_spinner;
     private Spinner recitationstyle_spinner;
     private Spinner reciter_spinner;
     private SpinnerAdapter spinnerAdapter;
@@ -145,7 +144,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     private int available_coins;
     private int currentStatus;
     private int status = 0;
-    InterstitialAd mInterstitialAd;
+    InterstitialAd mInterstitialAd = new InterstitialAd(this);
     Handler handler;
     private NotificationManager notificationManager;
     boolean isPlaying;
@@ -165,7 +164,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
         titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
         context = this;
-        mInterstitialAd = new InterstitialAd(this);
         if (BUILD_TYPE.equals("debug")) {
             mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
         } else {
@@ -248,7 +246,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         recitationstyle_adapter.setDropDownViewResource(R.layout.mp_spinner_item);
         reciter_adapter.setDropDownViewResource(R.layout.mp_spinner_item);
         // Apply the adapter to the spinner
-        language_spinner = findViewById(R.id.mp_language_spinner);
+        Spinner language_spinner = findViewById(R.id.mp_language_spinner);
         recitationstyle_spinner = findViewById(R.id.mp_recitationstyle_spinner);
         reciter_spinner = findViewById(R.id.mp_reciter_spinner);
         //set the adapter
@@ -456,7 +454,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             int tempsn = 0;
             try {
                 tempsn = Integer.parseInt(suraNumber2Play);
-            }catch (NumberFormatException x){
+            }catch (NumberFormatException ignored){
 
             }
 
@@ -625,10 +623,9 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                     } else if (play_mode.equals("repeat")) {
                         //playmode repeat one
                         play();
-                    } else {
-                        // playmode a single file
-                        //stop
-                    }
+                    }  // playmode a single file
+                    //stop
+
 
                 }
             } catch (IllegalStateException x) {
@@ -698,7 +695,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                                     //Date date = new Date();
                                     Track track = new Track(AudioTimer.getTimeStringFromMs(Integer.parseInt(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION))), trackname, filePath);
                                     trackList.add(track);
-                                } catch (RuntimeException x) {
+                                } catch (RuntimeException ignored) {
 
                                 }
                             }
@@ -728,10 +725,9 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 recyclerView.setAdapter(mAdapter);
             }
             //mAdapter.notifyDataSetChanged();
-        }else {
-            //Wrong path selected
-            //current_track_tv.setText(R.string.tracklist_empty_warning);
-        }
+        } //Wrong path selected
+        //current_track_tv.setText(R.string.tracklist_empty_warning);
+
 
     }
     private void DeleteTheFile(File file) {
@@ -751,7 +747,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             Log.i(TAG, "file moved to " + target);
             try {
                 Files.move(source, target.resolve(source.getFileName()), StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException x) {
+            } catch (IOException ignored) {
 
             }
         }
@@ -772,6 +768,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         titleViewModel.getAllTitles().observe(this, new Observer<List<ChapterTitleTable>>() {
             @Override
             public void onChanged(@Nullable List<ChapterTitleTable> surahTitles) {
+                assert surahTitles != null;
                 if (surahTitles.size() != 114) {
                     //tempbut.setVisibility(View.VISIBLE);
                     if (!download_attempted) {
@@ -781,9 +778,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                     }
 
                     //titleViewModel.deleteAll();
-                } else {
-                    //progressBar.setVisibility(View.GONE);
-                }
+                }  //progressBar.setVisibility(View.GONE);
+
                 mAdapter.setTitles(surahTitles);
                 recyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
@@ -867,7 +863,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
 
             } catch (Exception sx) {
-                Log.e("EXCEPTION", sx.getMessage());
+                Log.e("EXCEPTION", Objects.requireNonNull(sx.getMessage()));
             }
         }
     }
@@ -1077,7 +1073,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                         //query.setFilterById(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING);
                         Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterByStatus(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING));
                         cursor.moveToFirst();
-                        if (cursor != null && cursor.getCount() >= 1) {
+                        if (cursor.getCount() >= 1) {
 //                            for (int i = 0; i < cursor.getCount(); i++) {
 //                                Log.i(TAG, cursor.getInt(i) + " download ");
 //                                cursor.moveToNext();
@@ -1099,7 +1095,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                             mAdapter.notifyDataSetChanged();
 
                             myTimer.schedule(new TimerTask() {
-                                Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterByStatus(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING));
+                                final Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterByStatus(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING));
 
                                 @Override
                                 public void run() {
@@ -1138,7 +1134,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
     }
 
-    private BroadcastReceiver broadcastReceiverDownload = new BroadcastReceiver() {
+    private final BroadcastReceiver broadcastReceiverDownload = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -1220,7 +1216,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                         actual_position = i;
                     }
                 } catch (IndexOutOfBoundsException iobx) {
-                    Log.e("CANNOT GET POSITION", iobx.getMessage());
+                    Log.e("CANNOT GET POSITION", Objects.requireNonNull(iobx.getMessage()));
                 }
             }
             ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
@@ -1337,122 +1333,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         coinDialog.show(getSupportFragmentManager(), "TAG");
         Log.e(TAG, "showing dialog");
 
-//        Button use_coins_btn = findViewById(R.id.use_coin_btn);
-//        Button earn_coins_btn = findViewById(R.id.use_coin_btn);
-//        Button dismiss_btn = findViewById(R.id.dismiss_button);
-
-//        use_coins_btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                MarkAsAwarded(Integer.parseInt(suraNumber2Download));
-//            }
-//        });
-//
-//        earn_coins_btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                dialog.dismiss();
-//                Intent intent;
-//                intent = new Intent(context, EarnCoinsActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-//
-//        dismiss_btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                dialog.dismiss();
-//            }
-//        });
     }
-/*
-    private void SetDownloadButtonState(ChapterTitleTable titleTable) {
-
-
-        PopulateTrackList();
-
-        if (TrackDownloaded(suraNumber2Download)) {
-            //set by the actually available audio files
-            //playButton.setIcon(R.drawable.ic_play_circle);
-            //Log.i("TITLES", " TRUE ");
-            //downloadButton.setFocusable(false);
-            download_container.setVisibility(View.INVISIBLE);
-            //downloadText.setText(R.string.play_local);
-            //downloadText.setVisibility(View.VISIBLE);
-            downloadButton.setVisibility(View.INVISIBLE);
-            progressBar.setVisibility(View.INVISIBLE);
-        } else {
-            if (titleTable != null && titleTable.status.equals("2")) {
-                //download allowed. Active within the session only. Forgotten on restart
-                downloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
-
-                //playButton.setIcon(R.drawable.ic_play_circle);
-                downloadButton.setFocusable(true);
-                downloadButton.setTag(2);
-                downloadButton.setVisibility(View.VISIBLE);
-                progressBarDownload.setVisibility(View.INVISIBLE);
-                //downloadText.setText(R.string.down_or_play);
-            } else if (titleTable != null && titleTable.status.equals("4")) {
-                //download allowed. Active within the session only. Forgotten on restart
-                //downloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
-                //playButton.setIcon(R.drawable.ic_play_circle);
-                //downloadButton.setFocusable(true);
-                downloadButton.setTag(4);
-                progressBarDownload.setVisibility(View.VISIBLE);
-                //downloadText.setText(R.string.down_or_play);
-            } else {
-                //Lock state
-
-                downloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
-                downloadButton.setFocusable(true);
-                downloadButton.setTag(2);
-                downloadButton.setVisibility(View.VISIBLE);
-                progressBarDownload.setVisibility(View.INVISIBLE);
-                //downloadText.setText(R.string.unlock_or_play);
-            }
-        }
-
-
-        Log.i("DOWNLOAD BUTTON", " " + downloadButton.getTag());
-
-        downloadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Toast.makeText(mContext,"Download surah number " + suraNumber2Download.getText().toString(), Toast.LENGTH_SHORT).show();
-                //String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suranomer + ".mp3"; // your URL here
-                switch (downloadButton.getTag().toString()) {
-                    case "1"://red arrow
-                        ShowCoinAlert();
-
-//                            final PopupWindow popupWindow = new PopupWindow(getApplicationContext());
-//                            View pop_view = getLayoutInflater().inflate(R.layout.popup_hint, null);
-//                            popupWindow.setContentView(pop_view);
-//                            popupWindow.showAtLocation(cl, 0, 0,0);
-//                            pop_view.setOnClickListener(new View.OnClickListener() {
-//                                @Override
-//                                public void onClick(View viewx) {
-//                                    popupWindow.dismiss();
-//                                }
-//                            });
-                        break;
-                    case "2"://blue arrow
-                        StartDownload();
-                        break;
-                }
-
-            }
-        });
-        progressBarDownload.setVisibility(View.GONE);
-        //recyclerView.scheduleLayoutAnimation();
-    }*/
-
-    //    public void pause() {
-//        if (isPlaying) {
-//            SharedPreferences.getInstance().write(suranomi, mediaPlayer.getCurrentPosition());
-//            isPlaying = false;
-//            Intent intent = new Intent(this, AudioService.class);
-//        }
-//    }
 
     public void pause() {
         if (isPlaying) {

@@ -18,6 +18,7 @@ public class TitleViewModel extends AndroidViewModel {
     private LiveData<List<MessageTable>> liveMessages;
     private LiveData<List<NewMessages>> liveUnreadMessages;
     private LiveData<List<AyahRange>> ayahRange;
+    private LiveData<List<SearchResult>> searchResults;
 
     private SharedPreferences sharedPref;
 
@@ -68,6 +69,10 @@ public class TitleViewModel extends AndroidViewModel {
     LiveData<List<AyahRange>> getAyahRange(String suraNomer, String beg, String end){
         return titleRepository.getAyahRange(suraNomer, beg, end);
     }
+    LiveData<List<SearchResult>> getSearchResults(String word){
+        searchResults = titleRepository.getSearchResults(word);
+        return searchResults;
+    }
     public void update(AyahRange ayah){
         titleRepository.update(ayah);
     }
@@ -106,4 +111,6 @@ public class TitleViewModel extends AndroidViewModel {
     public void deleteMessage(MessageTable message){
         titleRepository.deleteMessage(message);
     }
+
+
 }

@@ -32,9 +32,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     //private final Animation ayah_close_anim;
     //private final Animation ayah_open_anim;
     private Context mContext;
-    //private Cursor mCursor;
     private ArrayList<String> mArrayList;
-    //private DatabaseAccess mDatabase;
 
     private List<AllTranslations> mText = new ArrayList<>();
 

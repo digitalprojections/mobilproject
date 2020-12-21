@@ -19,6 +19,7 @@ public class TitleRepository {
     private LiveData<List<MessageTable>> liveMessages;
     private LiveData<List<NewMessages>> liveUnreadMessages;
     private LiveData<List<AyahRange>> ayahRange;
+    private LiveData<List<SearchResult>> searchResults;
     private Context context;
 
     //MyListener myListener = (MyListener) new SuraNameList();
@@ -74,7 +75,10 @@ public class TitleRepository {
         ayahRange = mTitleDao.getAyahRange(suraNomer, beg, end);
         return ayahRange;
     }
-
+    LiveData<List<SearchResult>> getSearchResults(String word) {
+        searchResults = mTitleDao.getSearchResults(word);
+        return searchResults;
+    }
     public void insert(ChapterTitleTable title){
 
         new insertAsyncTask(mTitleDao).execute(title);
@@ -116,6 +120,8 @@ public class TitleRepository {
     public void update(AyahRange ayah) {
         new updateAyahAsyncTask(mTitleDao).execute(ayah);
     }
+
+
 
     private class deleteSurahAsyncTask extends AsyncTask<Integer, Void, Void>{
         private ChapterTitleDAO mAsyncTitleDAO;

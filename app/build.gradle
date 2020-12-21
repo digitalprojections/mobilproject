@@ -16,7 +16,7 @@ android {
             storePassword '1285422'
             keyAlias = 'baa'
             keyPassword '1285422'
-            storeFile file('C:\\Users\\denta\\OneDrive\\Documents\\GitHub\\mobilproject\\keystore.private')
+            storeFile file('C:\\Users\\denta\\Documents\\GitHub\\mobilproject\\keystore.private')
             //storeFile file('C:\\Users\\ahmad\\Documents\\GitHub\\mobilproject\\keystore.private')
         }
     }
@@ -26,8 +26,8 @@ android {
         applicationId "furqon.io.github.mobilproject"
         minSdkVersion 19
         targetSdkVersion rootProject.ext.compileSdkVersion
-        versionCode 40201
-        versionName "4.2.1"
+        versionCode 40202
+        versionName "4.2.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release
         manifestPlaceholders = [:]
@@ -50,7 +50,7 @@ android {
         }
     }
 
-    buildToolsVersion '29.0.3'
+    buildToolsVersion '30.0.3'
     productFlavors {
     }
     buildscript {
@@ -94,32 +94,32 @@ dependencies {
     // Recommended: Add the Firebase SDK for Google Analytics.
 
 
-    implementation 'com.google.firebase:firebase-ads:19.5.0'
-    implementation 'com.google.firebase:firebase-auth:19.4.0'
-    implementation 'com.google.android.gms:play-services-auth:18.1.0'
+    implementation 'com.google.firebase:firebase-ads:19.6.0'
+    implementation 'com.google.firebase:firebase-auth:20.0.1'
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
     // (Recommended) Add the Google Analytics dependency.
 
     //implementation 'com.google.firebase:firebase-inappmessaging-display:19.0.6'
-    implementation 'com.google.firebase:firebase-messaging:20.3.0'
+    implementation 'com.google.firebase:firebase-messaging:21.0.0'
     //implementation 'com.google.firebase:firebase-analytics:17.4.1'
 
     implementation 'com.google.firebase:firebase-appindexing:19.1.0'
-    implementation 'com.google.firebase:firebase-config:19.2.0'
+    implementation 'com.google.firebase:firebase-config:20.0.2'
     implementation 'com.google.firebase:firebase-functions:19.1.0'
-    implementation 'com.google.firebase:firebase-crashlytics:17.0.0'
+    implementation 'com.google.firebase:firebase-crashlytics:17.3.0'
     testImplementation 'junit:junit:4.13'
 
 
     implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'androidx.appcompat:appcompat:1.3.0-alpha02'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation 'com.google.android.material:material:1.3.0-alpha03'
+    implementation 'com.google.android.material:material:1.3.0-alpha04'
     implementation 'androidx.core:core:1.3.2'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.viewpager:viewpager:1.0.0'
-    implementation 'androidx.media:media:1.2.0'
+    implementation 'androidx.media:media:1.2.1'
 // Room components
     implementation "android.arch.persistence.room:runtime:2.2.0"
     annotationProcessor "android.arch.persistence.room:compiler:2.2.0"
@@ -129,6 +129,7 @@ dependencies {
 
 // Lifecycle components
     implementation "android.arch.lifecycle:extensions:2.2.0"
+    //noinspection LifecycleAnnotationProcessorWithJava8
     annotationProcessor "android.arch.lifecycle:compiler:2.2.0"
     def room_version = "2.2.5"
 

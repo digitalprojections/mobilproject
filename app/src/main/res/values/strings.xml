@@ -72,7 +72,7 @@
     <string name="audio_player_title">Furqon Player</string>
     <string name="surah_size_issue">Chapter text was downloaded with errors. Trying to fix</string>
     <string name="youtube_btn_title">Stay Tuned</string>
-    <string name="please_watch_video">Before you can listen to the audio file, you need to download it first. Earn coins by sharing the app or watching video ads</string>
+    <string name="please_watch_video">Before you can listen to the audio file, you need to download it first</string>
     <string name="audio_download">How to download the audio files</string>
     <string name="earn_coins">Earn Coins</string>
     <string name="extra_title">Extra</string>
@@ -129,6 +129,7 @@
     <string name="increase_repeat_count">increase repeat count</string>
     <string name="decrease_the_value">decrease the value</string>
     <string name="increase_the_value">increase the value</string>
-    <string name="write_permission_denied">Xatolik! Yozishga ruxsat beriing</string>
+    <string name="write_permission_denied">Error! Write permission required</string>
     <string name="no_internet">No Internet Connection</string>
+    <string name="refresh">Refresh the values</string>
 </resources>

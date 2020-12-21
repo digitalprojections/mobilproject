@@ -68,7 +68,7 @@
     <string name="audio_player_title">Mediapleer Furqan</string>
     <string name="surah_size_issue">Bo\'lim matni xatolar bilan yuklab olindi. Shu sura matnini qayta yuklab oling</string>
     <string name="youtube_btn_title">Yangiliklar</string>
-    <string name="please_watch_video">Ovoz faylini tinglashdan oldin, avval uni yuklab olishingiz kerak. Ilovani ulashish yoki video reklamalarni tomosha qilish orqali tanga ishlang</string>
+    <string name="please_watch_video">Ovoz faylini tinglashdan oldin, avval uni yuklab olishingiz kerak</string>
     <string name="audio_download">Ovozni yuklab olish tartibi</string>
     <string name="earn_coins">Tangani qo`lga kiritish</string>
     <string name="extra_title">Qo\'shimcha</string>
@@ -118,4 +118,13 @@
     <string name="points_restored">Tanga ballari tiklandi</string>
     <string name="noads_button_label">Bugungi reklamalarni olib tashlash</string>
     <string name="write_permission_denied">Xatolik! Yozishga ruxsat beriing</string>
+    <string name="sign_in">Tizimga kirish</string>
+    <string name="memorizer">Qur\'on Yodlash</string>
+    <string name="decrease_repeat_count">takrorlash sonini kamaytirish</string>
+    <string name="committolearn">Jazm Etish</string>
+    <string name="increase_repeat_count">takrorlash sonini oshirish</string>
+    <string name="decrease_the_value">qiymatini kamaytirish</string>
+    <string name="increase_the_value">qiymatini oshirish</string>
+    <string name="no_internet">Internet aloqasi yo\'q</string>
+    <string name="refresh">Qiymatlarni asliga qaytarish</string>
 </resources>
