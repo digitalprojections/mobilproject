@@ -81,6 +81,7 @@ import java.util.TimerTask;
 import furqon.io.github.mobilproject.Services.OnClearFromService;
 
 import static furqon.io.github.mobilproject.BuildConfig.*;
+import static java.util.Collections.*;
 
 public class MediaActivity extends AppCompatActivity implements MyListener, ManageCoins, Playable, AdapterView.OnItemSelectedListener, View.OnClickListener, SetSuraNumber, ManageDownloadIconState {
     private static final int MY_WRITE_EXTERNAL_STORAGE = 101;
@@ -552,7 +553,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                     //trackDownload = true;
                 } else {
                     final PopupWindow popupWindow = new PopupWindow(this);
-                    View view = getLayoutInflater().inflate(R.layout.popup_hint, null);
+                    View view = getLayoutInflater().inflate(R.layout.popup_hint, coordinatorLayout);
                     popupWindow.setContentView(view);
                     //popupWindow.showAtLocation(cl, 0, 0,0);
                     view.setOnClickListener(new View.OnClickListener() {
@@ -707,7 +708,12 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                     }
                 }
                 if (trackList.size() > 1){
-                    Collections.sort(trackList);
+                    try{
+                        sort(trackList);
+                    }catch (ClassCastException | UnsupportedOperationException | IllegalArgumentException ignore){
+
+                    }
+
                     current_track_tv.setText("");
                 }else if(trackList.size()==1){
                     current_track_tv.setText("");

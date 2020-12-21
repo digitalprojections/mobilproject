@@ -93,8 +93,6 @@ public class Search extends OptionsMenuActivity {
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
-        searchResultViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
-
     }
 
     //SEARCH
@@ -106,12 +104,6 @@ public class Search extends OptionsMenuActivity {
 
             setProgressBarState(0);
 
-            searchResultViewModel.getSearchResults(word).observe(this, new Observer<List<SearchResult>>() {
-                @Override
-                public void onChanged(List<SearchResult> searchResults) {
-                    mAdapter.setResults(searchResults);
-                }
-            });
 
             //mAdapter = new SearchListAdapter(context, ayahcursor);
             //recyclerView.setAdapter(mAdapter);
