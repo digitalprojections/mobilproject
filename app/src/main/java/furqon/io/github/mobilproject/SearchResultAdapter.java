@@ -252,8 +252,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         @Override
         public void onClick(View view) {
             position = getAdapterPosition();
-            versenumber = String.valueOf(ayahnumber.getText());
-            Log.d("CLICK", versenumber);
+            //versenumber = String.valueOf(ayahnumber.getText());
+            //Log.d("CLICK", versenumber);
             //Log.d("FAV TAG", favbut.getTag());
             chapternumber = String.valueOf(ayahnumber.getTag());
 
@@ -262,14 +262,14 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
 
             if (linearLayout3.getVisibility() == View.GONE) {
                 linearLayout3.setVisibility(View.VISIBLE);
-                ayahtext = String.valueOf(ayatext.getText());
-                ayah_position = sharedPref.read("xatchup" + chaptername, 0);
-                if (ayah_position == Integer.parseInt(versenumber)) {
-                    bookbut = ((ViewGroup) view.getParent()).findViewById(R.id.actions).findViewById(R.id.bookmarkbut);
-                    bookbut.setImageResource(R.drawable.ic_turned_in_black_24dp);
-                }
-
-                Log.d("verse number", versenumber + " " + ayah_position);
+                //ayahtext = String.valueOf(ayatext.getText());
+                //ayah_position = sharedPref.read("xatchup" + chaptername, 0);
+//                if (ayah_position == Integer.parseInt(versenumber)) {
+//                    bookbut = ((ViewGroup) view.getParent()).findViewById(R.id.actions).findViewById(R.id.bookmarkbut);
+//                    bookbut.setImageResource(R.drawable.ic_turned_in_black_24dp);
+//                }
+//
+//                Log.d("verse number", versenumber + " " + ayah_position);
             } else {
                 linearLayout3.setVisibility(View.GONE);
             }
@@ -281,10 +281,10 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
 
         switch (view.getId()) {
             case R.id.sharebut:
-                Log.d("CLICK SHARE", ayahtext);
+                Log.d("CLICK SHARE", view.toString());
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, ayahtext + "\n(" + chaptername + ", " + versenumber + ")\nhttps://goo.gl/sXBkNt\nFurqon dasturi, Android");
+                //sendIntent.putExtra(Intent.EXTRA_TEXT, ayahtext + "\n(" + chaptername + ", " + versenumber + ")\nhttps://goo.gl/sXBkNt\nFurqon dasturi, Android");
                 sendIntent.setType("text/plain");
                 mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.shareayah)));
                 break;
@@ -300,7 +300,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                 if(bookbut.getTag() == "unselected") {
                     bookbut.setImageResource(R.drawable.ic_turned_in_black_24dp);
                     bookbut.setTag("selected");
-                    sharedPref.write("xatchup" + chaptername, Integer.parseInt(versenumber));
+                    //sharedPref.write("xatchup" + chaptername, Integer.parseInt(versenumber));
                     //mDatabase.removeFromFavs(chapternumber, versenumber, "0");
                     Log.i("BOOKMARK", String.valueOf(bookbut.getTag()));
                 }
@@ -326,20 +326,20 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
 
         if(mContext instanceof ManageSpecials) {
             manageSpecials = (ManageSpecials) mContext;
-            FavouriteAyah favouriteAyah = getTextAt(Integer.parseInt(ll.getTag().toString()));
+            SearchResult searchResult = getTextAt(Integer.parseInt(ll.getTag().toString()));
             if (fav_button.getTag() == "1") {
                 //mDatabase.removeFromFavs(chapter_number, verse_number, "0");
                 //fav_button.setImageResource(R.drawable.ic_favorite_border_black_24dp);
                 fav_button.setTag("0");
-                favouriteAyah.favourite = 0;
+                searchResult.favourite = 0;
             } else {
                 //mDatabase.saveToFavs(chapter_number, verse_number, "1");
                 //fav_button.setImageResource(R.drawable.ic_favorite_black_24dp);
                 fav_button.setTag("1");
-                favouriteAyah.favourite = 1;
+                searchResult.favourite = 1;
             }
-            ChapterTextTable text = MapTextObjects(favouriteAyah);
-            manageSpecials.UpdateSpecialItem(text);
+            //ChapterTextTable text = MapTextObjects(searchResult);
+            //manageSpecials.UpdateSpecialItem(text);
             notifyDataSetChanged();
             //mCursor = mDatabase.getSuraText(mCursor.getString(1));
         }
@@ -349,12 +349,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         notifyDataSetChanged();
     }
 
-    private FavouriteAyah getTextAt(int position) {
+    private SearchResult getTextAt(int position) {
         return searchResults.get(position);
     }
-    private ChapterTextTable MapTextObjects(FavouriteAyah allTranslations) {
-        ChapterTextTable ctext = new ChapterTextTable(allTranslations.sura_id, allTranslations.verse_id, allTranslations.favourite, 1, allTranslations.order_no, allTranslations.ar_text, "", allTranslations.surah_type);
-        ctext.setId(allTranslations.id);
-        return ctext;
-    }
+
 }

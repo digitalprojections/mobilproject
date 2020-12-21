@@ -34,7 +34,7 @@ import java.util.Objects;
 
 public class Search extends OptionsMenuActivity {
     public static final String TAG = MemorizeActivity.class.getSimpleName();
-    private SearchResultAdapter mAdapter;
+    private SearchListAdapter mAdapter;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private TitleViewModel searchResultViewModel;
 
