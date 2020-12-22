@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
@@ -32,9 +33,9 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import java.util.List;
 import java.util.Objects;
 
-public class Search extends OptionsMenuActivity {
-    public static final String TAG = MemorizeActivity.class.getSimpleName();
-    private SearchListAdapter mAdapter;
+public class Search extends  AppCompatActivity implements ManageSpecials  {
+    public static final String TAG = Search.class.getSimpleName();
+    private SearchResultAdapter mAdapter;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private TitleViewModel searchResultViewModel;
 
@@ -64,13 +65,14 @@ public class Search extends OptionsMenuActivity {
         search_txt = findViewById(R.id.editTextSearch);
         ib_search = findViewById(R.id.imageButtonSearch);
         result_count = findViewById(R.id.result_count_txt);
-        result_count.setText(R.string.found);
+        result_count.setText(getString(R.string.found));
         recyclerView = findViewById(R.id.recyclerSearch);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new SearchResultAdapter(this);
+        recyclerView.setAdapter(mAdapter);
 
-        //TODO Serch functionality missing
-
+        searchResultViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
 
 
         ib_search.setOnClickListener(new View.OnClickListener() {
@@ -100,14 +102,16 @@ public class Search extends OptionsMenuActivity {
         if(word.length()>2) {
             ib_search.setEnabled(false);
             progressBar.setVisibility(View.VISIBLE);
-            //ayahcursor = mDatabase.searchText(word);
 
-            setProgressBarState(0);
-
-
-            //mAdapter = new SearchListAdapter(context, ayahcursor);
-            //recyclerView.setAdapter(mAdapter);
-            //setProgressBarState(ayahcursor.getCount());
+            searchResultViewModel.getSearchResults(word).observe(this, new Observer<List<SearchResult>>() {
+                @Override
+                public void onChanged(@Nullable List<SearchResult> surahText) {
+                    //Toast.makeText(SuraNameList.this, "LOADING TITLES " + surahTitles.size(), Toast.LENGTH_LONG).show();
+                    Log.e(TAG, "WORDS FOUND IN AYAH " + surahText.size());
+                    mAdapter.setResults(surahText);
+                    setProgressBarState(surahText.size());
+                }
+            });
         }else{
             Toast.makeText(context, "Try a longer word", Toast.LENGTH_SHORT).show();
         }
@@ -116,7 +120,7 @@ public class Search extends OptionsMenuActivity {
     public void setProgressBarState(int c) {
         ib_search.setEnabled(true);
         progressBar.setVisibility(View.INVISIBLE);
-        String found_text = String.valueOf(R.string.found + c);
+        String found_text = getString(R.string.found).concat(String.valueOf(c));
         result_count.setText(found_text);
     }
 
@@ -125,5 +129,10 @@ public class Search extends OptionsMenuActivity {
         super.onDestroy();
         if(!SharedPreferences.getInstance().read(SharedPreferences.NOMOREADS, false))
             mInterstitialAd.show();
+    }
+
+    @Override
+    public void UpdateSpecialItem(ChapterTextTable text) {
+
     }
 }

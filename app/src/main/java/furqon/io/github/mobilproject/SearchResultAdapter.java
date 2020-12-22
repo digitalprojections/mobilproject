@@ -4,10 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.text.Html;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -24,13 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapter.ViewHolder> {
-
-    public static final String TAG = MemorizeActivity.class.getSimpleName();
+    public static final String TAG = Search.class.getSimpleName();
     private Context mContext;
-    //private Cursor mCursor;
-    //private DatabaseAccess mDatabase;
-
-    //DONE create share/boomark/favourite and add programmatically
     private ImageButton sharebut;
     private ImageButton fav_button;
     private ImageButton bookbut;
@@ -39,9 +37,9 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     private List<SearchResult> mText = new ArrayList<>();
     private String chaptername;//Sura nomi
     private String chapternumber;
-    //private String versenumber;//oyat nomeri
-    //private String ayahtext;//oyat matni
-    //private int ayah_position;
+    private String versenumber;//oyat nomeri
+    private String ayahtext;//oyat matni
+    private int ayah_position;
 
 
     private Typeface madina;
@@ -58,22 +56,139 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         sharedPref = SharedPreferences.getInstance();
         mContext = context;
         scaler = AnimationUtils.loadAnimation(mContext, R.anim.bounce);
+
+        Log.d(TAG, "SEARCH ADAPTER CREATED");
+
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        View view = inflater.inflate(R.layout.fav_verse, parent, false);
+
+        lp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, // Width of TextView
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        lpmar = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, // Width of TextView
+                ViewGroup.LayoutParams.WRAP_CONTENT, 0.1f);
+        lpartxt = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, // Width of TextView
+                ViewGroup.LayoutParams.WRAP_CONTENT, 10.0f);
+        toplayout = new ConstraintLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        SearchResult ayah = mText.get(position);
+        String numb = String.valueOf(ayah.verse_id);
+        String artext = ayah.ar_text;
+        String ttext = ayah.uz_text;
+        String rtext = ayah.ru_text;
+        String etext = ayah.en_text;
 
+        int is_fav = ayah.favourite;
+        chaptername = QuranMap.SURAHNAMES[ayah.sura_id-1];
+        versenumber = numb;
+        fav_button = holder.linearLayout3.findViewById(R.id.favouritebut);
+        holder.linearLayout3.setTag(position);
+
+        Log.d(TAG, "TAG FAVOURITE " + ayah.verse_id + " ");
+
+        if(is_fav ==1)
+        {
+
+            fav_button.setImageResource(R.drawable.ic_favorite_black_24dp);
+            fav_button.setTag("1");
+
+        }else {
+            fav_button.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+            fav_button.setTag("0");
+        }
+
+        holder.chapterTitle.setText(chaptername);
+        //holder.arabic_text.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
+
+
+        if (sharedPref.getDefaults("ar")) {
+            holder.arabic_ayahnumber.setVisibility(View.VISIBLE);
+            holder.arabictext.setVisibility(View.VISIBLE);
+            holder.arabictext.setText(artext);
+            holder.arabic_ayahnumber.setText(numb);
+            holder.arabictext.setGravity(Gravity.END);
+            holder.ayahnumber.setVisibility(View.GONE);
+        }else{
+            holder.arabic_ayahnumber.setVisibility(View.GONE);
+            holder.arabictext.setVisibility(View.GONE);
+            holder.ayahnumber.setVisibility(View.VISIBLE);
+        }
+        if (sharedPref.getDefaults("uz")) {
+            //
+            holder.ayatext.setVisibility(View.VISIBLE);
+            try {
+                holder.ayatext.setText(Html.fromHtml(collapseBraces(ttext)));
+            }catch (NullPointerException npx){
+                holder.ayatext.setText("uzbek text");
+            }
+            holder.ayahnumber.setText(numb);
+            holder.ayahnumber.setTag(chapternumber);
+        }else{
+            holder.ayatext.setVisibility(View.GONE);
+        }
+        if (sharedPref.getDefaults("ru")) {
+            holder.ayah_text_ru.setVisibility(View.VISIBLE);
+            try {
+                holder.ayah_text_ru.setText(Html.fromHtml(collapseBraces(rtext)));
+            }catch (NullPointerException npx){
+                holder.ayah_text_ru.setText("russian text");
+            }
+            holder.ayahnumber.setText(numb);
+            holder.ayahnumber.setTag(chapternumber);
+        }else{
+            holder.ayah_text_ru.setVisibility(View.GONE);
+        }
+        if (sharedPref.getDefaults("en")) {
+            holder.ayah_text_en.setVisibility(View.VISIBLE);
+            try {
+                holder.ayah_text_en.setText(Html.fromHtml(collapseBraces(etext)));
+            }catch (NullPointerException npx){
+                holder.ayah_text_en.setText("english text");
+            }
+            holder.ayahnumber.setText(numb);
+            holder.ayahnumber.setTag(chapternumber);
+        }else{
+            holder.ayah_text_en.setVisibility(View.GONE);
+        }
+        Log.d(TAG, "SURANAME " + String.valueOf(chaptername));
     }
-
+    private String collapseBraces(String t) {
+        String retval = t;
+        if(t!=null) {
+            if (t.indexOf("(") > 0) {
+                //all logic here
+                retval = t.replace("(", "<br><font color='#517D43'>");
+                Log.d(TAG, "ARRAY " + retval);
+                retval = retval.replace(")", "</font>");
+            } else {
+                retval = t;
+            }
+        }
+        return retval;
+    }
     @Override
     public int getItemCount() {
-        return 0;
+        int c = 0;
+        if(mText!=null)
+        {
+            c = mText.size();
+        }
+        return c;
     }
 
     @Override
@@ -81,7 +196,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         super.onViewDetachedFromWindow(holder);
     }
 
-    public class ViewHolder  extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder  extends RecyclerView.ViewHolder implements OnClickListener {
         TextView ayatext;
         TextView ayah_text_ru;
         TextView ayah_text_en;
@@ -252,7 +367,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         @Override
         public void onClick(View view) {
             position = getAdapterPosition();
-            //versenumber = String.valueOf(ayahnumber.getText());
+            versenumber = String.valueOf(ayahnumber.getText());
             //Log.d("CLICK", versenumber);
             //Log.d("FAV TAG", favbut.getTag());
             chapternumber = String.valueOf(ayahnumber.getTag());
@@ -281,7 +396,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
 
         switch (view.getId()) {
             case R.id.sharebut:
-                Log.d("CLICK SHARE", view.toString());
+                Log.d(TAG, "CLICK SHARE" + view.toString());
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 //sendIntent.putExtra(Intent.EXTRA_TEXT, ayahtext + "\n(" + chaptername + ", " + versenumber + ")\nhttps://goo.gl/sXBkNt\nFurqon dasturi, Android");
@@ -302,7 +417,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                     bookbut.setTag("selected");
                     //sharedPref.write("xatchup" + chaptername, Integer.parseInt(versenumber));
                     //mDatabase.removeFromFavs(chapternumber, versenumber, "0");
-                    Log.i("BOOKMARK", String.valueOf(bookbut.getTag()));
+                    Log.d(TAG, "BOOKMARK " + String.valueOf(bookbut.getTag()));
                 }
                 else {
                     //mDatabase.removeFromFavs(chapternumber, versenumber, "1");
@@ -345,12 +460,12 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         }
     }
     public void setResults(List<SearchResult> searchResults) {
-        this.searchResults = searchResults;
+        this.mText = searchResults;
         notifyDataSetChanged();
     }
 
     private SearchResult getTextAt(int position) {
-        return searchResults.get(position);
+        return mText.get(position);
     }
 
 }

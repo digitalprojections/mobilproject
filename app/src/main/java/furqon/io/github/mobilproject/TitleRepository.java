@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class TitleRepository {
-    private ChapterTitleDAO mTitleDao;
+    private static ChapterTitleDAO mTitleDao;
     private LiveData<List<ChapterTitleTable>> mAllTitles;
     private LiveData<List<AllTranslations>> mChapterText;
     private LiveData<List<FavouriteAyah>> mFavourites;
@@ -20,16 +20,11 @@ public class TitleRepository {
     private LiveData<List<NewMessages>> liveUnreadMessages;
     private LiveData<List<AyahRange>> ayahRange;
     private LiveData<List<SearchResult>> searchResults;
-    private Context context;
 
     //MyListener myListener = (MyListener) new SuraNameList();
     TitleRepository(Application application){
         ChapterTitleDatabase titleDatabase = ChapterTitleDatabase.getDatabase(application);
         mTitleDao = titleDatabase.titleDAO();
-
-        context = application;
-
-        //new readAsyncTask(mTitleDao).execute();
     }
     LiveData<List<NewMessages>> getUnreadMessages(){
         liveUnreadMessages = mTitleDao.getUnreadMessages();
@@ -101,10 +96,7 @@ public class TitleRepository {
     public void updateText(ChapterTextTable text){
         new updateTextAsyncTask(mTitleDao).execute(text);
     }
-    public void deteteAll(){
 
-        new deleteAsyncTask().execute();
-    }
     public void markAllAsRead(){
         new markAsReadAsync().execute();
     }
@@ -123,8 +115,8 @@ public class TitleRepository {
 
 
 
-    private class deleteSurahAsyncTask extends AsyncTask<Integer, Void, Void>{
-        private ChapterTitleDAO mAsyncTitleDAO;
+    private static class deleteSurahAsyncTask extends AsyncTask<Integer, Void, Void>{
+        private final ChapterTitleDAO mAsyncTitleDAO;
         public deleteSurahAsyncTask(ChapterTitleDAO dao){
             mAsyncTitleDAO = dao;
         }
@@ -137,8 +129,8 @@ public class TitleRepository {
         }
     }
 
-    private class deleteMessageAsyncTask extends AsyncTask<MessageTable, Void, Void>{
-        private ChapterTitleDAO mAsyncTitleDAO;
+    private static class deleteMessageAsyncTask extends AsyncTask<MessageTable, Void, Void>{
+        private final ChapterTitleDAO mAsyncTitleDAO;
         public deleteMessageAsyncTask(ChapterTitleDAO dao){
             mAsyncTitleDAO = dao;
         }
@@ -150,9 +142,9 @@ public class TitleRepository {
         }
     }
 
-    private class insertAsyncTask extends AsyncTask<ChapterTitleTable, Void, Void> {
+    private static class insertAsyncTask extends AsyncTask<ChapterTitleTable, Void, Void> {
 
-        private ChapterTitleDAO mAsyncTitleDAO;
+        private final ChapterTitleDAO mAsyncTitleDAO;
 
         public insertAsyncTask(ChapterTitleDAO mTitleDao) {
 
@@ -165,9 +157,9 @@ public class TitleRepository {
             return null;
         }
     }
-    private class insertTextAsyncTask extends AsyncTask<ChapterTextTable, Void, Void> {
+    private static class insertTextAsyncTask extends AsyncTask<ChapterTextTable, Void, Void> {
 
-        private ChapterTitleDAO mAsyncTitleDAO;
+        private final ChapterTitleDAO mAsyncTitleDAO;
 
         public insertTextAsyncTask(ChapterTitleDAO mTitleDao) {
             mAsyncTitleDAO = mTitleDao;
@@ -179,8 +171,8 @@ public class TitleRepository {
             return null;
         }
     }
-    private class updateTitleDownloadedAsyncTask extends AsyncTask<String, Void, Void> {
-        private ChapterTitleDAO mAsyncTitleDAO;
+    private static class updateTitleDownloadedAsyncTask extends AsyncTask<String, Void, Void> {
+        private final ChapterTitleDAO mAsyncTitleDAO;
         public updateTitleDownloadedAsyncTask(ChapterTitleDAO mTitleDao) {
             mAsyncTitleDAO = mTitleDao;
         }
@@ -191,8 +183,8 @@ public class TitleRepository {
         }
     }
 
-    private class updateTitleRewardedAsyncTask extends AsyncTask<String, Void, Void> {
-        private ChapterTitleDAO mAsyncTitleDAO;
+    private static class updateTitleRewardedAsyncTask extends AsyncTask<String, Void, Void> {
+        private final ChapterTitleDAO mAsyncTitleDAO;
         public updateTitleRewardedAsyncTask(ChapterTitleDAO mTitleDao) {
             mAsyncTitleDAO = mTitleDao;
         }
@@ -203,8 +195,8 @@ public class TitleRepository {
         }
     }
 
-    private class updateAyahAsyncTask extends AsyncTask<AyahRange, Void, Void> {
-        private ChapterTitleDAO titleDAO;
+    private static class updateAyahAsyncTask extends AsyncTask<AyahRange, Void, Void> {
+        private final ChapterTitleDAO titleDAO;
         public updateAyahAsyncTask(ChapterTitleDAO mTitleDao) {
             titleDAO = mTitleDao;
         }
@@ -215,8 +207,8 @@ public class TitleRepository {
             return null;
         }
     }
-    private class updateAsyncTask extends AsyncTask<ChapterTitleTable, Void, Void> {
-        private ChapterTitleDAO mAsyncTitleDAO;
+    private static class updateAsyncTask extends AsyncTask<ChapterTitleTable, Void, Void> {
+        private final ChapterTitleDAO mAsyncTitleDAO;
         public updateAsyncTask(ChapterTitleDAO mTitleDao) {
             mAsyncTitleDAO = mTitleDao;
         }
@@ -227,8 +219,8 @@ public class TitleRepository {
             return null;
         }
     }
-    private class updateTextAsyncTask extends AsyncTask<ChapterTextTable, Void, Void> {
-        private ChapterTitleDAO mAsyncTitleDAO;
+    private static class updateTextAsyncTask extends AsyncTask<ChapterTextTable, Void, Void> {
+        private final ChapterTitleDAO mAsyncTitleDAO;
         public updateTextAsyncTask(ChapterTitleDAO mTitleDao) {
 
             mAsyncTitleDAO = mTitleDao;
@@ -240,20 +232,9 @@ public class TitleRepository {
             return null;
         }
     }
-    private class deleteAsyncTask extends AsyncTask<ChapterTitleTable, Void, Void> {
-        private ChapterTitleDAO mAsyncTitleDAO;
-        public deleteAsyncTask() {
-            mAsyncTitleDAO = mTitleDao;
-        }
 
-        @Override
-        protected Void doInBackground(ChapterTitleTable... chapterTitles) {
-            mAsyncTitleDAO.deleteAll();
-            return null;
-        }
-    }
-    private class markAsReadAsync extends AsyncTask<MessageTable, Void, Void> {
-        private ChapterTitleDAO mAsyncTitleDAO;
+    private static class markAsReadAsync extends AsyncTask<MessageTable, Void, Void> {
+        private final ChapterTitleDAO mAsyncTitleDAO;
         public markAsReadAsync() {
             mAsyncTitleDAO = mTitleDao;
         }
@@ -261,23 +242,6 @@ public class TitleRepository {
         @Override
         protected Void doInBackground(MessageTable... messages) {
             mAsyncTitleDAO.markAllAsRead();
-            return null;
-        }
-    }
-    private class readAsyncTask extends AsyncTask<ChapterTitleTable, Void, Void> {
-        private ChapterTitleDAO mAsyncTitleDAO;
-        public readAsyncTask(ChapterTitleDAO mTitleDao) {
-
-            mAsyncTitleDAO = mTitleDao;
-        }
-
-        @Override
-        protected Void doInBackground(ChapterTitleTable... chapterTitles) {
-
-//            int rows = mAsyncTitleDAO.getCount();
-//            if(rows!=114){
-//                //myListener.LoadTitlesFromServer();
-//            }
             return null;
         }
     }

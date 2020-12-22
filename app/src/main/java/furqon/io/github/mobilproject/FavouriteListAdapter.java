@@ -28,11 +28,8 @@ import java.util.List;
 
 
 public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdapter.FavouriteListViewHolder> {
+    public static final String TAG = MemorizeActivity.class.getSimpleName();
     private Context mContext;
-    //private Cursor mCursor;
-    //private DatabaseAccess mDatabase;
-
-    //DONE create share/boomark/favourite and add programmatically
     private ImageButton sharebut;
     private ImageButton fav_button;
     private ImageButton bookbut;
@@ -57,10 +54,8 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
 
     FavouriteListAdapter(Context context) {
         sharedPref = SharedPreferences.getInstance();
-
         mContext = context;
         scaler = AnimationUtils.loadAnimation(mContext, R.anim.bounce);
-
     }
 
 
