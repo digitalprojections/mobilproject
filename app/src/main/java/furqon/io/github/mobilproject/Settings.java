@@ -1,5 +1,6 @@
 package furqon.io.github.mobilproject;
 
+import android.annotation.SuppressLint;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,9 +24,9 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.snackbar.Snackbar;
 
+@SuppressLint("UseSwitchCompatOrMaterialCode")
 public class Settings extends AppCompatActivity {
 
-    private AdView mAdView;
     private SharedPreferences sharedPref;
     InterstitialAd mInterstitialAd;
 
@@ -39,15 +40,11 @@ public class Settings extends AppCompatActivity {
     private RadioButton usmani_font;
     private RadioButton qalam_font;
 
-    private ImageButton font_up;
-    private ImageButton font_down;
-
     private TextView sampletext;
     private Typeface font;
 
     private Switch sw_random_ayah;
     private Button ok_but;
-    private String TAG = "SETTINGS";
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -62,13 +59,12 @@ public class Settings extends AppCompatActivity {
         sw_random_ayah = findViewById(R.id.random_ayah_switch);
         ok_but = findViewById(R.id.ok_button);
 
-        font_up = findViewById(R.id.fontsize_up);
-        font_down = findViewById(R.id.fontsize_down);
+        ImageButton font_up = findViewById(R.id.fontsize_up);
+        ImageButton font_down = findViewById(R.id.fontsize_down);
 
         font_up.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO
                 float fs = sampletext.getTextSize();
                 fs = fs + 1.0f;
                 sampletext.setTextSize(TypedValue.COMPLEX_UNIT_PX, fs);
@@ -80,12 +76,8 @@ public class Settings extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 float fs = sampletext.getTextSize();
-                Log.e(TAG, fs + " ");
                 fs = fs - 1.0f;
-                Log.e(TAG, fs + " ");
                 sampletext.setTextSize(TypedValue.COMPLEX_UNIT_PX, fs);
-                Log.e(TAG, sampletext.getTextSize() + "");
-                //sharedPref.write(SharedPreferences.FONTSIZE, fsout);
                 ok_but.setEnabled(true);
             }
         });
@@ -99,7 +91,7 @@ public class Settings extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    sharedPref.write(sharedPref.FONT, "madina");
+                    sharedPref.write(SharedPreferences.FONT, "madina");
                     font = ResourcesCompat.getFont(Settings.this, R.font.maddina);
                     sampletext.setTypeface(font);
                     ok_but.setEnabled(true);
@@ -185,7 +177,7 @@ public class Settings extends AppCompatActivity {
 
         MobileAds.initialize(this, "ca-app-pub-3838820812386239~2342916878");
         mInterstitialAd = new InterstitialAd(this);
-        if (BuildConfig.BUILD_TYPE == "debug") {
+        if (BuildConfig.BUILD_TYPE.equals("debug")) {
             mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
         } else {
             mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
@@ -195,7 +187,7 @@ public class Settings extends AppCompatActivity {
         updateView();
 
 
-        mAdView = findViewById(R.id.adView);
+        AdView mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
@@ -209,8 +201,8 @@ public class Settings extends AppCompatActivity {
         sw_ru.setChecked(sharedPref.read(sharedPref.RUSW, false));
         sw_en.setChecked(sharedPref.read(sharedPref.ENSW, false));
         sw_random_ayah.setChecked(sharedPref.read(sharedPref.RANDOMAYAHSW, true));
-        if (sharedPref.contains(sharedPref.FONT)) {
-            switch (sharedPref.read(sharedPref.FONT, "")) {
+        if (sharedPref.contains(SharedPreferences.FONT)) {
+            switch (sharedPref.read(SharedPreferences.FONT, "")) {
                 case "madina":
                     madina_font.setChecked(true);
                     break;
@@ -228,8 +220,8 @@ public class Settings extends AppCompatActivity {
             qalam_font.setChecked(true);
         }
 
-        if (sharedPref.contains(sharedPref.FONTSIZE)) {
-            float fs = (float) sharedPref.read(sharedPref.FONTSIZE, 0);
+        if (sharedPref.contains(SharedPreferences.FONTSIZE)) {
+            float fs = (float) sharedPref.read(SharedPreferences.FONTSIZE, 0);
             sampletext.setTextSize(TypedValue.COMPLEX_UNIT_PX, fs);
         }
     }

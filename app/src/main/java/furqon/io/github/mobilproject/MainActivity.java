@@ -173,9 +173,8 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
         Intent appLinkIntent = getIntent();
         String appLinkAction = appLinkIntent.getAction();
         Uri appLinkData = appLinkIntent.getData();
-
-        Log.i(TAG, Locale.getDefault().getDisplayLanguage());
-        Log.i(TAG, BuildConfig.BUILD_TYPE);
+        if (BuildConfig.BUILD_TYPE.equals("debug"))
+            Log.i(TAG, Locale.getDefault().getDisplayLanguage());
 
     }
 
@@ -270,7 +269,7 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
 
     private void open_search() {
         Intent intent;
-        intent = new Intent(this, Search.class);
+        intent = new Intent(this, SearchActivity.class);
         startActivity(intent);
     }
 

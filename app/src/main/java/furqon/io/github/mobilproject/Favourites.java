@@ -72,14 +72,15 @@ public class Favourites extends AppCompatActivity implements ManageSpecials {
 
         MobileAds.initialize(this, getString(R.string.addmob_app_id));
         mInterstitialAd = new InterstitialAd(this);
-        if (BuildConfig.BUILD_TYPE == "debug") {
+        if (BuildConfig.BUILD_TYPE.equals("debug")) {
             mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
         } else {
             mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
         }
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
-        Log.i("FAVOURITES","loaded");
+        if (BuildConfig.BUILD_TYPE.equals("debug"))
+            Log.i("FAVOURITES","loaded");
 
 
 
@@ -88,7 +89,8 @@ public class Favourites extends AppCompatActivity implements ManageSpecials {
         viewModel.getFavourites().observe(this, new Observer<List<FavouriteAyah>>() {
             @Override
             public void onChanged(@Nullable List<FavouriteAyah> favouriteAyahs) {
-                Log.e("FAVOURITES", favouriteAyahs.size() + " ");
+                if (BuildConfig.BUILD_TYPE.equals("debug"))
+                    Log.e("FAVOURITES", favouriteAyahs.size() + " ");
                 if(favouriteAyahs.size()>0){
                     mAdapter.setText(favouriteAyahs);
                     recyclerView.scheduleLayoutAnimation();

@@ -118,7 +118,8 @@ public class AudioService extends Service {
         }
 
         public void cycle(int currentPosition){
-            Log.i("TASK", "running " + progressMax + " " + currentPosition);
+            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                Log.i("TASK", "running " + progressMax + " " + currentPosition);
             notification.setProgress(progressMax, currentPosition, false);
 
             notificationManagerCompat.notify(1, notification.build());

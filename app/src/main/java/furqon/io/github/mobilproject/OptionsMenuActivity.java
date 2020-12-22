@@ -2,7 +2,6 @@ package furqon.io.github.mobilproject;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -15,7 +14,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.dynamiclinks.DynamicLink;
@@ -108,7 +106,7 @@ public class OptionsMenuActivity extends AppCompatActivity {
     }
     private void open_search() {
         Intent intent;
-        intent = new Intent(this, Search.class);
+        intent = new Intent(this, SearchActivity.class);
         startActivity(intent);
     }
     private void open_chatroom() {

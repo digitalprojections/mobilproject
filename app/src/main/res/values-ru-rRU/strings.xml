@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">Furqon</string>
     <string name="suralar">Главы</string>
-    <string name="cont">Продолжить</string>
     <string name="favorites">Избранные</string>
     <string name="settings">настройки</string>
     <string name="arabic">арабский</string>
@@ -11,13 +10,11 @@
     <string name="audiopos_stored">положение сохранено</string>
     <string name="audiopos_restored">продолжить с последней позиции</string>
     <string name="audio_load_fail">Ошибка загрузки! Проверьте свою сеть</string>
-    <string name="save">Сохранить</string>
     <string name="shareayah">Поделись и получите монеты</string>
     <string name="bookmark_it">добавить аят в закладки</string>
     <string name="favourite_it">Добавить в избранное</string>
     <string name="russian">русский</string>
     <string name="english">английский</string>
-    <string name="app_shuts_down_now">Если приложение не закрывается в течение 3 секунд, пожалуйста, обязательно очистите все его данные, начните использовать</string>
     <string name="surah">"Глава: "</string>
     <string name="ayah">, Аят:</string>
     <string name="language_selected">Язык выбран</string>
@@ -48,9 +45,7 @@
     <string name="audio_downloaded">Аудио загружено</string>
     <string name="audio_player_description">Аудио плеер в стиле уведомлений</string>
     <string name="audio_downloaded_ready">аудио загружено и доступно для воспроизведения</string>
-    <string name="download_surah">скачать аудио файл</string>
     <string name="unlock_the_download">Разблокируйте кнопку загрузки, посмотрев видео</string>
-    <string name="surah_audio_available">Аудио главы доступно</string>
     <string name="reload">Скачать</string>
     <string name="quranic_order">Порядок по Корану</string>
     <string name="revelation_order">Порядок по откровению</string>
@@ -64,7 +59,6 @@
     <string name="failed_to_load_ayah">Не удалось загрузить аят. Попробуйте еще раз</string>
     <string name="failure_generic">Произошла ошибка, попробуйте позже</string>
     <string name="download_audio_description">Есть много способов заработать монеты: использовать ежедневно, делиться с друзьями или смотреть вознагражденную рекламу</string>
-    <string name="downloadaudio_title">Скачать Аудио</string>
     <string name="messages_button_text">Сообщения</string>
     <string name="audio_player_title">Аудиоплеер Фуркан</string>
     <string name="surah_size_issue">Текст главы был загружен с ошибками. Пытаясь исправить</string>
@@ -74,19 +68,12 @@
     <string name="earn_coins">Заработать монеты</string>
     <string name="extra_title">Дополнительно</string>
     <string name="watch_ads">Смотреть рекламу</string>
-    <string name="share">Поделиться</string>
     <string name="quran_kareem_title">Фуркан - Коран Карим для Android. Удивительное приложение!</string>
     <string name="invitation_confirm">Пригласительная ссылка подтверждена!</string>
     <string name="coming_soon">Скоро!</string>
-    <string name="down_or_play"><![CDATA[<-скачать | слушать онлайн->]]></string>
-    <string name="unlock_or_play"><![CDATA[<-разблокировать | слушать онлайн->]]></string>
-    <string name="play_local"><![CDATA[слушать аудио->]]></string>
-    <string name="downloading">скачивание...</string>
     <string name="use_coins">Использовать монету</string>
     <string name="cancel">Отмена</string>
-    <string name="ok">Разблокировать</string>
     <string name="coins">Монеты</string>
-    <string name="not_enough_coins">Вам не хватает монет</string>
     <string name="available_coins">Доступные монеты</string>
     <string name="required_coins">Необходимо</string>
     <string name="u_received">"Вы получили "</string>
@@ -98,9 +85,6 @@
     <string name="welcome_title">Добро пожаловать!</string>
     <string name="do_not_show_again">Не показывать снова</string>
     <string name="ad_loaded_toast">Объявление готово</string>
-    <string name="you_need">"Вам нужно "</string>
-    <string name="uz_kam">" "</string>
-    <string name="favourites_button_description">добавить в избранное</string>
     <string name="audio">аудио</string>
     <string name="your_message_to_the_author">Ваше сообщение автору</string>
     <string name="send">послать</string>
@@ -117,7 +101,6 @@
     <string name="points_restored">Очки восстановлены</string>
     <string name="signin_request">Войдите, чтобы получить специальные награды</string>
     <string name="noads_button_label">Убрать рекламу на сегодня</string>
-    <string name="sign_in">Войти в систему</string>
     <string name="memorizer">Выучить Коран</string>
     <string name="committolearn">Зафиксировать</string>
     <string name="decrease_repeat_count">уменьшить количество повторов</string>

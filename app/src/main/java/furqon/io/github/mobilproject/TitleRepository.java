@@ -74,6 +74,18 @@ public class TitleRepository {
         searchResults = mTitleDao.getSearchResults(word);
         return searchResults;
     }
+    LiveData<List<SearchResult>> getSearchResultsUzbek(String word) {
+        searchResults = mTitleDao.getSearchResultsUzbek(word);
+        return searchResults;
+    }
+    LiveData<List<SearchResult>> getSearchResultsRussian(String word) {
+        searchResults = mTitleDao.getSearchResultsRussian(word);
+        return searchResults;
+    }
+    LiveData<List<SearchResult>> getSearchResultsArabic(String word) {
+        searchResults = mTitleDao.getSearchResultsArabic(word);
+        return searchResults;
+    }
     public void insert(ChapterTitleTable title){
 
         new insertAsyncTask(mTitleDao).execute(title);
@@ -147,7 +159,6 @@ public class TitleRepository {
         private final ChapterTitleDAO mAsyncTitleDAO;
 
         public insertAsyncTask(ChapterTitleDAO mTitleDao) {
-
             mAsyncTitleDAO = mTitleDao;
         }
 

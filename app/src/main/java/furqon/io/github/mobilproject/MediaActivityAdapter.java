@@ -62,7 +62,6 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
             holder.download_view = true;
             ChapterTitleTable current = mTitles.get(position);
             String name = current.uzbek;
-            //Log.i(TAG, name);
             //String arname = current.arabic;
             int numb = current.chapter_id;
             holder.pl_description.setText(name);
@@ -74,7 +73,6 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
             if (TrackDownloaded(current.chapter_id + "")) {
                 //set by the actually available audio files
                 holder.downloadButton.setImageResource(R.drawable.ic_file_available);
-                //Log.i(TAG, " DOWNLOADED, " + current.chapter_id + " " + current.uzbek);
                 holder.downloadButton.setFocusable(false);
                 holder.downloadButton.setTag(3);
                 holder.progressBar.setVisibility(View.INVISIBLE);
@@ -99,8 +97,6 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
                         holder.pl_percent.setVisibility(View.VISIBLE);
                     }
                 } else if (itemDownloading(current.chapter_id, holder.pl_percent)) {
-                    //downloading
-                    Log.i(TAG, " DOWNLOADING, " + current.chapter_id + " " + current.uzbek);
                     holder.downloadButton.setTag(5);
                     holder.progressBar.setVisibility(View.VISIBLE);
                     holder.pl_percent.setVisibility(View.VISIBLE);
@@ -115,27 +111,12 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
                         holder.downloadButton.setVisibility(View.VISIBLE);
 
 
-//                    if (sharedPreferences.read(sharedPreferences.COINS, 0) >= ayah_unlock_cost) {
-//                        holder.downloadButton.setImageResource(R.drawable.ic_unlock);
-//                        holder.downloadButton.setFocusable(true);
-//                        holder.downloadButton.setTag(1);
-//                        holder.downloadButton.setVisibility(View.VISIBLE);
-//                        holder.progressBar.setVisibility(View.INVISIBLE);
-//                    } else {
-//                        holder.downloadButton.setImageResource(R.drawable.ic_lock_24dp);
-//                        holder.downloadButton.setFocusable(true);
-//                        holder.downloadButton.setTag(1);
-//                        holder.downloadButton.setVisibility(View.VISIBLE);
-//                        holder.progressBar.setVisibility(View.INVISIBLE);
-//                    }
-
                 }
             }
 
         }else{
             holder.download_view = false;
             Track file = trackList.get(position);
-            //Log.i(TAG, file.getUri());
             holder.pl_title.setText(file.getName());
             holder.pl_time.setText(file.getDuration());
             holder.pl_description.setText(QuranMap.SURAHNAMES[Integer.parseInt(file.getName()) - 1]);
@@ -155,10 +136,8 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
         DownloadManager.Query query = new DownloadManager.Query();
         long did = (long) SharedPreferences.getInstance().read("downloading_surah_" + sid, 0);
         query.setFilterById(did);
-        //Log.i(TAG, "download ID " + did + " surah-" + sid);
         if (did > 0) {
             Cursor cursor = downloadManager.query(query);
-            //Log.i(TAG, cursor.getCount() + " cursor count " + did);
             if (cursor.moveToFirst()) {
                 int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
                 int status = cursor.getInt(columnIndex);
@@ -176,7 +155,6 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
                     tv.setText(Math.floor(progress) + "%");
                 }
 
-                //Log.i(TAG, status + " cursor status");
                 if (status == DownloadManager.STATUS_RUNNING || status == DownloadManager.STATUS_PAUSED || status == DownloadManager.STATUS_PENDING) {
                     return true;
                 }
@@ -335,13 +313,15 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
                 progressBar.setVisibility(View.VISIBLE);
                 downloadButton.setVisibility(View.GONE);
             } else {
-                Log.e(TAG, "track already downloaded");
+                if (BuildConfig.BUILD_TYPE.equals("debug"))
+                    Log.e(TAG, "track already downloaded");
             }
         }
     }
 
     void setTitles(ArrayList<Track> trackList) {
-        Log.i(TAG, trackList.size() + " tracklist");
+        if (BuildConfig.BUILD_TYPE.equals("debug"))
+            Log.i(TAG, trackList.size() + " tracklist");
         this.trackList = trackList;
         notifyDataSetChanged();
     }

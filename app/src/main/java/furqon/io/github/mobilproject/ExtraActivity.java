@@ -12,9 +12,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -28,7 +25,6 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import java.util.List;
-import java.util.Objects;
 
 public class ExtraActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "EAXTRAACTIVITY";
@@ -90,7 +86,7 @@ public class ExtraActivity extends AppCompatActivity implements View.OnClickList
 
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
 
-        favourite_but = findViewById(R.id.favouritebut);
+        //favourite_but = findViewById(R.id.favouritebut);
         search_but = findViewById(R.id.searchbtn);
         //youtube_but = findViewById(R.id.youtubebut);
         rate_but = findViewById(R.id.ratebtn);
@@ -150,7 +146,7 @@ public class ExtraActivity extends AppCompatActivity implements View.OnClickList
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
         mInterstitialAd = new InterstitialAd(this);
-        if (BuildConfig.BUILD_TYPE == "debug") {
+        if (BuildConfig.BUILD_TYPE.equals("debug")) {
             mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
         } else {
             mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
@@ -188,7 +184,7 @@ public class ExtraActivity extends AppCompatActivity implements View.OnClickList
 
     private void open_search() {
         Intent intent;
-        intent = new Intent(this, Search.class);
+        intent = new Intent(this, SearchActivity.class);
         startActivity(intent);
     }
     private void open_messages() {
@@ -215,9 +211,7 @@ public class ExtraActivity extends AppCompatActivity implements View.OnClickList
             case R.id.ratebtn:
                 Rateus();
                 break;
-            case R.id.youtubebut:
-                open_youtube();
-                break;
+
             case R.id.earn_coins_button:
                 open_earn_coins();
                 break;
@@ -228,7 +222,7 @@ public class ExtraActivity extends AppCompatActivity implements View.OnClickList
                 open_chatroom();
                 break;
             case R.id.mediabutton:
-                if (BuildConfig.BUILD_TYPE == "debug") {
+                if (BuildConfig.BUILD_TYPE.equals("debug")) {
                     open_media_page();
                 } else {
                     open_chatroom();

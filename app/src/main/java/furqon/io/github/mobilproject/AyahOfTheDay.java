@@ -126,14 +126,16 @@ public class AyahOfTheDay extends AppCompatActivity {
                 fab.startAnimation(scaler);
 
                 animateFabs();
-                Log.i(TAG, " random number");
+                if (BuildConfig.BUILD_TYPE.equals("debug"))
+                    Log.i(TAG, " random number");
             }
         });
 
         uztxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i(TAG, " UZBEK LANGUAGE");
+                if (BuildConfig.BUILD_TYPE.equals("debug"))
+                    Log.i(TAG, " UZBEK LANGUAGE");
                 snackbarMessage(view, getString(R.string.language_selected));
                 animateFabs();
                 language_id = 4;
@@ -241,7 +243,8 @@ public class AyahOfTheDay extends AppCompatActivity {
         String appLinkAction = appLinkIntent.getAction();
         Uri appLinkData = appLinkIntent.getData();
         if(appLinkData!=null) {
-            Log.d(TAG, appLinkAction + " - " + appLinkData.getQueryParameter("sn") + appLinkData.getQueryParameter("an"));
+            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                Log.d(TAG, appLinkAction + " - " + appLinkData.getQueryParameter("sn") + appLinkData.getQueryParameter("an"));
             String sntext = appLinkData.getQueryParameter("sn");
             if(sntext!=null)
                 random_surah = Integer.parseInt(sntext);
@@ -258,7 +261,8 @@ public class AyahOfTheDay extends AppCompatActivity {
             //get the size of the list.
             int rslen = randomSurahs.size();//value between 1 and 114 inclusive
             randomSurahNumber = (int) Math.floor(Math.random()*rslen);//get a random value of between 0-113
-            Log.i("RANDOM SURAH LIST", randomSurahNumber + ", " + randomSurahs.get(randomSurahNumber).sura_id);
+            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                Log.i("RANDOM SURAH LIST", randomSurahNumber + ", " + randomSurahs.get(randomSurahNumber).sura_id);
             return randomSurahs.get(randomSurahNumber).sura_id;//the actual surah id based on the random number generated above
         }
         else{
@@ -268,7 +272,8 @@ public class AyahOfTheDay extends AppCompatActivity {
 
     }
     private void checkForDynamicLink() {
-        Log.i(TAG, "Dynamic LINK CHECKING");
+        if (BuildConfig.BUILD_TYPE.equals("debug"))
+            Log.i(TAG, "Dynamic LINK CHECKING");
         FirebaseDynamicLinks.getInstance()
                 .getDynamicLink(getIntent())
                 .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
@@ -281,6 +286,7 @@ public class AyahOfTheDay extends AppCompatActivity {
                             deepLink = pendingDynamicLinkData.getLink();
                             String inviter_id = deepLink.getQueryParameter("user_id");
 
+                            if (BuildConfig.BUILD_TYPE.equals("debug"))
                                 Log.i(TAG, "Dynamic LINK FOUND " + inviter_id);
                                 pendingDynamicLinkData = null;
 
@@ -303,6 +309,7 @@ public class AyahOfTheDay extends AppCompatActivity {
 //                                        sendConfirmationToServer(inviter_id);
 //                                }
                             } else {
+                            if (BuildConfig.BUILD_TYPE.equals("debug"))
                                 Log.i(TAG, "Can not use the dlink");
 
                             }
@@ -318,7 +325,8 @@ public class AyahOfTheDay extends AppCompatActivity {
                 .addOnFailureListener(this, new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "getDynamicLink:onFailure", e);
+                        if (BuildConfig.BUILD_TYPE.equals("debug"))
+                            Log.w(TAG, "getDynamicLink:onFailure", e);
                     }
                 });
         //sendConfirmationToServer("b4sGS2mH92RIv8bTJnomGzH9IDp1");
@@ -348,7 +356,8 @@ public class AyahOfTheDay extends AppCompatActivity {
 
     private void addToFavourites(View view) {
         // manage sqlite creation and data addition
-        Log.i("AYAT FAVOURITED", String.valueOf(view));
+        if (BuildConfig.BUILD_TYPE.equals("debug"))
+            Log.i("AYAT FAVOURITED", String.valueOf(view));
         if(allTranslationsList!=null){
                 if (fav_btn.getTag() == "1") {
                     //mDatabase.removeFromFavs(random_surah, random_ayah, "0");
@@ -439,7 +448,8 @@ public class AyahOfTheDay extends AppCompatActivity {
     private void ShowRandomAyah(List<AllTranslations> allTranslations) {
 
 
-        Log.d("RANDOM SURAH AND AYAH", random_surah + " is surah " + random_ayah);
+        if (BuildConfig.BUILD_TYPE.equals("debug"))
+            Log.d("RANDOM SURAH AND AYAH", random_surah + " is surah " + random_ayah);
         try{
             suraname = QuranMap.SURAHNAMES[random_surah-1];//DONE fix it to the actual suraname
             String randomayahreference = getString(R.string.surah) + " " + random_surah + " " + suraname + getString(R.string.ayah) + random_ayah;
@@ -448,7 +458,8 @@ public class AyahOfTheDay extends AppCompatActivity {
 
             SetFavouriteIconState();
 
-            Log.d(TAG, suraname + "-" + random_surah + " " + random_ayah);
+            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                Log.d(TAG, suraname + "-" + random_surah + " " + random_ayah);
 
         }catch (IndexOutOfBoundsException iobx) {
             ayah_text.setText(R.string.failed_to_load_ayah);
@@ -466,7 +477,8 @@ public class AyahOfTheDay extends AppCompatActivity {
     private void SetFavouriteIconState() {
         if(allTranslationsList!=null){
             int is_fav = allTranslationsList.get(random_ayah-1).favourite;
-            Log.d(TAG, is_fav + " is fav");
+            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                Log.d(TAG, is_fav + " is fav");
             if(is_fav!=0){
                 fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
                 fav_btn.setTag("1");

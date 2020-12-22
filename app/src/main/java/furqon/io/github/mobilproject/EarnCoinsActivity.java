@@ -32,7 +32,6 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
     private ImageButton watchAds_btn;
     private TextView coins_txt;
 
-    private TextView rewardad_txt;
     private TextView share_txt;
 
     private static final String DEEP_LINK_URL = "https://furqon.page.link/ThB2";
@@ -40,8 +39,6 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
     Uri deepLink;
     String userid;
     private RewardAd mRewardedAd;
-    private AdView mAdView;
-    private FirebaseRemoteConfig mFirebaseRemoteConfig;
     InterstitialAd mInterstitialAd;
 
     @Override
@@ -60,7 +57,7 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
         mSharedPref.init(getApplicationContext());
         mRewardedAd = new RewardAd(this);
 
-        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
 
 
@@ -69,7 +66,7 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
 
 
         coins_txt = findViewById(R.id.coins_count_txt);
-        rewardad_txt = findViewById(R.id.rewardad_description_tv);
+        TextView rewardad_txt = findViewById(R.id.rewardad_description_tv);
         //share_txt = findViewById(R.id.share_description_tv);
         //share_btn = findViewById(R.id.ShareImageButton);
         watchAds_btn = findViewById(R.id.WatchAdsImageButton);
@@ -94,12 +91,12 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
                 mRewardedAd.SHOW(activity);
             }
         });
-        mAdView = findViewById(R.id.adViewEarnCoins);
+        AdView mAdView = findViewById(R.id.adViewEarnCoins);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
         setCoinValue();
         mInterstitialAd = new InterstitialAd(this);
-        if (BuildConfig.BUILD_TYPE == "debug") {
+        if (BuildConfig.BUILD_TYPE.equals("debug")) {
             mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
         } else {
             mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
@@ -155,17 +152,16 @@ public class EarnCoinsActivity extends AppCompatActivity implements ManageCoins 
             //userId=currentUser.getUid()
             createShortLink();
         }
-        else{
-            //user failed to login anonymously
-            //sharing impossible, meaningless?
-        }
+        //user failed to login anonymously
+//sharing impossible, meaningless?
+
 
     }
 
     public Uri buildDeepLink(Uri dl, int version) {
         String uriPrefix = "furqon.page.link";
 
-        userid = mSharedPref.read(mSharedPref.USERID, null);
+        userid = mSharedPref.read(SharedPreferences.USERID, null);
 
         // Set dynamic link parameters:
         //  * URI prefix (required)

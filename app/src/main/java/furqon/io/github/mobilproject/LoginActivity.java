@@ -222,13 +222,15 @@ public class LoginActivity extends AppCompatActivity{
     private void CheckToken() {
         if (!mSharedPref.read(mSharedPref.TOKEN, "").isEmpty()) {
             token = mSharedPref.read(mSharedPref.TOKEN, "");
-            Log.d(TAG, "TOKEN RESTORED:" + token);
+            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                Log.d(TAG, "TOKEN RESTORED:" + token);
 
         } else {
 
             token = null;
 
-            Log.d(TAG, "TOKEN MISSING, RENEW");
+            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                Log.d(TAG, "TOKEN MISSING, RENEW");
 
         }
     }
@@ -244,12 +246,14 @@ public class LoginActivity extends AppCompatActivity{
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
+                if (BuildConfig.BUILD_TYPE.equals("debug"))
+                    Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
 
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
-                Log.w(TAG, "Google sign in failed", e);
+                if (BuildConfig.BUILD_TYPE.equals("debug"))
+                    Log.w(TAG, "Google sign in failed", e);
                 // ...
             }
         }
@@ -262,13 +266,15 @@ public class LoginActivity extends AppCompatActivity{
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
+                            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                                Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
                             mSharedPref.write(SharedPreferences.GOOGLE, true);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                                Log.w(TAG, "signInWithCredential:failure", task.getException());
                             //Snackbar.make(mBinding.mainLayout, "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
                             updateUI(null);
                         }
@@ -278,19 +284,21 @@ public class LoginActivity extends AppCompatActivity{
                 });
     }
     public void CheckRC() {
-        Log.d(TAG, mFirebaseRemoteConfig.getString("rewardad_multiplier") + " reward multiplier");
+        if (BuildConfig.BUILD_TYPE.equals("debug"))
+            Log.d(TAG, mFirebaseRemoteConfig.getString("rewardad_multiplier") + " reward multiplier");
         mFirebaseRemoteConfig.fetchAndActivate()
                 .addOnCompleteListener(this, new OnCompleteListener<Boolean>() {
                     @Override
                     public void onComplete(@NonNull Task<Boolean> task) {
                         if (task.isSuccessful()) {
                             boolean updated = task.getResult();
-                            Log.d(TAG, "Config params updated: " + updated);
+                            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                                Log.d(TAG, "Config params updated: " + updated);
                             //Toast.makeText(MainActivity.this, "Fetch and activate succeeded", Toast.LENGTH_SHORT).show();
                             mSharedPref.write(SharedPreferences.SHAREWARD, (int) mFirebaseRemoteConfig.getLong("share_reward"));
                             mSharedPref.write(SharedPreferences.PERSONAL_REWARD, (int) mFirebaseRemoteConfig.getLong("personal_reward"));
                             //sharedpref.getInstance().write(sharedpref.INITIAL_COINS, (int) mFirebaseRemoteConfig.getLong("initial_coins"));
-                            //Log.d("COINS", mSharedPref.read(mSharedPref.INITIAL_COINS_USED, false) + " " + mSharedPref.read(mSharedPref.INITIAL_COINS, 0));
+
                         } else {
                             mSharedPref.write(SharedPreferences.SHAREWARD, (int) mFirebaseRemoteConfig.getLong("share_reward"));
                             mSharedPref.write(SharedPreferences.PERSONAL_REWARD, (int) mFirebaseRemoteConfig.getLong("personal_reward"));
@@ -312,7 +320,8 @@ public class LoginActivity extends AppCompatActivity{
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInAnonymously:success");
+                            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                                Log.d(TAG, "signInAnonymously:success");
 
                             currentUser = mAuth.getCurrentUser();
                             AuthCredential credential = GoogleAuthProvider.getCredential( getString(R.string.default_web_client_id), null);
@@ -321,11 +330,13 @@ public class LoginActivity extends AppCompatActivity{
                                         @Override
                                         public void onComplete(@NonNull Task<AuthResult> task) {
                                             if (task.isSuccessful()) {
-                                                Log.d(TAG, "linkWithCredential:success");
+                                                if (BuildConfig.BUILD_TYPE.equals("debug"))
+                                                    Log.d(TAG, "linkWithCredential:success");
                                                 FirebaseUser user = task.getResult().getUser();
                                                 updateUI(user);
                                             } else {
-                                                Log.w(TAG, "linkWithCredential:failure", task.getException());
+                                                if (BuildConfig.BUILD_TYPE.equals("debug"))
+                                                    Log.w(TAG, "linkWithCredential:failure", task.getException());
                                                 Toast.makeText(LoginActivity.this, "Authentication failed.",
                                                         Toast.LENGTH_SHORT).show();
                                                 updateUI(currentUser);
@@ -338,19 +349,11 @@ public class LoginActivity extends AppCompatActivity{
 
 
                         } else {
-                            // If sign in fails, display a message to the user.
-                            Log.i(TAG, "signInAnonymously:failure", task.getException());
-
-//                            Crashlytics.log(Log.ERROR, TAG, task.getException().toString());
-//                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-//                                    Toast.LENGTH_SHORT).show();
                             currentUser = null;
                         }
 
                     }
                 });
-        // [END signin_anonymously]
-        Log.e(TAG, "Signin ATTEMPT: " + mAuth);
     }
 
     private void updateUI(FirebaseUser currentUser) {
@@ -359,7 +362,8 @@ public class LoginActivity extends AppCompatActivity{
 
         // Status text
         if (isSignedIn) {
-            Log.i(TAG, "SIGNED IN. FIREBASE AUTH " + currentUser.getUid() + " " +  currentUser.getEmail());
+            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                Log.i(TAG, "SIGNED IN. FIREBASE AUTH " + currentUser.getUid() + " " +  currentUser.getEmail());
             sendRegistrationToServer();
             checkAppSignature(this);
             try{
@@ -378,10 +382,6 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     private void sendRegistrationToServer() {
-        //TODO send the token to  database.
-        //Add to the user account token, app id, device id
-        //Log.i("ATTEMPTING TOKEN SEND", token);
-
         queue = Volley.newRequestQueue(this);
         String url = mFirebaseRemoteConfig.getString("server_php") + "/apijson.php";
         //String url = "http://127.0.0.1:1234/apijson/localhost_test.php";
@@ -389,10 +389,8 @@ public class LoginActivity extends AppCompatActivity{
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //progressBar.setVisibility(View.INVISIBLE);
-                        //textView.setText(response);
-                        //handle response. ["{\"last_visit\":null,\"fcm_token\":null,\"id\":\"1\"}"]
-                        Log.d(TAG, "JSON raw " + response);
+                        if (BuildConfig.BUILD_TYPE.equals("debug"))
+                            Log.d(TAG, "JSON raw " + response);
                         jsonArrayResponse = new ArrayList<>();
                         try {
                             JSONArray jsonArray = new JSONArray(response);
@@ -401,7 +399,8 @@ public class LoginActivity extends AppCompatActivity{
                                 jsonArrayResponse.add(object);
                             }
                             int sdate = jsonArrayResponse.get(0).getInt("last_visit");
-                            Log.d(TAG, "JSON " + sdate);
+                            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                                Log.d(TAG, "JSON " + sdate);
                             if (sdate == 0) {
                                 //too early or too late
                                 //String mes = new StringBuilder().append(getString(R.string.u_received)).append(String.valueOf(sdate)).append(getString(R.string._coins)).toString();
@@ -413,10 +412,10 @@ public class LoginActivity extends AppCompatActivity{
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            //Log.i("error json", "tttttttttttttttt");
-                            //Crashlytics.log(Log.ERROR, TAG, e.getStackTrace().toString());
+
                         } catch (IndexOutOfBoundsException iobx) {
-                            Log.d(TAG, "JSON " + iobx);
+                            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                                Log.d(TAG, "JSON " + iobx);
                         }
                         CheckRC();
                         //checkForDynamicLink();
@@ -427,7 +426,8 @@ public class LoginActivity extends AppCompatActivity{
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i(TAG, "UserID and TOKEN failed to send" + error.toString());
+                if (BuildConfig.BUILD_TYPE.equals("debug"))
+                    Log.i(TAG, "UserID and TOKEN failed to send" + error.toString());
 
             }
         }) {
@@ -447,10 +447,12 @@ public class LoginActivity extends AppCompatActivity{
         if (token != null && currentUser != null) {
             queue.add(stringRequest);
             //Toast.makeText(this, "Initiation", Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "sending creds " + currentPoints);
+            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                Log.d(TAG, "sending creds " + currentPoints);
 
         } else {
-            Log.d(TAG, "missing important creds");
+            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                Log.d(TAG, "missing important creds");
             Toast.makeText(this, "You are missing important credentials. Try to restart the app!", Toast.LENGTH_LONG).show();
             try{
                 if(mSharedPref.contains(SharedPreferences.TOKEN_ATTEMPTED)){
@@ -533,10 +535,6 @@ public class LoginActivity extends AppCompatActivity{
 
 
                 checkSignatureOnServer(currentSignature);
-                //Log.d("REMOVE_ME", "Include this string as a value for SIGNATURE:" + currentSignature + model + manufacturer + bootloader);
-
-                //compare signatures
-
             }
 
         } catch (Exception e) {
@@ -560,10 +558,10 @@ public class LoginActivity extends AppCompatActivity{
                     public void onResponse(String response) {
                         //Log.i("APP SIGNATURE STORED?", response);
                         if (response.contains("OK")) {
-                            Log.i(TAG, "signature " + response);
+                            //Log.i(TAG, "signature " + response);
                             mSharedPref.write(SharedPreferences.SIGNATURE, response);
                         } else {
-                            Log.i(TAG, "signature failed " + response);
+                            //Log.i(TAG, "signature failed " + response);
                             //failed, save for future
                             Toast.makeText(getApplicationContext(), "Illegal access", Toast.LENGTH_SHORT).show();
                             mSharedPref.write(SharedPreferences.SIGNATURE, response);
@@ -573,8 +571,7 @@ public class LoginActivity extends AppCompatActivity{
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i(TAG, "Signature send fail " + error.toString());
-                //Crashlytics.log(Log.ERROR, TAG, error.toString());
+
             }
         }) {
             protected Map<String, String> getParams() {
@@ -591,7 +588,8 @@ public class LoginActivity extends AppCompatActivity{
     private void sendConfirmationToServer(final String inviter_id) {
         //TODO send the token to  database.
         //Add to the user account token, app id, device id
-        Log.i(TAG, "ATTEMPTING confirmation " + inviter_id);
+        if (BuildConfig.BUILD_TYPE.equals("debug"))
+            Log.i(TAG, "ATTEMPTING confirmation " + inviter_id);
         queue = Volley.newRequestQueue(this);
         String url = mFirebaseRemoteConfig.getString("server_php") + "/apijson.php";
 
@@ -601,13 +599,15 @@ public class LoginActivity extends AppCompatActivity{
                     public void onResponse(String response) {
                         //Log.i("APP SIGNATURE STORED?", response);
                         if (response.contains("confirmation")) {
-                            Log.i(TAG, "Invitation " + response);
+                            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                                Log.i(TAG, "Invitation " + response);
                             SharedPreferences.AddCoins(getApplicationContext(), 200);
                             mSharedPref.write(SharedPreferences.INVITER, 1);
                             Snackbar.make(findViewById(android.R.id.content),
                                     R.string.invitation_confirm, Snackbar.LENGTH_LONG).show();
                         } else {
-                            Log.i(TAG, "Invitation failed " + response);
+                            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                                Log.i(TAG, "Invitation failed " + response);
                             //failed, save for future
 
                         }
@@ -615,8 +615,8 @@ public class LoginActivity extends AppCompatActivity{
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i(TAG, "Signature send fail " + error.toString());
-                //Crashlytics.log(Log.ERROR, TAG, error.toString());
+                if (BuildConfig.BUILD_TYPE.equals("debug"))
+                    Log.i(TAG, "Signature send fail " + error.toString());
             }
         }) {
             protected Map<String, String> getParams() {
@@ -658,16 +658,18 @@ public class LoginActivity extends AppCompatActivity{
         System.out.println("Current time => " + c);
 
 
-        Log.i(TAG, " " + c.getTime());
+        //Crashlytics.log(Log.ERROR, TAG, error.toString());Log.i(TAG, " " + c.getTime());
         if(mSharedPref.contains(SharedPreferences.PREVIOUS_SET)){
             String yesterday = mSharedPref.read(SharedPreferences.PREVIOUS_SET, "0");
             long prev_day = Long.parseLong(yesterday);
             long today = c.getTime();
             if(Math.abs(prev_day-today)>(1000*60*60*24)){
-                Log.i(TAG, yesterday + " ONE DAY PASSED " + c.getTime());
+                if (BuildConfig.BUILD_TYPE.equals("debug"))
+                    Log.i(TAG, yesterday + " ONE DAY PASSED " + c.getTime());
                 mSharedPref.write(SharedPreferences.NOMOREADS, false);
             }else{
-                Log.i(TAG, yesterday + " LESS THAN A DAY " + c.getTime());
+                if (BuildConfig.BUILD_TYPE.equals("debug"))
+                    Log.i(TAG, yesterday + " LESS THAN A DAY " + c.getTime());
             }
 
 

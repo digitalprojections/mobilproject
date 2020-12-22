@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Furqan</string>
     <string name="suralar">Chapters</string>
-    <string name="cont">Continue</string>
     <string name="favorites">Favourites</string>
     <string name="settings">Settings</string>
     <string name="arabic">Arabic</string>
@@ -10,14 +9,12 @@
     <string name="audiopos_stored">Audio position stored</string>
     <string name="audiopos_restored">continue playing</string>
     <string name="audio_load_fail">Failed to load! Check your network</string>
-    <string name="save">Save</string>
     <string name="shareayah">Share this and get coins</string>
     <string name="bookmark_it">Bookmark the aayah</string>
     <string name="favourite_it">Add to Favourites</string>
     <string name="banner_ad" translatable="false">ca-app-pub-3838820812386239/6533462802</string>
     <string name="russian">Russian</string>
     <string name="english">English</string>
-    <string name="app_shuts_down_now">If the app does not shut down in 3 seconds, please, make sure to clear all its data to refresh and start using the new database</string>
     <string name="surah">"Surah: "</string>
     <string name="ayah">", aayah: "</string>
     <string name="language_selected">Language Selected</string>
@@ -49,24 +46,19 @@
     <string name="audio_player_description">Notification style audio player</string>
     <string name="audio_downloaded_ready">audio is downloaded and available for playback</string>
     <string name="addmob_app_id" translatable="false">ca-app-pub-3838820812386239~2342916878</string>
-    <string name="download_surah">download the audio file</string>
-    <string name="surahAudioUnlockAd" translatable="false">ca-app-pub-3838820812386239/1790049383</string>
     <string name="unlock_the_download">Unlock the download button by watching a video</string>
-    <string name="surah_audio_available">Chapter audio is available</string>
     <string name="reload">Load</string>
     <string name="quranic_order">Quranic order</string>
     <string name="revelation_order">Revelation order</string>
     <string name="order_description_revelation">order according to the order of revelation</string>
     <string name="order_description_mushaf">order according to the order in the Mushaf</string>
     <string name="enter_a_word">enter a word</string>
-    <string name="interstitial_fullpage" translatable="false">ca-app-pub-3838820812386239/2551267023</string>
     <string name="bookmark_found">Bookmark found</string>
     <string name="chapters_not_available">Database empty. Please load some chapters first.</string>
     <string name="previous_ayah">previous aayah</string>
     <string name="next_ayah">next aayah</string>
     <string name="failed_to_load_ayah">Failed to load aayah. Try again</string>
     <string name="failure_generic">An error has occurred, try again later</string>
-    <string name="downloadaudio_title">Download Audio</string>
     <string name="messages_button_text">Messages</string>
     <string name="notification_from_author_channel" translatable="false">Muallifdan</string>
     <string name="audio_player_title">Furqon Player</string>
@@ -77,19 +69,12 @@
     <string name="earn_coins">Earn Coins</string>
     <string name="extra_title">Extra</string>
     <string name="watch_ads">Watch Ads</string>
-    <string name="share">Share</string>
     <string name="quran_kareem_title">Furqan - Quran Kareem for Android. Amazing app!</string>
     <string name="invitation_confirm">Invitation link confirmed!</string>
     <string name="coming_soon">Coming Soon!</string>
-    <string name="down_or_play"><![CDATA[<-Download | Play online->]]></string>
-    <string name="unlock_or_play"><![CDATA[<-Unlock | Play online->]]></string>
-    <string name="play_local"><![CDATA[Play local audio->]]></string>
-    <string name="downloading">downloading...</string>
-    <string name="ok">Unlock</string>
     <string name="cancel">Cancel</string>
     <string name="use_coins">Use Coins</string>
     <string name="coins">Coins</string>
-    <string name="not_enough_coins">You don`t have enough coins</string>
     <string name="available_coins">Available Coins</string>
     <string name="required_coins">Required</string>
     <string name="u_received">"You have received "</string>
@@ -102,9 +87,6 @@
     <string name="free_coin_awards_received">Thank you for your effort. You have received free coins!</string>
     <string name="do_not_show_again">Do not show again</string>
     <string name="ad_loaded_toast">Ad is ready</string>
-    <string name="you_need">"You need "</string>
-    <string name="uz_kam"></string>
-    <string name="favourites_button_description">add to favourites</string>
     <string name="audio">Audio</string>
     <string name="your_message_to_the_author">Your message to the author</string>
     <string name="send">Send</string>
@@ -122,7 +104,6 @@
     <string name="points_restored">"Points restored "</string>
     <string name="signin_request">Signin to get special rewards</string>
     <string name="noads_button_label">No ads for today</string>
-    <string name="sign_in">Sign In</string>
     <string name="memorizer">Memorize Quran</string>
     <string name="committolearn">Commit To Learn</string>
     <string name="decrease_repeat_count">decrease repeat count</string>

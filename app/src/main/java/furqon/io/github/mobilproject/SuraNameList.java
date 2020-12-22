@@ -124,7 +124,7 @@ public class SuraNameList extends AppCompatActivity {
 //        progressBarDownload = findViewById(R.id.progressBar_download);
 //        downloadButton = findViewById(R.id.button_download);
 
-        downloadManager = (DownloadManager) this.getSystemService(this.DOWNLOAD_SERVICE);
+        downloadManager = (DownloadManager) this.getSystemService(DOWNLOAD_SERVICE);
         query = new DownloadManager.Query();
 
         //trackList = new ArrayList<String>();
@@ -165,7 +165,7 @@ public class SuraNameList extends AppCompatActivity {
 
         MobileAds.initialize(this, getString(R.string.addmob_app_id));
         mInterstitialAd = new InterstitialAd(this);
-        if (BuildConfig.BUILD_TYPE == "debug") {
+        if (BuildConfig.BUILD_TYPE.equals("debug")) {
             mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
         } else {
             mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
@@ -180,7 +180,7 @@ public class SuraNameList extends AppCompatActivity {
         quranic_order_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sharedPref.write(sharedPref.displayOrder, 0);
+                sharedPref.write(SharedPreferences.displayOrder, 0);
                 quranic_order_btn.setBackgroundColor(getResources().getColor(R.color.gold));
                 revelation_order_btn.setBackgroundColor(0);
                 mAdapter.notifyDataSetChanged();
@@ -193,7 +193,7 @@ public class SuraNameList extends AppCompatActivity {
         revelation_order_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sharedPref.write(sharedPref.displayOrder, 1);
+                sharedPref.write(SharedPreferences.displayOrder, 1);
                 revelation_order_btn.setBackgroundColor(getResources().getColor(R.color.gold));
                 quranic_order_btn.setBackgroundColor(0);
                 mAdapter.notifyDataSetChanged();
@@ -294,7 +294,7 @@ public class SuraNameList extends AppCompatActivity {
 
 
     private void SetButtonStates() {
-        if (sharedPref.read(sharedPref.displayOrder, 0) == 0) {
+        if (sharedPref.read(SharedPreferences.displayOrder, 0) == 0) {
             quranic_order_btn.setBackgroundColor(getResources().getColor(R.color.gold));
             revelation_order_btn.setBackgroundColor(0);
         } else {
@@ -352,277 +352,5 @@ public class SuraNameList extends AppCompatActivity {
 
         //mInterstitialAd.show();
         super.onDestroy();
-//        if (broadcastReceiver != null) {
-//            unregisterReceiver(broadcastReceiver);
-//        }
     }
-//
-//    @Override
-//    public void EnableThis(String suraNumber) {
-////        if(NotInTheList(enabledList, suraNumber)){
-////            enabledList.add(suraNumber);
-////        }
-//    }
-//
-
-//
-//    @Override
-//    public void LoadTitlesFromServer() {
-//
-//    }
-//
-//    @Override
-//    public void insertTitle(ChapterTitleTable title) {
-//        //Log.d(TAG, "TITLE insert " + title.uzbek);
-//        titleViewModel.insert(title);
-//    }
-
-//    @Override
-//    public void MarkAsAwarded(int surah_id) {
-//        int actual_position = surah_id;
-//        for (int i = 0; i < mAdapter.getItemCount(); i++) {
-//            if (mAdapter.getTitleAt(i).chapter_id == surah_id) {
-//                actual_position = i;
-//            }
-//        }
-//        Log.e(TAG, "ACTUAL SURAH ID?" + surah_id + " " + actual_position);
-//        ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
-//        ctitle.status = "2";
-//        titleViewModel.update(ctitle);
-//    }
-//
-//    @Override
-//    public void MarkAsDownloaded(int surah_id) {
-//        if (mAdapter != null) {
-//            int actual_position = surah_id;
-//            for (int i = 0; i < mAdapter.getItemCount(); i++) {
-//                try {
-//                    if (mAdapter.getTitleAt(i).chapter_id == surah_id) {
-//                        actual_position = i;
-//                    }
-//                } catch (IndexOutOfBoundsException iobx) {
-//                    Log.e("CANNOT GET POSITION", iobx.getMessage());
-//                }
-//            }
-//            ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
-//            if (!ctitle.status.equals("3")) {
-//                ctitle.status = "3";
-//                titleViewModel.update(ctitle);
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void MarkAsDownloading(int surah_id) {
-//
-//        //mInterstitialAd.show();
-//        //TODO if quit while downloading, the progressbar is left permanently on
-//        if (mAdapter != null) {
-//            int actual_position = surah_id;
-//            for (int i = 0; i < mAdapter.getItemCount(); i++) {
-//                try {
-//                    if (mAdapter.getTitleAt(i).chapter_id == surah_id) {
-//                        actual_position = i;
-//                    }
-//                } catch (IndexOutOfBoundsException iobx) {
-//                    Log.e("CANNOT GET POSITION", iobx.getMessage());
-//                }
-//            }
-//            ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
-//            if (!ctitle.status.equals("4")) {
-//                ctitle.status = "4";
-//                titleViewModel.update(ctitle);
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void DownloadThis(String suraNumber) {
-//        suranomer = suraNumber;
-//        if (WritePermission()) {
-//            String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suraNumber + ".mp3"; // your URL here
-//            File file = new File(getExternalFilesDir(null), suraNumber + ".mp3");
-//            DownloadManager.Request request;
-//            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-//                request = new DownloadManager.Request(Uri.parse(url))
-//                        .setTitle(suraNumber)
-//                        .setDescription("Downloading")
-//                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-//                        .setDestinationUri(Uri.fromFile(file))
-//                        .setRequiresCharging(false)
-//                        .setAllowedOverMetered(true)
-//                        .setAllowedOverRoaming(true);
-//            } else {
-//                request = new DownloadManager.Request(Uri.parse(url))
-//                        .setTitle(suraNumber)
-//                        .setDescription("Downloading")
-//                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-//                        .setDestinationUri(Uri.fromFile(file))
-//                        .setAllowedOverMetered(true)
-//                        .setAllowedOverRoaming(true);
-//            }
-//
-//            Log.i(TAG, "PERMISSION OK, Download start " + url);
-//
-//
-//            downloadId = downloadManager.enqueue(request);
-//            sharedPref.write("download_" + downloadId, suranomer); //storing the download id under the right sura reference. We can use the id later to check for download status
-//            sharedPref.write("downloading_surah_" + suranomer, (int) downloadId);
-//            //MarkAsDownloading(Integer.parseInt(suranomer));
-///*
-//            query.setFilterById(DownloadManager.STATUS_FAILED|DownloadManager.STATUS_PENDING|DownloadManager.STATUS_RUNNING|DownloadManager.STATUS_SUCCESSFUL);
-//            Cursor cursor = downloadManager.query(query);
-//            if(cursor!=null){
-//                for(int i=0;i<cursor.getCount();i++){
-//                    Log.i(TAG, cursor.getInt(i) + " download " + cursor.);
-//                    cursor.moveToNext();
-//                }
-//            }
-//*/
-//        }
-//    }
-
-
-//    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-//            /*
-//            if (id == downloadId) {
-//                Log.i(TAG, "DOWNLOAD COMPLETE, Download id " + downloadId);
-//                sharedPref.write("download_"+suranomer, 0);
-//                //MoveFiles();
-//                PopulateTrackList();
-//            } else {
-//                Log.i(TAG, "DOWNLOAD FAILED, Download id " + downloadId);
-//            }*/
-//            query.setFilterById(id);
-//            Cursor cursor = downloadManager.query(query);
-//            if (cursor.moveToFirst()) {
-//                int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
-//                int status = cursor.getInt(columnIndex);
-//                int columnReason = cursor.getColumnIndex(DownloadManager.COLUMN_REASON);
-//                int reason = cursor.getInt(columnReason);
-//
-//                if (status == DownloadManager.STATUS_SUCCESSFUL) {
-//                    Log.i(TAG, "DOWNLOAD COMPLETE, Download id " + id);
-//                    //Retrieve the saved download id
-//                    String suraid = sharedPref.read("download_" + id, "0");
-//                    if (Integer.parseInt(suraid) > 0) {
-//                        sharedPref.write("download_" + id, "0");
-//                        //PopulateTrackList();
-//                    }
-//                } else if (status == DownloadManager.STATUS_FAILED) {
-//                    Toast.makeText(SuraNameList.this,
-//                            "FAILED!\n" + "reason of " + reason,
-//                            Toast.LENGTH_LONG).show();
-//                } else if (status == DownloadManager.STATUS_PAUSED) {
-//                    Toast.makeText(SuraNameList.this,
-//                            "PAUSED!\n" + "reason of " + reason,
-//                            Toast.LENGTH_LONG).show();
-//                } else if (status == DownloadManager.STATUS_PENDING) {
-//                    Toast.makeText(SuraNameList.this,
-//                            "PENDING!",
-//                            Toast.LENGTH_LONG).show();
-//                } else if (status == DownloadManager.STATUS_RUNNING) {
-//                    Toast.makeText(SuraNameList.this,
-//                            "RUNNING!",
-//                            Toast.LENGTH_LONG).show();
-//                }
-//            }
-//        }
-//    };
-
-
-//    private void PopulateTrackList() {
-//
-//        //TODO Any file that is added here is from the old version
-//        //new version supports multiple languages and uses structured folders to sort out
-//
-//        //TODO clean up wrong files
-//        String path = getExternalFilesDir(null).getAbsolutePath();
-//        Log.d(TAG, "Files: Path: " + path);
-//        File directory = new File(path);
-//        File[] files = directory.listFiles();
-//        if (files != null) {
-//            //Log.d("FILES", "Size: "+ files.length);
-//
-//            for (int i = 0; i < files.length; i++) {
-//                //Log.d("Files", "FileName:" + files[i].getName());
-//                String trackname = files[i].getName().toString();
-//                if (trackname.contains(".")) {
-//                    trackname = trackname.substring(0, trackname.lastIndexOf("."));
-//                    try {
-//                        int tt = Integer.parseInt(trackname);
-//                        trackList.add(trackname);
-//                        MarkAsDownloaded(tt);
-//                    } catch (NumberFormatException nfx) {
-//                        Log.e(TAG, "TRACKNAME ERROR " + trackname);
-//                        DeleteTheFile(files[i]);
-//                        //TODO delete the file with x-y.mp3 naming format (dual download)
-//                    }
-//                    //Log.i("TRACKNAME", trackname);
-//                }
-//            }
-//        } else {
-//            Log.d(TAG, "NULL ARRAY no files found");
-//        }
-//    }
-//
-//    private boolean WritePermission() {
-//
-//        if (ContextCompat.checkSelfPermission(this,
-//                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                != PackageManager.PERMISSION_GRANTED) {
-//
-//
-//            // No explanation needed; request the permission
-//            ActivityCompat.requestPermissions(this,
-//                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-//                    MY_PERMISSIONS_WRITE_TO_DISK);
-//
-//            // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-//            // app-defined int constant. The callback method gets the
-//            // result of the request.
-//            Log.i(TAG, "MY PERMISSION TO WRITE granted?");
-//
-//            return false;
-//        } else {
-//            // Permission has already been granted
-//            return true;
-//        }
-//    }
-//
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode,
-//                                           String[] permissions, int[] grantResults) {
-//        switch (requestCode) {
-//            case MY_PERMISSIONS_WRITE_TO_DISK: {
-//                // If request is cancelled, the result arrays are empty.
-//                if (grantResults.length > 0
-//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    // permission was granted, yay! Do the
-//                    // contacts-related task you need to do.
-//                    DownloadThis(suranomer);
-//
-//                } else {
-//                    // permission denied, boo! Disable the
-//                    // functionality that depends on this permission.
-//                    LoadTheList();
-//                }
-//                return;
-//            }
-//
-//            // other 'case' lines to check for other
-//            // permissions this app might request.
-//        }
-//    }
-//
-//    private void DeleteTheFile(File file) {
-//        try {
-//            file.delete();
-//        } catch (SecurityException sx) {
-//            Log.e(TAG, "FAILED to DELETE " + sx.getMessage());
-//        }
-//    }
 }

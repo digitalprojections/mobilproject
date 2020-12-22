@@ -69,7 +69,7 @@ public class ScrollingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(dontshow.isChecked()){
-                    sharedPref.setFirstRun(false);
+                    sharedPref.setFirstRun();
                 }
                 //Intent intent = new Intent(getApplicationContext(), AyahOfTheDay.class);
                 //startActivity(intent);

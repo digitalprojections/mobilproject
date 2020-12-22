@@ -10,7 +10,7 @@ import androidx.lifecycle.LiveData;
 import java.util.List;
 
 public class TitleViewModel extends AndroidViewModel {
-    private TitleRepository titleRepository;
+    private final TitleRepository titleRepository;
     private LiveData<List<ChapterTitleTable>> mAllTitles;
     private LiveData<List<AllTranslations>> mChapterText;
     private LiveData<List<FavouriteAyah>> mFavourites;
@@ -46,7 +46,7 @@ public class TitleViewModel extends AndroidViewModel {
         return mAllTitles;
     }
     LiveData<List<ChapterTitleTable>> getAllTitles(){
-        if((int) sharedPref.read(sharedPref.displayOrder, 0)==0){
+        if((int) sharedPref.read(SharedPreferences.displayOrder, 0)==0){
             mAllTitles = titleRepository.getAllTitlesByQuranicOrder();
         }else{
             mAllTitles = titleRepository.getAllTitlesByRevelationOrder();
@@ -71,6 +71,18 @@ public class TitleViewModel extends AndroidViewModel {
     }
     LiveData<List<SearchResult>> getSearchResults(String word){
         searchResults = titleRepository.getSearchResults(word);
+        return searchResults;
+    }
+    LiveData<List<SearchResult>> getSearchResultsUzbek(String word){
+        searchResults = titleRepository.getSearchResultsUzbek(word);
+        return searchResults;
+    }
+    LiveData<List<SearchResult>> getSearchResultsRussian(String word){
+        searchResults = titleRepository.getSearchResultsRussian(word);
+        return searchResults;
+    }
+    LiveData<List<SearchResult>> getSearchResultsArabic(String word){
+        searchResults = titleRepository.getSearchResultsArabic(word);
         return searchResults;
     }
     public void update(AyahRange ayah){

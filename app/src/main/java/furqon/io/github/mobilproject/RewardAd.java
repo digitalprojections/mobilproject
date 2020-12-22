@@ -27,7 +27,7 @@ public class RewardAd{
     private static RewardedAd mRewardedAd;
     int currentSurahNumber;
     boolean titleListCall;
-    private Context mContext;
+    private final Context mContext;
     FirebaseRemoteConfig mFireBaseConfig;
     private boolean nomore;
     RewardedAdCallback rewardedAdCallback;
@@ -42,7 +42,7 @@ public class RewardAd{
         mFireBaseConfig = FirebaseRemoteConfig.getInstance();
         //ca-app-pub-3838820812386239/1790049383
         //test ca-app-pub-3940256099942544/5224354917
-        if (BuildConfig.BUILD_TYPE == "debug") {
+        if (BuildConfig.BUILD_TYPE.equals("debug")) {
             mRewardedAd = new RewardedAd(mContext,
                     "ca-app-pub-3940256099942544/5224354917");
         } else {
@@ -57,7 +57,7 @@ public class RewardAd{
             @Override
             public void onRewardedAdLoaded() {
                 super.onRewardedAdLoaded();
-                if (BuildConfig.BUILD_TYPE == "debug") {
+                if (BuildConfig.BUILD_TYPE.equals("debug")) {
                     Toast.makeText(mContext, "TEST " + mContext.getString(R.string.ad_loaded_toast), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(mContext, R.string.ad_loaded_toast, Toast.LENGTH_SHORT).show();

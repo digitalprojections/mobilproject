@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <array name="unlock_actions">
-        <item>@string/use_coins</item>
-        <item>@string/earn_coins</item>
-        <item>@string/cancel</item>
-    </array>
     <string-array name="available_languages">
         <item>arabic</item>
         <item>english</item>

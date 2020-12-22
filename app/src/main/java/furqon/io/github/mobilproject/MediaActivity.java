@@ -222,7 +222,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             try {
                 startService(new Intent(getBaseContext(), OnClearFromService.class));
             } catch (IllegalStateException | SecurityException x) {
-                Log.e(TAG, x.getMessage());
+                if (BuildConfig.BUILD_TYPE.equals("debug"))
+                    Log.e(TAG, x.getMessage());
             }
 
         }
@@ -293,10 +294,12 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     private void getPlayMode() {
         try {
             play_mode = mSharedPref.read(SharedPreferences.PLAYMODE, "list");
-            Log.i(TAG, play_mode);
+            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                Log.i(TAG, play_mode);
         } catch (NullPointerException x) {
             play_mode = "list";
-            Log.i(TAG, play_mode + x.getMessage());
+            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                Log.i(TAG, play_mode + x.getMessage());
         }
 
         switch (play_mode) {
@@ -413,7 +416,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     void previousTrack(){
         if (suraNumber2Play != null && trackList.size() > 1) {
             for(int i=0;i<trackList.size();i++){
-                Log.e(TAG, suraNumber2Play + " " + trackList.get(i).getName());
+                if (BuildConfig.BUILD_TYPE.equals("debug"))
+                    Log.e(TAG, suraNumber2Play + " " + trackList.get(i).getName());
                 if (trackList.get(i).getName().equals(suraNumber2Play)) {
                     try{
                         suraNumber2Play = String.valueOf(Integer.parseInt(trackList.get(i - 1).getName()));
@@ -432,7 +436,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 if (trackList.get(i).getName().equals(suraNumber2Play)) {
                     try{
                         suraNumber2Play = String.valueOf(Integer.parseInt(trackList.get(i + 1).getName()));
-                        Log.e(TAG, suraNumber2Play + " - next suranumber");
+                        if (BuildConfig.BUILD_TYPE.equals("debug"))
+                            Log.e(TAG, suraNumber2Play + " - next suranumber");
                         break;
                     }catch (IndexOutOfBoundsException x){
                         if (play_mode.equals("all")) {
@@ -478,13 +483,15 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                             if (trackname.equals(suraNumber2Play)) {
                                 //filePath = new StringBuilder().append(path).append("/quran_audio/"+language + "/by_surah/" + recitation_style + "/" + reciter+"/").append(prependZero(trackname)).append(".mp3").toString();
                                 filePath = newpath + "/" + suraNumber2Play + ".mp3";
-                                Log.i(TAG, "Trackname " + trackname + " FP:" + filePath);
+                                if (BuildConfig.BUILD_TYPE.equals("debug"))
+                                    Log.i(TAG, "Trackname " + trackname + " FP:" + filePath);
                             }
                         }
                     }
                 }  //This surah is not available
 
-                Log.i(TAG, suraNumber2Play);
+                if (BuildConfig.BUILD_TYPE.equals("debug"))
+                    Log.i(TAG, suraNumber2Play);
 
                 if (TrackDownloaded(suraNumber2Play)) {
                     url = filePath;
@@ -497,14 +504,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                     url = newpath + "/" + suraNumber2Play + ".mp3";
 
                 }
-                //Log.i(TAG, "PLAY " + url);
                 if (!url.isEmpty()) {
-                    Log.i(TAG, "PLAY " + url);
-
-
-                    //resume();
-
-
                     if (mediaPlayer == null)
                         mediaPlayer = new MediaPlayer();
                     else
@@ -526,7 +526,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                         mediaPlayer.setDataSource(url);
                         mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
                     } catch (IOException x) {
-                        Log.e(TAG, "ERROR " + x.getMessage());
+                        if (BuildConfig.BUILD_TYPE.equals("debug"))
+                            Log.e(TAG, "ERROR " + x.getMessage());
                         current_track_tv.setText("");
                         Toast.makeText(this, R.string.filenotfound, Toast.LENGTH_SHORT).show();
                         mediaPlayer.release();
@@ -539,7 +540,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                     //mediaPlayer.start();
 
 //            else {
-//                Log.i(TAG, "Playing");
 //                if(isPlaying){
 //                    pause();
 //                }else{
@@ -604,14 +604,10 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                         public void run() {
                             //startTimer();
                             playCycle();
-                            //Log.i(TAG, "TIMER tick");
                         }
                     };
                     handler.postDelayed(runnable, 1000);
                 } else {
-                    //get the position of the item in tracklist
-
-                    Log.e(TAG, "PLAYING STOPPED");
                     current_track_tv.setText("");
                     isPlaying = false;
                     mp_seekBar.setProgress(0);
@@ -658,7 +654,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 mAdapter.setTitles(trackList);
                 recyclerView.setAdapter(mAdapter);
             } else {
-                Log.d(TAG, "NULL ARRAY no files found");
+                if (BuildConfig.BUILD_TYPE.equals("debug"))
+                    Log.d(TAG, "NULL ARRAY no files found");
                 mAdapter.setTitles(trackList);
                 recyclerView.setAdapter(mAdapter);
             }
@@ -668,20 +665,17 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         trackList = new ArrayList<>();
         if (tripletNotNull()) {
             String path = Objects.requireNonNull(getExternalFilesDir(null)).getAbsolutePath();
-            //Log.d(TAG, "Files Path: " + path);
+
             //TODO adding new folder structure
             newpath = path + "/quran_audio/" + language + "/by_surah/" + recitation_style + "/" + reciter;
-            Log.d(TAG, "Files Path: " + newpath);
 //            File directory = new File(path);
 //            File[] files = directory.listFiles();
 //            if (files != null) {
-//                Log.d(TAG, "MOVE FILES count: " + files.length);
 //                MoveFiles(files);
 //            }
             File directory = new File(newpath);
             File[] files = directory.listFiles();
             if (files != null) {
-                Log.e(TAG, "Files were moved successfully");
                 for (File file : files) {
                     if (file.getName().contains(".")) {
                         //String trackname = files[i].getName().substring(0, files[i].getName().lastIndexOf("."));
@@ -701,7 +695,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                                 }
                             }
                         } catch (NumberFormatException nfx) {
-                            Log.e(TAG, "TRACKNAME ERROR " + trackname);
                             DeleteTheFile(file);
                             //TODO delete the file with x-y.mp3 naming format (dual download)
                         }
@@ -726,7 +719,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 recyclerView.setAdapter(mAdapter);
             } else {
                 current_track_tv.setText(R.string.tracklist_empty_warning);
-                Log.d(TAG, "NULL ARRAY no files found");
                 mAdapter.setTitles(trackList);
                 recyclerView.setAdapter(mAdapter);
             }
@@ -739,8 +731,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     private void DeleteTheFile(File file) {
         try {
             file.delete();
-        } catch (SecurityException x) {
-            Log.e(TAG, "FAILED to DELETE " + x.getMessage());
+        } catch (SecurityException ignored) {
         }
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -749,8 +740,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         for (File file : files) {
             Path source = Paths.get(file.getPath());
             Path target = Paths.get(Objects.requireNonNull(getExternalFilesDir(null)).getAbsolutePath() + "/quran_audio/uzbek/by_surah/fl/1");
-            Log.i(TAG, "file moved from" + source);
-            Log.i(TAG, "file moved to " + target);
+
             try {
                 Files.move(source, target.resolve(source.getFileName()), StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException ignored) {
@@ -778,7 +768,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 if (surahTitles.size() != 114) {
                     //tempbut.setVisibility(View.VISIBLE);
                     if (!download_attempted) {
-                        Log.e(TAG, "LOADING LIST");
                         download_attempted = true;
                         LoadTitles();
                     }
@@ -794,7 +783,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     }
 
     private void LoadTitles() {
-        Log.i(TAG, "CLICK THE TEMP BUTTON");
         RequestQueue queue = Volley.newRequestQueue(context);
         String url = mFirebaseRemoteConfig.getString("server_php") + "/ajax_quran.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -819,7 +807,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            //Log.i("error json", "tttttttttttttttt");
                         }
 
                     }
@@ -856,7 +843,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         ) {
 
             try {
-                //Log.d(TAG, "JSONOBJECT "+ i.getString("language_no") + i.getString("uzbek"));
                 //int language_no = i.getInt("language_no");
                 int order_no = i.getInt("order_no");
                 int chapter_id = i.getInt("chapter_id");
@@ -868,50 +854,9 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 titleViewModel.insert(title);
 
 
-            } catch (Exception sx) {
-                Log.e("EXCEPTION", Objects.requireNonNull(sx.getMessage()));
+            } catch (Exception ignored) {
             }
         }
-    }
-/*
-
-    BroadcastReceiver broadcastReceiverAudio = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getExtras().getString("actionname");
-
-            switch (action) {
-                case Furqon
-                        .ACTION_PREV:
-                    OnTrackPrevious();
-                    Toast.makeText(context, "PREVCLICKED", Toast.LENGTH_SHORT).show();
-                    break;
-                case Furqon
-                        .ACTION_PLAY:
-                    if (isPlaying) {
-                        OnTrackPause();
-                    } else {
-                        OnTrackPlay();
-                    }
-
-                    break;
-                case Furqon
-                        .ACTION_NEXT:
-                    OnTrackNext();
-                    break;
-                case Furqon
-                        .ACTION_FAV:
-                    //TODO create fav action
-                    //OnTrackFavourite();
-                    break;
-            }
-        }
-    };
-*/
-
-    private void StartDownload() {
-        //DownloadThis();
-
     }
 
 
@@ -922,11 +867,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             for (Track i : trackList
             ) {
                 if (i.getName().equals(v)) {
-                    //match found
-                    Log.i("TRACK DOWNLOADED?", v + " " + i + " " + (i.getName().equals(v)));
                     retval = true;
                 }
-                //Log.i("TRACK DOWNLOADED????", String.valueOf(v) + " " + i.getName());
             }
         }
 
@@ -939,7 +881,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 //        }
 
     private void setAyahCost() {
-        Log.i(TAG, suraNumber2Download + " suraNumber");
         if (suraNumber2Download != null) {
             int ayah_number = Integer.parseInt(suraNumber2Download);
 
@@ -950,41 +891,18 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     }
 
     private boolean WritePermission() {
-        Log.i("MY PERMISSION TO WRITE", this + " granted?");
+        if (BuildConfig.BUILD_TYPE.equals("debug"))
+            Log.i("MY PERMISSION TO WRITE", this + " granted?");
         if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             // No explanation needed; request the permission
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     MY_WRITE_EXTERNAL_STORAGE);
-
-            // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-            // app-defined int constant. The callback method gets the
-            // result of the request.
-
-
-            // Permission is not granted
-            // Should we show an explanation?
-//            if (ActivityCompat.shouldShowRequestPermissionRationale(getParent(),
-//                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-//                // Show an explanation to the user *asynchronously* -- don't block
-//                // this thread waiting for the user's response! After the user
-//                // sees the explanation, try again to request the permission.
-//                Log.i(  "MY PERMISSION TO WRITE", MY_WRITE_EXTERNAL_STORAGE + " explain");
-//            } else {
-//                // No explanation needed, we can request the permission.
-//                ActivityCompat.requestPermissions(getParent(),
-//                        new String[]{Manifest.permission.READ_CONTACTS},
-//                        MY_WRITE_EXTERNAL_STORAGE);
-//                Log.i(  "MY PERMISSION TO WRITE", MY_WRITE_EXTERNAL_STORAGE + " request");
-//                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-//                // app-defined int constant. The callback method gets the
-//                // result of the request.
-//            }
-
             return false;
         } else {
             // Permission has already been granted
-            Log.i("MY PERMISSION TO WRITE", MY_WRITE_EXTERNAL_STORAGE + " already granted");
+            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                Log.i("MY PERMISSION TO WRITE", MY_WRITE_EXTERNAL_STORAGE + " already granted");
             return true;
         }
 
@@ -1047,8 +965,9 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
                 }
                 String url = mFirebaseRemoteConfig.getString("server_audio") + "/quran_audio/" + middle_path + "/" + prependZero(suraNumber2Download) + ".mp3";
-                Log.e(TAG, " DOWNLOAD path " + newpath);
-                Log.e(TAG, " DOWNLOAD url " + url);
+
+                if (BuildConfig.BUILD_TYPE.equals("debug"))
+                    Log.e(TAG, " DOWNLOAD url " + url);
                 //String url = "https://mobilproject.github.io/furqon_web_express/by_sura/" + suraNumber + ".mp3"; // your URL here
                 newpath = getExternalFilesDir(null) + "/quran_audio/" + middle_path;
                 File file = new File(newpath, suraNumber2Download + ".mp3");
@@ -1080,10 +999,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                         Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterByStatus(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING));
                         cursor.moveToFirst();
                         if (cursor.getCount() >= 1) {
-//                            for (int i = 0; i < cursor.getCount(); i++) {
-//                                Log.i(TAG, cursor.getInt(i) + " download ");
-//                                cursor.moveToNext();
-//                            }
                             Toast.makeText(getApplicationContext(), "Please, wait", Toast.LENGTH_SHORT).show();
                             mAdapter.notifyDataSetChanged();
 
@@ -1092,9 +1007,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                                 mInterstitialAd.show();
                             }
                         } else {
-                            Log.i(TAG, cursor.getCount() + " downloads ");
-                            //No downloads running. allow download
-                            Log.i("PERMISSION OK", "Download start " + suraNumber2Download);
+                            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                                Log.i("PERMISSION OK", "Download start " + suraNumber2Download);
                             downloadId = downloadManager.enqueue(request);
                             mSharedPref.write("download_" + downloadId, suraNumber2Download); //storing the download id under the right sura reference. We can use the id later to check for download status
                             mSharedPref.write("downloading_surah_" + suraNumber2Download, (int) downloadId);
@@ -1125,16 +1039,19 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                             }, 500, 1000);
                         }
                     } else {
-                        Log.i(TAG, "NO NETWORK");
+                        if (BuildConfig.BUILD_TYPE.equals("debug"))
+                            Log.i(TAG, "NO NETWORK");
                     }
                 } else {
-                    Log.i(TAG, "NO SIGNATURE");
+                    if (BuildConfig.BUILD_TYPE.equals("debug"))
+                        Log.i(TAG, "NO SIGNATURE");
                 }
 
             }  //path is incomplete
 
         } else {
-            Log.i("PERMISSION NG", "Download fail");
+            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                Log.i("PERMISSION NG", "Download fail");
         }
 
 
@@ -1147,11 +1064,13 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
             long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
 
              if (id == downloadId) {
-                Log.i(TAG, "DOWNLOAD COMPLETE Download id " + downloadId);
+                 if (BuildConfig.BUILD_TYPE.equals("debug"))
+                     Log.i(TAG, "DOWNLOAD COMPLETE Download id " + downloadId);
                 //MoveFiles();
 
             } else {
-                Log.i(TAG, "DOWNLOAD OTHER FILE Download id " + downloadId);
+                 if (BuildConfig.BUILD_TYPE.equals("debug"))
+                     Log.i(TAG, "DOWNLOAD OTHER FILE Download id " + downloadId);
             }
             query.setFilterById(id);
             Cursor cursor = downloadManager.query(query);
@@ -1162,13 +1081,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 int reason = cursor.getInt(columnReason);
 
                 if (status == DownloadManager.STATUS_SUCCESSFUL) {
-                    Log.i(TAG, "DOWNLOAD COMPLETE, Download id " + id);
-                    //Retrieve the saved download id
-//                    String suraid = mSharedPref.read("download_" + id, "0");
-//                    if (Integer.parseInt(suraid) > 0) {
-//                        mSharedPref.write("download_" + id, "0");
-//                        //PopulateTrackList();
-//                    }
+                    if (BuildConfig.BUILD_TYPE.equals("debug"))
+                        Log.i(TAG, "DOWNLOAD COMPLETE, Download id " + id);
                     if (tripletNotNull()) {
                         PopulateTrackList();
                         if (suraNumber2Download != null) {
@@ -1222,7 +1136,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                         actual_position = i;
                     }
                 } catch (IndexOutOfBoundsException iobx) {
-                    Log.e("CANNOT GET POSITION", Objects.requireNonNull(iobx.getMessage()));
+                    if (BuildConfig.BUILD_TYPE.equals("debug"))
+                        Log.e("CANNOT GET POSITION", Objects.requireNonNull(iobx.getMessage()));
                 }
             }
             ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
@@ -1241,7 +1156,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
                 actual_position = i;
             }
         }
-        Log.e(TAG, "ACTUAL SURAH ID?" + surah_id + " " + actual_position);
+        if (BuildConfig.BUILD_TYPE.equals("debug"))
+            Log.e(TAG, "ACTUAL SURAH ID?" + surah_id + " " + actual_position);
         ChapterTitleTable ctitle = mAdapter.getTitleAt(actual_position);
         if (ctitle != null) {
             ctitle.status = "2";
@@ -1292,7 +1208,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
 
     @Override
     public void SetCoinValues() {
-        Log.d("AYAHLIST:", "setcoinsvalue");
+        if (BuildConfig.BUILD_TYPE.equals("debug"))
+            Log.d("AYAHLIST:", "setcoinsvalue");
         available_coins = mSharedPref.read(mSharedPref.COINS, 0);
 
 
@@ -1318,7 +1235,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         newtotal = available_coins - val;
         mSharedPref.write(mSharedPref.COINS, newtotal);
         updateUI();
-        Log.d("AYAHLIST:", "usecoins/left " + val + "/" + newtotal);
+        if (BuildConfig.BUILD_TYPE.equals("debug"))
+            Log.d("AYAHLIST:", "usecoins/left " + val + "/" + newtotal);
         MarkAsAwarded(Integer.parseInt(suraNumber2Download));
     }
 
@@ -1337,8 +1255,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
         available_coins = mSharedPref.read(mSharedPref.COINS, 0);
         CoinDialog coinDialog = new CoinDialog(ayah_unlock_cost, available_coins);
         coinDialog.show(getSupportFragmentManager(), "TAG");
-        Log.e(TAG, "showing dialog");
-
     }
 
     public void pause() {
@@ -1359,7 +1275,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     }
 
     public void stop() {
-        Log.i("STOP", "stop");
         if (mediaPlayer != null) {
             mediaPlayer.release();
             mediaPlayer = null;
@@ -1424,8 +1339,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if(view!=null)
             ((TextView) view).setTextColor(getResources().getColor(R.color.colorPrimary));
-        Log.d(TAG, parent.getId() + " " + R.id.mp_language_spinner);
-
         switch (parent.getId()) {
             case R.id.mp_language_spinner:
                 mSharedPref.write(SharedPreferences.SELECTED_AUDIO_LANGUAGE, position);

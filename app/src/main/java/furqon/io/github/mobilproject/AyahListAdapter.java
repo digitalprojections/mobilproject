@@ -187,9 +187,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             //arabic_ayah_number.setBackgroundResource(ic_ayahsymbolayahsymbol);
 
             arabic_ayah_number.setGravity(Gravity.CENTER);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                arabic_text.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
-            }
+            arabic_text.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
 
             if (arabic_text.getParent() != null) {
                 ((ViewGroup) arabic_text.getParent()).removeView(arabic_text);

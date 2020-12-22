@@ -21,12 +21,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HTTPRequestHandler {
-    private FirebaseRemoteConfig mFirebaseRemoteConfig;
-    private Context mContext;
+    private final FirebaseRemoteConfig mFirebaseRemoteConfig;
+    private final Context mContext;
     private RequestQueue queue;
     private ArrayList<JSONObject> jsonArrayResponse;
-    private static HTTPRequestHandler INSTANCE;
-    private TitleViewModel tvm;
+    private final TitleViewModel tvm;
 
     public HTTPRequestHandler(Context context, TitleViewModel titleViewModel){
         mContext = context;
@@ -119,7 +118,7 @@ public class HTTPRequestHandler {
                 tvm.insert(title);
 
 
-            }catch (Exception sx){
+            }catch (Exception ignored){
 
             }
         }

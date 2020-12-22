@@ -385,7 +385,8 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         fav_button = holder.linearLayout3.findViewById(R.id.favouritebut);
         holder.linearLayout3.setTag(i);
 
-        Log.i("TAG FAVOURITE", ayah.verse_id + " ");
+        if (BuildConfig.BUILD_TYPE.equals("debug"))
+            Log.i("TAG FAVOURITE", ayah.verse_id + " ");
 
         if(is_fav ==1)
         {
@@ -440,7 +441,8 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         }else{
             holder.ayah_text_en.setVisibility(View.GONE);
         }
-        Log.i("SURANAME", String.valueOf(chaptername));
+        if (BuildConfig.BUILD_TYPE.equals("debug"))
+            Log.i("SURANAME", String.valueOf(chaptername));
     }
 
     private String collapseBraces(String t) {
@@ -449,7 +451,8 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         if (t.indexOf("(") > 0) {
             //all logic here
             retval = t.replace("(", "<br><font color='#517D43'>");
-            Log.i("ARRAY", retval);
+            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                Log.i("ARRAY", retval);
             retval = retval.replace(")", "</font>");
         } else {
             retval = t;

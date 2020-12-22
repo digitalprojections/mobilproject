@@ -169,7 +169,7 @@ public class SharedPreferences
     boolean isFirstRun() {
         return read(FIRSTRUN, true);
     }
-    void setFirstRun(boolean firstRun) {
-        write(FIRSTRUN, firstRun);
+    void setFirstRun() {
+        write(FIRSTRUN, false);
     }
 }

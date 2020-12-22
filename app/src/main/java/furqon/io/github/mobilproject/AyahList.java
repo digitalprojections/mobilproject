@@ -183,7 +183,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
                 suranomi = extratext.substring(0, extratext.indexOf(":"));
                 suraNumber = extratext.substring(extratext.indexOf(":") + 1);
 
-                Log.i(TAG, "LOADED SURA " + suraNumber + " " + suranomi);
+                if (BuildConfig.BUILD_TYPE.equals("debug"))
+                    Log.i(TAG, "LOADED SURA " + suraNumber + " " + suranomi);
 
                 getSupportActionBar().setTitle(suranomi);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -277,7 +278,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
 
     private void LoadSurah() {
 
-        Log.i(TAG, "CLICK clicking");
+        if (BuildConfig.BUILD_TYPE.equals("debug"))
+            Log.i(TAG, "CLICK clicking");
                 RequestQueue queue = Volley.newRequestQueue(context);
                 String url = mFirebaseRemoteConfig.getString("server_php") + "/ajax_quran.php";
 
@@ -303,13 +305,15 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
                                     populateAyahList(jsonArrayResponse);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
-                                    Log.i(TAG, "error json ttttttttttttttttt");
+                                    if (BuildConfig.BUILD_TYPE.equals("debug"))
+                                        Log.i(TAG, "error json ttttttttttttttttt");
                                 }
                             }
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.i(TAG, "ERROR RESPONSE enable reload button");
+                        if (BuildConfig.BUILD_TYPE.equals("debug"))
+                            Log.i(TAG, "ERROR RESPONSE enable reload button");
                         progressBar.setVisibility(View.INVISIBLE);
                         tempbut.setVisibility(View.VISIBLE);
 
@@ -355,7 +359,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
                         text = new ChapterTextTable(chapter_id, verse_id,0, DatabaseID, OrderNo, AyahText, "", surah_type);
                         titleViewModel.insertText(text);
                     }catch (Exception sx){
-                        Log.e(TAG, "EXCEPTION " + sx.getMessage());
+                        if (BuildConfig.BUILD_TYPE.equals("debug"))
+                            Log.e(TAG, "EXCEPTION " + sx.getMessage());
                     }
                 }
     }
@@ -363,26 +368,31 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
 
     private void PopulateTrackList() {
         String path = getExternalFilesDir(null).getAbsolutePath();
-        Log.d(TAG, "Files Path: " + path);
+        if (BuildConfig.BUILD_TYPE.equals("debug"))
+            Log.d(TAG, "Files Path: " + path);
         File directory = new File(path);
         File[] files = directory.listFiles();
         if(files!=null){
-            Log.d(TAG, "FILES Size: " + files.length);
+            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                Log.d(TAG, "FILES Size: " + files.length);
 
             for (int i = 0; i < files.length; i++)
             {
-                Log.d(TAG, "Files " + suraNumber + " FileName:" + files[i].getName());
+                if (BuildConfig.BUILD_TYPE.equals("debug"))
+                    Log.d(TAG, "Files " + suraNumber + " FileName:" + files[i].getName());
                 String trackname = files[i].getName().toString();
                 if(trackname.contains(".")){
                     trackname = trackname.substring(0, trackname.lastIndexOf("."));
                     if(!TrackDownloaded(trackname)){
                         trackList.add(trackname);
                     }
-                    Log.i(TAG, "TRACKNAME number " + trackname + " track is available");
+                    if (BuildConfig.BUILD_TYPE.equals("debug"))
+                        Log.i(TAG, "TRACKNAME number " + trackname + " track is available");
                 }
             }
         }else{
-            Log.d(TAG, "NULL ARRAY no files found");
+            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                Log.d(TAG, "NULL ARRAY no files found");
         }
     }
 
@@ -400,7 +410,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
                     public void run() {
                         //startTimer();
                         playCycle();
-                        Log.i(TAG, "TIMER tick");
+                        if (BuildConfig.BUILD_TYPE.equals("debug"))
+                            Log.i(TAG, "TIMER tick");
                     }
                 };
                 handler.postDelayed(runnable, 1000);
@@ -418,7 +429,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
             public void onChanged(@Nullable List<AllTranslations> surahText) {
                 //Toast.makeText(SuraNameList.this, "LOADING TITLES " + surahTitles.size(), Toast.LENGTH_LONG).show();
                 int sc = getSurahLength(suraNumber);
-                Log.e("SURAH AYAH COUNT", sc + " " +surahText.size());
+                if (BuildConfig.BUILD_TYPE.equals("debug"))
+                    Log.e("SURAH AYAH COUNT", sc + " " +surahText.size());
                 if(surahText.size()!=sc){
                     if(!httpresponse) {
                         if(surahText.size()!=0){
@@ -559,7 +571,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
 //        }
 
         if(!url.isEmpty()){
-            Log.i("PLAY", url);
+            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                Log.i("PLAY", url);
 
 
             //resume();
@@ -582,7 +595,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
                 try {
                     mediaPlayer.setDataSource(url);
                 } catch (IOException iox) {
-                    Log.e("ERROR", iox.getMessage());
+                    if (BuildConfig.BUILD_TYPE.equals("debug"))
+                        Log.e("ERROR", iox.getMessage());
                 }
                 progressBar.setVisibility(View.VISIBLE);
                 mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
@@ -636,7 +650,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
             ) {
                 if (i.equals(v)) {
                     //match found
-                    Log.i("TRACK DOWNLOADED?", String.valueOf(v) + " " + i + " " + (i.equals(v)));
+                    if (BuildConfig.BUILD_TYPE.equals("debug"))
+                        Log.i("TRACK DOWNLOADED?", String.valueOf(v) + " " + i + " " + (i.equals(v)));
                     retval = true;
                 }
 
@@ -647,7 +662,8 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
 
 
     public void stop() {
-        Log.i("STOP", "stop");
+        if (BuildConfig.BUILD_TYPE.equals("debug"))
+            Log.i("STOP", "stop");
         if (mediaPlayer != null) {
             mediaPlayer.release();
             mediaPlayer = null;

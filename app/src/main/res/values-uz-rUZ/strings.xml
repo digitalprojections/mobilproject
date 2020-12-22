@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">Furqon</string>
     <string name="suralar">Suralar</string>
-    <string name="cont">Davom Etish</string>
     <string name="favorites">Sara Oyatlar</string>
     <string name="settings">Sozlamalar</string>
     <string name="arabic">Arabcha</string>
@@ -12,13 +11,11 @@
     <string name="audiopos_stored">Xotiraga joylandi</string>
     <string name="audiopos_restored">davom etish</string>
     <string name="audio_load_fail">Yuklashda xatolik! Internet tarmoqqa ulanganmisiz?</string>
-    <string name="save">Yodda tut</string>
     <string name="shareayah">Ulashing va tangalarni qo`lga kiriting</string>
     <string name="bookmark_it">oyatni belgilash</string>
     <string name="favourite_it">Tanlanganlarga qo\'shish</string>
     <string name="russian">rus tilida</string>
     <string name="english">inglizcha</string>
-    <string name="app_shuts_down_now">Ilova 3 sekund ichida o\'chmasa, android sozlamalarida dasturning barcha ma\'lumotlarni o`chirib tashlang. Shunda yangi ma\'lumotlar bazasi ishga tushadi</string>
     <string name="ayah">", oyat: "</string>
     <string name="surah">"Sura: "</string>
     <string name="language_selected">Ilova tili tanlandi</string>
@@ -48,9 +45,7 @@
     <string name="audio_downloaded">Audio yuklab olindi</string>
     <string name="audio_player_description">Xabarnoma uslubidagi audio pleer</string>
     <string name="audio_downloaded_ready">audio yuklab olingan va ijro etish uchun tayyor</string>
-    <string name="download_surah">audio faylni yuklab oling</string>
     <string name="unlock_the_download">Videoni tomosha qilish orqali yuklab olish tugmasini qulfni oching</string>
-    <string name="surah_audio_available">Sura audiosi mavjud</string>
     <string name="reload">Yuklash</string>
     <string name="quranic_order">Qur\'on tartibi</string>
     <string name="revelation_order">Vahiy tartibi</string>
@@ -64,7 +59,6 @@
     <string name="failed_to_load_ayah">Oyatni yuklab bo\'lmadi. Qayta urinib ko\'ring</string>
     <string name="failure_generic">Xato yuz berdi, keyinroq qayta urinib ko\'ring</string>
     <string name="download_audio_description">Tangalarni topishning ko\'plab usullari mavjud: kunlik foydalanish, mukofotlangan reklamalarni ko\'rish yoki ilovani do`stlarga ulashish</string>
-    <string name="downloadaudio_title">Ovozni Yuklab Olish</string>
     <string name="messages_button_text">Xabarlar</string>
     <string name="audio_player_title">Mediapleer Furqan</string>
     <string name="surah_size_issue">Bo\'lim matni xatolar bilan yuklab olindi. Shu sura matnini qayta yuklab oling</string>
@@ -74,19 +68,12 @@
     <string name="earn_coins">Tangani qo`lga kiritish</string>
     <string name="extra_title">Qo\'shimcha</string>
     <string name="watch_ads">Reklamalarni ko`rish</string>
-    <string name="share">Ulashish</string>
     <string name="quran_kareem_title">Android uchun Qur\'on Karim. Ajoyib ilova!</string>
     <string name="invitation_confirm">Taklif havolasi tasdiqlandi!</string>
     <string name="coming_soon">Tez kunda!</string>
-    <string name="down_or_play"><![CDATA[<-yuklab oling | onlayn tinglang->]]></string>
-    <string name="unlock_or_play"><![CDATA[<-Qulfni ochish | onlayn tinglang-->]]></string>
-    <string name="play_local"><![CDATA[audioni tinglang->]]></string>
-    <string name="downloading">yuklab olinmoqda ...</string>
     <string name="use_coins">Tangadan foydalanish</string>
     <string name="cancel">Bekor qilish</string>
-    <string name="ok">Qulfni ochish</string>
     <string name="coins">Tanga</string>
-    <string name="not_enough_coins">Tangalar yetishmayapti</string>
     <string name="available_coins">Mavjud Tangalar</string>
     <string name="required_coins">Qiymati</string>
     <string name="u_received">"Siz "</string>
@@ -98,10 +85,7 @@
     <string name="welcome_title">Xush kelibsiz!</string>
     <string name="do_not_show_again">Boshqa ko\'rsatma</string>
     <string name="ad_loaded_toast">Reklama tayyor</string>
-    <string name="you_need">"Yana "</string>
-    <string name="uz_kam">" kam"</string>
     <string name="about_text">"Qadrli foydalanuvchi. \n\n Meni ismim Ahmad va men ushbu ilovaning muallifi, dasturchisi (programmist) hamda homiysi bo`laman. \n\n Ilovalar ichida aynan menikini tanlaganingiz uchun, sizga cheksiz minnatdorchiligimni bildiraman. “Furqon”dan muntazam ravishda foydalanishingiz, men uchun ko`p narsani bildiradi. Olloh barchamizdan rozi bo`lsin! \n\n Avvalam bor, ushbu dasturni yaratilishidan maqsad, insonlarga o`z ona tillarida, imkon qadar foydalanishga oson qilib, mavjud manbalarni jamlagan holda yetkazib bersh va shu bilan bir vaqtda uzluksizlik, tartib va to`liqlikni ta`minlashdir. Ilova har tomonlama bo`lishi va turli talablarni qondira olishini ham maqsad qilingan. Albatta bu o`ziga yarasha murakkab muammolarni hal etish va resusrslarni talab etadi. InshaAlloh, har bir ko`zlangan maqsadga erishaman. \n\n Yana shuni eslab o`tish zarurki, ilovadagi reklama orqali tushum resusrslarini ta`minlash va rivojlantirishga oz bo`lsada yordam beradi. Reklama asosan, ozmi-ko`pmi kutish zarur bo`lgan joylardagina chiqadigan qilib ishlanganligiga qaramasdan, ba`zan, bir necha sekund vaqtingizni zoe ketdi deb hisoblamaysiz degan umiddaman. Foydalanuvchilardan, agar chin dildan qiziqmasangiz, reklamani bosmaslikni so'rayman. \n\n Ilovadagi kamchilik haqida xabar bering: bztronik@gmail.com \n\n Hurmat bilan, Ahmad "</string>
-    <string name="favourites_button_description">tanlanganlarga qo`shish</string>
     <string name="audio">Audio</string>
     <string name="your_message_to_the_author">Muallifga xabar</string>
     <string name="send">yuborish</string>
@@ -118,7 +102,6 @@
     <string name="points_restored">Tanga ballari tiklandi</string>
     <string name="noads_button_label">Bugungi reklamalarni olib tashlash</string>
     <string name="write_permission_denied">Xatolik! Yozishga ruxsat beriing</string>
-    <string name="sign_in">Tizimga kirish</string>
     <string name="memorizer">Qur\'on Yodlash</string>
     <string name="decrease_repeat_count">takrorlash sonini kamaytirish</string>
     <string name="committolearn">Jazm Etish</string>

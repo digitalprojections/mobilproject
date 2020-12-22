@@ -20,15 +20,13 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
-    private ChapterTitleDatabase database;
-    private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private static final String TAG = "FIREBASE_Messages";
-    private SharedPreferences sharedPref;
+    private final SharedPreferences sharedPref;
 
     public MyFirebaseMessagingService() {
         sharedPref = SharedPreferences.getInstance();
         //Log.e("MyFirebaseMessage", "initiated");
-        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
                 .setMinimumFetchIntervalInSeconds(3600)
@@ -108,6 +106,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
     private void handleNow(RemoteMessage s){
         Log.d(TAG, "text received: " + s.getData().get("title"));
+        ChapterTitleDatabase database;
         if(s.getNotification()!=null){
             sendNotification(s.getData().get("title"), s.getNotification().getBody());
             database = ChapterTitleDatabase.getDatabase(this);
