@@ -1,5 +1,7 @@
 package furqon.io.github.mobilproject;
 
+import android.util.Log;
+
 import java.util.IllegalFormatException;
 
 /**
@@ -96,7 +98,7 @@ public class ARG {
         }catch (IllegalFormatException ignore){
 
         }
-
+        Log.d("ARG ", retVal);
         return retVal;
     }
 
@@ -111,9 +113,9 @@ public class ARG {
         try{
 
             tempVal = Integer.parseInt(suraNumber);
-            if(tempVal<9999){
+            if(tempVal<10){
                 retVal = "00"+tempVal;
-            }else if(tempVal>9999&&tempVal<99999){
+            }else if(tempVal>9&&tempVal<99){
                 retVal = "0"+tempVal;
             }else {
                 //it is higher than 99
@@ -123,5 +125,10 @@ public class ARG {
 
         }
         return retVal;
+    }
+
+    public static int getAyahNameFromReferenceName(String suraNumber2Play) {
+        int verseNumber = Integer.parseInt(suraNumber2Play) % 1000;
+        return verseNumber;
     }
 }

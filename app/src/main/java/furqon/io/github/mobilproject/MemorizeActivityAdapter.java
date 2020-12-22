@@ -134,6 +134,11 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
                         //match found
                         Log.i(TAG, "TRACK found " + suraNumber2Play + " vs " + mAyahList.indexOf(i));
                         playingTrackIndex = mAyahList.indexOf(i);
+                        if(i.audio_progress<100){
+                            MyListener myListener;
+                            myListener = (MyListener) mContext;
+                            myListener.MarkAsDownloaded(verseNumber);
+                        }
                     }
                 }
             }
@@ -186,8 +191,8 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
             translit.setVisibility(View.GONE);
             audio_file.setBackgroundResource(R.drawable.ic_audio_missing);
             arabic_text.setTextSize(30);
-            if (sharedPreferences.contains(sharedPreferences.FONTSIZE)) {
-                float fs = (float) sharedPreferences.read(sharedPreferences.FONTSIZE, 0);
+            if (sharedPreferences.contains(SharedPreferences.FONTSIZE)) {
+                float fs = (float) sharedPreferences.read(SharedPreferences.FONTSIZE, 0);
                 arabic_text.setTextSize(TypedValue.COMPLEX_UNIT_PX, fs);
             }
             arabic_text_lin_layout.setGravity(Gravity.END | Gravity.CENTER_VERTICAL | Gravity.RIGHT);

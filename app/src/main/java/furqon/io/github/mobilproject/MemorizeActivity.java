@@ -235,7 +235,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     }
                     Log.i(TAG, "DOWNLOAD COMPLETE, Download id " + id + " ayah number: " + ayahNumber2Download);
                         //PopulateTrackList();
-                    if(ayahNumber2Download.equals("0"))
+                    if(!ayahNumber2Download.equals("0"))
                         MarkAyahAsDownloaded(ayahNumber2Download);
 
 
@@ -708,6 +708,11 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         Toast.makeText(this, R.string.filenotfound, Toast.LENGTH_SHORT).show();
                         mediaPlayer.release();
                         mediaPlayer = null;
+                        int actual_position = ARG.getAyahNameFromReferenceName(suraNumber2Play);
+                        AyahRange ctitle = mAdapter.getTitleAt(actual_position);
+                        ctitle.audio_progress = 0;
+                        ayahViewModel.update(ctitle);
+                        mAdapter.notifyDataSetChanged();
                     }
                 } else {
                     final PopupWindow popupWindow = new PopupWindow(this);
@@ -955,7 +960,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         Log.i(TAG, cursor.getCount() + " downloads ");
                     } else {
                         //No downloads running. allow download
-                        Log.i(TAG, "Download start " + ayahReferenceNumber);
+                        Log.i(TAG, "Download start " + url);
                         downloadId = downloadManager.enqueue(request);
                         sharedPreferences.write("download_" + downloadId, ayahReferenceNumber); //storing the download id under the right sura reference. We can use the id later to check for download status
                         //sharedPreferences.write("downloading_surah_" + zznumber, (int) downloadId);
@@ -1017,19 +1022,17 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     Log.d(TAG, ayah_ref_name + " matches??? downloadedAyahId " + downloadedAyahId);
                     try {
                         if (mAdapter.getTitleAt(i) != null && ayah_ref_name.equals(downloadedAyahId)) {
-                            Log.d(TAG, ayah_ref_name + " matches downloadedAyahId " + downloadedAyahId);
+                            //Log.d(TAG, ayah_ref_name + " matches downloadedAyahId " + downloadedAyahId);
                             actual_position = i;
+                            AyahRange ctitle = mAdapter.getTitleAt(actual_position);
+                            //Log.d(TAG,  "CTITLE " + " index:" + actual_position + ". " + ctitle.verse_id + " - verse id, audio progress: " + ctitle.audio_progress);
+                            ctitle.audio_progress = 100;
+                            ayahViewModel.update(ctitle);
                             mAdapter.notifyDataSetChanged();
                         }
                     } catch (IndexOutOfBoundsException x) {
                         //Crashlytics.log(x.getMessage() + " - " + x.getStackTrace());
                     }
-                }
-                AyahRange ctitle = mAdapter.getTitleAt(actual_position);
-                Log.d(TAG,  "CTITLE " + " index:" + actual_position + ". " + ctitle.verse_id + " - verse id, audio progress: " + ctitle.audio_progress);
-                if (ctitle.audio_progress < 100) {
-                    ctitle.audio_progress = 100;
-                    ayahViewModel.update(ctitle);
                 }
             }
         }
