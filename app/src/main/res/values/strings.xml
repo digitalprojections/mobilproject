@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Furqan</string>
+    <string name="app_name">Quran</string>
     <string name="suralar">Chapters</string>
     <string name="favorites">Favourites</string>
     <string name="settings">Settings</string>
@@ -61,7 +61,7 @@
     <string name="failure_generic">An error has occurred, try again later</string>
     <string name="messages_button_text">Messages</string>
     <string name="notification_from_author_channel" translatable="false">Muallifdan</string>
-    <string name="audio_player_title">Furqon Player</string>
+    <string name="audio_player_title">Audio Player</string>
     <string name="surah_size_issue">Chapter text was downloaded with errors. Trying to fix</string>
     <string name="youtube_btn_title">Stay Tuned</string>
     <string name="please_watch_video">Before you can listen to the audio file, you need to download it first</string>
@@ -69,7 +69,7 @@
     <string name="earn_coins">Earn Coins</string>
     <string name="extra_title">Extra</string>
     <string name="watch_ads">Watch Ads</string>
-    <string name="quran_kareem_title">Furqan - Quran Kareem for Android. Amazing app!</string>
+    <string name="quran_kareem_title">Quran Kareem for Android. Search, Memorize and more</string>
     <string name="invitation_confirm">Invitation link confirmed!</string>
     <string name="coming_soon">Coming Soon!</string>
     <string name="cancel">Cancel</string>

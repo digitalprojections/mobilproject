@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Furqon</string>
+    <string name="app_name">Quron</string>
     <string name="suralar">Suralar</string>
     <string name="favorites">Sara Oyatlar</string>
     <string name="settings">Sozlamalar</string>
@@ -60,7 +60,7 @@
     <string name="failure_generic">Xato yuz berdi, keyinroq qayta urinib ko\'ring</string>
     <string name="download_audio_description">Tangalarni topishning ko\'plab usullari mavjud: kunlik foydalanish, mukofotlangan reklamalarni ko\'rish yoki ilovani do`stlarga ulashish</string>
     <string name="messages_button_text">Xabarlar</string>
-    <string name="audio_player_title">Mediapleer Furqan</string>
+    <string name="audio_player_title">Audiopleer</string>
     <string name="surah_size_issue">Bo\'lim matni xatolar bilan yuklab olindi. Shu sura matnini qayta yuklab oling</string>
     <string name="youtube_btn_title">Yangiliklar</string>
     <string name="please_watch_video">Ovoz faylini tinglashdan oldin, avval uni yuklab olishingiz kerak</string>
@@ -68,7 +68,7 @@
     <string name="earn_coins">Tangani qo`lga kiritish</string>
     <string name="extra_title">Qo\'shimcha</string>
     <string name="watch_ads">Reklamalarni ko`rish</string>
-    <string name="quran_kareem_title">Android uchun Qur\'on Karim. Ajoyib ilova!</string>
+    <string name="quran_kareem_title">Android uchun Qur\'on Karim. Yod olish, izlash va boqshqa foydali imkoniyatlar</string>
     <string name="invitation_confirm">Taklif havolasi tasdiqlandi!</string>
     <string name="coming_soon">Tez kunda!</string>
     <string name="use_coins">Tangadan foydalanish</string>

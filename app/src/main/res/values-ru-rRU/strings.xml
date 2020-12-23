@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Furqon</string>
+    <string name="app_name">Каран</string>
     <string name="suralar">Главы</string>
     <string name="favorites">Избранные</string>
     <string name="settings">настройки</string>
@@ -60,7 +60,7 @@
     <string name="failure_generic">Произошла ошибка, попробуйте позже</string>
     <string name="download_audio_description">Есть много способов заработать монеты: использовать ежедневно, делиться с друзьями или смотреть вознагражденную рекламу</string>
     <string name="messages_button_text">Сообщения</string>
-    <string name="audio_player_title">Аудиоплеер Фуркан</string>
+    <string name="audio_player_title">Аудиоплеер</string>
     <string name="surah_size_issue">Текст главы был загружен с ошибками. Пытаясь исправить</string>
     <string name="youtube_btn_title">Следите за обновлениями</string>
     <string name="please_watch_video">Прежде чем вы сможете прослушать аудиофайл, вам необходимо сначала загрузить его</string>
@@ -68,7 +68,7 @@
     <string name="earn_coins">Заработать монеты</string>
     <string name="extra_title">Дополнительно</string>
     <string name="watch_ads">Смотреть рекламу</string>
-    <string name="quran_kareem_title">Фуркан - Коран Карим для Android. Удивительное приложение!</string>
+    <string name="quran_kareem_title">Коран Карим для Android. Поиск, зубрилка и много другого</string>
     <string name="invitation_confirm">Пригласительная ссылка подтверждена!</string>
     <string name="coming_soon">Скоро!</string>
     <string name="use_coins">Использовать монету</string>
