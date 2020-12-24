@@ -110,4 +110,5 @@
     <string name="increase_the_value">qiymatini oshirish</string>
     <string name="no_internet">Internet aloqasi yo\'q</string>
     <string name="refresh">Qiymatlarni asliga qaytarish</string>
+    <string name="dl_queue_full">Yuklab olish uchun navbat to\'lgan</string>
 </resources>

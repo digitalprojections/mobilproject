@@ -106,18 +106,20 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
         return size;
     }
     public AyahRange getTitleAt(int position){
-        try{
-            return mAyahList.get(position);
-        }catch (IndexOutOfBoundsException iobx){
-            //throw new IndexOutOfBoundsException();
-            return null;
-        }
+
+            if (mAyahList!=null && mAyahList.size()>=position)
+                return mAyahList.get(position);
+            else
+                return null;
     }
     public void setText(List<AyahRange> ayahRanges) {
-        if(mAyahList!=null)
-            mAyahList.clear();
-        mAyahList = ayahRanges;
-        notifyDataSetChanged();
+
+            if(mAyahList!=null && ayahRanges==null){
+                mAyahList.clear();
+        }else{
+                mAyahList = ayahRanges;
+        }
+            notifyDataSetChanged();
     }
     public void setTrackList(ArrayList<Track> tracks){
         trackList = tracks;

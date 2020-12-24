@@ -209,6 +209,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         //DONE
         populateSpinner();
     }
+
     //DOWNLOAD COMPLETE OR FAILED
     private final BroadcastReceiver broadcastReceiverDownload = new BroadcastReceiver() {
 
@@ -216,6 +217,9 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         public void onReceive(Context context, Intent intent) {
             long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
             query.setFilterById(id);
+            String ayahNumber2Download = sharedPreferences.read("download_" + id, "0");
+            int ayahInt;
+            ayahInt = Integer.parseInt(ayahNumber2Download);
             Cursor cursor = downloadManager.query(query);
             if (cursor.moveToFirst()) {
                 int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
@@ -224,12 +228,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 int reason = cursor.getInt(columnReason);
 
                 if (status == DownloadManager.STATUS_SUCCESSFUL) {
-                    //Retrieve the saved download id
-                    /*
-                    there are multiple files being downloaded.
-                    */
-                    String ayahNumber2Download = sharedPreferences.read("download_" + id, "0");
-                    if (Integer.parseInt(ayahNumber2Download) > 0) {
+                    if (ayahInt > 0) {
                         sharedPreferences.write("download_" + id, "0");
                         PopulateTrackList();
                     }
@@ -237,14 +236,12 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         //PopulateTrackList();
                     if(!ayahNumber2Download.equals("0"))
                         MarkAyahAsDownloaded(ayahNumber2Download);
-
-
-
                 } else if (status == DownloadManager.STATUS_FAILED) {
                     make(coordinatorLayout,
                             "error " + reason,
                             LENGTH_LONG).show();
                     //Crashlytics.log("download error - " + reason + "->" + language + "/" + recitation_style + "/" + reciter + "/" + suraNumber2Download);
+                    MarkAsDownloadFailed(ayahInt);
                     mAdapter.notifyDataSetChanged();
                 } else if (status == DownloadManager.STATUS_PAUSED) {
                     make(coordinatorLayout,
@@ -263,6 +260,33 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         }
 
     };
+
+    private void MarkAsDownloadFailed(int ayahInt) {
+        String failedAudio = String.valueOf(ayahInt);
+        if (mAdapter != null) {
+            int actual_position = 0;
+            if (mAdapter.getItemCount() > 0) {
+                for (int i = 0; i < mAdapter.getItemCount(); i++) {
+                    String ayah_ref_name = ARG.makeAyahRefName(mAdapter.getTitleAt(i).verse_id);
+                    //Log.d(TAG, ayah_ref_name + " matches??? downloadedAyahId " + downloadedAyahId);
+                    try {
+                        if (mAdapter.getTitleAt(i) != null && failedAudio.equals(ayah_ref_name)) {
+                            //Log.d(TAG, ayah_ref_name + " matches downloadedAyahId " + downloadedAyahId);
+                            actual_position = i;
+                            AyahRange ctitle = mAdapter.getTitleAt(actual_position);
+                            //Log.d(TAG,  "CTITLE " + " index:" + actual_position + ". " + ctitle.verse_id + " - verse id, audio progress: " + ctitle.audio_progress);
+                            ctitle.audio_progress = 0;
+                            ayahViewModel.update(ctitle);
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    } catch (IndexOutOfBoundsException x) {
+                        //Crashlytics.log(x.getMessage() + " - " + x.getStackTrace());
+                    }
+                }
+            }
+        }
+    }
+
     private void populateSpinner() {
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -276,6 +300,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void setUIValues() {
+        RANGEISSHOWN = false;
         startAyahNumber = sharedPreferences.read(lastSurahIndex + "_start", "1");
         endAyahNumber = sharedPreferences.read(lastSurahIndex + "_end", "2");
         repeatOne = sharedPreferences.read("AYAH_PLAYMODE", false);
@@ -362,7 +387,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
             ayahViewModel.getAyahRange(ARG.suraNumber, startAyahNumber, endAyahNumber).observe(this, new Observer<List<AyahRange>>() {
                 @Override
                 public void onChanged(List<AyahRange> ayahRanges) {
-                    Log.d(TAG, ARG.suraNumber + " - " + startAyahNumber + " - " + endAyahNumber + " surah being called from DB " + ayahRanges.size() + " vs " + QuranMap.GetSurahLength(Integer.parseInt(ARG.suraNumber)-1));
+                    Log.d(TAG, ARG.suraNumber + " - " + startAyahNumber + " - " + endAyahNumber + " surah being called from DB " + ayahRanges.size() + " of total " + QuranMap.GetSurahLength(Integer.parseInt(ARG.suraNumber)-1));
                     //TODO display the range
                     //send to the adapter
                     if (!RANGEISSHOWN) {
@@ -710,9 +735,14 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         mediaPlayer = null;
                         int actual_position = ARG.getAyahNameFromReferenceName(suraNumber2Play);
                         AyahRange ctitle = mAdapter.getTitleAt(actual_position);
-                        ctitle.audio_progress = 0;
-                        ayahViewModel.update(ctitle);
-                        mAdapter.notifyDataSetChanged();
+                        if(ctitle!=null){
+                            ctitle.audio_progress = 0;
+                            ayahViewModel.update(ctitle);
+                            mAdapter.notifyDataSetChanged();
+                        }else{
+                            loadRange();
+                        }
+
                     }
                 } else {
                     final PopupWindow popupWindow = new PopupWindow(this);
@@ -950,8 +980,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     //query.setFilterById(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING);
                     Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterByStatus(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING));
                     cursor.moveToFirst();
-                    if (cursor.getCount() >= 1) {
-                        make(coordinatorLayout, "Please, wait", LENGTH_SHORT).show();
+                    if (cursor.getCount() >= 3) {
+                        make(coordinatorLayout, R.string.dl_queue_full, LENGTH_SHORT).show();
                         mAdapter.notifyDataSetChanged();
 
                         if (!sharedPreferences.read(SharedPreferences.NOMOREADS, false)) {
@@ -1019,9 +1049,9 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
             if (mAdapter.getItemCount() > 0) {
                 for (int i = 0; i < mAdapter.getItemCount(); i++) {
                     String ayah_ref_name = ARG.makeAyahRefName(mAdapter.getTitleAt(i).verse_id);
-                    Log.d(TAG, ayah_ref_name + " matches??? downloadedAyahId " + downloadedAyahId);
+                    //Log.d(TAG, ayah_ref_name + " matches??? downloadedAyahId " + downloadedAyahId);
                     try {
-                        if (mAdapter.getTitleAt(i) != null && ayah_ref_name.equals(downloadedAyahId)) {
+                        if (mAdapter.getTitleAt(i) != null && downloadedAyahId.equals(ayah_ref_name)) {
                             //Log.d(TAG, ayah_ref_name + " matches downloadedAyahId " + downloadedAyahId);
                             actual_position = i;
                             AyahRange ctitle = mAdapter.getTitleAt(actual_position);

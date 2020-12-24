@@ -110,4 +110,5 @@
     <string name="write_permission_denied">Ошибка! Требуется разрешение на запись</string>
     <string name="no_internet">Подключение к Интернету отсутствует</string>
     <string name="refresh">Обновить значение</string>
+    <string name="dl_queue_full">Очередь загрузок заполнена</string>
 </resources>

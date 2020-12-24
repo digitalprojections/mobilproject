@@ -113,4 +113,5 @@
     <string name="write_permission_denied">Error! Write permission required</string>
     <string name="no_internet">No Internet Connection</string>
     <string name="refresh">Refresh the values</string>
+    <string name="dl_queue_full">Download queue full</string>
 </resources>
