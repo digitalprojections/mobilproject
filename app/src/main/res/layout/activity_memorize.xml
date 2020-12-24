@@ -14,6 +14,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <TextView
+        android:id="@+id/starting_and_ending_ayats"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/choose_a_portion_of_surah_with_starting_and_ending_ayats"
+        android:textSize="12sp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -118,13 +125,22 @@
 
         <TextView
             android:id="@+id/repeat_count_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="6dp"
+            android:layout_height="101dp"
             android:layout_weight="1"
+            android:background="@drawable/ic_baseline_repeat_24"
             android:gravity="center"
+            android:maxWidth="48dp"
+            android:minHeight="48dp"
+            android:shadowColor="#F44336"
+            android:shadowDx="5"
+            android:shadowDy="5"
+            android:singleLine="true"
             android:text="10"
             android:textAlignment="center"
-            android:textSize="24sp" />
+            android:textColor="@color/gold"
+            android:textSize="36sp"
+            android:textStyle="bold" />
 
         <ImageButton
             android:id="@+id/inc_repeat"
@@ -138,15 +154,6 @@
             app:srcCompat="@drawable/ic_baseline_add_24" />
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/commit_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/memorize_custom_button"
-        android:paddingBottom="4dp"
-        android:text="@string/committolearn"
-        tools:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -169,17 +176,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="8dp" />
-
-        <ImageButton
-            android:id="@+id/previous_verse"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/memorize_custom_button"
-            android:clickable="true"
-            android:contentDescription="@string/previous_ayah"
-            android:focusable="true"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_previous" />
 
         <Space
             android:layout_width="wrap_content"
@@ -216,16 +212,6 @@
             android:layout_height="wrap_content"
             android:minWidth="8dp" />
 
-        <ImageButton
-            android:id="@+id/mute_audio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#00FFFFFF"
-            android:contentDescription="mute audio"
-            android:padding="8dp"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_baseline_volume_mute_24" />
-
     </LinearLayout>
 
     <Space
@@ -235,17 +221,11 @@
 
     <Spinner
         android:id="@+id/surah_spinner"
+        style="@android:style/Widget.DeviceDefault.Spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:entries="@array/suranames"
         android:minHeight="48dp" />
-
-    <Button
-        android:id="@+id/download_audio_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/memorize_custom_button"
-        android:text="Download Audio" />
 
     <ProgressBar
         android:id="@+id/progressBarMemorize"

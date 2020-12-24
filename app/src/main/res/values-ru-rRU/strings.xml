@@ -111,4 +111,7 @@
     <string name="no_internet">Подключение к Интернету отсутствует</string>
     <string name="refresh">Обновить значение</string>
     <string name="dl_queue_full">Очередь загрузок заполнена</string>
+    <string name="choose_a_portion_of_surah_with_starting_and_ending_ayats">Выберите отрывок суры с начальным и конечным аятами</string>
+    <string name="downloading_audio">Скачивание аудио:</string>
+    <string name="click_ayah">Скачайте аудио файлы. Нажмите на любой аят</string>
 </resources>

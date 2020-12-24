@@ -79,7 +79,7 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
         {
             holder.progressBar.setVisibility(View.VISIBLE);
 
-            if(holder.TrackDownloaded(String.valueOf(current.verse_id)))
+            if(holder.TrackDownloaded(String.valueOf(current.verse_id)) && current.audio_progress!=100)
             {
                 current.audio_progress = 100;
                 MyListener myListener;
@@ -107,7 +107,7 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
     }
     public AyahRange getTitleAt(int position){
 
-            if (mAyahList!=null && mAyahList.size()>=position)
+            if (mAyahList!=null && mAyahList.size()>=position+1)
                 return mAyahList.get(position);
             else
                 return null;

@@ -114,4 +114,7 @@
     <string name="no_internet">No Internet Connection</string>
     <string name="refresh">Refresh the values</string>
     <string name="dl_queue_full">Download queue full</string>
+    <string name="choose_a_portion_of_surah_with_starting_and_ending_ayats">Choose a portion of surah with starting and ending ayats</string>
+    <string name="downloading_audio">"Downloading ayah: "</string>
+    <string name="click_ayah">Download audio files. Click any ayah</string>
 </resources>

@@ -31,9 +31,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -78,11 +79,18 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     private Spinner suranames_spinner;
     private ImageButton playVerse;
     private ImageButton playMode;
-    private Button commitBtn;
+    ImageButton decRepeat;
+    ImageButton incRepeat;
+    ImageButton incStart;
+    ImageButton decStart;
+    ImageButton incEnd;
+    ImageButton decEnd;
     private TextView startValue;
     private TextView endValue;
     private TextView repeatValue;
     private ProgressBar progressBar;
+    TextView startendtext;
+    Animation scaler;
 
     //DATA
     private TitleViewModel ayahViewModel;
@@ -127,7 +135,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         //DONE restore the last state
         //There was a surah selected
 
-
+        scaler = AnimationUtils.loadAnimation(this, R.anim.bounce);
 
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
@@ -148,22 +156,19 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         //INITIALIZE UI ELEMENTS
         suranames_spinner = findViewById(R.id.surah_spinner);
         suranames_spinner.setOnItemSelectedListener(this);
-        Button dl_audio = findViewById(R.id.download_audio_button);
-        dl_audio.setVisibility(View.GONE);
         playVerse = findViewById(R.id.play_verse);
         playMode = findViewById(R.id.play_mode);
         ImageButton refreshBtn = findViewById(R.id.refresh_btn);
-        ImageButton decRepeat = findViewById(R.id.dec_repeat);
-        ImageButton incRepeat = findViewById(R.id.inc_repeat);
-
-        ImageButton incStart = findViewById(R.id.inc_start);
-        ImageButton decStart = findViewById(R.id.dec_start);
-        ImageButton incEnd = findViewById(R.id.inc_end);
-        ImageButton decEnd = findViewById(R.id.dec_end);
+        decRepeat = findViewById(R.id.dec_repeat);
+        incRepeat = findViewById(R.id.inc_repeat);
+        incStart = findViewById(R.id.inc_start);
+        decStart = findViewById(R.id.dec_start);
+        incEnd = findViewById(R.id.inc_end);
+        decEnd = findViewById(R.id.dec_end);
 
         coordinatorLayout = findViewById(R.id.mem_main_lin_layout);
 
-        commitBtn = findViewById(R.id.commit_btn);
+        startendtext = findViewById(R.id.starting_and_ending_ayats);
 
         startValue = findViewById(R.id.start_tv);
         endValue = findViewById(R.id.end_tv);
@@ -180,7 +185,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         progressBar.setVisibility(View.GONE);
 
         //UI ACTION
-        dl_audio.setOnClickListener(this);
         playVerse.setOnClickListener(this);
         playMode.setOnClickListener(this);
         refreshBtn.setOnClickListener(this);
@@ -190,7 +194,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         incStart.setOnClickListener(this);
         decEnd.setOnClickListener(this);
         incEnd.setOnClickListener(this);
-        commitBtn.setOnClickListener(this);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -245,7 +248,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     mAdapter.notifyDataSetChanged();
                 } else if (status == DownloadManager.STATUS_PAUSED) {
                     make(coordinatorLayout,
-                            "PAUSED!\n" + "reason of " + reason,
+                            "PAUSED!\n" + "reason of " +  reason,
                             LENGTH_LONG).show();
                 } else if (status == DownloadManager.STATUS_PENDING) {
                     make(coordinatorLayout,
@@ -307,8 +310,18 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         Log.d(TAG, lastSurahIndex + " last surah index, start:" + startAyahNumber + "-end:" + endAyahNumber);
         startValue.setText(startAyahNumber);
         endValue.setText(endAyahNumber);
-        if(sharedPreferences.contains(SharedPreferences.PREFERRED_REPEAT_COUNT))
+        if(sharedPreferences.contains(SharedPreferences.PREFERRED_REPEAT_COUNT)){
             preferredRepeatCount = sharedPreferences.read(SharedPreferences.PREFERRED_REPEAT_COUNT, "10");
+            startendtext.setVisibility(View.GONE);
+        }else{
+            startendtext.setVisibility(View.VISIBLE);
+            startendtext.startAnimation(scaler);
+            decStart.startAnimation(scaler);
+            incStart.startAnimation(scaler);
+            decEnd.startAnimation(scaler);
+            incEnd.startAnimation(scaler);
+        }
+
         repeatCountInteger = Integer.parseInt(preferredRepeatCount);
         repeatValue.setText(preferredRepeatCount);
         setPlayMode();
@@ -335,17 +348,14 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
             case R.id.inc_repeat:
                 adjustRepeat(1);
                 break;
-            case R.id.commit_btn:
-                loadRange();
-                //TODO
-                //also load all the audio files in a row
-                break;
             case R.id.play_verse:
                 if(isPlaying){
                     stop();
                 }
-                else
+                else {
+                    loadRange();
                     loadAudioFiles();
+                }
                 break;
             case R.id.play_mode:
                 repeatOne=!repeatOne;
@@ -353,9 +363,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 break;
                 case R.id.refresh_btn:
                 setUIValues();
-                break;
-            case R.id.download_audio_button:
-                //downloadTheAudioInRange();
                 break;
         }
     }
@@ -403,7 +410,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                             Log.d(TAG, "ADAPTER " + ayahRanges.size());
                             Log.d(TAG, "surah exists in database");
                             RANGEISSHOWN = true;
-                            commitBtn.setEnabled(false);
                         }
                     } else {
                         Log.d(TAG, "RANGEISSHOWN " + RANGEISSHOWN);
@@ -421,7 +427,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     @Override
                     public void onResponse(String response) {
                         progressBar.setVisibility(View.GONE);
-                        commitBtn.setEnabled(true);
                         // Convert String to json object
                         //httpresponse = true;
                         jsonArrayResponse = new ArrayList<JSONObject>();
@@ -443,8 +448,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
             public void onErrorResponse(VolleyError error) {
                 Log.i(TAG, "ERROR RESPONSE enable reload button");
                 progressBar.setVisibility(View.GONE);
-                commitBtn.setEnabled(true);
                 //tempbut.setVisibility(View.VISIBLE);
+
             }
         }) {
             protected Map<String, String> getParams() {
@@ -463,7 +468,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
         //tempbut.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
-        commitBtn.setEnabled(false);
         queue.add(stringRequest);
     }
     void populateAyahList(ArrayList<JSONObject> ayah_list){
@@ -489,7 +493,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 Log.e(TAG, "EXCEPTION " + sx.getMessage());
             }
         }
-
+        setUIValues();
     }
     private void adjustRepeat(int i) {
         int repeatCount = 0;
@@ -513,12 +517,12 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         repeatValue.setText(repeatCount1);
         sharedPreferences.write(SharedPreferences.PREFERRED_REPEAT_COUNT, repeatCount1);
         repeatCountInteger = repeatCount;
-        enableCommitButton();
+        reloadLists();
 
     }
 
-    private void enableCommitButton() {
-        commitBtn.setEnabled(true);
+    private void reloadLists() {
+        loadRange();
         RANGEISSHOWN = false;
     }
 
@@ -540,23 +544,26 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 //cant parse
             }
             if(i>0){
-                if(sVal<eVal-1){
+                if(sVal<eVal){
                     sVal+=i;
                     startValue.setText(String.valueOf(sVal));
                 }else if(sVal==0 && eVal==0){
                     sVal+=i;
                     startValue.setText(String.valueOf(sVal));
-                    eVal+=i+1;
+                    eVal+=i;
                     endValue.setText(String.valueOf(sVal));
                 }
             }else{
                 if(sVal>1){
                     sVal--;
                     startValue.setText(String.valueOf(sVal));
+                }else{
+                    //disable minus button
+
                 }
             }
             startAyahNumber = startValue.getText().toString();
-            enableCommitButton();
+            reloadLists();
         }
     void adjustHighLowEnd(int i)
     {
@@ -568,17 +575,18 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         }catch (NumberFormatException nfx){
             //cant parse
         }
-        if(i>0){
+        if(i>0 && eVal<QuranMap.GetSurahLength(lastSurahIndex)){
             eVal+=i;
             endValue.setText(String.valueOf(eVal));
         }else {
-            if(sVal+1<eVal){
+            //decrease the value
+            if(sVal<eVal && i<0){
                 eVal+=i;
                 endValue.setText(String.valueOf(eVal));
             }
         }
         endAyahNumber = endValue.getText().toString();
-        enableCommitButton();
+        reloadLists();
     }
 
     @Override
@@ -643,6 +651,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 if(repeatOne){
                     repeatCountInteger--;//minus 1
                     repeatValue.setText(String.valueOf(repeatCountInteger));
+                    repeatValue.startAnimation(scaler);
                     if(repeatCountInteger>1){
                         rv=ARG.makeAyahRefName(startAyahNumber);
                     }
@@ -655,11 +664,13 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
             }else{
                 repeatCountInteger--;//minus 1
                 repeatValue.setText(String.valueOf(repeatCountInteger));
+                repeatValue.startAnimation(scaler);
                 if(repeatCountInteger>0){
                     rv=ARG.makeAyahRefName(startAyahNumber);
                 }
 
             }
+
         }
         catch (IllegalFormatException ignored){
 
@@ -730,7 +741,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     } catch (IOException x) {
                         Log.e(TAG, "ERROR " + x.getMessage());
                         //current_track_tv.setText("");
-                        Toast.makeText(this, R.string.filenotfound, Toast.LENGTH_SHORT).show();
+                        make(coordinatorLayout, R.string.filenotfound, LENGTH_SHORT).show();
                         mediaPlayer.release();
                         mediaPlayer = null;
                         int actual_position = ARG.getAyahNameFromReferenceName(suraNumber2Play);
@@ -890,8 +901,9 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     mAdapter.setTrackList(trackList);
                 }
             } else {
-                //current_track_tv.setText(R.string.tracklist_empty_warning);
-                Log.d(TAG, "NULL ARRAY no files found");
+                Log.d(TAG, "EMPTY ARRAY no files found");
+                trackList.clear();
+                make(coordinatorLayout, R.string.click_ayah, LENGTH_SHORT).show();
             }
     }
 
@@ -908,22 +920,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
             Log.e(TAG, "FAILED to DELETE " + x.getMessage());
         }
         loadRange();
-    }
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        lastSurahIndex = position;
-        ARG.setSuraName(String.valueOf(position + 1));
-        if (sharedPreferences != null) {
-            sharedPreferences.write(SharedPreferences.SELECTED_MEMORIZING_SURAH, position);
-        }
-        mAdapter.setText(null);
-        enableCommitButton();
-        setUIValues();
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
     }
 
 
@@ -995,7 +991,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         sharedPreferences.write("download_" + downloadId, ayahReferenceNumber); //storing the download id under the right sura reference. We can use the id later to check for download status
                         //sharedPreferences.write("downloading_surah_" + zznumber, (int) downloadId);
                         mAdapter.notifyDataSetChanged();
-                        make(coordinatorLayout, "Downloading ayah: " + ayahReferenceNumber, LENGTH_SHORT).show();
+                        make(coordinatorLayout, getString(R.string.downloading_audio) + ARG.getAyahNameFromReferenceName(ayahReferenceNumber), LENGTH_SHORT).show();
                     }
                 } else {
                     Log.i(TAG, "NO NETWORK");
@@ -1110,6 +1106,24 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void OnTrackPause() {
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        lastSurahIndex = position;
+        ARG.setSuraName(String.valueOf(position + 1));
+        if (sharedPreferences != null) {
+            sharedPreferences.write(SharedPreferences.SELECTED_MEMORIZING_SURAH, position);
+        }
+        mAdapter.setText(null);
+
+        setUIValues();
+        reloadLists();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
 
     }
 }

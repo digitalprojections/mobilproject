@@ -111,4 +111,7 @@
     <string name="no_internet">Internet aloqasi yo\'q</string>
     <string name="refresh">Qiymatlarni asliga qaytarish</string>
     <string name="dl_queue_full">Yuklab olish uchun navbat to\'lgan</string>
+    <string name="choose_a_portion_of_surah_with_starting_and_ending_ayats">Oyatning boshlanishi va tugashini tanlang</string>
+    <string name="downloading_audio">Yuklanayotgan audio:</string>
+    <string name="click_ayah">Audio fayllarni yuklab oling. Ixtiyoriy oyatni bosing</string>
 </resources>
