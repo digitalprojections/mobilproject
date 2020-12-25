@@ -60,9 +60,10 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
         AyahRange current = mAyahList.get(position);
 
         String ayah_txt = current.ar_text;
+        int audio_progress = current.audio_progress;
         verse_number = String.valueOf(current.verse_id);
         sura_number = String.valueOf(current.sura_id);
-        String download_progress = Double.toString(Math.ceil(current.audio_progress));
+        String download_progress = Double.toString(Math.ceil(audio_progress));
         holder.arabic_text.setGravity(Gravity.START);
         holder.arabic_text.setText(ayah_txt);
         holder.ayah_number.setText(verse_number);
@@ -75,26 +76,33 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
             holder.arabic_text_lin_layout.setBackgroundColor(Color.parseColor("#6D03A9F4"));
         }
 
-        if(current.audio_progress>0 && current.audio_progress<100)
+        if(audio_progress>0 && audio_progress<100)
         {
             holder.progressBar.setVisibility(View.VISIBLE);
 
-            if(holder.TrackDownloaded(String.valueOf(current.verse_id)) && current.audio_progress!=100)
+            if(holder.TrackDownloaded(String.valueOf(current.verse_id)) && audio_progress!=100)
             {
+                Log.d(TAG, "DOWNLOADED ayah " + current.verse_id + " audio progress - " + audio_progress);
                 current.audio_progress = 100;
                 MyListener myListener;
                 myListener = (MyListener) mContext;
                 myListener.MarkAsDownloaded(current.verse_id);
-                Log.d(TAG, "DOWNLOADED ayah " + current.verse_id);
+                holder.progressBar.setVisibility(View.GONE);
+                holder.audio_file.setBackgroundResource(R.drawable.ic_audio_symbol);
+            }else{
+                holder.progressBar.setVisibility(View.GONE);
+                holder.audio_file.setBackgroundResource(R.drawable.ic_audio_missing);
             }
-        }else if(current.audio_progress==100){
+        }else if(audio_progress==100){
             holder.progressBar.setVisibility(View.GONE);
             holder.audio_file.setBackgroundResource(R.drawable.ic_audio_symbol);
+            Log.d(TAG, "elseif RANGE ayah " + current.verse_id + ", audio downloaded % - " + audio_progress);
         }else{
+            Log.d(TAG, "RANGE ayah " + current.verse_id + ", audio downloaded % - " + audio_progress);
             holder.progressBar.setVisibility(View.GONE);
             holder.audio_file.setBackgroundResource(R.drawable.ic_audio_missing);
         }
-        //Log.d(TAG, "RANGE ayah " + current.verse_id + ", audio downloaded % - " + current.audio_progress);
+        //
     }
 
 
@@ -114,11 +122,18 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
     }
     public void setText(List<AyahRange> ayahRanges) {
 
-            if(mAyahList!=null && ayahRanges==null){
-                mAyahList.clear();
-        }else{
+            if(mAyahList!=null) {
+                if (ayahRanges == null) {
+                    mAyahList.clear();
+                    Log.d(TAG, "1 mAyahList " + mAyahList + " in " + mAyahList.size());
+                } else {
+                    mAyahList = ayahRanges;
+                    Log.d(TAG, "2 mAyahList " + mAyahList + " in " + mAyahList.size());
+                }
+            }else{
                 mAyahList = ayahRanges;
-        }
+                Log.d(TAG, "3 mAyahList " + mAyahList + " in ");
+            }
             notifyDataSetChanged();
     }
     public void setTrackList(ArrayList<Track> tracks){
@@ -150,6 +165,7 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
             }
         }else{
             playingTrackIndex = -1;
+            notifyDataSetChanged();
         }
     }
 
