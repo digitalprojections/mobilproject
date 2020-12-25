@@ -30,6 +30,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -126,6 +129,33 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     long downloadId;
     private boolean RANGEISSHOWN;
 
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.options_menu, menu);
+        menu.getItem(0).setVisible(false);
+        menu.getItem(1).setVisible(false);
+        menu.getItem(2).setVisible(false);
+        menu.getItem(3).setVisible(false);
+        menu.getItem(4).setVisible(false);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.settings_i:
+                open_settings();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    private void open_settings() {
+        Intent intent;
+        intent = new Intent(this, furqon.io.github.mobilproject.Settings.class);
+        startActivity(intent);
+    }
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -716,11 +746,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 MarkAsPlaying(suraNumber2Play);
                 if (!url.isEmpty()) {
                     Log.i(TAG, "PLAY " + url);
-
-
-                    //resume();
-
-
                     if (mediaPlayer == null)
                         mediaPlayer = new MediaPlayer();
                     else
@@ -777,7 +802,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
     private void MarkAsPlaying(String suraNumber2Play) {
         mAdapter.markAsPlaying(suraNumber2Play);
-        mAdapter.notifyDataSetChanged();
+        //mAdapter.notifyDataSetChanged();
     }
 
     private boolean TrackDownloaded(String v) {

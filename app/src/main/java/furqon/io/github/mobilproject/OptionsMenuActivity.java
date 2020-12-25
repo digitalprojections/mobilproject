@@ -87,6 +87,7 @@ public class OptionsMenuActivity extends AppCompatActivity {
 
     }
     private void open_settings() {
+        Log.d(TAG, "SETTINGS ITEM");
         Intent intent;
         intent = new Intent(this, Settings.class);
         startActivity(intent);

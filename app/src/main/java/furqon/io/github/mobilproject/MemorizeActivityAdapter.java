@@ -123,6 +123,7 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
     }
     public void setTrackList(ArrayList<Track> tracks){
         trackList = tracks;
+        notifyDataSetChanged();
     }
 
     public void markAsPlaying(String suraNumber2Play) {
@@ -134,8 +135,11 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
                     //Log.d(TAG, "ayahlist item: " + i.verse_id);
                     if (i.verse_id == verseNumber) {
                         //match found
-                        Log.i(TAG, "TRACK found " + suraNumber2Play + " vs " + mAyahList.indexOf(i));
+                        Log.i(TAG, "PLAYING TRACK found " + suraNumber2Play + " at index " + mAyahList.indexOf(i) + " audio_progress: " + i.audio_progress);
                         playingTrackIndex = mAyahList.indexOf(i);
+                        notifyDataSetChanged();
+
+                        //Downloading
                         if(i.audio_progress<100){
                             MyListener myListener;
                             myListener = (MyListener) mContext;
@@ -171,8 +175,8 @@ public class MemorizeActivityAdapter extends RecyclerView.Adapter<MemorizeActivi
             arabic_text.setOnClickListener(this);
 
             Typeface madina;
-            if (sharedPreferences.contains(sharedPreferences.FONT)) {
-                switch (sharedPreferences.read(sharedPreferences.FONT, "")) {
+            if (sharedPreferences.contains(SharedPreferences.FONT)) {
+                switch (sharedPreferences.read(SharedPreferences.FONT, "")) {
                     case "madina":
                         madina = ResourcesCompat.getFont(mContext, R.font.maddina);
                         break;
