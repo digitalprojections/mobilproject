@@ -344,7 +344,7 @@ public class AyahOfTheDay extends AppCompatActivity {
             if (xatchup.length() > 0) {
                 Intent intent;
                 Context context = this;
-                intent = new Intent(context, AyahList.class);
+                intent = new Intent(context, AyahListActivity.class);
                 intent.putExtra("SURANAME", xatchup);
                 context.startActivity(intent);
             }

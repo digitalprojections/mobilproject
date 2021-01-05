@@ -1,11 +1,11 @@
 package furqon.io.github.mobilproject;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.os.Build;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
@@ -25,14 +25,17 @@ import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.ShortDynamicLink;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahListViewHolder> {
-    private static final String TAG = "AYAHLISTADAPTER";
+public class AyahListActivityAdapter extends RecyclerView.Adapter<AyahListActivityAdapter.AyahListViewHolder> {
+    private static final String TAG = AyahListActivityAdapter.class.getSimpleName();
     private final SharedPreferences sharedPref;
     //private final Animation ayah_close_anim;
     //private final Animation ayah_open_anim;
@@ -63,7 +66,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
     }
 
-    AyahListAdapter(Context context,    String suraname, String chapter) {
+    AyahListActivityAdapter(Context context, String suraname, String chapter) {
         sharedPref = SharedPreferences.getInstance();
 
         chapter_number = chapter;
@@ -271,18 +274,46 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     public void createDynamicLink_Basic() {
         // [START create_link_basic]
         DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
-                .setLink(Uri.parse("https://mobilproject.github.io/furqon_web_express/"))
+                .setLink(Uri.parse("https://mobilproject.github.io/furqon_web_express/?sura=" + chapter_number+"&ayah="+verse_number))
                 .setDomainUriPrefix("https://furqon.page.link")
                 // Open links with this app on Android
                 .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
                 // Open links with com.example.ios on iOS
-                .setIosParameters(new DynamicLink.IosParameters.Builder("com.example.ios").build())
+                .setIosParameters(new DynamicLink.IosParameters.Builder("https://mobilproject.github.io/furqon_web_express").build())
                 .buildDynamicLink();
 
         Uri dynamicLinkUri = dynamicLink.getUri();
         // [END create_link_basic]
-        Log.d(TAG, dynamicLink.toString() + " dynamic link");
 
+        Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                .setLongLink(Uri.parse(dynamicLinkUri.toString()))
+                .buildShortDynamicLink()
+                .addOnCompleteListener((Activity) mContext, new OnCompleteListener<ShortDynamicLink>() {
+                    @Override
+                    public void onComplete(@NonNull Task<ShortDynamicLink> task) {
+                        if (task.isSuccessful()) {
+                            // Short link created
+                            Uri shortLink = task.getResult().getShortLink();
+                            Uri flowchartLink = task.getResult().getPreviewLink();
+                            //Log.d(TAG, shortLink + " short dynamic link");
+                            Intent sendIntent = new Intent();
+                            sendIntent.setAction(Intent.ACTION_SEND);
+                            sendIntent.putExtra(Intent.EXTRA_TEXT, ayah_txt_uz + "\n(" + chaptername + ", " + verse_number + ")\nhttps://goo.gl/sXBkNt\nFurqon dasturi, Android");
+                            sendIntent.setType("text/plain");
+                            mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.shareayah)));
+                            Log.d(TAG, "manual link: " + ayah_txt_uz + "\n(" + chaptername + ", " + verse_number + ")\n"+ shortLink +"\nFurqon dasturi, Android");
+                        } else {
+                            // Error
+                            // ...
+                            Intent sendIntent = new Intent();
+                            sendIntent.setAction(Intent.ACTION_SEND);
+                            sendIntent.putExtra(Intent.EXTRA_TEXT, ayah_txt_uz + "\n(" + chaptername + ", " + verse_number + ")\nhttps://goo.gl/sXBkNt\nFurqon dasturi, Android");
+                            sendIntent.setType("text/plain");
+                            mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.shareayah)));
+                            Log.d(TAG, "manual link: " + ayah_txt_uz + "\n(" + chaptername + ", " + verse_number + ")\nhttps://goo.gl/sXBkNt\nFurqon dasturi, Android");
+                        }
+                    }
+                });
     }
 
 
@@ -290,14 +321,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
         switch (view.getId()) {
             case R.id.f_sharebut:
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, ayah_txt_uz + "\n(" + chaptername + ", " + verse_number + ")\nhttps://goo.gl/sXBkNt\nFurqon dasturi, Android");
-                sendIntent.setType("text/plain");
-                mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.shareayah)));
-                Log.d(TAG, "manual link: " + ayah_txt_uz + "\n(" + chaptername + ", " + verse_number + ")\nhttps://goo.gl/sXBkNt\nFurqon dasturi, Android");
                 createDynamicLink_Basic();
-
                 break;
             case R.id.favouritebut:
                 fav_button = ((ViewGroup) view.getParent().getParent()).findViewById(R.id.favouritebut);

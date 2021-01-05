@@ -37,7 +37,6 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.measurement.module.Analytics;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
@@ -54,14 +53,14 @@ import java.util.List;
 import java.util.Map;
 
 
-public class AyahList extends AppCompatActivity implements ManageSpecials {
+public class AyahListActivity extends AppCompatActivity implements ManageSpecials {
 
-    private static final String TAG = "AYAHLIST";
+    private static final String TAG = AyahListActivity.class.getSimpleName();
     private ArrayList<JSONObject> jsonArrayResponse;
     private ArrayList<String> trackList;
     String url; // your URL here
     private TitleViewModel titleViewModel;
-    private AyahListAdapter mAdapter;
+    private AyahListActivityAdapter mAdapter;
     MediaPlayer mediaPlayer;
     boolean download_attempted;
     final Handler delayHandler = new Handler();
@@ -197,7 +196,7 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
         recyclerView = findViewById(R.id.chapter_scroll);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mAdapter = new AyahListAdapter(this, suranomi, suraNumber);
+        mAdapter = new AyahListActivityAdapter(this, suranomi, suraNumber);
         recyclerView.setAdapter(mAdapter);
         LoadTheList();
         if (BuildConfig.BUILD_TYPE.equals("debug"))

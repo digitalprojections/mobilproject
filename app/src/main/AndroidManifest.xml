@@ -96,7 +96,7 @@
             android:name=".Settings"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".AyahList"
+            android:name=".AyahListActivity"
             android:parentActivityName=".SuraNameList">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />

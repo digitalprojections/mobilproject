@@ -150,7 +150,7 @@ public class AudioService extends Service {
             notificationManagerCompat = NotificationManagerCompat.from(context);
             MediaSessionCompat mediaSessionCompat = new MediaSessionCompat(context, "tag");
 
-            Intent ayahlistIntent = new Intent(getApplicationContext(), AyahList.class);
+            Intent ayahlistIntent = new Intent(getApplicationContext(), AyahListActivity.class);
             ayahlistIntent.putExtra("SURANAME", suranomi + ":" + suraNumber);
             PendingIntent ayahlistPending = PendingIntent.getActivity(this, 0, ayahlistIntent, 0);
 

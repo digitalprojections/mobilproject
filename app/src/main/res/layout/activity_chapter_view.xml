@@ -9,7 +9,7 @@
     android:animateLayoutChanges="true"
     android:background="@color/colorPrimary"
     android:foregroundGravity="center_horizontal"
-    tools:context=".AyahList">
+    tools:context=".AyahListActivity">
 
 
     <Button

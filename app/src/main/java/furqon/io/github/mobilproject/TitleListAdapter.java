@@ -1,20 +1,15 @@
 package furqon.io.github.mobilproject;
 
-import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -261,7 +256,7 @@ public class TitleListAdapter extends RecyclerView.Adapter<TitleListAdapter.Sura
 
             Log.d("CLICK", suranomer + " " + position);
             Intent intent;
-            intent = new Intent(mContext, AyahList.class);
+            intent = new Intent(mContext, AyahListActivity.class);
             intent.putExtra("SURANAME", suranomi + ":" + suranomer);
             mContext.startActivity(intent);
 
