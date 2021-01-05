@@ -114,12 +114,6 @@ public class OptionsMenuActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), R.string.coming_soon, Toast.LENGTH_SHORT).show();
     }
 
-    private void open_earn_coins() {
-        //Toast.makeText(getApplicationContext(), R.string.coming_soon, Toast.LENGTH_SHORT).show();
-        Intent intent;
-        intent = new Intent(this, EarnCoinsActivity.class);
-        startActivity(intent);
-    }
     private void open_about() {
         Intent intent = new Intent(this, AboutActivity.class);
         //intent.setData(Uri.parse(mFirebaseRemoteConfig.getString("youtube_video")));

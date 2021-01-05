@@ -83,7 +83,7 @@ import furqon.io.github.mobilproject.Services.OnClearFromService;
 import static furqon.io.github.mobilproject.BuildConfig.*;
 import static java.util.Collections.*;
 
-public class MediaActivity extends AppCompatActivity implements MyListener, ManageCoins, Playable, AdapterView.OnItemSelectedListener, View.OnClickListener, SetSuraNumber, ManageDownloadIconState {
+public class MediaActivity extends AppCompatActivity implements MyListener, Playable, AdapterView.OnItemSelectedListener, View.OnClickListener, SetSuraNumber, ManageDownloadIconState {
     private static final int MY_WRITE_EXTERNAL_STORAGE = 101;
     private static final String TAG = MediaActivity.class.getSimpleName();
 
@@ -1205,57 +1205,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Mana
     }
 
 
-
-    @Override
-    public void SetCoinValues() {
-        if (BuildConfig.BUILD_TYPE.equals("debug"))
-            Log.d("AYAHLIST:", "setcoinsvalue");
-        available_coins = mSharedPref.read(mSharedPref.COINS, 0);
-
-
-
-        //int unlock_cost = Integer.parseInt();
-        //int total_coins = Integer.parseInt(mycoins) - unlock_cost;
-
-//        if(coins_txt!=null){
-//            cost_txt.setText("0");
-//            coins_txt.setText(mycoins);
-//        }else{
-//            TextView cost_txt = findViewById(R.id.required_value_textView);
-//            TextView coins_txt = findViewById(R.id.exchange_coins_textView);
-//            cost_txt.setText(ayah_unlock_cost);
-//            coins_txt.setText(mycoins);
-//        }
-    }
-
-    @Override
-    public void UseCoins(int val) {
-        int available_coins = mSharedPref.read(mSharedPref.COINS, 0);
-        int newtotal;
-        newtotal = available_coins - val;
-        mSharedPref.write(mSharedPref.COINS, newtotal);
-        updateUI();
-        if (BuildConfig.BUILD_TYPE.equals("debug"))
-            Log.d("AYAHLIST:", "usecoins/left " + val + "/" + newtotal);
-        MarkAsAwarded(Integer.parseInt(suraNumber2Download));
-    }
-
-    @Override
-    public void EarnCoins() {
-        Intent intent;
-        intent = new Intent(context, EarnCoinsActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
-    public void ShowCoinAlert(String s) {
-        suraNumber2Download = s;
-        SetCoinValues();
-        setAyahCost();
-        available_coins = mSharedPref.read(mSharedPref.COINS, 0);
-        CoinDialog coinDialog = new CoinDialog(ayah_unlock_cost, available_coins);
-        coinDialog.show(getSupportFragmentManager(), "TAG");
-    }
 
     public void pause() {
         if (isPlaying) {

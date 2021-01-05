@@ -56,7 +56,7 @@
     <string name="chapters_not_available">Ma\'lumotlar bazasi bo\'sh. Iltimos, avval birorta surani yuklang.</string>
     <string name="previous_ayah">avvalgi oyat</string>
     <string name="next_ayah">keyingi oyat</string>
-    <string name="failed_to_load_ayah">Oyatni yuklab bo\'lmadi. Qayta urinib ko\'ring</string>
+    <string name="failed_to_load_ayah">Oyat yuklanmoqda, iltimos, kuting</string>
     <string name="failure_generic">Xato yuz berdi, keyinroq qayta urinib ko\'ring</string>
     <string name="download_audio_description">Tangalarni topishning ko\'plab usullari mavjud: kunlik foydalanish, mukofotlangan reklamalarni ko\'rish yoki ilovani do`stlarga ulashish</string>
     <string name="messages_button_text">Xabarlar</string>
@@ -65,19 +65,13 @@
     <string name="youtube_btn_title">Yangiliklar</string>
     <string name="please_watch_video">Ovoz faylini tinglashdan oldin, avval uni yuklab olishingiz kerak</string>
     <string name="audio_download">Ovozni yuklab olish tartibi</string>
-    <string name="earn_coins">Tangani qo`lga kiritish</string>
     <string name="extra_title">Qo\'shimcha</string>
     <string name="watch_ads">Reklamalarni ko`rish</string>
     <string name="quran_kareem_title">Android uchun Qur\'on Karim. Yod olish, izlash va boqshqa foydali imkoniyatlar</string>
     <string name="invitation_confirm">Taklif havolasi tasdiqlandi!</string>
     <string name="coming_soon">Tez kunda!</string>
-    <string name="use_coins">Tangadan foydalanish</string>
     <string name="cancel">Bekor qilish</string>
-    <string name="coins">Tanga</string>
-    <string name="available_coins">Mavjud Tangalar</string>
-    <string name="required_coins">Qiymati</string>
     <string name="u_received">"Siz "</string>
-    <string name="_coins">" tanga oldingiz"</string>
     <string name="free_coin_awards">Faol foydalaning va tangalarni oling</string>
     <string name="best_user_awards">Eng yaxshi foydalanuvchi mukofotlari</string>
     <string name="chat_btn_title">Muloqot</string>
@@ -97,7 +91,6 @@
     <string name="choose_font">Qur\'on shriftini tanlang</string>
     <string name="filenotfound">Fayl topilmadi</string>
     <string name="tracklist_empty_warning">Avval audio yuklab oling!</string>
-    <string name="visit_for_coins">Siz har kuni ilovaga tashrif buyurib ham tangalar orttirishingiz mumkin</string>
     <string name="signin_request">Maxsus mukofot olish uchun \"Sign in\" tugmasi orqali tizimga kiring</string>
     <string name="points_restored">Tanga ballari tiklandi</string>
     <string name="noads_button_label">Bugungi reklamalarni olib tashlash</string>

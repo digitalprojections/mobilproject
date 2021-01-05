@@ -179,12 +179,6 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
     }
 
 
-    private void open_extraActivities() {
-        Intent intent;
-        intent = new Intent(this, ExtraActivity.class);
-        startActivity(intent);
-    }
-
 
 
 

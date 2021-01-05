@@ -56,7 +56,7 @@
     <string name="chapters_not_available">База данных пуста. Пожалуйста, сначала загрузите несколько глав.</string>
     <string name="previous_ayah">предыдущий аят</string>
     <string name="next_ayah">следующий аят</string>
-    <string name="failed_to_load_ayah">Не удалось загрузить аят. Попробуйте еще раз</string>
+    <string name="failed_to_load_ayah">Загрузка аята, подождите пожалуйста</string>
     <string name="failure_generic">Произошла ошибка, попробуйте позже</string>
     <string name="download_audio_description">Есть много способов заработать монеты: использовать ежедневно, делиться с друзьями или смотреть вознагражденную рекламу</string>
     <string name="messages_button_text">Сообщения</string>
@@ -65,19 +65,13 @@
     <string name="youtube_btn_title">Следите за обновлениями</string>
     <string name="please_watch_video">Прежде чем вы сможете прослушать аудиофайл, вам необходимо сначала загрузить его</string>
     <string name="audio_download">Скачать аудио</string>
-    <string name="earn_coins">Заработать монеты</string>
     <string name="extra_title">Дополнительно</string>
     <string name="watch_ads">Смотреть рекламу</string>
     <string name="quran_kareem_title">Коран Карим для Android. Поиск, зубрилка и много другого</string>
     <string name="invitation_confirm">Пригласительная ссылка подтверждена!</string>
     <string name="coming_soon">Скоро!</string>
-    <string name="use_coins">Использовать монету</string>
     <string name="cancel">Отмена</string>
-    <string name="coins">Монеты</string>
-    <string name="available_coins">Доступные монеты</string>
-    <string name="required_coins">Необходимо</string>
     <string name="u_received">"Вы получили "</string>
-    <string name="_coins">" монет"</string>
     <string name="free_coin_awards">Используй активно и получай монеты</string>
     <string name="best_user_awards">Награды за лучший пользователь</string>
     <string name="chat_btn_title">связь</string>
@@ -97,7 +91,6 @@
     <string name="choose_font">Выберите шрифт</string>
     <string name="filenotfound">Файл не найден</string>
     <string name="tracklist_empty_warning">Сначала скачайте аудио!</string>
-    <string name="visit_for_coins">Вы также можете зарабатывать монеты, посещая приложение каждый день</string>
     <string name="points_restored">Очки восстановлены</string>
     <string name="signin_request">Войдите, чтобы получить специальные награды</string>
     <string name="noads_button_label">Убрать рекламу на сегодня</string>

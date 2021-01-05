@@ -1,6 +1,7 @@
 package furqon.io.github.mobilproject;
 
 import android.app.ActivityManager;
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -20,14 +21,30 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 public class AyahOfTheDayActivity extends AppCompatActivity {
     private static final String TAG = AyahOfTheDayActivity.class.getSimpleName();
@@ -63,6 +80,10 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
     Animation fabopen, fabclose, scaler;
     private SharedPreferences sharedPref;
     private Context mContext;
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
+    private ArrayList<JSONObject> jsonArrayResponse;
+    private boolean httpresponse;
+
 
     public AyahOfTheDayActivity() {
         sharedPref = SharedPreferences.getInstance();
@@ -74,14 +95,16 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ayah_of_the_day);
         mContext = this;
-
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setMinimumFetchIntervalInSeconds(3600)
+                .build();
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
         //mDatabase = DatabaseAccess.getInstance(getApplicationContext());
 //        if (!mDatabase.isOpen()) {
 //            mDatabase.open();
 //        }
         viewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
-
-
 
         pbar = findViewById(R.id.progBar);
         uztxt = findViewById(R.id.uztxt);
@@ -312,67 +335,7 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
         }
 
     }
-    private void checkForDynamicLink() {
-        if (BuildConfig.BUILD_TYPE.equals("debug"))
-            Log.i(TAG, "Dynamic LINK CHECKING");
-        FirebaseDynamicLinks.getInstance()
-                .getDynamicLink(getIntent())
-                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
-                    @Override
-                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
-                        // Get deep link from result (may be null if no link is found)
-                        Uri deepLink = null;
-                        if (pendingDynamicLinkData != null) {
 
-                            deepLink = pendingDynamicLinkData.getLink();
-                            String inviter_id = deepLink.getQueryParameter("user_id");
-
-                            if (BuildConfig.BUILD_TYPE.equals("debug"))
-                                Log.i(TAG, "Dynamic LINK FOUND " + inviter_id);
-                                pendingDynamicLinkData = null;
-
-//                                //Send confirmation
-//                                if (mSharedPref.read(SharedPreferences.INVITER, 0) == 0 && mSharedPref.read(SharedPreferences.INVITER_ID, "").isEmpty()) {
-//                                    //Initial thanking.
-//                                    //both inviter and its ID are empty
-//                                    //simply store if not logged in
-//                                    if(currentUser.getEmail().isEmpty()){
-//                                        mSharedPref.write(SharedPreferences.INVITER_ID, inviter_id);
-//                                    }
-//                                    else{
-//                                        mSharedPref.write(SharedPreferences.INVITER_ID, inviter_id);
-//                                        sendConfirmationToServer(inviter_id);
-//                                    }-
-//                                } else if(mSharedPref.read(SharedPreferences.INVITER, 0) == 0 && !mSharedPref.read(SharedPreferences.INVITER_ID, "").isEmpty()){
-//                                    //retry thanking, if the same person is inviting.
-//                                    //user can not thank more than one inviter
-//                                    if(mSharedPref.read(SharedPreferences.INVITER_ID, "")==inviter_id)
-//                                        sendConfirmationToServer(inviter_id);
-//                                }
-                            } else {
-                            if (BuildConfig.BUILD_TYPE.equals("debug"))
-                                Log.i(TAG, "Can not use the dlink");
-
-                            }
-
-
-                        // Handle the deep link. For example, open the linked
-                        // content, or apply promotional credit to the user's
-                        // account.
-                        // ...
-                        // ...
-                    }
-                })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        if (BuildConfig.BUILD_TYPE.equals("debug"))
-                            Log.w(TAG, "getDynamicLink:onFailure", e);
-                    }
-                });
-        //sendConfirmationToServer("b4sGS2mH92RIv8bTJnomGzH9IDp1");
-        //CheckRC();
-    }
     @Override
     protected void onStop() {
         super.onStop();
@@ -495,7 +458,7 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
     private void ShowRandomAyah(List<AllTranslations> allTranslations) {
 
         if (BuildConfig.BUILD_TYPE.equals("debug"))
-            Log.d("RANDOM SURAH AND AYAH", random_surah + " is surah " + random_ayah);
+            Log.d(TAG, random_surah + " is surah " + random_ayah);
         try{
             suraname = QuranMap.SURAHNAMES[random_surah-1];//DONE fix it to the actual suraname
             String randomayahreference = getString(R.string.surah) + " " + random_surah + " " + suraname + getString(R.string.ayah) + random_ayah;
@@ -509,22 +472,20 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
 
         }catch (IndexOutOfBoundsException iobx) {
             ayah_text.setText(R.string.failed_to_load_ayah);
+            if(QuranMap.GetSurahLength(random_surah)>=random_ayah){
+                //the chapter may not exist
+                LoadSurah();
+            }
         }catch (Exception x){
             Toast.makeText(this, R.string.failure_generic, Toast.LENGTH_SHORT).show();
         }
-
-
-
-
-
-
     }
 
     private void SetFavouriteIconState() {
         if(allTranslationsList!=null){
             int is_fav = allTranslationsList.get(random_ayah-1).favourite;
             if (BuildConfig.BUILD_TYPE.equals("debug"))
-                Log.d(TAG, is_fav + " is fav");
+                Log.d(TAG, "fav state is " + is_fav);
             if(is_fav!=0){
                 fav_btn.setImageResource(R.drawable.ic_favorite_black_24dp);
                 fav_btn.setTag("1");
@@ -533,7 +494,90 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
                 fav_btn.setTag("0");
             }
         }
+    }
+    private void LoadSurah() {
 
+        if (BuildConfig.BUILD_TYPE.equals("debug"))
+            Log.i(TAG, "CLICK clicking");
+        RequestQueue queue = Volley.newRequestQueue(mContext);
+        String url = mFirebaseRemoteConfig.getString("server_php") + "/ajax_quran.php";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Convert String to json object
+                        pbar.setVisibility(View.GONE);
+                        httpresponse = true;
+                        jsonArrayResponse = new ArrayList<JSONObject>();
+
+                        try {
+                            JSONArray jsonArray = new JSONArray(response);
+                            for (int i=0; i<jsonArray.length();i++)
+                            {
+                                JSONObject object = new JSONObject(jsonArray.getString(i));
+                                jsonArrayResponse.add(object);
+                            }
+                            //PASS to SPINNER
+                            //load auction names and available lot/bid count
+                            populateAyahList(jsonArrayResponse);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            if (BuildConfig.BUILD_TYPE.equals("debug"))
+                                Log.i(TAG, "error json ttttttttttttttttt");
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (BuildConfig.BUILD_TYPE.equals("debug"))
+                    Log.i(TAG, "ERROR RESPONSE enable reload button");
+                pbar.setVisibility(View.GONE);
+            }
+        }) {
+            protected Map<String, String> getParams() {
+                Map<String, String> MyData = new HashMap<String, String>();
+                MyData.put("action", "izohsiz_text_obj"); //Add the data you'd like to send to the server.
+                MyData.put("database_id", "1, 120, 59, 79");
+                MyData.put("surah_id", String.valueOf(random_surah));
+                //https://inventivesolutionste.ipage.com/ajax_quran.php
+                //POST
+                //action:names_as_objects
+                //language_id:1
+                return MyData;
+            }
+        };
+        pbar.setVisibility(View.VISIBLE);
+        queue.add(stringRequest);
+    }
+
+    void populateAyahList(ArrayList<JSONObject> auclist){
+
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(, android.R.layout.simple_spinner_item, auclist);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //spinner.setAdapter(adapter);
+        ChapterTextTable text;
+
+        for (JSONObject i:auclist
+        ) {
+
+            try{
+                //"ID":"31206","VerseID":"7","AyahText":"صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ","DatabaseID":"1","SuraID":"1","OrderNo":"5","SuraType":"Meccan","Note":null
+                //Log.d("JSONOBJECT", i.toString());
+                int verse_id = i.getInt("VerseID");
+                int DatabaseID = i.getInt("DatabaseID");
+                int chapter_id = i.getInt("SuraID");
+                int OrderNo = i.getInt("OrderNo");
+                String surah_type = i.getString("SuraType");
+                String AyahText = i.getString("AyahText");
+                //int sura_id, int verse_id, int favourite, int language_id, String ayah_text, String surah_type, int order_no, String comment, int read_count, int shared_count, int audio_position
+                text = new ChapterTextTable(chapter_id, verse_id,0, DatabaseID, OrderNo, AyahText, "", surah_type);
+                viewModel.insertText(text);
+            }catch (Exception sx){
+                if (BuildConfig.BUILD_TYPE.equals("debug"))
+                    Log.e(TAG, "EXCEPTION " + sx.getMessage());
+            }
+        }
     }
 
     private void animateFabs() {

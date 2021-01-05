@@ -57,7 +57,7 @@
     <string name="chapters_not_available">Database empty. Please load some chapters first.</string>
     <string name="previous_ayah">previous aayah</string>
     <string name="next_ayah">next aayah</string>
-    <string name="failed_to_load_ayah">Failed to load aayah. Try again</string>
+    <string name="failed_to_load_ayah">Loading ayah, wait please</string>
     <string name="failure_generic">An error has occurred, try again later</string>
     <string name="messages_button_text">Messages</string>
     <string name="notification_from_author_channel" translatable="false">Muallifdan</string>
@@ -66,19 +66,13 @@
     <string name="youtube_btn_title">Stay Tuned</string>
     <string name="please_watch_video">Before you can listen to the audio file, you need to download it first</string>
     <string name="audio_download">How to download the audio files</string>
-    <string name="earn_coins">Earn Coins</string>
     <string name="extra_title">Extra</string>
     <string name="watch_ads">Watch Ads</string>
     <string name="quran_kareem_title">Quran Kareem for Android. Search, Memorize and more</string>
     <string name="invitation_confirm">Invitation link confirmed!</string>
     <string name="coming_soon">Coming Soon!</string>
     <string name="cancel">Cancel</string>
-    <string name="use_coins">Use Coins</string>
-    <string name="coins">Coins</string>
-    <string name="available_coins">Available Coins</string>
-    <string name="required_coins">Required</string>
     <string name="u_received">"You have received "</string>
-    <string name="_coins">" coins"</string>
     <string name="download_audio_description">There are many ways to earn coins: <br />using daily, <br />sharing to fiends <br />or watching rewarded ads</string>
     <string name="free_coin_awards">Use actively and get coins</string>
     <string name="best_user_awards">Best User Awards</string>
@@ -100,7 +94,6 @@
     <string name="choose_font">Choose Quran font</string>
     <string name="filenotfound">File not found</string>
     <string name="tracklist_empty_warning">Download some audio first!</string>
-    <string name="visit_for_coins">You can also earn coins by visiting the app everyday</string>
     <string name="points_restored">"Points restored "</string>
     <string name="signin_request">Signin to get special rewards</string>
     <string name="noads_button_label">No ads for today</string>

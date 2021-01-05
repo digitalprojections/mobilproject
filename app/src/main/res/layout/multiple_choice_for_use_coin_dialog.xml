@@ -14,16 +14,6 @@
             android:background="@color/colorPrimary">
 
             <TextView
-                android:id="@+id/textView9"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/required_coins"
-                android:textAlignment="center"
-                android:textColor="@color/colorPrimaryDark" />
-
-            <TextView
                 android:id="@+id/required_value_textView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -38,16 +28,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/colorPrimary">
-
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/available_coins"
-                android:textAlignment="center"
-                android:textColor="@color/colorPrimaryDark" />
 
             <TextView
                 android:id="@+id/exchange_coins_textView"

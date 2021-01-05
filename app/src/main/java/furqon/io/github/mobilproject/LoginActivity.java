@@ -205,15 +205,8 @@ public class LoginActivity extends AppCompatActivity{
             }
         });
 
-        if (mSharedPref.isFirstRun()) {
-            Intent intent = new Intent(this, ScrollingActivity.class);
-            startActivity(intent);
-
-        } else {
 
             CheckInviterThanked();
-        }
-
 
 
 

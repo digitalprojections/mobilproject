@@ -65,7 +65,6 @@ public class SharedPreferences
         int existingCoins = getInstance().read(getInstance().COINS, 0);
         int totalCoins = existingCoins + coins;
         getInstance().write(getInstance().COINS, totalCoins);
-        String mes = R.string.u_received + String.valueOf(totalCoins) + R.string._coins;
         Toast.makeText(mContext, "+" + coins, Toast.LENGTH_LONG).show();
     }
 
