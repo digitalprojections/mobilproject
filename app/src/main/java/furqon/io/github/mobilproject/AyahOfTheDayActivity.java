@@ -1,5 +1,6 @@
 package furqon.io.github.mobilproject;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Notification;
 import android.content.Context;
@@ -27,12 +28,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
+import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
@@ -215,11 +220,13 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 share_btn.startAnimation(scaler);
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, ayah_text.getText() + "\n(" + suraname + ", " + (random_ayah-1) + ")\nhttps://goo.gl/sXBkNt\nFurqon, Android\n(" + getApplicationContext().getResources().getText(R.string.shareayah) + ")");
-                sendIntent.setType("text/plain");
-                startActivity(Intent.createChooser(sendIntent, getApplicationContext().getResources().getText(R.string.shareayah)));
+//                Intent sendIntent = new Intent();
+//                sendIntent.setAction(Intent.ACTION_SEND);
+//                sendIntent.putExtra(Intent.EXTRA_TEXT, ayah_text.getText() + "\n(" + suraname + ", " + (random_ayah-1) + ")\nhttps://goo.gl/sXBkNt\nQuran Kareem, Android\n(" + getApplicationContext().getResources().getText(R.string.shareayah) + ")");
+//                sendIntent.putExtra(Intent.EXTRA_TEXT, ayah_text.getText() + "\n(" + suraname + ", " + random_ayah + ")\n"+shortLink+"\n"+ mContext.getResources().getText(R.string.seeTranslations));
+//                sendIntent.setType("text/plain");
+//                startActivity(Intent.createChooser(sendIntent, getApplicationContext().getResources().getText(R.string.shareayah)));
+                createDynamicLink_Basic();
             }
         });
         //
@@ -318,7 +325,50 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
                     }
                 });
     }
+    public void createDynamicLink_Basic() {
+        // [START create_link_basic]
+        DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                .setLink(Uri.parse("https://mobilproject.github.io/furqon_web_express/?chapter=" + random_surah+"&verse="+random_ayah))
+                .setDomainUriPrefix("https://furqon.page.link")
+                // Open links with this app on Android
+                .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
+                // Open links with com.example.ios on iOS
+                .setIosParameters(new DynamicLink.IosParameters.Builder("https://mobilproject.github.io/furqon_web_express").build())
+                .buildDynamicLink();
 
+        Uri dynamicLinkUri = dynamicLink.getUri();
+        // [END create_link_basic]
+
+        Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                .setLongLink(Uri.parse(dynamicLinkUri.toString()))
+                .buildShortDynamicLink()
+                .addOnCompleteListener((Activity) mContext, new OnCompleteListener<ShortDynamicLink>() {
+                    @Override
+                    public void onComplete(@NonNull Task<ShortDynamicLink> task) {
+                        if (task.isSuccessful()) {
+                            // Short link created
+                            Uri shortLink = task.getResult().getShortLink();
+                            Uri flowchartLink = task.getResult().getPreviewLink();
+                            //Log.d(TAG, shortLink + " short dynamic link");
+                            Intent sendIntent = new Intent();
+                            sendIntent.setAction(Intent.ACTION_SEND);
+                            sendIntent.putExtra(Intent.EXTRA_TEXT, ayah_text.getText() + "\n(" + QuranMap.SURAHNAMES[random_surah] + ", " + random_ayah + ")\n"+shortLink+"\n"+ mContext.getResources().getText(R.string.seeTranslations));
+                            sendIntent.setType("text/plain");
+                            mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.shareayah)));
+                            Log.d(TAG, "manual link: " + ayah_text.getText() + "\n(" + QuranMap.SURAHNAMES[random_surah] + ", " + random_ayah + ")\n"+ shortLink +"\n"+ mContext.getResources().getText(R.string.seeTranslations));
+                        } else {
+                            // Error
+                            // ...
+                            Intent sendIntent = new Intent();
+                            sendIntent.setAction(Intent.ACTION_SEND);
+                            sendIntent.putExtra(Intent.EXTRA_TEXT, ayah_text.getText() + "\n(" + QuranMap.SURAHNAMES[random_surah] + ", " + random_ayah + ")\nhttps://goo.gl/sXBkNt\n"+ mContext.getResources().getText(R.string.seeTranslations));
+                            sendIntent.setType("text/plain");
+                            mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.shareayah)));
+                            Log.d(TAG, "manual link: " + ayah_text.getText() + "\n(" + QuranMap.SURAHNAMES[random_surah] + ", " + random_ayah + ")\n"+ mContext.getResources().getText(R.string.seeTranslations));
+                        }
+                    }
+                });
+    }
     private int AnAvailableSurahID() {
         int randomSurahNumber;
         if(randomSurahs!=null && randomSurahs.size()>0){

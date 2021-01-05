@@ -298,19 +298,19 @@ public class AyahListActivityAdapter extends RecyclerView.Adapter<AyahListActivi
                             //Log.d(TAG, shortLink + " short dynamic link");
                             Intent sendIntent = new Intent();
                             sendIntent.setAction(Intent.ACTION_SEND);
-                            sendIntent.putExtra(Intent.EXTRA_TEXT, ayah_txt_uz + "\n(" + chaptername + ", " + verse_number + ")\nhttps://goo.gl/sXBkNt\nFurqon dasturi, Android");
+                            sendIntent.putExtra(Intent.EXTRA_TEXT, ayah_txt_uz + "\n(" + chaptername + ", " + verse_number + ")\n"+shortLink+"\n"+ mContext.getResources().getText(R.string.seeTranslations));
                             sendIntent.setType("text/plain");
                             mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.shareayah)));
-                            Log.d(TAG, "manual link: " + ayah_txt_uz + "\n(" + chaptername + ", " + verse_number + ")\n"+ shortLink +"\nFurqon dasturi, Android");
+                            Log.d(TAG, "manual link: " + ayah_txt_uz + "\n(" + chaptername + ", " + verse_number + ")\n"+ shortLink +"\n"+ mContext.getResources().getText(R.string.seeTranslations));
                         } else {
                             // Error
                             // ...
                             Intent sendIntent = new Intent();
                             sendIntent.setAction(Intent.ACTION_SEND);
-                            sendIntent.putExtra(Intent.EXTRA_TEXT, ayah_txt_uz + "\n(" + chaptername + ", " + verse_number + ")\nhttps://goo.gl/sXBkNt\nFurqon dasturi, Android");
+                            sendIntent.putExtra(Intent.EXTRA_TEXT, ayah_txt_uz + "\n(" + chaptername + ", " + verse_number + ")\nhttps://goo.gl/sXBkNt\n"+ mContext.getResources().getText(R.string.seeTranslations));
                             sendIntent.setType("text/plain");
                             mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.shareayah)));
-                            Log.d(TAG, "manual link: " + ayah_txt_uz + "\n(" + chaptername + ", " + verse_number + ")\nhttps://goo.gl/sXBkNt\nFurqon dasturi, Android");
+                            Log.d(TAG, "manual link: " + ayah_txt_uz + "\n(" + chaptername + ", " + verse_number + ")\nhttps://goo.gl/sXBkNt\n"+ mContext.getResources().getText(R.string.seeTranslations));
                         }
                     }
                 });

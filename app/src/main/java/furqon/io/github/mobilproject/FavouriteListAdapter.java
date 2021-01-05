@@ -1,9 +1,11 @@
 package furqon.io.github.mobilproject;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.text.Html;
 import android.util.Log;
 import android.util.TypedValue;
@@ -22,6 +24,12 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.ShortDynamicLink;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -258,19 +266,55 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
 
         }
     }
+    public void createDynamicLink_Basic() {
+        // [START create_link_basic]
+        DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                .setLink(Uri.parse("https://mobilproject.github.io/furqon_web_express/?chapter=" + chapternumber+"&verse="+versenumber))
+                .setDomainUriPrefix("https://furqon.page.link")
+                // Open links with this app on Android
+                .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
+                // Open links with com.example.ios on iOS
+                .setIosParameters(new DynamicLink.IosParameters.Builder("https://mobilproject.github.io/furqon_web_express").build())
+                .buildDynamicLink();
 
+        Uri dynamicLinkUri = dynamicLink.getUri();
+        // [END create_link_basic]
+
+        Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                .setLongLink(Uri.parse(dynamicLinkUri.toString()))
+                .buildShortDynamicLink()
+                .addOnCompleteListener((Activity) mContext, new OnCompleteListener<ShortDynamicLink>() {
+                    @Override
+                    public void onComplete(@NonNull Task<ShortDynamicLink> task) {
+                        if (task.isSuccessful()) {
+                            // Short link created
+                            Uri shortLink = task.getResult().getShortLink();
+                            Uri flowchartLink = task.getResult().getPreviewLink();
+                            //Log.d(TAG, shortLink + " short dynamic link");
+                            Intent sendIntent = new Intent();
+                            sendIntent.setAction(Intent.ACTION_SEND);
+                            sendIntent.putExtra(Intent.EXTRA_TEXT, ayahtext + "\n(" + chaptername + ", " + versenumber + ")\n"+shortLink+"\n"+ mContext.getResources().getText(R.string.seeTranslations));
+                            sendIntent.setType("text/plain");
+                            mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.shareayah)));
+                        } else {
+                            // Error
+                            // ...
+                            Intent sendIntent = new Intent();
+                            sendIntent.setAction(Intent.ACTION_SEND);
+                            sendIntent.putExtra(Intent.EXTRA_TEXT, ayahtext + "\n(" + chaptername + ", " + versenumber + ")\nhttps://goo.gl/sXBkNt\n"+ mContext.getResources().getText(R.string.seeTranslations));
+                            sendIntent.setType("text/plain");
+                            mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.shareayah)));
+                        }
+                    }
+                });
+    }
     private void takeAction(View view) {
 
         LinearLayout ll = ((ViewGroup) view.getParent()).findViewById(R.id.uzbektranslation);
 
         switch (view.getId()) {
             case R.id.sharebut:
-                Log.d("CLICK SHARE", ayahtext);
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, ayahtext + "\n(" + chaptername + ", " + versenumber + ")\nhttps://goo.gl/sXBkNt\nFurqon dasturi, Android");
-                sendIntent.setType("text/plain");
-                mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.shareayah)));
+                createDynamicLink_Basic();
                 break;
             case R.id.favouritebut:
                 //favourite add to sqlite

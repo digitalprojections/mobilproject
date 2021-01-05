@@ -10,7 +10,7 @@
     <string name="audiopos_stored">положение сохранено</string>
     <string name="audiopos_restored">продолжить с последней позиции</string>
     <string name="audio_load_fail">Ошибка загрузки! Проверьте свою сеть</string>
-    <string name="shareayah">Поделись и получите монеты</string>
+    <string name="shareayah">Поделись</string>
     <string name="bookmark_it">добавить аят в закладки</string>
     <string name="favourite_it">Добавить в избранное</string>
     <string name="russian">русский</string>

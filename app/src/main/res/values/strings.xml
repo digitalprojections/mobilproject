@@ -9,7 +9,7 @@
     <string name="audiopos_stored">Audio position stored</string>
     <string name="audiopos_restored">continue playing</string>
     <string name="audio_load_fail">Failed to load! Check your network</string>
-    <string name="shareayah">Share this and get coins</string>
+    <string name="shareayah">Share this</string>
     <string name="bookmark_it">Bookmark the aayah</string>
     <string name="favourite_it">Add to Favourites</string>
     <string name="banner_ad" translatable="false">ca-app-pub-3838820812386239/6533462802</string>
@@ -110,4 +110,5 @@
     <string name="choose_a_portion_of_surah_with_starting_and_ending_ayats">Choose a portion of surah with starting and ending ayats</string>
     <string name="downloading_audio">"Downloading ayah: "</string>
     <string name="click_ayah">Download audio files. Click any ayah</string>
+    <string name="seeTranslations">open the app for more</string>
 </resources>
