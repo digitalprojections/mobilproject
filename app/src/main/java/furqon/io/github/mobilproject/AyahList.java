@@ -182,56 +182,51 @@ public class AyahList extends AppCompatActivity implements ManageSpecials {
                 assert extratext != null;
                 suranomi = extratext.substring(0, extratext.indexOf(":"));
                 suraNumber = extratext.substring(extratext.indexOf(":") + 1);
-
-                if (BuildConfig.BUILD_TYPE.equals("debug"))
-                    Log.i(TAG, "LOADED SURA " + suraNumber + " " + suranomi);
-
-                getSupportActionBar().setTitle(suranomi);
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-                recyclerView = findViewById(R.id.chapter_scroll);
-                recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-                mAdapter = new AyahListAdapter(this, suranomi, suraNumber);
-                recyclerView.setAdapter(mAdapter);
-
-                LoadTheList();
-
-                audio_pos = sharedPref.read(suranomi, 0);
-
-                handler = new Handler();
-
-                seekBar = findViewById(R.id.seekBar);
-
-                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean input) {
-                        if (input) {
-                            if (mediaPlayer != null) {
-                                mediaPlayer.seekTo(progress);
-                            }
-
-                        }
-
-                    }
-
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-
-                    }
-
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-
-                    }
-                });
             }
             catch (NullPointerException npx){
                 Toast.makeText( getBaseContext(), R.string.error_message, Toast.LENGTH_SHORT).show();
             }
-
+        }else{
+            suranomi = QuranMap.SURAHNAMES[0];
+            suraNumber = "1";
         }
 
+        audio_pos = sharedPref.read(suranomi, 0);
+        handler = new Handler();
+        seekBar = findViewById(R.id.seekBar);
+        recyclerView = findViewById(R.id.chapter_scroll);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        mAdapter = new AyahListAdapter(this, suranomi, suraNumber);
+        recyclerView.setAdapter(mAdapter);
+        LoadTheList();
+        if (BuildConfig.BUILD_TYPE.equals("debug"))
+            Log.i(TAG, "LOADED SURA " + suraNumber + " " + suranomi);
+        getSupportActionBar().setTitle(suranomi);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean input) {
+                if (input) {
+                    if (mediaPlayer != null) {
+                        mediaPlayer.seekTo(progress);
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
         tempbut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

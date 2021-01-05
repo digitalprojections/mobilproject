@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -23,6 +25,9 @@ import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,12 +41,11 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
     private List<AllTranslations> mText = new ArrayList<>();
 
-    private ImageButton share_button;
     private ImageButton fav_button;
     private ImageButton book_button;
 
-    private String chaptername;//Sura nomi
-    private String chapter_number;
+    private final String chaptername;//Sura nomi
+    private final String chapter_number;
     private String verse_number;//oyat nomeri
     private String ayah_txt_uz;//oyat matni uzbek
 
@@ -49,7 +53,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
     private ViewGroup.LayoutParams lp; // Height of TextView
     private ViewGroup.LayoutParams lpmar; // Height of TextView
     private ViewGroup.LayoutParams lpartxt; // Height of TextView
-    private Animation scaler;
+    private final Animation scaler;
 
 
     @Override
@@ -59,7 +63,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
 
     }
 
-    AyahListAdapter(Context context, String suraname, String chapter) {
+    AyahListAdapter(Context context,    String suraname, String chapter) {
         sharedPref = SharedPreferences.getInstance();
 
         chapter_number = chapter;
@@ -102,7 +106,7 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             actions_lin_layout = itemView.findViewById(R.id.actions);
 
             //DONE create share/boomark/favourite and add programmatically
-            share_button = itemView.findViewById(R.id.f_sharebut);
+            ImageButton share_button = itemView.findViewById(R.id.f_sharebut);
             fav_button = itemView.findViewById(R.id.favouritebut);
             book_button = itemView.findViewById(R.id.f_bookmarkbut);
 
@@ -140,8 +144,8 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             arabic_ayah_number = itemView.findViewById(R.id.arab_num);
 
             Typeface madina;
-            if (sharedPref.contains(sharedPref.FONT)) {
-                switch (sharedPref.read(sharedPref.FONT, "")) {
+            if (sharedPref.contains(SharedPreferences.FONT)) {
+                switch (sharedPref.read(SharedPreferences.FONT, "")) {
                     case "madina":
                         madina = ResourcesCompat.getFont(mContext, R.font.maddina);
                         break;
@@ -173,8 +177,8 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
             arabic_text.setVisibility(View.GONE);
             arabic_text.setLayoutParams(lpartxt);
             arabic_text.setTextSize(30);
-            if (sharedPref.contains(sharedPref.FONTSIZE)) {
-                float fs = (float) sharedPref.read(sharedPref.FONTSIZE, 0);
+            if (sharedPref.contains(SharedPreferences.FONTSIZE)) {
+                float fs = (float) sharedPref.read(SharedPreferences.FONTSIZE, 0);
                 arabic_text.setTextSize(TypedValue.COMPLEX_UNIT_PX, fs);
             }
             arabic_text.setGravity(Gravity.END);
@@ -264,6 +268,24 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
         }
     }
 
+    public void createDynamicLink_Basic() {
+        // [START create_link_basic]
+        DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                .setLink(Uri.parse("https://mobilproject.github.io/furqon_web_express/"))
+                .setDomainUriPrefix("https://furqon.page.link")
+                // Open links with this app on Android
+                .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
+                // Open links with com.example.ios on iOS
+                .setIosParameters(new DynamicLink.IosParameters.Builder("com.example.ios").build())
+                .buildDynamicLink();
+
+        Uri dynamicLinkUri = dynamicLink.getUri();
+        // [END create_link_basic]
+        Log.d(TAG, dynamicLink.toString() + " dynamic link");
+
+    }
+
+
     private void takeAction(View view) {
 
         switch (view.getId()) {
@@ -273,6 +295,8 @@ public class AyahListAdapter extends RecyclerView.Adapter<AyahListAdapter.AyahLi
                 sendIntent.putExtra(Intent.EXTRA_TEXT, ayah_txt_uz + "\n(" + chaptername + ", " + verse_number + ")\nhttps://goo.gl/sXBkNt\nFurqon dasturi, Android");
                 sendIntent.setType("text/plain");
                 mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.shareayah)));
+                Log.d(TAG, "manual link: " + ayah_txt_uz + "\n(" + chaptername + ", " + verse_number + ")\nhttps://goo.gl/sXBkNt\nFurqon dasturi, Android");
+                createDynamicLink_Basic();
 
                 break;
             case R.id.favouritebut:
