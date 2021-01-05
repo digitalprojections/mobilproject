@@ -1,5 +1,6 @@
 package furqon.io.github.mobilproject;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -60,6 +62,7 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
     boolean isOpen = false;
     Animation fabopen, fabclose, scaler;
     private SharedPreferences sharedPref;
+    private Context mContext;
 
     public AyahOfTheDayActivity() {
         sharedPref = SharedPreferences.getInstance();
@@ -70,27 +73,14 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ayah_of_the_day);
-
+        mContext = this;
 
         //mDatabase = DatabaseAccess.getInstance(getApplicationContext());
 //        if (!mDatabase.isOpen()) {
 //            mDatabase.open();
 //        }
         viewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
-        viewModel.getRandomSurah().observe(this, new Observer<List<RandomSurah>>() {
-            @Override
-            public void onChanged(List<RandomSurah> randomSurah) {
-                randomSurahs = randomSurah;
-                if(FavouriteSelected)
-                {
-                    ShowTheAyahBeside();
-                    FavouriteSelected = false;
-                }else{
-                    displayRandomAyah();
-                }
 
-            }
-        });
 
 
         pbar = findViewById(R.id.progBar);
@@ -257,6 +247,8 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
         FirebaseDynamicLinks.getInstance()
                 .getDynamicLink(getIntent())
                 .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
+
+
                     @Override
                     public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
                         // Get deep link from result (may be null if no link is found)
@@ -268,10 +260,29 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
                         // content, or apply promotional credit to the user's
                         // account.
                         // ...
-                        random_surah = deepLink.getQueryParameter("chapter");
-                        random_ayah = deepLink.getQueryParameter("verse");
-                        if(random_surah!=null && random_ayah!=null){
+                        try{
+                        random_surah = Integer.parseInt(deepLink.getQueryParameter("chapter"));
+                        random_ayah = Integer.parseInt(deepLink.getQueryParameter("verse"));
+                        }catch (NullPointerException | NumberFormatException npx){
+                            viewModel.getRandomSurah().observe((LifecycleOwner) mContext, new Observer<List<RandomSurah>>() {
+                                @Override
+                                public void onChanged(List<RandomSurah> randomSurah) {
+                                    randomSurahs = randomSurah;
+                                    if(FavouriteSelected)
+                                    {
+                                        ShowTheAyahBeside();
+                                        FavouriteSelected = false;
+                                    }else{
+                                        displayRandomAyah();
+                                    }
 
+                                }
+                            });
+                        }
+
+                        if(random_surah!=0 && random_ayah!=0){
+                            //we have the surah reference
+                            displaySelectedAyah();
                         }
                         //Log.d(TAG, "sura: " +  + ", verse: "+);
                         // ...
@@ -470,13 +481,18 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
                 }
             });
         }
-
-
-
     }
+    private void displaySelectedAyah() {
+            viewModel.getChapterText(String.valueOf(random_surah)).observe(this, new Observer<List<AllTranslations>>() {
+                @Override
+                public void onChanged(List<AllTranslations> allTranslations) {
+                    allTranslationsList = allTranslations;
+                    ShowRandomAyah(allTranslations);
+                }
+            });
+        }
 
     private void ShowRandomAyah(List<AllTranslations> allTranslations) {
-
 
         if (BuildConfig.BUILD_TYPE.equals("debug"))
             Log.d("RANDOM SURAH AND AYAH", random_surah + " is surah " + random_ayah);
