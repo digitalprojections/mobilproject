@@ -27,8 +27,8 @@ import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 
 import java.util.List;
 
-public class AyahOfTheDay extends AppCompatActivity {
-    private static final String TAG = "RANDOM VERSE";
+public class AyahOfTheDayActivity extends AppCompatActivity {
+    private static final String TAG = AyahOfTheDayActivity.class.getSimpleName();
     private int random_surah;
     private int random_ayah;
     private int cursor_retry = 0;
@@ -61,7 +61,7 @@ public class AyahOfTheDay extends AppCompatActivity {
     Animation fabopen, fabclose, scaler;
     private SharedPreferences sharedPref;
 
-    public AyahOfTheDay() {
+    public AyahOfTheDayActivity() {
         sharedPref = SharedPreferences.getInstance();
     }
 
@@ -253,6 +253,36 @@ public class AyahOfTheDay extends AppCompatActivity {
                 random_ayah = Integer.parseInt(antext);
             //makeCall();
         }
+
+        FirebaseDynamicLinks.getInstance()
+                .getDynamicLink(getIntent())
+                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
+                    @Override
+                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
+                        // Get deep link from result (may be null if no link is found)
+                        Uri deepLink = null;
+                        if (pendingDynamicLinkData != null) {
+                            deepLink = pendingDynamicLinkData.getLink();
+                        }
+                        // Handle the deep link. For example, open the linked
+                        // content, or apply promotional credit to the user's
+                        // account.
+                        // ...
+                        random_surah = deepLink.getQueryParameter("chapter");
+                        random_ayah = deepLink.getQueryParameter("verse");
+                        if(random_surah!=null && random_ayah!=null){
+
+                        }
+                        //Log.d(TAG, "sura: " +  + ", verse: "+);
+                        // ...
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "getDynamicLink:onFailure", e);
+                    }
+                });
     }
 
     private int AnAvailableSurahID() {

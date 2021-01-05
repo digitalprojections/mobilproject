@@ -636,7 +636,7 @@ public class LoginActivity extends AppCompatActivity{
 
     public void ayahOfTheDay() {
 
-        Intent intent = new Intent(this, AyahOfTheDay.class);
+        Intent intent = new Intent(this, AyahOfTheDayActivity.class);
         startActivity(intent);
         mSharedPref.write(SharedPreferences.RANDOM_AYAH_SEEN, true);
 

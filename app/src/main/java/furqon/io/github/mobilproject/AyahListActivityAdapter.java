@@ -274,7 +274,7 @@ public class AyahListActivityAdapter extends RecyclerView.Adapter<AyahListActivi
     public void createDynamicLink_Basic() {
         // [START create_link_basic]
         DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
-                .setLink(Uri.parse("https://mobilproject.github.io/furqon_web_express/?sura=" + chapter_number+"&ayah="+verse_number))
+                .setLink(Uri.parse("https://mobilproject.github.io/furqon_web_express/?chapter=" + chapter_number+"&verse="+verse_number))
                 .setDomainUriPrefix("https://furqon.page.link")
                 // Open links with this app on Android
                 .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())

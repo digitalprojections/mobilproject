@@ -3,6 +3,7 @@ package furqon.io.github.mobilproject;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -37,7 +38,11 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
@@ -154,11 +159,6 @@ public class AyahListActivity extends AppCompatActivity implements ManageSpecial
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdClosed() {
-                mInterstitialAd.loadAd(new AdRequest.Builder().build());
-            }
-
-            @Override
-            public void onAdFailedToLoad(int i) {
                 mInterstitialAd.loadAd(new AdRequest.Builder().build());
             }
 

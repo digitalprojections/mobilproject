@@ -274,7 +274,7 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
     }
 
     public void ayahOfTheDay() {
-            Intent intent = new Intent(this, AyahOfTheDay.class);
+            Intent intent = new Intent(this, AyahOfTheDayActivity.class);
             startActivity(intent);
 
             //mSharedPref.write(mSharedPref.RANDOM_AYAH_SEEN, true);

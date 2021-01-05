@@ -36,7 +36,10 @@
             android:name=".LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".MemorizeActivity"
@@ -98,11 +101,6 @@
         <activity
             android:name=".AyahListActivity"
             android:parentActivityName=".SuraNameList">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
         </activity>
         <activity
             android:name=".Favourites"
@@ -115,17 +113,14 @@
         <activity
             android:name=".SearchActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".AyahOfTheDay">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
+        <activity android:name=".AyahOfTheDayActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
                 <data
-                    android:host="quran-kareem.web.app"
-                    android:pathPattern="*"
-                    android:scheme="https" />
+                    android:host="furqon.page.link"
+                    android:scheme="https"/>
             </intent-filter>
         </activity>
 

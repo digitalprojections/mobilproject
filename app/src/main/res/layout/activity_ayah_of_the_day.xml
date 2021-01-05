@@ -7,7 +7,7 @@
     android:background="@color/colorPrimaryDark"
     android:isScrollContainer="true"
     android:verticalScrollbarPosition="right"
-    tools:context=".AyahOfTheDay">
+    tools:context=".AyahOfTheDayActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout5"
