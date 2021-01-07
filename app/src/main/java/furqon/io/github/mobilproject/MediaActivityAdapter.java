@@ -138,7 +138,7 @@ public class MediaActivityAdapter extends RecyclerView.Adapter<MediaActivityAdap
         query.setFilterById(did);
         if (did > 0) {
             Cursor cursor = downloadManager.query(query);
-            if (cursor.moveToFirst()) {
+            if (cursor!=null && cursor.moveToFirst()) {
                 int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
                 int status = cursor.getInt(columnIndex);
 
