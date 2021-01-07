@@ -993,10 +993,15 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                                 String filePath = newpath + "/" + file.getName();
                                 Log.d(TAG, "COMPARE AYAHS " + trackname + " vs " + ARG.makeAyahRefName(startAyahNumber));
                                 if(Integer.parseInt(trackname)>=Integer.parseInt(ARG.makeAyahRefName(startAyahNumber)) && Integer.parseInt(trackname)<=Integer.parseInt(ARG.makeAyahRefName(endAyahNumber))){
+                                    try{
                                     metadataRetriever.setDataSource(filePath);
                                     //Date date = new Date();
                                     Track track = new Track(AudioTimer.getTimeStringFromMs(Integer.parseInt(Objects.requireNonNull(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)))), trackname, filePath);
                                     trackList.add(track);
+
+                                    }catch(RuntimeException rtx){
+                                        
+                                    }
                                 }
                                 else
                                     {

@@ -552,17 +552,22 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Play
 //            }
                     //trackDownload = true;
                 } else {
-                    final PopupWindow popupWindow = new PopupWindow(this);
-                    View view = getLayoutInflater().inflate(R.layout.popup_hint, coordinatorLayout);
-                    popupWindow.setContentView(view);
-                    //popupWindow.showAtLocation(cl, 0, 0,0);
-                    view.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            popupWindow.dismiss();
-                        }
-                    });
-                    //trackDownload = false;
+                    try{
+                        final PopupWindow popupWindow = new PopupWindow(this);
+                        View view = getLayoutInflater().inflate(R.layout.popup_hint, coordinatorLayout);
+                        popupWindow.setContentView(view);
+                        //popupWindow.showAtLocation(cl, 0, 0,0);
+                        view.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                popupWindow.dismiss();
+                            }
+                        });
+                        //trackDownload = false;
+                    }catch(IllegalStateException isx){
+
+                    }
+                    
                 }
             }
         }
@@ -625,7 +630,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Play
 
 
                 }
-            } catch (IllegalStateException x) {
+            } catch (IllegalStateException | NullPointerException x) {
                 isPlaying = false;
                 mediaPlayer.release();
                 handler.removeCallbacks(runnable);

@@ -87,7 +87,8 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
         if (BUILD_TYPE.equals("debug")) {
             mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
         } else {
-            mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+            if(mInterstitialAd!=null)
+                        mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
         }
 
 
