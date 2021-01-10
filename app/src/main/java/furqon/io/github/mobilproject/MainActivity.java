@@ -10,11 +10,21 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.android.billingclient.api.SkuDetails;
+import com.android.billingclient.api.SkuDetailsParams;
+import com.android.billingclient.api.SkuDetailsResponseListener;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
@@ -27,6 +37,7 @@ import com.google.firebase.functions.FirebaseFunctions;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -47,7 +58,7 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
     CardView rate_but;
     //Button coins_but;
     CardView message_but;
-    //Button chat_but;
+    CardView vip_but;
     CardView audio_but;
     //CardView about_but;
     private Animation scaler;
@@ -57,15 +68,17 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
     // Try to use more data here. ANDROID_ID is a single point of attack.
     InterstitialAd mInterstitialAd = new InterstitialAd(this);
     private FirebaseAnalytics mFirebaseAnalytics;
-    private static final String TAG = "MAIN ACTIVITY";
+    private static final String TAG = "MainActivity";
     private static final String DEEP_LINK_URL = "https://furqon.page.link/ThB2";
 
     private boolean randomayahshown;
 
     private FirebaseFunctions mFunctions;
-
-
-
+    private PurchasesUpdatedListener purchasesUpdatedListener;
+    private BillingClient billingClient;
+    private final String SKU_MONTHLY = "monthly_no_ads";
+    private final String SKU_YEARLY = "permanent_no_ads";
+    private ArrayList<SkuDetails> skuDetailsList;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -116,7 +129,7 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
                 }
             }
         });
-        //chat_but = findViewById(R.id.chat_button);
+        vip_but = findViewById(R.id.noadsbutton);
         audio_but = findViewById(R.id.mediabutton);
         //about_but = findViewById(R.id.about_button);
         suralar_but = findViewById(R.id.suralar);
@@ -131,7 +144,7 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
         Picasso.get().load(R.mipmap.bookmarkjpg).into((ImageView) findViewById(R.id.imageViewMemorize));
         Picasso.get().load(R.mipmap.star).into((ImageView) findViewById(R.id.imageViewRate));
         Picasso.get().load(R.mipmap.audio).into((ImageView) findViewById(R.id.imageViewMedia));
-        //Picasso.get().load(R.mipmap.youtube).into((ImageView) findViewById(R.id.imageViewYoutube));
+        Picasso.get().load(R.mipmap.ic_vip_foreground).into((ImageView) findViewById(R.id.NoAdsimageView));
         //Picasso.get().load(R.mipmap.search).into((ImageView) findViewById(R.id.imageViewSearch));
 
         imageView.setOnClickListener(this);
@@ -146,7 +159,7 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
         audio_but.setOnClickListener(this);
         //about_but.setOnClickListener(this);
         //coins_but.setOnClickListener(this);
-        //chat_but.setOnClickListener(this);
+        vip_but.setOnClickListener(this);
 
 //        if (mSharedPref.contains(mSharedPref.XATCHUP)) {
 //            davomi_but.setVisibility(View.VISIBLE);
@@ -177,9 +190,11 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
         if (BuildConfig.BUILD_TYPE.equals("debug"))
             Log.i(TAG, Locale.getDefault().getDisplayLanguage());
 
+
+
+        skuDetailsList = new ArrayList<SkuDetails>();
+
     }
-
-
 
 
 
@@ -373,9 +388,9 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
             case R.id.messageButton:
                 open_messages();
                 break;
-//            case R.id.chat_button:
-//                //open_chatroom();
-//                break;
+            case R.id.noadsbutton:
+                iapInit();
+                break;
             case R.id.mediabutton:
                 open_media_page();
 
@@ -390,6 +405,72 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
 //                open_about();
 //                break;
         }
+    }
+
+    private void iapInit() {
+        if (billingClient != null) {
+            billingClient.endConnection();
+            billingClient = null;
+        }
+
+        if (purchasesUpdatedListener == null) {
+            purchasesUpdatedListener = new PurchasesUpdatedListener() {
+                @Override
+                public void onPurchasesUpdated(@NonNull BillingResult var1, @Nullable List<Purchase> var2) {
+                    Log.d("IAPDEMO", "onPurchasesUpdated:" + var1.getDebugMessage());
+                    if (var2 != null) {
+                        for (Purchase purchase : var2) {
+                            Log.d("IAPDEMO", "onPurchasesUpdated:" + purchase);
+                        }
+                    }
+                }
+            };
+        }
+
+        billingClient = BillingClient.newBuilder(this)
+                .setListener(purchasesUpdatedListener)
+                .enablePendingPurchases()
+                .build();
+
+        if (billingClient == null) {
+            Log.d("IAPDEMO", "failed to init billingClient");
+            return;
+        }
+
+        billingClient.startConnection(new BillingClientStateListener() {
+            @Override
+            public void onBillingSetupFinished(@NonNull BillingResult var1) {
+                Log.d("IAPDEMO", "onBillingSetupFinished:" + var1.getDebugMessage());
+            }
+
+            @Override
+            public void onBillingServiceDisconnected() {
+                Log.d("IAPDEMO", "onBillingServiceDisconnected");
+            }
+        });
+    }
+
+    private void iapList() {
+        SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
+        ArrayList<String> skuList = new ArrayList<String>();
+        skuList.add(SKU_MONTHLY);
+        skuList.add(SKU_YEARLY);
+        params.setSkusList(skuList).setType(BillingClient.SkuType.SUBS);
+
+        SkuDetailsResponseListener listener = new SkuDetailsResponseListener()  {
+            @Override
+            public void onSkuDetailsResponse(@NonNull BillingResult var1, @Nullable List<SkuDetails> var2) {
+                Log.d("IAPDEMO", "onSkuDetailsResponse:" + var1.getDebugMessage());
+                skuDetailsList.clear();
+                if (var2 != null) {
+                    for (SkuDetails sku : var2) {
+                        Log.d("IAPDEMO", "onSkuDetailsResponse:" + sku);
+                        skuDetailsList.add(sku);
+                    }
+                }
+            }
+        };
+        billingClient.querySkuDetailsAsync(params.build(), listener);
     }
 
 

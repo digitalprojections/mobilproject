@@ -36,7 +36,7 @@
                 android:id="@+id/NoAdsimageView"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:src="@mipmap/ic_VIP_round"
+                android:src="@mipmap/ic_vip_foreground"
                 android:layout_margin="5dp" />
 
             <TextView

@@ -7,7 +7,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
@@ -19,7 +20,8 @@
         android:roundIcon="@mipmap/ic_launcher2_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-                <activity android:name=".OptionsMenuActivity" />
+        <activity android:name=".NoAdsActivity"></activity>
+        <activity android:name=".OptionsMenuActivity" />
         <activity
             android:name=".PrivacyPolicyActivity"
             android:parentActivityName=".LoginActivity" />
@@ -39,15 +41,14 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".MemorizeActivity"
             android:label="Memorize by Ayats"
-            android:parentActivityName=".MainActivity">
-
-        </activity>
+            android:parentActivityName=".MainActivity"></activity>
         <activity
             android:name=".MessageView"
             android:parentActivityName=".MessageList" />
@@ -92,8 +93,7 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".AyahListActivity"
-            android:parentActivityName=".SuraNameList">
-        </activity>
+            android:parentActivityName=".SuraNameList"></activity>
         <activity
             android:name=".Favourites"
             android:parentActivityName=".MainActivity" />
@@ -107,16 +107,16 @@
             android:parentActivityName=".MainActivity" />
         <activity android:name=".AyahOfTheDayActivity">
             <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="furqon.page.link"
-                    android:scheme="https"/>
+                    android:scheme="https" />
             </intent-filter>
         </activity>
-
-
     </application>
 
 </manifest>
