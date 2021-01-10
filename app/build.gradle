@@ -26,8 +26,8 @@ android {
         applicationId "furqon.io.github.mobilproject"
         minSdkVersion 19
         targetSdkVersion rootProject.ext.compileSdkVersion
-        versionCode 40300
-        versionName "4.3.0"
+        versionCode 40301
+        versionName "4.3.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release
         manifestPlaceholders = [:]
@@ -134,5 +134,8 @@ dependencies {
     implementation "androidx.room:room-guava:$room_version"
     // Test helpers
     testImplementation "androidx.room:room-testing:$room_version"
+    def billing_version = "3.0.2"
+
+    implementation "com.android.billingclient:billing:$billing_version"
 }
 apply plugin: 'com.google.gms.google-services'
