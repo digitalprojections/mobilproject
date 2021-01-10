@@ -129,7 +129,7 @@ public class SharedPreferences
         if(!mSharedPref.contains(RANDOMAYAHSW)){
             write(RANDOMAYAHSW, true);
         }else {
-            random_ayah_sw = read(RANDOMAYAHSW, true);
+            random_ayah_sw = read(RANDOMAYAHSW, false);
         }
 
         if(!mSharedPref.contains(TRACKS)){

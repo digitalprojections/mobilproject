@@ -165,7 +165,14 @@ public class LoginActivity extends AppCompatActivity{
         // [END config_signin]
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        google_btn = findViewById(R.id.sign_out_button);
 
+        google_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signIn();
+            }
+        });
         //========================================================
 
 
@@ -179,7 +186,7 @@ public class LoginActivity extends AppCompatActivity{
         welcome_txt = findViewById(R.id.welcome_textView);
         welcome_txt.setText(R.string.welcome_title);
         username_txt = findViewById(R.id.username_textView);
-        username_txt.setText("");
+        username_txt.setText(R.string.anonymous);
 
         start_btn = findViewById(R.id.start_app_button);
         start_btn.setOnClickListener(new View.OnClickListener() {
@@ -630,8 +637,8 @@ public class LoginActivity extends AppCompatActivity{
     public void ayahOfTheDay() {
 
         Intent intent = new Intent(this, AyahOfTheDayActivity.class);
-        startActivity(intent);
         mSharedPref.write(SharedPreferences.RANDOM_AYAH_SEEN, true);
+        startActivity(intent);
 
     }
 

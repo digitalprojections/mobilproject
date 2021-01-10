@@ -2,6 +2,7 @@ package furqon.io.github.mobilproject;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.MediaRouteButton;
 import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -88,6 +90,7 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private ArrayList<JSONObject> jsonArrayResponse;
     private boolean httpresponse;
+    private Button openChaptersBtn;
 
 
     public AyahOfTheDayActivity() {
@@ -109,6 +112,8 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
 //        if (!mDatabase.isOpen()) {
 //            mDatabase.open();
 //        }
+
+
         viewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
 
         pbar = findViewById(R.id.progBar);
@@ -130,14 +135,20 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
         ayah_reference = findViewById(R.id.random_verse_title);
         ayah_text = findViewById(R.id.random_verse_text);
         fab = findViewById(R.id.fab);
-
+        openChaptersBtn = findViewById(R.id.openChaptersButton);
         pbar.setVisibility(View.INVISIBLE);
         //DONE upo create choose a random sura and ayah
 
 
         //get a random verse within the range available in that sura
-
-
+        openChaptersBtn.setVisibility(View.GONE);
+        openChaptersBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), SuraNameList.class);
+                startActivity(intent);
+            }
+        });
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -263,7 +274,8 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
         String appLinkAction = appLinkIntent.getAction();
         Uri appLinkData = appLinkIntent.getData();
         if(appLinkData!=null) {
-            if (BuildConfig.BUILD_TYPE.equals("debug"))
+
+            //if (BuildConfig.BUILD_TYPE.equals("debug"))
                 Log.d(TAG, appLinkAction + " - " + appLinkData.getQueryParameter("sn") + appLinkData.getQueryParameter("an"));
             String sntext = appLinkData.getQueryParameter("sn");
             if(sntext!=null)
@@ -271,9 +283,16 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
             String antext = appLinkData.getQueryParameter("an");
             if(antext!=null)
                 random_ayah = Integer.parseInt(antext);
-            //makeCall();
+            makeCall();
+
+        }else{
+            Log.w(TAG, "NO LINK FOUND");
+            makeCall();
         }
 
+
+    }
+    private void makeCall(){
         FirebaseDynamicLinks.getInstance()
                 .getDynamicLink(getIntent())
                 .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
@@ -291,12 +310,13 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
                         // account.
                         // ...
                         try{
-                        random_surah = Integer.parseInt(deepLink.getQueryParameter("chapter"));
-                        random_ayah = Integer.parseInt(deepLink.getQueryParameter("verse"));
+                            random_surah = Integer.parseInt(deepLink.getQueryParameter("chapter"));
+                            random_ayah = Integer.parseInt(deepLink.getQueryParameter("verse"));
                         }catch (NullPointerException | NumberFormatException npx){
                             viewModel.getRandomSurah().observe((LifecycleOwner) mContext, new Observer<List<RandomSurah>>() {
                                 @Override
                                 public void onChanged(List<RandomSurah> randomSurah) {
+                                    openChaptersBtn.setVisibility(View.GONE);
                                     randomSurahs = randomSurah;
                                     if(FavouriteSelected)
                                     {
@@ -325,6 +345,7 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
                     }
                 });
     }
+
     public void createDynamicLink_Basic() {
         // [START create_link_basic]
         DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
@@ -435,14 +456,6 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
         return ctext;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-//        if (ayahcursor != null) {
-//            ayahcursor.close();
-//        }
-    }
-
     private void snackbarMessage(View view, String s) {
         Snackbar.make(view, s, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
@@ -479,9 +492,11 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
         if(random_surah==0){
             //database is empty. quit
             ayah_text.setText(R.string.chapters_not_available);
-
-            Intent intent = new Intent(getBaseContext(), MainActivity.class);
-            startActivity(intent);
+            //Intent intent = new Intent(getBaseContext(), MainActivity.class);
+            //startActivity(intent);
+            String randomayahreference = getString(R.string.surah) + " " + getString(R.string.unavailable) + " " + getString(R.string.ayah) + getString(R.string.unavailable);
+            openChaptersBtn.setVisibility(View.VISIBLE);
+            ayah_reference.setText(randomayahreference);
             return;
         }else{
             random_ayah = (int) Math.floor(Math.random() * QuranMap.GetSurahLength(random_surah-1))+1;

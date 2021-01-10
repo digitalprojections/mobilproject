@@ -62,15 +62,12 @@ public class AyahListActivity extends AppCompatActivity implements ManageSpecial
 
     private static final String TAG = AyahListActivity.class.getSimpleName();
     private ArrayList<JSONObject> jsonArrayResponse;
-    private ArrayList<String> trackList;
     String url; // your URL here
     private TitleViewModel titleViewModel;
     private AyahListActivityAdapter mAdapter;
-    MediaPlayer mediaPlayer;
     boolean download_attempted;
     final Handler delayHandler = new Handler();
     TextView contentloading;
-    boolean isPlaying;
 
     Integer audio_pos;
     Integer ayah_position;
@@ -83,7 +80,6 @@ public class AyahListActivity extends AppCompatActivity implements ManageSpecial
     String audiostore;
     String loadfailed;
     ProgressBar progressBar;
-    SeekBar seekBar;
     Handler handler;
     Runnable runnable;
     private SharedPreferences sharedPref;
@@ -120,9 +116,6 @@ public class AyahListActivity extends AppCompatActivity implements ManageSpecial
         titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
 
         context = this;
-
-        trackList = new ArrayList<String>();
-        PopulateTrackList();
 
         sharedPref = SharedPreferences.getInstance();
         sharedPref.init(getApplicationContext());
@@ -192,7 +185,7 @@ public class AyahListActivity extends AppCompatActivity implements ManageSpecial
 
         audio_pos = sharedPref.read(suranomi, 0);
         handler = new Handler();
-        seekBar = findViewById(R.id.seekBar);
+
         recyclerView = findViewById(R.id.chapter_scroll);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -204,68 +197,12 @@ public class AyahListActivity extends AppCompatActivity implements ManageSpecial
         getSupportActionBar().setTitle(suranomi);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean input) {
-                if (input) {
-                    if (mediaPlayer != null) {
-                        mediaPlayer.seekTo(progress);
-                    }
-
-                }
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
         tempbut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 LoadSurah();
             }
         });
-
-
-//        titleViewModel.getTitle(suraNumber).observe(this, new Observer<ChapterTitleTable>() {
-//            @Override
-//            public void onChanged(ChapterTitleTable chapterTitleTable) {
-//
-//                if(chapterTitleTable!=null){
-//                    currentStatus = Integer.parseInt(chapterTitleTable.status);
-//                    if(status==0){
-//                        //just created
-//                        //Toast.makeText(getApplicationContext(), status + " FIRST SHOW " + chapterTitleTable.status, Toast.LENGTH_SHORT).show();
-//                        status = currentStatus;
-//                    }else if(status==currentStatus){
-//                        //second or more tries
-//                        //Toast.makeText(getApplicationContext(), status + " FAILED TO UPDATE " + chapterTitleTable.status, Toast.LENGTH_SHORT).show();
-//                    }else if(status<currentStatus){
-//                        //Toast.makeText(getApplicationContext(), status + " TITLE UPDATED " + chapterTitleTable.status, Toast.LENGTH_SHORT).show();
-//                        int xcoins = sharedPref.read(sharedPref.COINS, 0);
-//                        int newtotal;
-//                        if(xcoins>=ayah_unlock_cost){
-//                            newtotal = xcoins-ayah_unlock_cost;
-//                        }else {
-//                            newtotal = 0;
-//                        }
-//                        sharedPref.write(sharedPref.COINS, newtotal);
-//                    }
-//
-//                }else{
-//
-//                }
-//                SetDownloadButtonState(chapterTitleTable);
-//            }
-//        });
-//        setAyahCost();
 
 
     }
@@ -359,59 +296,6 @@ public class AyahListActivity extends AppCompatActivity implements ManageSpecial
                 }
     }
 
-
-    private void PopulateTrackList() {
-        String path = getExternalFilesDir(null).getAbsolutePath();
-        if (BuildConfig.BUILD_TYPE.equals("debug"))
-            Log.d(TAG, "Files Path: " + path);
-        File directory = new File(path);
-        File[] files = directory.listFiles();
-        if(files!=null){
-            if (BuildConfig.BUILD_TYPE.equals("debug"))
-                Log.d(TAG, "FILES Size: " + files.length);
-
-            for (int i = 0; i < files.length; i++)
-            {
-                if (BuildConfig.BUILD_TYPE.equals("debug"))
-                    Log.d(TAG, "Files " + suraNumber + " FileName:" + files[i].getName());
-                String trackname = files[i].getName().toString();
-                if(trackname.contains(".")){
-                    trackname = trackname.substring(0, trackname.lastIndexOf("."));
-                    if(!TrackDownloaded(trackname)){
-                        trackList.add(trackname);
-                    }
-                    if (BuildConfig.BUILD_TYPE.equals("debug"))
-                        Log.i(TAG, "TRACKNAME number " + trackname + " track is available");
-                }
-            }
-        }else{
-            if (BuildConfig.BUILD_TYPE.equals("debug"))
-                Log.d(TAG, "NULL ARRAY no files found");
-        }
-    }
-
-
-    public void playCycle() {
-        if (mediaPlayer != null) {
-            seekBar.setProgress(mediaPlayer.getCurrentPosition());
-            audio_pos = mediaPlayer.getCurrentPosition();
-            timer = findViewById(R.id.audio_timer);
-            timer.setText(AudioTimer.getTimeStringFromMs(audio_pos));
-
-            if (mediaPlayer.isPlaying()) {
-                runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        //startTimer();
-                        playCycle();
-                        if (BuildConfig.BUILD_TYPE.equals("debug"))
-                            Log.i(TAG, "TIMER tick");
-                    }
-                };
-                handler.postDelayed(runnable, 1000);
-            }
-        }
-    }
 
 
 
@@ -516,224 +400,11 @@ public class AyahListActivity extends AppCompatActivity implements ManageSpecial
                 return super.onOptionsItemSelected(item);
         }
     }
-
-    private String prependZero(String s) {
-        String retval = s;
-        switch (s.length()) {
-            case 1:
-                retval = "00" + s;
-                break;
-            case 2:
-                retval = "0" + s;
-                break;
-            case 3:
-                retval = s;
-                break;
-        }
-        return retval;
-    }
-    public void play() {
-
-        String filePath = "";
-
-        String path = getExternalFilesDir(null).getAbsolutePath();
-        String newpath = path + "/quran_audio/arabic/by_surah/murattal/1";
-        File directory = new File(path);
-        File[] files = directory.listFiles();
-        if(files!=null){
-            for (int i = 0; i < files.length; i++)
-            {
-                String trackname = files[i].getName();
-                if(trackname.contains(".")){
-                    trackname = trackname.substring(0, trackname.lastIndexOf("."));
-                    if(trackname.equals(suraNumber)){
-                        //filePath = new StringBuilder().append(path).append("/").append(trackname).append(".mp3").toString();
-                        filePath = newpath + "/" + prependZero(suraNumber) + ".mp3";
-                    }
-                }
-            }
-        }else{
-            //This surah is not available
-        }
-        filePath = newpath + "/" + prependZero(suraNumber) + ".mp3";
-        url = filePath;
-//        if(TrackDownloaded(suraNumber)){
-//            url = filePath;
-//        }else{
-//            Toast.makeText(this, "Online audio!", Toast.LENGTH_SHORT).show();
-//            url = new StringBuilder().append("https://mobilproject.github.io/furqon_web_express/by_sura/").append(suraNumber).append(".mp3").toString();
-//        }
-
-        if(!url.isEmpty()){
-            if (BuildConfig.BUILD_TYPE.equals("debug"))
-                Log.i("PLAY", url);
-
-
-            //resume();
-
-
-            if (mediaPlayer == null) {
-
-                mediaPlayer = new MediaPlayer();
-                mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    @Override
-                    public void onPrepared(MediaPlayer mediaPlayer) {
-                        //Furqon.ShowNotification(AyahList.this, R.drawable.ic_pause_circle, suranomi, audio_pos);
-                        seekBar.setMax(mediaPlayer.getDuration());
-                        progressBar.setVisibility(View.INVISIBLE);
-                        resume();
-
-                    }
-                });
-
-                try {
-                    mediaPlayer.setDataSource(url);
-                } catch (IOException iox) {
-                    if (BuildConfig.BUILD_TYPE.equals("debug"))
-                        Log.e("ERROR", iox.getMessage());
-                }
-                progressBar.setVisibility(View.VISIBLE);
-                mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
-
-
-            }
-//            else {
-//                Log.i(TAG, "Playing");
-//                if(isPlaying){
-//                    pause();
-//                }else{
-//                    mediaPlayer.release();
-//                    mediaPlayer = null;
-//                    //mediaPlayer.start();
-//                    //isPlaying = true;
-//                    //resume();
-//                }
-//            }
-            trackDownload = true;
-        }else{
-            final PopupWindow popupWindow = new PopupWindow(this);
-            View view = getLayoutInflater().inflate(R.layout.popup_hint, null);
-            popupWindow.setContentView(view);
-            popupWindow.showAtLocation(cl, 0, 0,0);
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    popupWindow.dismiss();
-                }
-            });
-            trackDownload = false;
-        }
-    }
-
-    private boolean TrackDownloaded(String v) {
-//        boolean retval = false;
-//        for (String i:trackList
-//        ) {
-//            if(i.equals(v)){
-//                //match found
-//                Log.i("TRACK DOWNLOADED?", String.valueOf(v) + " " + i + " " + (i.equals(v)));
-//                retval = true;
-//            }
-//
-//        }
-//        return retval;
-        v = prependZero(v);
-        boolean retval = false;
-        if (trackList != null) {
-            for (String i : trackList
-            ) {
-                if (i.equals(v)) {
-                    //match found
-                    if (BuildConfig.BUILD_TYPE.equals("debug"))
-                        Log.i("TRACK DOWNLOADED?", String.valueOf(v) + " " + i + " " + (i.equals(v)));
-                    retval = true;
-                }
-
-            }
-        }
-        return retval;
-    }
-
-
-    public void stop() {
-        if (BuildConfig.BUILD_TYPE.equals("debug"))
-            Log.i("STOP", "stop");
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-            mediaPlayer = null;
-            progressBar.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    public void pause() {
-        if (isPlaying) {
-            SharedPreferences.getInstance().write(suranomi, mediaPlayer.getCurrentPosition());
-            isPlaying = false;
-            stop();
-        }
-    }
-
-
-    public void resume() {
-
-        if (mediaPlayer != null) {
-            int audio_pos = SharedPreferences.getInstance().read(suranomi, 0);
-            if (audio_pos > 0 && audio_pos != mediaPlayer.getDuration()) {
-                mediaPlayer.seekTo(audio_pos);
-            } else {
-                SharedPreferences.getInstance().write(suranomi, 1);
-                mediaPlayer.seekTo(1);
-                Toast.makeText(getBaseContext(), audiorestore, Toast.LENGTH_SHORT).show();
-            }
-            mediaPlayer.start();
-            isPlaying = true;
-            playCycle();
-        }
-    }
-
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        pause();
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-            handler.removeCallbacks(runnable);
-        }
-        //mInterstitialAd.show();
-    }
-
-
     @Override
     public void UpdateSpecialItem(ChapterTextTable text) {
 
         titleViewModel.updateText(text);
 
     }
-/*
-    @Override
-    public void OnTrackPrevious() {
-
-    }
-
-    @Override
-    public void OnTrackPlay() {
-        //resume();
-        play();
-    }
-
-    @Override
-    public void OnTrackNext() {
-
-    }
-
-    @Override
-    public void OnTrackPause() {
-        //Furqon.ShowNotification(AyahList.this, R.drawable.ic_play_circle, suranomi, audio_pos);
-        //TODO just pause?
-        pause();
-    }*/
-
 
 }

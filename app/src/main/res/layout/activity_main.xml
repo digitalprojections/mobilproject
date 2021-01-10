@@ -40,44 +40,68 @@
                 android:contentDescription="@string/app_logo_description"
                 app:srcCompat="@drawable/ic_asset_32furqon_logo" />
 
-            <include
-                layout="@layout/chapter_button"
+            <TableLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_height="match_parent">
 
-            <include
-                layout="@layout/memorize_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
 
-            <!--            <include-->
-            <!--                layout="@layout/youtube_button"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_weight="1" />-->
+                    <include
+                        layout="@layout/button_chapter"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+                    <include
+                                    layout="@layout/button_memorize"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1" />
+                </TableRow>
 
-            <include
-                layout="@layout/rate_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
 
-            <include
-                layout="@layout/search_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                    <include
+                        layout="@layout/button_media"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
 
-            <include
-                layout="@layout/messages_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                    <include
+                        layout="@layout/button_search"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+                </TableRow>
 
-            <include
-                layout="@layout/media_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <include
+                        layout="@layout/button_messages"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <include
+                        layout="@layout/button_rate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                </TableRow>
+
+            </TableLayout>
+
+
+
+
+
+
 
 <!--            <include layout="@layout/about_button" />-->
 

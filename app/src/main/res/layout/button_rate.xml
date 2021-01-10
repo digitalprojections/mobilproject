@@ -1,11 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?><!--<Button android:id="@+id/mediabutton"-->
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--<Button android:id="@+id/ratebtn"-->
 <!--    style="@android:style/Widget.Button"-->
 <!--    android:layout_width="match_parent"-->
 <!--    android:layout_height="@android:dimen/app_icon_size"-->
 <!--    android:layout_marginStart="8dp"-->
 <!--    android:layout_marginEnd="8dp"-->
-<!--    android:gravity="center"-->
-<!--    android:text="@string/audio"-->
+<!--    android:text="@string/rate"-->
 <!--    android:textColor="#000000"-->
 <!--    android:textSize="24sp"-->
 <!--    android:typeface="serif"-->
@@ -19,7 +20,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/memorizebutton"
+        android:id="@+id/ratebtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardBackgroundColor="#000277BD"
@@ -28,22 +29,23 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:gravity="center|center_vertical"
+            android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/imageViewMemorize"
-                android:layout_margin="5dp"
+                android:id="@+id/imageViewRate"
                 android:layout_width="150dp"
-                android:layout_height="150dp" />
+                android:layout_height="150dp"
+                android:layout_margin="5dp"
+                app:srcCompat="@mipmap/star" />
 
             <TextView
-                android:id="@+id/textView10"
+                android:id="@+id/textView9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Memorize Quran"
+                android:text="@string/rate"
                 android:textAlignment="center"
                 android:textColor="@color/browser_actions_text_color"
                 android:textSize="24sp" />

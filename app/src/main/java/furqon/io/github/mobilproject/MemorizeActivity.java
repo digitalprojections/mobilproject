@@ -55,6 +55,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
@@ -131,6 +132,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     Timer myTimer = new Timer();
     long downloadId;
     private boolean RANGEISSHOWN;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -167,6 +169,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         sharedPreferences.init(getApplicationContext());
         //DONE restore the last state
         //There was a surah selected
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         scaler = AnimationUtils.loadAnimation(this, R.anim.bounce);
 
@@ -364,6 +368,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
+        Bundle bundle = new Bundle();
         switch (v.getId()) {
             case R.id.dec_start:
                 adjustHighLowStart(-1);
@@ -384,6 +389,12 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 adjustRepeat(1);
                 break;
             case R.id.play_verse:
+
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "play_verse");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "play");
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "audio");
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
                 if(isPlaying){
                     stop();
                 }
@@ -393,6 +404,10 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 }
                 break;
             case R.id.play_mode:
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "play_mode");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "play mode, repeat one " + repeatOne);
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "audio");
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
                 repeatOne=!repeatOne;
                 setPlayMode();
                 break;
@@ -499,6 +514,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void loadRange() {
+
         ARG.setSuraName(String.valueOf(lastSurahIndex+1));
         sharedPreferences.write(lastSurahIndex + "_start", startAyahNumber);
         sharedPreferences.write(lastSurahIndex + "_end", endAyahNumber);

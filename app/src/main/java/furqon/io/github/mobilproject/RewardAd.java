@@ -114,7 +114,7 @@ public class RewardAd{
                     SharedPreferences.getInstance().write(SharedPreferences.PREVIOUS_SET, String.valueOf(c.getTime()));
                 } else {
                     int coins = (int) (rewardItem.getAmount() * mFireBaseConfig.getLong("rewardad_multiplier"));
-                    SharedPreferences.AddCoins(mContext, coins);
+                    //SharedPreferences.AddCoins(mContext, coins);
                     ManageCoins manageCoins;
                     manageCoins = (ManageCoins) mContext;
                     manageCoins.SetCoinValues();

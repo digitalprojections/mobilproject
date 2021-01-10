@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.Application;
 import android.app.DownloadManager;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
@@ -996,7 +997,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Play
                             .setAllowedOverRoaming(true);
                 }
 
-                if (mSharedPref.read(SharedPreferences.SIGNATURE, "ERROR").equals("OK")) {
+//                if (mSharedPref.read(SharedPreferences.SIGNATURE, "ERROR").equals("OK")) {
                     if (isNetworkAvailable()) {
 
 
@@ -1047,10 +1048,12 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Play
                         if (BuildConfig.BUILD_TYPE.equals("debug"))
                             Log.i(TAG, "NO NETWORK");
                     }
-                } else {
-                    if (BuildConfig.BUILD_TYPE.equals("debug"))
-                        Log.i(TAG, "NO SIGNATURE");
-                }
+//                } else {
+//                    if (BuildConfig.BUILD_TYPE.equals("debug"))
+//                        Log.i(TAG, "NO SIGNATURE");
+//
+//
+//                }
 
             }  //path is incomplete
 
@@ -1401,7 +1404,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Play
                 break;
             case R.id.mp_imageButton_pl:
                 //playlist view
-                current_track_tv.setText("");
+                if(!isPlaying)
+                    current_track_tv.setText("");
                 mAdapter.setDownload_view(false);
 
 //                bouncer = new AnimatorSet();

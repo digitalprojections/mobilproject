@@ -111,4 +111,6 @@
     <string name="downloading_audio">"Downloading ayah: "</string>
     <string name="click_ayah">Download audio files. Click any ayah</string>
     <string name="seeTranslations">open the app for more</string>
+    <string name="anonymous">You are signed in Anonimously, please, use sign in</string>
+    <string name="unavailable">not available</string>
 </resources>

@@ -107,4 +107,7 @@
     <string name="choose_a_portion_of_surah_with_starting_and_ending_ayats">Oyatning boshlanishi va tugashini tanlang</string>
     <string name="downloading_audio">Yuklanayotgan audio:</string>
     <string name="click_ayah">Audio fayllarni yuklab oling. Ixtiyoriy oyatni bosing</string>
+    <string name="seeTranslations">Qo\'shimcha ma\'lumot olish uchun ilovasini ochish</string>
+    <string name="anonymous">Siz anonim tarzda tizimga kirgansiz, iltimos, tugmani bosing</string>
+    <string name="unavailable">mavjud emas</string>
 </resources>

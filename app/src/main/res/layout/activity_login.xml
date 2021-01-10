@@ -44,14 +44,13 @@
         android:text="TextView"
         android:textAlignment="center" />
 
-    <!--        <Button-->
-    <!--            android:id="@+id/sign_out_button"-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:text="Sign Out"-->
-    <!--            android:visibility="gone"-->
-    <!--            style="FirebaseUI.Button.AccountChooser.GoogleButton">-->
-    <!--        </Button>-->
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/sign_out_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="FirebaseUI.Button.AccountChooser.GoogleButton">
+            </com.google.android.gms.common.SignInButton>
+
     <Space
         android:layout_width="match_parent"
         android:layout_height="10dp"
