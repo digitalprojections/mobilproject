@@ -107,7 +107,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="fill_vertical"
+        android:gravity="center"
         android:orientation="horizontal"
         android:paddingTop="4dp"
         android:paddingBottom="8dp">
@@ -125,14 +125,12 @@
 
         <TextView
             android:id="@+id/repeat_count_tv"
-            android:layout_width="6dp"
-            android:layout_height="101dp"
-            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:background="@drawable/ic_baseline_repeat_24"
             android:gravity="center"
-            android:maxWidth="48dp"
-            android:minHeight="48dp"
-            android:shadowColor="#F44336"
+            android:padding="25dp"
             android:shadowDx="5"
             android:shadowDy="5"
             android:singleLine="true"

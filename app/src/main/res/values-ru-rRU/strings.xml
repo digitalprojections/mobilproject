@@ -110,4 +110,6 @@
     <string name="seeTranslations">откройте приложение, чтобы узнать больше</string>
     <string name="anonymous">Вы вошли в систему Анонимно, пожалуйста, используйте вход</string>
     <string name="unavailable">недоступен</string>
+    <string name="memorize_quran">Выучить Коран</string>
+    <string name="yod_oling_img">Выучить Коран</string>
 </resources>

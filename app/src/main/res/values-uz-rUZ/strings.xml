@@ -110,4 +110,6 @@
     <string name="seeTranslations">Qo\'shimcha ma\'lumot olish uchun ilovasini ochish</string>
     <string name="anonymous">Siz anonim tarzda tizimga kirgansiz, iltimos, tugmani bosing</string>
     <string name="unavailable">mavjud emas</string>
+    <string name="memorize_quran">Qur\'on Yodlash</string>
+    <string name="yod_oling_img">Qur\'on Yodlash</string>
 </resources>

@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mem_main_lin_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#C8E6C9"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/mem_left_side_ll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/starting_and_ending_ayats"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/choose_a_portion_of_surah_with_starting_and_ending_ayats"
+                android:textSize="12sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp">
+
+                <ImageButton
+                    android:id="@+id/inc_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/memorize_custom_button"
+                    android:clickable="true"
+                    android:contentDescription="@string/increase_the_value"
+                    android:focusable="true"
+                    app:srcCompat="@drawable/ic_baseline_add_24" />
+
+                <TextView
+                    android:id="@+id/start_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:text="1"
+                    android:textAlignment="center"
+                    android:textSize="24sp" />
+
+                <ImageButton
+                    android:id="@+id/dec_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/memorize_custom_button"
+                    android:clickable="true"
+                    android:contentDescription="@string/decrease_the_value"
+
+                    android:focusable="true"
+                    app:srcCompat="@drawable/ic_baseline_remove_24" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp">
+
+                <ImageButton
+                    android:id="@+id/dec_end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/memorize_custom_button"
+                    android:clickable="true"
+                    android:contentDescription="@string/decrease_the_value"
+                    android:focusable="true"
+                    app:srcCompat="@drawable/ic_baseline_remove_24" />
+
+                <TextView
+                    android:id="@+id/end_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:text="2"
+                    android:textAlignment="center"
+                    android:textSize="24sp" />
+
+                <ImageButton
+                    android:id="@+id/inc_end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/memorize_custom_button"
+                    android:clickable="true"
+                    android:contentDescription="@string/increase_the_value"
+                    android:focusable="true"
+                    app:srcCompat="@drawable/ic_baseline_add_24" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp">
+
+                <ImageButton
+                    android:id="@+id/dec_repeat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/memorize_custom_button"
+                    android:clickable="true"
+                    android:contentDescription="@string/decrease_repeat_count"
+                    android:focusable="true"
+                    app:srcCompat="@drawable/ic_baseline_remove_24" />
+
+                <TextView
+                    android:id="@+id/repeat_count_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/ic_baseline_repeat_24"
+                    android:gravity="center"
+                    android:shadowDx="5"
+                    android:shadowDy="5"
+                    android:singleLine="true"
+                    android:text="10"
+                    android:textAlignment="center"
+                    android:textColor="@color/gold"
+                    android:textSize="36sp"
+                    android:textStyle="bold" />
+
+                <ImageButton
+                    android:id="@+id/inc_repeat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/memorize_custom_button"
+                    android:clickable="true"
+                    android:contentDescription="@string/increase_repeat_count"
+                    android:focusable="true"
+                    app:srcCompat="@drawable/ic_baseline_add_24" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp">
+
+                <ImageButton
+                    android:id="@+id/play_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#00FFFFFF"
+                    android:contentDescription="play mode change"
+                    android:padding="5dp"
+                    app:srcCompat="@drawable/ic_looks_one_black_24dp" />
+
+                <ImageButton
+                    android:id="@+id/play_verse"
+                    style="@style/Widget.AppCompat.ImageButton"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:background="@drawable/custom_ripple"
+                    android:contentDescription="@string/play"
+                    app:srcCompat="@drawable/ic_play_circle" />
+
+                <ImageButton
+                    android:id="@+id/refresh_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/memorize_custom_button"
+                    android:clickable="true"
+                    android:contentDescription="@string/refresh"
+                    android:focusable="true"
+                    android:padding="5dp"
+                    android:visibility="visible"
+                    app:srcCompat="@drawable/ic_baseline_refresh_24" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="4dp"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:id="@+id/mem_right_side_ll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <Spinner
+                android:id="@+id/surah_spinner"
+                style="@android:style/Widget.DeviceDefault.Spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/suranames"
+                android:minHeight="48dp" />
+
+            <ProgressBar
+                android:id="@+id/progressBarMemorize"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/memorize_range_rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fadingEdge="horizontal"
+                android:fadingEdgeLength="15dp"
+                tools:listitem="@layout/memorize_ayat_item" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

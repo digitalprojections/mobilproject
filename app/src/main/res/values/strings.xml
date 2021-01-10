@@ -113,4 +113,6 @@
     <string name="seeTranslations">open the app for more</string>
     <string name="anonymous">You are signed in Anonimously, please, use sign in</string>
     <string name="unavailable">not available</string>
+    <string name="memorize_quran">Memorize Quran</string>
+    <string name="yod_oling_img">yod olish sahifasi</string>
 </resources>

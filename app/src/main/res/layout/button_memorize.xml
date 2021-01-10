@@ -36,14 +36,15 @@
                 android:id="@+id/imageViewMemorize"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:layout_margin="5dp" />
+                android:layout_margin="5dp"
+                android:contentDescription="@string/yod_oling_img" />
 
             <TextView
                 android:id="@+id/textView10"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_weight="1"
-                android:text="Memorize Quran"
+                android:text="@string/memorize_quran"
                 android:textAlignment="center"
                 android:textColor="@color/browser_actions_text_color"
                 android:textSize="24sp" />
