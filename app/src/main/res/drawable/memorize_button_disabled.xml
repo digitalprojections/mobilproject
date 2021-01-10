@@ -7,9 +7,7 @@
         android:type="linear"
         android:startColor="#CCC"
         android:endColor="#7E7E7E" />
-    <stroke
-        android:color="#80CBC4"
-        android:width="1dp" />
+
     <padding
         android:bottom="8dp"
         android:left="8dp"

@@ -42,15 +42,16 @@
                 android:paddingBottom="4dp">
 
                 <ImageButton
-                    android:id="@+id/inc_start"
+                    android:id="@+id/dec_start"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/memorize_custom_button"
                     android:clickable="true"
-                    android:contentDescription="@string/increase_the_value"
+                    android:contentDescription="@string/decrease_the_value"
+
                     android:focusable="true"
-                    app:srcCompat="@drawable/ic_baseline_add_24" />
+                    app:srcCompat="@drawable/ic_baseline_remove_24" />
 
                 <TextView
                     android:id="@+id/start_tv"
@@ -64,16 +65,16 @@
                     android:textSize="24sp" />
 
                 <ImageButton
-                    android:id="@+id/dec_start"
+                    android:id="@+id/inc_start"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/memorize_custom_button"
                     android:clickable="true"
-                    android:contentDescription="@string/decrease_the_value"
-
+                    android:contentDescription="@string/increase_the_value"
                     android:focusable="true"
-                    app:srcCompat="@drawable/ic_baseline_remove_24" />
+                    app:srcCompat="@drawable/ic_baseline_add_24" />
+
             </LinearLayout>
 
             <LinearLayout

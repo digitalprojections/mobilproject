@@ -159,7 +159,8 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
         audio_but.setOnClickListener(this);
         //about_but.setOnClickListener(this);
         //coins_but.setOnClickListener(this);
-        vip_but.setOnClickListener(this);
+        vip_but.setVisibility(View.GONE);
+        //vip_but.setOnClickListener(this);
 
 //        if (mSharedPref.contains(mSharedPref.XATCHUP)) {
 //            davomi_but.setVisibility(View.VISIBLE);

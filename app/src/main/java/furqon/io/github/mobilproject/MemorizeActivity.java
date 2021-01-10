@@ -784,23 +784,28 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     repeatCountInteger--;//minus 1
                     repeatValue.setText(String.valueOf(repeatCountInteger));
                     repeatValue.startAnimation(scaler);
-                    if(repeatCountInteger>1){
+                    if(repeatCountInteger>0){
                         rv=ARG.makeAyahRefName(startAyahNumber);
                     }
                 }else{
                     vn=vn+1;
+                    rv=String.valueOf(vn);
+                    rv=ARG.makeAyahRefName(rv);
                 }
-
-                rv=String.valueOf(vn);
-                rv=ARG.makeAyahRefName(rv);
             }else{
                 repeatCountInteger--;//minus 1
                 repeatValue.setText(String.valueOf(repeatCountInteger));
                 repeatValue.startAnimation(scaler);
-                if(repeatCountInteger>0){
-                    rv=ARG.makeAyahRefName(startAyahNumber);
-                }
 
+                if(repeatOne){
+                    if(repeatCountInteger>0){
+                        rv=ARG.makeAyahRefName(vn);
+                    }
+                }else{
+                    if(repeatCountInteger>0){
+                        rv=ARG.makeAyahRefName(startAyahNumber);
+                    }
+                }
             }
 
         }
