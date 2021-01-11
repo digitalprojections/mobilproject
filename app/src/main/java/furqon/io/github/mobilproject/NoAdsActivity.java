@@ -6,18 +6,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.ConsumeParams;
 import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
-import com.android.billingclient.api.SkuDetailsParams;
-import com.android.billingclient.api.SkuDetailsResponseListener;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -31,7 +28,7 @@ public class NoAdsActivity extends AppCompatActivity implements PurchasesUpdated
     private ConsumeResponseListener consumeResponseListener;
 
     private final String SKU_MONTHLY = "product_monthly";
-    private final String SKU_YEARLY = "no_ads_forever";
+    private final String SKU_PERMANENT = "no_ads_forever";
     private ArrayList<SkuDetails> skuDetailsList;
     private BillingClient billingClient;
     private ConstraintLayout container;
@@ -80,7 +77,14 @@ public class NoAdsActivity extends AppCompatActivity implements PurchasesUpdated
     }
 
     private void handleItemsAlreadPurchased(List<Purchase> purchases) {
-
+        for (Purchase purchase:purchases){
+            if(purchase.getSku().equals(SKU_PERMANENT)){
+                ConsumeParams consumeParams = ConsumeParams.newBuilder()
+                        .setPurchaseToken(purchase.getPurchaseToken())
+                        .build();
+                billingClient.consumeAsync(consumeParams, consumeResponseListener);
+            }
+        }
     }
 
     @Override
