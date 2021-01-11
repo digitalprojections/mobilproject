@@ -74,11 +74,6 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
     private boolean randomayahshown;
 
     private FirebaseFunctions mFunctions;
-    private PurchasesUpdatedListener purchasesUpdatedListener;
-    private BillingClient billingClient;
-    private final String SKU_MONTHLY = "monthly_no_ads";
-    private final String SKU_YEARLY = "permanent_no_ads";
-    private ArrayList<SkuDetails> skuDetailsList;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -159,8 +154,8 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
         audio_but.setOnClickListener(this);
         //about_but.setOnClickListener(this);
         //coins_but.setOnClickListener(this);
-        vip_but.setVisibility(View.GONE);
-        //vip_but.setOnClickListener(this);
+        //vip_but.setVisibility(View.GONE);
+        vip_but.setOnClickListener(this);
 
 //        if (mSharedPref.contains(mSharedPref.XATCHUP)) {
 //            davomi_but.setVisibility(View.VISIBLE);
@@ -193,7 +188,7 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
 
 
 
-        skuDetailsList = new ArrayList<SkuDetails>();
+
 
     }
 
@@ -409,69 +404,8 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
     }
 
     private void iapInit() {
-        if (billingClient != null) {
-            billingClient.endConnection();
-            billingClient = null;
-        }
-
-        if (purchasesUpdatedListener == null) {
-            purchasesUpdatedListener = new PurchasesUpdatedListener() {
-                @Override
-                public void onPurchasesUpdated(@NonNull BillingResult var1, @Nullable List<Purchase> var2) {
-                    Log.d("IAPDEMO", "onPurchasesUpdated:" + var1.getDebugMessage());
-                    if (var2 != null) {
-                        for (Purchase purchase : var2) {
-                            Log.d("IAPDEMO", "onPurchasesUpdated:" + purchase);
-                        }
-                    }
-                }
-            };
-        }
-
-        billingClient = BillingClient.newBuilder(this)
-                .setListener(purchasesUpdatedListener)
-                .enablePendingPurchases()
-                .build();
-
-        if (billingClient == null) {
-            Log.d("IAPDEMO", "failed to init billingClient");
-            return;
-        }
-
-        billingClient.startConnection(new BillingClientStateListener() {
-            @Override
-            public void onBillingSetupFinished(@NonNull BillingResult var1) {
-                Log.d("IAPDEMO", "onBillingSetupFinished:" + var1.getDebugMessage());
-            }
-
-            @Override
-            public void onBillingServiceDisconnected() {
-                Log.d("IAPDEMO", "onBillingServiceDisconnected");
-            }
-        });
-    }
-
-    private void iapList() {
-        SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
-        ArrayList<String> skuList = new ArrayList<String>();
-        skuList.add(SKU_MONTHLY);
-        skuList.add(SKU_YEARLY);
-        params.setSkusList(skuList).setType(BillingClient.SkuType.SUBS);
-
-        SkuDetailsResponseListener listener = new SkuDetailsResponseListener()  {
-            @Override
-            public void onSkuDetailsResponse(@NonNull BillingResult var1, @Nullable List<SkuDetails> var2) {
-                Log.d("IAPDEMO", "onSkuDetailsResponse:" + var1.getDebugMessage());
-                skuDetailsList.clear();
-                if (var2 != null) {
-                    for (SkuDetails sku : var2) {
-                        Log.d("IAPDEMO", "onSkuDetailsResponse:" + sku);
-                        skuDetailsList.add(sku);
-                    }
-                }
-            }
-        };
-        billingClient.querySkuDetailsAsync(params.build(), listener);
+        Intent intent = new Intent(this, NoAdsActivity.class);
+        startActivity(intent);
     }
 
 
