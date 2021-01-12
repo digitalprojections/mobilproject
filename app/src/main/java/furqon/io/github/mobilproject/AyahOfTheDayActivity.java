@@ -366,27 +366,30 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
                 .addOnCompleteListener((Activity) mContext, new OnCompleteListener<ShortDynamicLink>() {
                     @Override
                     public void onComplete(@NonNull Task<ShortDynamicLink> task) {
-                        if (task.isSuccessful()) {
-                            // Short link created
-                            Uri shortLink = task.getResult().getShortLink();
-                            Uri flowchartLink = task.getResult().getPreviewLink();
-                            //Log.d(TAG, shortLink + " short dynamic link");
-                            Intent sendIntent = new Intent();
-                            sendIntent.setAction(Intent.ACTION_SEND);
-                            sendIntent.putExtra(Intent.EXTRA_TEXT, ayah_text.getText() + "\n(" + QuranMap.SURAHNAMES[random_surah-1] + ", " + random_ayah + ")\n"+shortLink+"\n"+ mContext.getResources().getText(R.string.seeTranslations));
-                            sendIntent.setType("text/plain");
-                            mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.shareayah)));
-                            Log.d(TAG, "manual link: " + ayah_text.getText() + "\n(" + QuranMap.SURAHNAMES[random_surah-1] + ", " + random_ayah + ")\n"+ shortLink +"\n"+ mContext.getResources().getText(R.string.seeTranslations));
-                        } else {
-                            // Error
-                            // ...
-                            Intent sendIntent = new Intent();
-                            sendIntent.setAction(Intent.ACTION_SEND);
-                            sendIntent.putExtra(Intent.EXTRA_TEXT, ayah_text.getText() + "\n(" + QuranMap.SURAHNAMES[random_surah-1] + ", " + random_ayah + ")\nhttps://goo.gl/sXBkNt\n"+ mContext.getResources().getText(R.string.seeTranslations));
-                            sendIntent.setType("text/plain");
-                            mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.shareayah)));
-                            Log.d(TAG, "manual link: " + ayah_text.getText() + "\n(" + QuranMap.SURAHNAMES[random_surah-1] + ", " + random_ayah + ")\n"+ mContext.getResources().getText(R.string.seeTranslations));
+                        if(random_surah>=0 && random_ayah>=0){
+                            if (task.isSuccessful()) {
+                                // Short link created
+                                Uri shortLink = task.getResult().getShortLink();
+                                Uri flowchartLink = task.getResult().getPreviewLink();
+                                //Log.d(TAG, shortLink + " short dynamic link");
+                                Intent sendIntent = new Intent();
+                                sendIntent.setAction(Intent.ACTION_SEND);
+                                sendIntent.putExtra(Intent.EXTRA_TEXT, ayah_text.getText() + "\n(" + QuranMap.SURAHNAMES[random_surah-1] + ", " + random_ayah + ")\n"+shortLink+"\n"+ mContext.getResources().getText(R.string.seeTranslations));
+                                sendIntent.setType("text/plain");
+                                mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.shareayah)));
+                                Log.d(TAG, "manual link: " + ayah_text.getText() + "\n(" + QuranMap.SURAHNAMES[random_surah-1] + ", " + random_ayah + ")\n"+ shortLink +"\n"+ mContext.getResources().getText(R.string.seeTranslations));
+                            } else {
+                                // Error
+                                // ...
+                                Intent sendIntent = new Intent();
+                                sendIntent.setAction(Intent.ACTION_SEND);
+                                sendIntent.putExtra(Intent.EXTRA_TEXT, ayah_text.getText() + "\n(" + QuranMap.SURAHNAMES[random_surah-1] + ", " + random_ayah + ")\nhttps://goo.gl/sXBkNt\n"+ mContext.getResources().getText(R.string.seeTranslations));
+                                sendIntent.setType("text/plain");
+                                mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.shareayah)));
+                                Log.d(TAG, "manual link: " + ayah_text.getText() + "\n(" + QuranMap.SURAHNAMES[random_surah-1] + ", " + random_ayah + ")\n"+ mContext.getResources().getText(R.string.seeTranslations));
+                            }
                         }
+                        
                     }
                 });
     }
