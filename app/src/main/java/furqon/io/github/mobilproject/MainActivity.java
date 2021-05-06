@@ -1,5 +1,6 @@
 package furqon.io.github.mobilproject;
-import android.app.Activity;
+
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,30 +14,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.lifecycle.ViewModelStore;
 
-import com.android.billingclient.api.BillingClient;
-import com.android.billingclient.api.BillingClientStateListener;
-import com.android.billingclient.api.BillingResult;
-import com.android.billingclient.api.Purchase;
-import com.android.billingclient.api.PurchasesUpdatedListener;
-import com.android.billingclient.api.SkuDetails;
-import com.android.billingclient.api.SkuDetailsParams;
-import com.android.billingclient.api.SkuDetailsResponseListener;
-import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
-import com.google.android.play.core.review.model.ReviewErrorCode;
 import com.google.android.play.core.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.appindexing.Action;
@@ -46,12 +40,9 @@ import com.google.firebase.functions.FirebaseFunctions;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-
-import hotchemi.android.rate.AppRate;
 
 import static furqon.io.github.mobilproject.BuildConfig.BUILD_TYPE;
 
@@ -76,7 +67,7 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
     ImageView imageView;
     private Handler handler;
     // Try to use more data here. ANDROID_ID is a single point of attack.
-    InterstitialAd mInterstitialAd = new InterstitialAd(this);
+    InterstitialAd mInterstitialAd;
     private FirebaseAnalytics mFirebaseAnalytics;
     private static final String TAG = "MainActivity";
     private static final String DEEP_LINK_URL = "https://furqon.page.link/ThB2";
@@ -102,12 +93,36 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
             public void onInitializationComplete(InitializationStatus initializationStatus) {
             }
         });
+
+        FullScreenContentCallback fullScreenContentCallBack = new FullScreenContentCallback() {
+            @Override
+            public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                super.onAdFailedToShowFullScreenContent(adError);
+            }
+
+            @Override
+            public void onAdShowedFullScreenContent() {
+                super.onAdShowedFullScreenContent();
+            }
+
+            @Override
+            public void onAdDismissedFullScreenContent() {
+                super.onAdDismissedFullScreenContent();
+            }
+
+            @Override
+            public void onAdImpression() {
+                super.onAdImpression();
+            }
+        };
+
         if (BUILD_TYPE.equals("debug")) {
-            mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+            ShowInterStitial(this, "ca-app-pub-3940256099942544/1033173712", fullScreenContentCallBack);
         } else {
-            if(mInterstitialAd!=null)
-                        mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
+            ShowInterStitial(this, "ca-app-pub-3838820812386239/2551267023", fullScreenContentCallBack);
         }
+
+
         reviewManager = ReviewManagerFactory.create(this);
 
 
@@ -204,13 +219,29 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
             Log.i(TAG, Locale.getDefault().getDisplayLanguage());
 
 
-
-
-
     }
 
 
+    void ShowInterStitial(Context context, String id, FullScreenContentCallback fullScreenContentCallBack) {
+        InterstitialAd.load(
+                context,
+                id,
+                new AdRequest.Builder().build(),
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        mInterstitialAd = interstitialAd;
+                        mInterstitialAd.setFullScreenContentCallback(fullScreenContentCallBack);
+                    }
 
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        super.onAdFailedToLoad(loadAdError);
+                    }
+                }
+
+        );
+    }
 
 
 
