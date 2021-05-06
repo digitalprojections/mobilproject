@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -310,7 +311,8 @@ public class SuraNameList extends AppCompatActivity {
         titleViewModel.getAllTitles().observe(this, new Observer<List<ChapterTitleTable>>() {
             @Override
             public void onChanged(@Nullable List<ChapterTitleTable> surahTitles) {
-                //Toast.makeText(SuraNameList.this, "LOADING TITLES " + surahTitles.size(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(SuraNameList.this, "TITLES " + surahTitles.size(), Toast.LENGTH_LONG).show();
+                Log.d(TAG, surahTitles.size() + " sura titles");
                 if (surahTitles.size() != 114) {
                     //tempbut.setVisibility(View.VISIBLE);
                     if (!download_attempted) {

@@ -10,7 +10,7 @@
         tools:Context=".ToolbarMenu"/>
     <item
         android:id="@+id/noads_item"
-        android:icon="@drawable/ic_do_not_disturb_on_black_24dp"
+        android:icon="@drawable/ic_baseline_card_giftcard_24"
         android:title="@string/noads_button_label"
         app:showAsAction="ifRoom"
         tools:Context=".ToolbarMenu"/>
