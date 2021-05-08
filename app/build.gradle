@@ -6,7 +6,7 @@ android {
     signingConfigs {
         debug {
             //storeFile file('C:\\Users\\ahmad\\Documents\\GitHub\\mobilproject\\keystore.private')
-            storeFile file('C:\\Users\\denta\\Documents\\GitHub\\mobilproject\\keystore.private')
+            storeFile file('C:\\Users\\denta\\OneDrive\\Documents\\GitHub\\mobilproject\\keystore.private')
             //storeFile file('C:\\Users\\aj\\Documents\\GitHub\\mobilproject\\keystore.private')
             storePassword '1285422'
             keyAlias = 'baa'
@@ -16,7 +16,7 @@ android {
             storePassword '1285422'
             keyAlias = 'baa'
             keyPassword '1285422'
-            storeFile file('C:\\Users\\denta\\Documents\\GitHub\\mobilproject\\keystore.private')
+            storeFile file('C:\\Users\\denta\\OneDrive\\Documents\\GitHub\\mobilproject\\keystore.private')
             //storeFile file('C:\\Users\\ahmad\\Documents\\GitHub\\mobilproject\\keystore.private')
         }
     }
@@ -42,11 +42,13 @@ android {
             //TODO check if this fixes the issue java.lang.ClassNotFoundException
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             multiDexKeepFile file('multidex-config.txt')
+            signingConfig signingConfigs.release
 
         }
         debug {
 
             debuggable true
+            signingConfig signingConfigs.debug
         }
     }
 
