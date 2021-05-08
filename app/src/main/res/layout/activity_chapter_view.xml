@@ -9,7 +9,6 @@
     android:animateLayoutChanges="true"
     android:background="@color/colorPrimary"
     android:foregroundGravity="center_horizontal"
-    android:keepScreenOn="true"
     tools:context=".AyahListActivity">
 
 

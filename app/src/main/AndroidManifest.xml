@@ -50,7 +50,7 @@
         <activity
             android:name=".MemorizeActivity"
             android:label="Memorize by Ayats"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"></activity>
         <activity
             android:name=".MessageView"
             android:parentActivityName=".MessageList" />
@@ -95,7 +95,7 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".AyahListActivity"
-            android:parentActivityName=".SuraNameList" />
+            android:parentActivityName=".SuraNameList"></activity>
         <activity
             android:name=".Favourites"
             android:parentActivityName=".MainActivity" />

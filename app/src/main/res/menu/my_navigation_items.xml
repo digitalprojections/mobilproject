@@ -8,7 +8,7 @@
         android:enabled="true"
         android:icon="@drawable/ic_turned_in_black_24dp"
         android:title="@string/bookmark_found"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/play"
         android:checkable="false"
@@ -16,12 +16,5 @@
         android:icon="@drawable/ic_play_circle"
         android:title=""
         app:showAsAction="always" />
-    <item
-        android:id="@+id/settings_menu"
-        android:checkable="false"
-        android:enabled="true"
-        android:icon="@drawable/ic_settings_black_24dp"
-        android:title=""
-        app:showAsAction="ifRoom" />
 
 </menu>

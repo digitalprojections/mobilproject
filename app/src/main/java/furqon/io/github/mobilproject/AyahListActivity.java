@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -208,7 +207,6 @@ public class AyahListActivity extends AppCompatActivity implements ManageSpecial
 
     }
 
-
     private void LoadSurah() {
 
         if (BuildConfig.BUILD_TYPE.equals("debug"))
@@ -310,7 +308,7 @@ public class AyahListActivity extends AppCompatActivity implements ManageSpecial
                 //Toast.makeText(SuraNameList.this, "LOADING TITLES " + surahTitles.size(), Toast.LENGTH_LONG).show();
                 int sc = getSurahLength(suraNumber);
                 if (BuildConfig.BUILD_TYPE.equals("debug"))
-                    Log.e(TAG, sc + " SURAH AYAH COUNT " + surahText.size());
+                    Log.e("SURAH AYAH COUNT", sc + " " +surahText.size());
                 if(surahText.size()!=sc){
                     if(!httpresponse) {
                         if(surahText.size()!=0){
@@ -396,11 +394,8 @@ public class AyahListActivity extends AppCompatActivity implements ManageSpecial
 //                }
                 return true;
             case R.id.menu_bookmark_button:
-                recyclerView.scrollToPosition(ayah_position - 1);
+                recyclerView.scrollToPosition(ayah_position-1);
                 return true;
-            case R.id.settings_menu:
-                Intent intent2 = new Intent(context, Settings.class);
-                startActivity(intent2);
             default:
                 return super.onOptionsItemSelected(item);
         }

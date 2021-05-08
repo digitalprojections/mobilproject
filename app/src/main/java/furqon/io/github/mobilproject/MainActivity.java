@@ -1,5 +1,4 @@
 package furqon.io.github.mobilproject;
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,16 +9,13 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.lifecycle.ViewModelStore;
 
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
@@ -33,11 +29,6 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.google.android.play.core.review.ReviewInfo;
-import com.google.android.play.core.review.ReviewManager;
-import com.google.android.play.core.review.ReviewManagerFactory;
-import com.google.android.play.core.review.model.ReviewErrorCode;
-import com.google.android.play.core.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.appindexing.Action;
 import com.google.firebase.appindexing.FirebaseUserActions;
@@ -57,8 +48,7 @@ import static furqon.io.github.mobilproject.BuildConfig.BUILD_TYPE;
 
 public class MainActivity extends OptionsMenuActivity implements View.OnClickListener {
     Uri deepLink;
-    ReviewManager reviewManager;
-    ReviewInfo reviewInfo;
+
     CardView suralar_but;
     CardView memorize_but;
     //CardView davomi_but;
@@ -108,7 +98,6 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
             if(mInterstitialAd!=null)
                         mInterstitialAd.setAdUnitId("ca-app-pub-3838820812386239/2551267023");
         }
-        reviewManager = ReviewManagerFactory.create(this);
 
 
         handler = new Handler();
@@ -119,13 +108,7 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
         message_but = findViewById(R.id.messageButton);
         nbadge = findViewById(R.id.numeric_badge_txt);
         nbadge.bringToFront();
-        TitleViewModel titleViewModel;
-        (titleViewModel = ViewModelProvider(this, ViewModelProvider).get(TitleViewModel.class)) instanceof
-        () ? ((())
-        (titleViewModel = ViewModelProvider(this, ViewModelProvider).get(TitleViewModel.class))) :
-        null;
-        ;
-
+        TitleViewModel titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
 
         scaler = AnimationUtils.loadAnimation(this, R.anim.bounce);
         titleViewModel.getUnreadCount().observe(this, new Observer<List<NewMessages>>() {
@@ -154,7 +137,7 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
         Picasso.get().load(R.mipmap.read).into((ImageView) findViewById(R.id.imageViewSuralar));
         Picasso.get().load(R.mipmap.messages).into((ImageView) findViewById(R.id.imageViewMessages));
         Picasso.get().load(R.mipmap.bookmarkjpg).into((ImageView) findViewById(R.id.imageViewMemorize));
-        Picasso.get().load(R.mipmap.chat).into((ImageView) findViewById(R.id.imageViewRate));
+        Picasso.get().load(R.mipmap.star).into((ImageView) findViewById(R.id.imageViewRate));
         Picasso.get().load(R.mipmap.audio).into((ImageView) findViewById(R.id.imageViewMedia));
         Picasso.get().load(R.mipmap.ic_vip_foreground).into((ImageView) findViewById(R.id.NoAdsimageView));
         //Picasso.get().load(R.mipmap.search).into((ImageView) findViewById(R.id.imageViewSearch));
@@ -307,35 +290,7 @@ public class MainActivity extends OptionsMenuActivity implements View.OnClickLis
 
 
     private void Rateus() {
-        //AppRate.with(this).showRateDialog(this);
-
-
-        Task<ReviewInfo> request = reviewManager.requestReviewFlow();
-        request.addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                // We can get the ReviewInfo object
-                ReviewInfo reviewInfo = task.getResult();
-
-                Task<Void> flow = reviewManager.launchReviewFlow(this, reviewInfo);
-
-                if (flow.isSuccessful()) {
-
-                    flow.addOnCompleteListener(task1 -> {
-                        // The flow has finished. The API does not indicate whether the user
-                        // reviewed or not, or even whether the review dialog was shown. Thus, no
-                        // matter the result, we continue our app flow.
-                    });
-                } else {
-                    Toast.makeText(getBaseContext(), "Please, check later", Toast.LENGTH_LONG).show();
-                }
-            } else {
-                // There was some problem, continue regardless of the result.
-                // show native rate app dialog on error
-                //showRateAppFallbackDialog();
-                Toast.makeText(getBaseContext(), "Please, check later", Toast.LENGTH_LONG).show();
-            }
-        });
-        Log.d(TAG, request.toString());
+        AppRate.with(this).showRateDialog(this);
     }
 
 
