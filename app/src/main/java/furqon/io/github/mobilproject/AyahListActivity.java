@@ -308,7 +308,7 @@ public class AyahListActivity extends AppCompatActivity implements ManageSpecial
                 //Toast.makeText(SuraNameList.this, "LOADING TITLES " + surahTitles.size(), Toast.LENGTH_LONG).show();
                 int sc = getSurahLength(suraNumber);
                 if (BuildConfig.BUILD_TYPE.equals("debug"))
-                    Log.e("SURAH AYAH COUNT", sc + " " +surahText.size());
+                    Log.e(TAG, sc + " SURAH AYAH COUNT " + surahText.size());
                 if(surahText.size()!=sc){
                     if(!httpresponse) {
                         if(surahText.size()!=0){
