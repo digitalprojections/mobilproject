@@ -1,19 +1,6 @@
 package furqon.io.github.mobilproject;
 
-import   androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.Manifest;
-import android.app.Application;
 import android.app.DownloadManager;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
@@ -34,6 +21,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
@@ -42,9 +30,20 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -71,7 +70,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,8 +79,8 @@ import java.util.TimerTask;
 
 import furqon.io.github.mobilproject.Services.OnClearFromService;
 
-import static furqon.io.github.mobilproject.BuildConfig.*;
-import static java.util.Collections.*;
+import static furqon.io.github.mobilproject.BuildConfig.BUILD_TYPE;
+import static java.util.Collections.sort;
 
 public class MediaActivity extends AppCompatActivity implements MyListener, Playable, AdapterView.OnItemSelectedListener, View.OnClickListener, SetSuraNumber, ManageDownloadIconState {
     private static final int MY_WRITE_EXTERNAL_STORAGE = 101;
@@ -95,7 +93,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Play
     private RecyclerView recyclerView;
     private Spinner recitationstyle_spinner;
     private Spinner reciter_spinner;
-    private SpinnerAdapter spinnerAdapter;
 
     private TitleViewModel titleViewModel;
     private ArrayList<Track> trackList;
@@ -129,23 +126,14 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Play
     private String suraNumber2Play;
     private String suraNumber2Download;
     public String suranomi;
-    TextView cost_txt;
-    TextView coins_txt;
     //audio
     String language;
     String recitation_style;
     String reciter;
-    Integer audio_pos;
-    Integer ayah_position;
 
     String audiorestore;
     String audiostore;
     String loadfailed;
-    //private MenuItem playButton;
-    private int ayah_unlock_cost;
-    private int available_coins;
-    private int currentStatus;
-    private int status = 0;
     InterstitialAd mInterstitialAd = new InterstitialAd(this);
     Handler handler;
     private NotificationManager notificationManager;
@@ -163,7 +151,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Play
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media);
-
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
         context = this;
         if (BUILD_TYPE.equals("debug")) {
@@ -565,7 +553,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Play
                             }
                         });
                         //trackDownload = false;
-                    }catch(IllegalStateException isx){
+                    }catch(IllegalStateException ignored){
 
                     }
                     
@@ -688,7 +676,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Play
                         String trackname = file.getName();
                         trackname = trackname.substring(0, trackname.lastIndexOf("."));
                         try {
-                            int tt = Integer.parseInt(trackname);
                             if (!TrackDownloaded(file.getName())) {
                                 String filePath = newpath + "/" + file.getName();
                                 try {
@@ -874,6 +861,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Play
             ) {
                 if (i.getName().equals(v)) {
                     retval = true;
+                    break;
                 }
             }
         }
@@ -886,15 +874,6 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Play
 //            mRewardedVideoAd.SHOW();
 //        }
 
-    private void setAyahCost() {
-        if (suraNumber2Download != null) {
-            int ayah_number = Integer.parseInt(suraNumber2Download);
-
-            ayah_unlock_cost = QuranMap.AYAHCOUNT[ayah_number - 1];
-
-        }
-        available_coins = mSharedPref.read(mSharedPref.COINS, 0);
-    }
 
     private boolean WritePermission() {
         if (BuildConfig.BUILD_TYPE.equals("debug"))
@@ -1031,7 +1010,7 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Play
                                             try{
                                                 mAdapter.notifyDataSetChanged();
                                                 cursor.moveToFirst();
-                                                if (cursor == null || cursor.getCount() == 0) {
+                                                if (cursor.getCount() == 0) {
                                                     myTimer.cancel();
                                                 }
                                             }catch (IllegalStateException x){
@@ -1296,54 +1275,56 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Play
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if(view!=null)
             ((TextView) view).setTextColor(getResources().getColor(R.color.colorPrimary));
-        switch (parent.getId()) {
-            case R.id.mp_language_spinner:
-                mSharedPref.write(SharedPreferences.SELECTED_AUDIO_LANGUAGE, position);
-                language = Objects.requireNonNull(language_adapter.getItem(position)).toString();
-                if (position == 0) {//TODO set index from shared pref, if previously set
-                    recitationstyle_adapter = ArrayAdapter.createFromResource(this, R.array.recitation_styles_arabic, android.R.layout.simple_spinner_item);
-                } else {
-                    recitationstyle_adapter = ArrayAdapter.createFromResource(this, R.array.recitation_style, android.R.layout.simple_spinner_item);
-                }
-                recitationstyle_spinner.setVisibility(View.VISIBLE);
-                recitationstyle_spinner.setAdapter(recitationstyle_adapter);
-                recitationstyle_adapter.setDropDownViewResource(R.layout.mp_spinner_item);
-                break;
-            case R.id.mp_recitationstyle_spinner:
-                mSharedPref.write(SharedPreferences.RECITATIONSTYLE, position);
-                recitation_style = Objects.requireNonNull(recitationstyle_adapter.getItem(position)).toString();
-                switch (Objects.requireNonNull(recitationstyle_adapter.getItem(position)).toString()) {
-                    //TODO set index from shared pref, if previously set
-                    case "murattal":
-                        reciter_adapter = ArrayAdapter.createFromResource(this, R.array.arabic_murattal, android.R.layout.simple_spinner_item);
-                        break;
-                    case "mujawwad":
-                        reciter_adapter = ArrayAdapter.createFromResource(this, R.array.arabic_mujawwad, android.R.layout.simple_spinner_item);
-                        break;
-                    case "fl":
-                        switch (language) {
-                            case "english":
-                                reciter_adapter = ArrayAdapter.createFromResource(this, R.array.english_fl, android.R.layout.simple_spinner_item);
-                                break;
-                            case "russian":
-                                reciter_adapter = ArrayAdapter.createFromResource(this, R.array.russian_fl, android.R.layout.simple_spinner_item);
-                                break;
-                            case "uzbek":
-                                reciter_adapter = ArrayAdapter.createFromResource(this, R.array.uzbek_fl, android.R.layout.simple_spinner_item);
-                                break;
-                        }
-                        break;
-                }
-                reciter_spinner.setVisibility(View.VISIBLE);
-                reciter_spinner.setAdapter(reciter_adapter);
-                reciter_adapter.setDropDownViewResource(R.layout.mp_spinner_item);
+        if (parent.getId()==R.id.mp_language_spinner) {
 
-                break;
-            case R.id.mp_reciter_spinner:
+            mSharedPref.write(SharedPreferences.SELECTED_AUDIO_LANGUAGE, position);
+            language = Objects.requireNonNull(language_adapter.getItem(position)).toString();
+            if (position == 0) {//TODO set index from shared pref, if previously set
+                recitationstyle_adapter = ArrayAdapter.createFromResource(this, R.array.recitation_styles_arabic, android.R.layout.simple_spinner_item);
+            } else {
+                recitationstyle_adapter = ArrayAdapter.createFromResource(this, R.array.recitation_style, android.R.layout.simple_spinner_item);
+            }
+            recitationstyle_spinner.setVisibility(View.VISIBLE);
+            recitationstyle_spinner.setAdapter(recitationstyle_adapter);
+            recitationstyle_adapter.setDropDownViewResource(R.layout.mp_spinner_item);
+        }
+            else if(parent.getId()== R.id.mp_recitationstyle_spinner) {
+            mSharedPref.write(SharedPreferences.RECITATIONSTYLE, position);
+            recitation_style = Objects.requireNonNull(recitationstyle_adapter.getItem(position)).toString();
+            switch (Objects.requireNonNull(recitationstyle_adapter.getItem(position)).toString()) {
+                //TODO set index from shared pref, if previously set
+                case "murattal":
+                    reciter_adapter = ArrayAdapter.createFromResource(this, R.array.arabic_murattal, android.R.layout.simple_spinner_item);
+                    break;
+                case "mujawwad":
+                    reciter_adapter = ArrayAdapter.createFromResource(this, R.array.arabic_mujawwad, android.R.layout.simple_spinner_item);
+                    break;
+                case "fl":
+                    switch (language) {
+                        case "english":
+                            reciter_adapter = ArrayAdapter.createFromResource(this, R.array.english_fl, android.R.layout.simple_spinner_item);
+                            break;
+                        case "russian":
+                            reciter_adapter = ArrayAdapter.createFromResource(this, R.array.russian_fl, android.R.layout.simple_spinner_item);
+                            break;
+                        case "uzbek":
+                            reciter_adapter = ArrayAdapter.createFromResource(this, R.array.uzbek_fl, android.R.layout.simple_spinner_item);
+                            break;
+                    }
+                    break;
+            }
+            reciter_spinner.setVisibility(View.VISIBLE);
+            reciter_spinner.setAdapter(reciter_adapter);
+            reciter_adapter.setDropDownViewResource(R.layout.mp_spinner_item);
+
+
+        }
+        else if(parent.getId()==R.id.mp_reciter_spinner)
+        {
                 mSharedPref.write(SharedPreferences.RECITER, position);
                 //reciter = Objects.requireNonNull(reciter_adapter.getItem(position)).toString();
                 reciter = String.valueOf(position + 1);
-                break;
+
         }
         pause();
         PopulateTrackList();
@@ -1378,10 +1359,8 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Play
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.mp_imageButton_dl:
-                //download  view
-                mAdapter.setDownload_view(true);
+        if (v.getId()==R.id.mp_imageButton_dl) {                //download  view
+            mAdapter.setDownload_view(true);
 //                bouncer = new AnimatorSet();
 //                ValueAnimator fadeAnim = ObjectAnimator.ofFloat(media_player_ll, "alpha", 100f, 0f);
 //                ValueAnimator fadeAnim1 = ObjectAnimator.ofFloat(mp_seekBar, "alpha", 100f, 0f);
@@ -1391,22 +1370,22 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Play
 //                fadeAnim.setDuration(250);
 //                animatorSet = new AnimatorSet();
 //                animatorSet.start();
-                special_actions_ll.setVisibility(View.GONE);
-                mp_seekBar.setVisibility(View.GONE);
-                media_player_ll.setVisibility(View.GONE);
+            special_actions_ll.setVisibility(View.GONE);
+            mp_seekBar.setVisibility(View.GONE);
+            media_player_ll.setVisibility(View.GONE);
 
-                if (mSharedPref.read(mSharedPref.COINS, 0) > 0) {
-                    updateUI();
-                }
+            if (mSharedPref.read(mSharedPref.COINS, 0) > 0) {
+                updateUI();
+            }
 
-                LoadTheList();
+            LoadTheList();
 
-                break;
-            case R.id.mp_imageButton_pl:
-                //playlist view
-                if(!isPlaying)
-                    current_track_tv.setText("");
-                mAdapter.setDownload_view(false);
+        }
+         else if (v.getId()==R.id.mp_imageButton_pl) {
+            //playlist view
+            if (!isPlaying)
+                current_track_tv.setText("");
+            mAdapter.setDownload_view(false);
 
 //                bouncer = new AnimatorSet();
 //                fadeAnim = ObjectAnimator.ofFloat(media_player_ll, "alpha", 0f, 100f);
@@ -1417,37 +1396,36 @@ public class MediaActivity extends AppCompatActivity implements MyListener, Play
 //                fadeAnim.setDuration(250);
 //                animatorSet = new AnimatorSet();
 //                animatorSet.start();
-                special_actions_ll.setVisibility(View.VISIBLE);
-                media_player_ll.setVisibility(View.VISIBLE);
-                mp_seekBar.setVisibility(View.VISIBLE);
-                mAdapter.notifyDataSetChanged();
-                break;
-            case R.id.mp_play_toggle:
-                if (isPlaying) {
-                    OnTrackPause();
-                } else {
-                    OnTrackPlay();
-                }
-                break;
-            case R.id.mp_previous:
-                previousTrack();
-                if (isPlaying) {
-                    OnTrackPause();
-                }
-                OnTrackPlay();
-                break;
-            case R.id.mp_next:
-                nextTrack();
-                if (isPlaying) {
-                    OnTrackPause();
-                }
-                OnTrackPlay();
-                break;
-            case R.id.mp_playmode_btn:
-                setNextPlayMode();
-                break;
+            special_actions_ll.setVisibility(View.VISIBLE);
+            media_player_ll.setVisibility(View.VISIBLE);
+            mp_seekBar.setVisibility(View.VISIBLE);
+            mAdapter.notifyDataSetChanged();
         }
-
+        else if (v.getId()==R.id.mp_play_toggle) {
+            if (isPlaying) {
+                OnTrackPause();
+            } else {
+                OnTrackPlay();
+            }
+        }
+         else if (v.getId()==R.id.mp_previous) {
+            previousTrack();
+            if (isPlaying) {
+                OnTrackPause();
+            }
+            OnTrackPlay();
+        }
+         else if (v.getId()==R.id.mp_next) {
+            nextTrack();
+            if (isPlaying) {
+                OnTrackPause();
+            }
+            OnTrackPlay();
+        }
+         else if (v.getId()==R.id.mp_playmode_btn)
+        {
+                setNextPlayMode();
+        }
     }
 
     private void updateUI() {

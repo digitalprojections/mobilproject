@@ -116,4 +116,5 @@
     <string name="memorize_quran">Memorize Quran</string>
     <string name="yod_oling_img">yod olish sahifasi</string>
     <string name="vipuser">Become VIP</string>
+    <string name="done" translatable="false">OK</string>
 </resources>

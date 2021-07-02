@@ -1,17 +1,5 @@
 package furqon.io.github.mobilproject;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DownloadManager;
@@ -36,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -47,6 +36,18 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -72,11 +73,12 @@ import java.util.IllegalFormatException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Timer;
 
 import furqon.io.github.mobilproject.Services.OnClearFromService;
 
-import static com.google.android.material.snackbar.Snackbar.*;
+import static com.google.android.material.snackbar.Snackbar.LENGTH_LONG;
+import static com.google.android.material.snackbar.Snackbar.LENGTH_SHORT;
+import static com.google.android.material.snackbar.Snackbar.make;
 
 public class MemorizeActivity extends AppCompatActivity implements View.OnClickListener, MyListener, AdapterView.OnItemSelectedListener, SetSuraNumber, Playable {
     private static final int MY_WRITE_EXTERNAL_STORAGE = 101;
@@ -102,7 +104,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     //DATA
     private TitleViewModel ayahViewModel;
     private ArrayList<Track> trackList;
-    private ArrayAdapter<CharSequence> language_adapter;
     private MediaPlayer mediaPlayer;
     private ArrayList<JSONObject> jsonArrayResponse;
 
@@ -128,8 +129,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     MediaMetadataRetriever metadataRetriever = new MediaMetadataRetriever();
     private DownloadManager downloadManager;
     DownloadManager.Query query;
-    private boolean download_attempted;
-    Timer myTimer = new Timer();
     long downloadId;
     private boolean RANGEISSHOWN;
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -144,23 +143,24 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         menu.getItem(4).setVisible(false);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.settings_i:
-                open_settings();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.settings_i) {
+            open_settings();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-
     }
+
 
     private void open_settings() {
         Intent intent;
         intent = new Intent(this, furqon.io.github.mobilproject.Settings.class);
         startActivity(intent);
     }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -171,7 +171,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         //There was a surah selected
         // Obtain the FirebaseAnalytics instance.
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         scaler = AnimationUtils.loadAnimation(this, R.anim.bounce);
 
         Toolbar toolbar = findViewById(R.id.tool_bar);
@@ -210,7 +210,6 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         startValue = findViewById(R.id.start_tv);
         endValue = findViewById(R.id.end_tv);
         repeatValue = findViewById(R.id.repeat_count_tv);
-
 
 
         recyclerView = findViewById(R.id.memorize_range_rv);
@@ -275,8 +274,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         PopulateTrackList();
                     }
                     Log.i(TAG, "DOWNLOAD COMPLETE, Download id " + id + " ayah number: " + ayahNumber2Download);
-                        //PopulateTrackList();
-                    if(!ayahNumber2Download.equals("0"))
+                    //PopulateTrackList();
+                    if (!ayahNumber2Download.equals("0"))
                         MarkAyahAsDownloaded(ayahNumber2Download);
                 } else if (status == DownloadManager.STATUS_FAILED) {
                     make(coordinatorLayout,
@@ -287,7 +286,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     mAdapter.notifyDataSetChanged();
                 } else if (status == DownloadManager.STATUS_PAUSED) {
                     make(coordinatorLayout,
-                            "PAUSED!\n" + "reason of " +  reason,
+                            "PAUSED!\n" + "reason of " + reason,
                             LENGTH_LONG).show();
                 } else if (status == DownloadManager.STATUS_PENDING) {
                     make(coordinatorLayout,
@@ -306,7 +305,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     private void MarkAsDownloadFailed(int ayahInt) {
         String failedAudio = String.valueOf(ayahInt);
         if (mAdapter != null) {
-            int actual_position = 0;
+            int actual_position;
             if (mAdapter.getItemCount() > 0) {
                 for (int i = 0; i < mAdapter.getItemCount(); i++) {
                     String ayah_ref_name = ARG.makeAyahRefName(mAdapter.getTitleAt(i).verse_id);
@@ -349,10 +348,10 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         Log.d(TAG, lastSurahIndex + " last surah index, start:" + startAyahNumber + "-end:" + endAyahNumber);
         startValue.setText(startAyahNumber);
         endValue.setText(endAyahNumber);
-        if(sharedPreferences.contains(SharedPreferences.PREFERRED_REPEAT_COUNT)){
+        if (sharedPreferences.contains(SharedPreferences.PREFERRED_REPEAT_COUNT)) {
             preferredRepeatCount = sharedPreferences.read(SharedPreferences.PREFERRED_REPEAT_COUNT, "10");
             startendtext.setVisibility(View.GONE);
-        }else{
+        } else {
             startendtext.setVisibility(View.VISIBLE);
             startendtext.startAnimation(scaler);
             decStart.startAnimation(scaler);
@@ -369,27 +368,29 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
         Bundle bundle = new Bundle();
-        switch (v.getId()) {
-            case R.id.dec_start:
-                adjustHighLowStart(-1);
-                break;
-            case R.id.inc_start:
-                adjustHighLowStart(1);
-                break;
-            case R.id.dec_end:
-                adjustHighLowEnd(-1);
-                break;
-            case R.id.inc_end:
-                adjustHighLowEnd(1);
-                break;
-            case R.id.dec_repeat:
-                adjustRepeat(-1);
-                break;
-            case R.id.inc_repeat:
-                adjustRepeat(1);
-                break;
-            case R.id.play_verse:
+        if (v.getId() == R.id.dec_start) {
+            adjustHighLowStart(-1);
+        }
+        else if (v.getId() == R.id.inc_start)
+        {
+            adjustHighLowStart(1);
+        } else if (v.getId() == R.id.dec_end)
+        {
+            adjustHighLowEnd(-1);
 
+        } else if(v.getId()==R.id.inc_end)
+        {
+            adjustHighLowEnd(1);
+        } else if(v.getId()==R.id.dec_repeat)
+        {
+            adjustRepeat(-1);
+        }
+        else if(v.getId()==R.id.inc_repeat)
+        {
+            adjustRepeat(1);
+        }
+        else if(v.getId()==R.id.play_verse)
+        {
                 bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "play_verse");
                 bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "play");
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "audio");
@@ -402,21 +403,22 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     loadRange();
                     loadAudioFiles();
                 }
-                break;
-            case R.id.play_mode:
-                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "play_mode");
-                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "play mode, repeat one " + repeatOne);
-                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "audio");
-                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
-                repeatOne=!repeatOne;
-                setPlayMode();
-                break;
-                case R.id.refresh_btn:
-                reloadLists();
-                    setUIValues();
-                break;
-        }
+
     }
+        else if (v.getId() == R.id.play_mode)
+    {
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "play_mode");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "play mode, repeat one " + repeatOne);
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "audio");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+        repeatOne=!repeatOne;
+        setPlayMode();
+    } else if (v.getId() ==  R.id.refresh_btn)
+    {
+        reloadLists();
+        setUIValues();
+    }
+}
     private void setSwipeControls() {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -459,19 +461,15 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         }
                     });
                     snackbar.setActionTextColor(Color.YELLOW);
-                if (mediaPlayer!=null && mediaPlayer.isPlaying()) {
-
-                } else {
+                if (mediaPlayer == null || !mediaPlayer.isPlaying()) {
                     snackbar.show();
                 }
-                }
+            }
 
         });
             itemTouchHelper.attachToRecyclerView(recyclerView);
-
     }
     private void DeleteTheTrack(String tracktodelete) {
-
             String path = Objects.requireNonNull(getExternalFilesDir(null)).getAbsolutePath();
             newpath = getNewPath();
             File directory = new File(newpath);
@@ -481,19 +479,17 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     if (file.getName().contains(".")) {
                         String trackname = file.getName().substring(0, file.getName().lastIndexOf("."));
                         if (trackname.equals(tracktodelete)) {
-                            file.delete();
+                            if (file.delete())
+                            {
+                                Toast.makeText(context, R.string.done, Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 }
 
-                mAdapter.setTrackList(trackList);
-                recyclerView.setAdapter(mAdapter);
-            } else {
-                if (BuildConfig.BUILD_TYPE.equals("debug"))
-                    Log.d(TAG, "NULL ARRAY no files found");
-                mAdapter.setTrackList(trackList);
-                recyclerView.setAdapter(mAdapter);
             }
+        mAdapter.setTrackList(trackList);
+        recyclerView.setAdapter(mAdapter);
     }
     private void setPlayMode() {
         if(!repeatOne){
@@ -504,17 +500,14 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         }
         sharedPreferences.write("AYAH_PLAYMODE", repeatOne);
     }
-
     private void loadAudioFiles() {
         PopulateTrackList();
         ARG.makeAyahRefName(startAyahNumber);
         suraNumber2Play = ARG.makeAyahRefName(startAyahNumber);
         play();
-
     }
 
     private void loadRange() {
-
         ARG.setSuraName(String.valueOf(lastSurahIndex+1));
         sharedPreferences.write(lastSurahIndex + "_start", startAyahNumber);
         sharedPreferences.write(lastSurahIndex + "_end", endAyahNumber);
@@ -543,7 +536,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
 
                         }
                     } else {
-                        Log.d(TAG, "RANGEISSHOWN " + RANGEISSHOWN);
+                        Log.d(TAG, "RANGEISSHOWN " + true);
                     }
                 }
             });
@@ -560,7 +553,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         progressBar.setVisibility(View.GONE);
                         // Convert String to json object
                         //httpresponse = true;
-                        jsonArrayResponse = new ArrayList<JSONObject>();
+                        jsonArrayResponse = new ArrayList<>();
                         try {
                             JSONArray jsonArray = new JSONArray(response);
                             for (int i = 0; i < jsonArray.length(); i++) {
@@ -585,7 +578,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
             }
         }) {
             protected Map<String, String> getParams() {
-                Map<String, String> MyData = new HashMap<String, String>();
+                Map<String, String> MyData = new HashMap<>();
                 MyData.put("action", "izohsiz_text_obj"); //Add the data you'd like to send to the server.
                 MyData.put("database_id", "1, 120, 59, 79");
                 MyData.put("surah_id", ARG.suraNumber);
@@ -628,7 +621,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
         setUIValues();
     }
     private void adjustRepeat(int i) {
-        int repeatCount = 0;
+        int repeatCount;
         try{
             repeatCount = Integer.parseInt(repeatValue.getText().toString());
         }catch (NumberFormatException nfx){
@@ -689,10 +682,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                 if(sVal>1){
                     sVal--;
                     startValue.setText(String.valueOf(sVal));
-                }else{
-                    //disable minus button
+                }//disable minus button
 
-                }
             }
             startAyahNumber = startValue.getText().toString();
             reloadLists();
@@ -773,8 +764,8 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private String getTheNextVerseNumber(String suraNumber2Play) {
-        int sn2p = 0;
-        int vn=0;
+        int sn2p;
+        int vn;
         String rv=null;
         try{
             sn2p=Integer.parseInt(suraNumber2Play);
@@ -927,10 +918,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                     break;
                 }
             }
-        }else {
-            Log.i(TAG, "TRACK DOWNLOADED CHECK FAIL " + v + " => " + trackList);
         }
-
         return retval;
     }
     public void resume() {
@@ -1020,7 +1008,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                                     Track track = new Track(AudioTimer.getTimeStringFromMs(Integer.parseInt(Objects.requireNonNull(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)))), trackname, filePath);
                                     trackList.add(track);
 
-                                    }catch(RuntimeException rtx){
+                                    }catch(RuntimeException ignored){
                                         
                                     }
                                 }
@@ -1120,9 +1108,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
                         make(coordinatorLayout, R.string.dl_queue_full, LENGTH_SHORT).show();
                         //mAdapter.notifyDataSetChanged();
 
-                        if (!sharedPreferences.read(SharedPreferences.NOMOREADS, false)) {
-                            //mInterstitialAd.show();
-                        }
+
                         Log.i(TAG, cursor.getCount() + " downloads ");
                     } else {
                         //No downloads running. allow download
@@ -1181,7 +1167,7 @@ public class MemorizeActivity extends AppCompatActivity implements View.OnClickL
     void MarkAyahAsDownloaded(String downloadedAyahId){
         Log.d(TAG, "line 1067 MARK AS DOWNLOADED " + downloadedAyahId);
         if (mAdapter != null) {
-            int actual_position = 0;
+            int actual_position;
             if (mAdapter.getItemCount() > 0) {
                 for (int i = 0; i < mAdapter.getItemCount(); i++) {
                     String ayah_ref_name = ARG.makeAyahRefName(mAdapter.getTitleAt(i).verse_id);
