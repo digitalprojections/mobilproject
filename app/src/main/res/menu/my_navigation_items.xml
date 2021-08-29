@@ -10,11 +10,18 @@
         android:title="@string/bookmark_found"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/settings_icon"
+        android:checkable="false"
+        android:enabled="true"
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:title="@string/settings"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/play"
         android:checkable="false"
         android:enabled="true"
         android:icon="@drawable/ic_play_circle"
-        android:title=""
+        android:title="@string/play"
         app:showAsAction="always" />
 
 </menu>

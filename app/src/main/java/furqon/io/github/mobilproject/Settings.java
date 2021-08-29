@@ -136,6 +136,9 @@ public class Settings extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 sharedPref.write(sharedPref.ENSW, sw_en.isChecked());
+                if(sw_en.isChecked()){
+                    sharedPref.write(SharedPreferences.TRANSLATION_SELECTED, true);
+                }
                 ok_but.setEnabled(true);
             }
         });
@@ -143,6 +146,9 @@ public class Settings extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 sharedPref.write(sharedPref.RUSW, sw_ru.isChecked());
+                if(sw_ru.isChecked()){
+                    sharedPref.write(SharedPreferences.TRANSLATION_SELECTED, true);
+                }
                 ok_but.setEnabled(true);
             }
         });
@@ -150,6 +156,9 @@ public class Settings extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 sharedPref.write(sharedPref.UZSW, sw_uz.isChecked());
+                if(sw_uz.isChecked()){
+                    sharedPref.write(SharedPreferences.TRANSLATION_SELECTED, true);
+                }
                 ok_but.setEnabled(true);
             }
         });

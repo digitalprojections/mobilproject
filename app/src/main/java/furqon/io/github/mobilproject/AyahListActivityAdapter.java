@@ -99,9 +99,13 @@ public class AyahListActivityAdapter extends RecyclerView.Adapter<AyahListActivi
         LinearLayout arabic_text_lin_layout;
         LinearLayout actions_lin_layout;
 
+        boolean translation_selected = sharedPref.getDefaults(SharedPreferences.TRANSLATION_SELECTED);
+
 
         AyahListViewHolder(@NonNull View itemView) {
             super(itemView);
+
+
 
             arabic_text_lin_layout = itemView.findViewById(R.id.v_arabictranslation);
             uzbek_text_lin_layout = itemView.findViewById(R.id.uzbektranslation);
@@ -223,11 +227,11 @@ public class AyahListActivityAdapter extends RecyclerView.Adapter<AyahListActivi
 
             arabic_text_lin_layout.addView(arabic_ayah_number);
             arabic_text_lin_layout.addView(arabic_text);
-            if ((sharedPref.getDefaults("uz") || sharedPref.getDefaults("ru") || sharedPref.getDefaults("en")) && !sharedPref.getDefaults("ar")) {
+            /*if ((sharedPref.getDefaults("uz") || sharedPref.getDefaults("ru") || sharedPref.getDefaults("en")) && !sharedPref.getDefaults("ar")) {
                 ayah_number.setVisibility(View.VISIBLE);
                 arabic_text_lin_layout.setVisibility(View.GONE);
             }
-
+*/
 
             actions_lin_layout.addView(share_button);
             actions_lin_layout.addView(book_button);
@@ -430,7 +434,30 @@ public class AyahListActivityAdapter extends RecyclerView.Adapter<AyahListActivi
 
         //holder.arabic_text.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
 
-        if (sharedPref.getDefaults("ar")) {
+
+        if (sharedPref.getDefaults(sharedPref.UZSW)) {
+            //holder.ayah_number.setVisibility(View.VISIBLE);
+            holder.ayah_text_uz.setVisibility(View.VISIBLE);
+            holder.ayah_text_uz.setText(Html.fromHtml(collapseBraces(uz_text)));
+            holder.ayah_number.setText(String.valueOf(numb));
+        }else{
+            holder.ayah_text_uz.setVisibility(View.GONE);
+        }
+        if (sharedPref.getDefaults(sharedPref.RUSW)) {
+            holder.ayah_text_ru.setVisibility(View.VISIBLE);
+            holder.ayah_text_ru.setText(Html.fromHtml(collapseBraces(ru_text)));
+            holder.ayah_number.setText(String.valueOf(numb));
+        }else{
+            holder.ayah_text_ru.setVisibility(View.GONE);
+        }
+        if (sharedPref.getDefaults(sharedPref.ENSW)) {
+            holder.ayah_text_en.setVisibility(View.VISIBLE);
+            holder.ayah_text_en.setText(Html.fromHtml(collapseBraces(en_text)));
+            holder.ayah_number.setText(String.valueOf(numb));
+        }else{
+            holder.ayah_text_en.setVisibility(View.GONE);
+        }
+        if (sharedPref.getDefaults(sharedPref.ARSW)) {
             holder.arabic_text.setGravity(Gravity.END);
             holder.arabic_text.setText(ar_text);
             holder.arabic_ayah_number.setText(String.valueOf(numb));
@@ -441,28 +468,6 @@ public class AyahListActivityAdapter extends RecyclerView.Adapter<AyahListActivi
             holder.arabic_ayah_number.setVisibility(View.GONE);
             holder.arabic_text.setVisibility(View.GONE);
             holder.ayah_number.setVisibility(View.VISIBLE);
-        }
-        if (sharedPref.getDefaults("uz")) {
-            //holder.ayah_number.setVisibility(View.VISIBLE);
-            holder.ayah_text_uz.setVisibility(View.VISIBLE);
-            holder.ayah_text_uz.setText(Html.fromHtml(collapseBraces(uz_text)));
-            holder.ayah_number.setText(String.valueOf(numb));
-        }else{
-            holder.ayah_text_uz.setVisibility(View.GONE);
-        }
-        if (sharedPref.getDefaults("ru")) {
-            holder.ayah_text_ru.setVisibility(View.VISIBLE);
-            holder.ayah_text_ru.setText(Html.fromHtml(collapseBraces(ru_text)));
-            holder.ayah_number.setText(String.valueOf(numb));
-        }else{
-            holder.ayah_text_ru.setVisibility(View.GONE);
-        }
-        if (sharedPref.getDefaults("en")) {
-            holder.ayah_text_en.setVisibility(View.VISIBLE);
-            holder.ayah_text_en.setText(Html.fromHtml(collapseBraces(en_text)));
-            holder.ayah_number.setText(String.valueOf(numb));
-        }else{
-            holder.ayah_text_en.setVisibility(View.GONE);
         }
         //Log.i("AYAT NUMBER", String.valueOf(numb));
         mArrayList.add(numb);

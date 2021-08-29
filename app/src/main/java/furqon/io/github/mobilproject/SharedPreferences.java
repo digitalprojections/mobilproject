@@ -13,6 +13,7 @@ public class SharedPreferences
     public static final String TOKEN_ATTEMPTED = "TOKEN_ATTEMPTED";
     public static final String TOKEN_ATTEMPT_COUNT = "token_attempts";
     public static final String PREFERRED_REPEAT_COUNT = "PREFERREDREPEAT";
+    public static final String TRANSLATION_SELECTED = "TRANSLATION_SELECTED";
     static final String PLAYMODE = "PLAYMODE";
     static final String SIGNATURE = "SIGNATURE";
     static final String FONTSIZE = "FONTSIZE";
@@ -42,10 +43,6 @@ public class SharedPreferences
 
     static String displayOrder = "displayOrder";
 
-    private static boolean arsw;
-    private static boolean uzsw;
-    private static boolean rusw;
-    private static boolean ensw;
     private static boolean random_ayah_sw;
     private static SharedPreferences singleton_sharedpref = null;
     private static android.content.SharedPreferences.Editor prefsEditor;
@@ -84,11 +81,10 @@ public class SharedPreferences
     }
 
     boolean getDefaults(String sw){
-        boolean rv = false;
-
-        switch (sw){
+        boolean rv = read(sw, false);
+/*        switch (sw){
             case "uz":
-                rv = uzsw;
+                rv = read();
                 break;
             case "ar":
                 rv = arsw;
@@ -104,27 +100,19 @@ public class SharedPreferences
                 break;
 
         }
-
+*/
         return rv;
     }
 
 
 
     private void setDefaults(){
-        if(!mSharedPref.contains(UZSW) || !mSharedPref.contains(RUSW) || !mSharedPref.contains(ENSW)){
-            write(ARSW,true);
-            write(UZSW,true);
-            write(RUSW,true);
-            write(ENSW,true);
-            Log.i("SHAREDPREFS", "No translations selected");
-        }
-        else {
-            arsw = read(ARSW, false);
-            uzsw = read(UZSW, false);
-            rusw = read(RUSW, false);
-            ensw = read(ENSW, false);
 
-        }
+            write(ARSW,true);
+            write(UZSW,false);
+            write(RUSW,false);
+            write(ENSW,false);
+            Log.i("SHAREDPREFS", "No translations selected");
 
         if(!mSharedPref.contains(RANDOMAYAHSW)){
             write(RANDOMAYAHSW, true);
