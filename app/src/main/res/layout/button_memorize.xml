@@ -47,7 +47,8 @@
                 android:text="@string/memorize_quran"
                 android:textAlignment="center"
                 android:textColor="@color/browser_actions_text_color"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                android:visibility="gone" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

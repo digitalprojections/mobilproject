@@ -107,6 +107,18 @@ public class AyahListActivity extends AppCompatActivity implements ManageSpecial
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chapter_view);
@@ -357,8 +369,8 @@ public class AyahListActivity extends AppCompatActivity implements ManageSpecial
         inflater.inflate(R.menu.my_navigation_items, menu);
 
         try{
-            menu_bookmark_btn = menu.getItem(0);
-            playButton = menu.getItem(1);
+            //menu_bookmark_btn = menu.getItem(0);
+            //playButton = menu.getItem(1);
             ayah_position = sharedPref.read(xatchup + suranomi, 0);
 
 
@@ -392,6 +404,10 @@ public class AyahListActivity extends AppCompatActivity implements ManageSpecial
 //                    OnTrackPlay();
 //                    playButton.setIcon(R.drawable.ic_pause_circle);
 //                }
+                return true;
+            case R.id.settings_icon:
+                Intent intent_s = new Intent(context, Settings.class);
+                startActivity(intent_s);
                 return true;
             case R.id.menu_bookmark_button:
                 recyclerView.scrollToPosition(ayah_position-1);

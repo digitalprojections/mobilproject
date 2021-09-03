@@ -107,12 +107,16 @@ public class SharedPreferences
 
 
     private void setDefaults(){
-
+        if(isFirstRun()){
             write(ARSW,true);
             write(UZSW,false);
             write(RUSW,false);
             write(ENSW,false);
             Log.i("SHAREDPREFS", "No translations selected");
+            setFirstRun();
+        }
+
+
 
         if(!mSharedPref.contains(RANDOMAYAHSW)){
             write(RANDOMAYAHSW, true);
