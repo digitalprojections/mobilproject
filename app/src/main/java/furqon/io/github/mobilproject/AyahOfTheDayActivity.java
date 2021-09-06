@@ -60,7 +60,7 @@ public class AyahOfTheDayActivity extends AppCompatActivity {
     private int cursor_retry = 0;
 
     private String suraname;
-    private int language_id = 4;
+    private int language_id = 6;
     private boolean FavouriteSelected;
 
     //public DatabaseAccess mDatabase;

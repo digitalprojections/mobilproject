@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -122,7 +123,7 @@ public class AyahListActivity extends AppCompatActivity implements ManageSpecial
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chapter_view);
-
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         tempbut = findViewById(R.id.buttonReload);
         tempbut.setVisibility(View.INVISIBLE);
         titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);

@@ -6,7 +6,7 @@ android {
     signingConfigs {
         debug {
             //storeFile file('C:\\Users\\ahmad\\Documents\\GitHub\\mobilproject\\keystore.private')
-            storeFile file('C:\\Users\\denta\\OneDrive\\Documents\\GitHub\\mobilproject\\keystore.private')
+            storeFile file('C:\\Users\\denta\\Documents\\GitHub\\mobilproject\\keystore.private')
             //storeFile file('C:\\Users\\aj\\Documents\\GitHub\\mobilproject\\keystore.private')
             storePassword '1285422'
             keyAlias = 'baa'
@@ -16,7 +16,7 @@ android {
             storePassword '1285422'
             keyAlias = 'baa'
             keyPassword '1285422'
-            storeFile file('C:\\Users\\denta\\OneDrive\\Documents\\GitHub\\mobilproject\\keystore.private')
+            storeFile file('C:\\Users\\denta\\Documents\\GitHub\\mobilproject\\keystore.private')
             //storeFile file('C:\\Users\\ahmad\\Documents\\GitHub\\mobilproject\\keystore.private')
         }
     }
@@ -26,8 +26,8 @@ android {
         applicationId "furqon.io.github.mobilproject"
         minSdkVersion 19
         targetSdkVersion rootProject.ext.compileSdkVersion
-        versionCode 40305
-        versionName "Internal, Billing Test"
+        versionCode 40306
+        versionName "default language English"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release
         manifestPlaceholders = [:]
