@@ -31,9 +31,9 @@ buildscript {
      * version 3.3.2 as a classpath dependency.
      */
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.1'
+        classpath 'com.android.tools.build:gradle:7.0.2'
         classpath 'com.google.gms:google-services:4.3.4'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.4.1'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.5.2'
     }
 }
 /**
