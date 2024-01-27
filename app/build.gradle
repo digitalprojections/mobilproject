@@ -5,9 +5,9 @@ apply plugin: 'com.google.firebase.crashlytics'
 android {
     signingConfigs {
         debug {
-            //storeFile file('C:\\Users\\ahmad\\Documents\\GitHub\\mobilproject\\keystore.private')
-            storeFile file('C:\\Users\\denta\\Documents\\GitHub\\mobilproject\\keystore.private')
-            //storeFile file('C:\\Users\\aj\\Documents\\GitHub\\mobilproject\\keystore.private')
+            //storeFile file('F:\\GitHub\\mobilproject\\keystore.private')
+            storeFile file('F:\\GitHub\\mobilproject\\keystore.private')
+            //storeFile file('F:\\GitHub\\mobilproject\\keystore.private')
             storePassword '1285422'
             keyAlias = 'baa'
             keyPassword '1285422'
@@ -16,8 +16,8 @@ android {
             storePassword '1285422'
             keyAlias = 'baa'
             keyPassword '1285422'
-            storeFile file('C:\\Users\\denta\\Documents\\GitHub\\mobilproject\\keystore.private')
-            //storeFile file('C:\\Users\\ahmad\\Documents\\GitHub\\mobilproject\\keystore.private')
+            storeFile file('F:\\GitHub\\mobilproject\\keystore.private')
+            //storeFile file('F:\\GitHub\\mobilproject\\keystore.private')
         }
     }
     compileSdkVersion rootProject.ext.compileSdkVersion
